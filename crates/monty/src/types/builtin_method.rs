@@ -36,7 +36,7 @@ impl BuiltinMethod {
                 return Err(ExcType::type_error("native method requires a receiver"));
             }
         };
-        vm.call_native_method(receiver, self.name, args)
+        vm.call_builtin_method(receiver, self.name, args)
     }
 }
 

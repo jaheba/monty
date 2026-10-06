@@ -393,7 +393,7 @@ impl<'h> VM<'h> {
     /// override only need a single trait impl, not parallel `StaticStrings::Foo`
     /// arms in their `py_call_attr` body. New dunder methods plug into the
     /// dispatch table here without touching individual types.
-    pub(crate) fn call_native_method(
+    pub(crate) fn call_builtin_method(
         &mut self,
         obj: Value,
         name_id: StringId,
