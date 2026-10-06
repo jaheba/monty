@@ -33,9 +33,9 @@ and "Host class instances" below).
 Listed to bound what the divergences below apply to. Working,
 CPython-matching features: instance methods, `__init__` (full parameter
 shapes), instance and class attribute get/set (including `setattr(Foo, ...)`
-and function-attributes-become-methods), bound methods, class variables
+and function-attributes-become-methods), custom descriptors (`__get__` / `__set__`), `property`, `classmethod`, `staticmethod`, bound methods, class variables
 (arbitrary expressions, evaluated in a real suspendable class-body scope),
-**class decorators** (`@deco class Foo`),
+class and method decorators,
 `__repr__`/`__str__`/`__enter__`/`__exit__`/`__eq__`/`__hash__` dispatch,
 `obj.__class__`, `Foo.__name__`, `Foo.__doc__`/`obj.__doc__`,
 `Foo.__annotations__` (ordered; values stringized and provisional, see
@@ -66,6 +66,12 @@ order and error wording, but with these divergences:
 
 ## Divergences from CPython
 
+- **Native method lookup still occurs after argument evaluation.**
+    Method-call preparation captures a bound native dispatcher, while sandbox class and instance attributes
+    are resolved immediately.
+    A missing native method therefore raises `AttributeError` after argument side effects.
+    This does not add support for reading native methods as standalone attributes.
+
 - **Default `repr`** (no user `__repr__`) is `<Foo object at 0x..>` using the
     **bare** class name, where CPython uses the qualified name
     `<module.Foo object at 0x..>`.
@@ -91,13 +97,10 @@ order and error wording, but with these divergences:
     synchronously, so a `__repr__`/`__str__` that calls an external/OS function
     raises rather than yielding to the host. `__init__` and regular methods
     *can* suspend on external/OS calls.
-- **Only a plain-function `__init__` can suspend.** When `__init__` is bound to
-    something else (a builtin, another class, a bound method, ...), it is called
-    with CPython's descriptor-binding semantics (no `self` prepended unless it is
-    a plain function) and CPython's `None`-return contract is enforced, but it
-    runs to completion synchronously, so it cannot yield to the host, and an
-    external-function `__init__` raises `NotImplementedError` rather than
-    suspending.
+- **Only initializers resolving to a synchronous Python function can suspend.**
+    Descriptor binding runs first; its getter cannot suspend.
+    Other callable initializers run synchronously and must return `None`.
+    An external-function `__init__` raises `NotImplementedError` rather than suspending.
 - **`__eq__`/`__hash__`/`__index__` cannot suspend**: like `__repr__`/`__str__`
     they run to completion synchronously, so one that calls an external/OS
     function raises rather than yielding to the host. An exception raised by
@@ -348,6 +351,29 @@ every construction request. Divergences:
 - Dumps written before the shared-type-object layout (dump format version 8)
     are rejected on load.
 
+## Descriptor limitations
+
+Custom descriptor getters and setters run synchronously.
+A hook that calls an external or OS function raises `NotImplementedError` at the suspension point;
+it may catch that error within the hook.
+A callable returned by `__get__` can suspend when called normally after the getter returns.
+
+Descriptor deletion and automatic `__set_name__` calls are unavailable.
+Defining `__delete__` still makes a descriptor take precedence over instance storage when it has a getter;
+assignment to a delete-only descriptor raises `AttributeError`.
+`property` supports getter and setter calls, accessor replacement with `.getter()` / `.setter()` / `.deleter()`,
+and the `fget`, `fset`, `fdel`, and `__doc__` attributes. Deleters can be stored but attribute deletion is unavailable.
+Property accessors run synchronously, like custom descriptor hooks. Missing-accessor errors omit the property and owner names.
+An explicit `doc` argument is retained; automatic copying of a getter's docstring is unavailable.
+
+`classmethod` binds the owning class on both class and instance access; `staticmethod` returns its wrapped value unchanged.
+Both expose `__func__` and `__wrapped__`, and a standalone `staticmethod` wrapper is callable.
+Wrapper metadata such as `__name__` and `__qualname__`, explicit wrapper `__get__` / `__set__` calls
+are unavailable.
+`copy` and `deepcopy` share a property unchanged and reject class/static method wrappers, as in CPython.
+Wrapper values cross to the host as their repr; the `classmethod` and `staticmethod` type objects also cross as repr strings.
+Python functions bind as descriptors, but their `__get__` attribute is not exposed for explicit calls.
+
 ## What does NOT exist for user code
 
 - `class Foo(Bar): ...` — no inheritance, no MRO, no `super()` (rejected at
@@ -355,11 +381,8 @@ every construction request. Divergences:
     `type('Foo', (Bar,), {})` raises `TypeError`, see above).
 - Metaclasses, `__init_subclass__`, `__set_name__`, and any other
     metaclass-driven namespace customization.
-- `__slots__`, descriptors (`__get__` / `__set__` / `__delete__`).
+- `__slots__` and descriptor deletion (`del obj.attr` / `delattr`).
 - Abstract base classes (`abc.ABC`, `@abstractmethod`).
-- Method decorators — `@classmethod`, `@staticmethod`, `@property`, and any
-    decorator on a `def` inside a class body (rejected at parse time). Decorators
-    on classes and on non-method functions are supported.
 - **Classes are barely introspectable**: `__dict__`, `__bases__` and `dir()`
     are all unavailable (`cls.__name__` and `cls.__annotations__` work, the
     latter with stringized values, see [typing.md](typing.md)). A class decorator

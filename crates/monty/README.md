@@ -20,6 +20,10 @@ This crate is the pure-Rust core. Most users want one of the bindings built on t
 
 See the [documentation](https://pydantic.dev/docs/monty/) for the motivation, latency measurements, comparison to alternatives and the supported Python subset.
 
+Sandbox classes support custom descriptor getters and setters, plus
+`@property`, `@classmethod`, and `@staticmethod`.
+See [class limitations](https://pydantic.dev/docs/monty/limitations/classes/) for their execution limits.
+
 ## Basic usage
 
 `MontyRun` parses and compiles code once; `run` executes it with input values and returns the value of the final expression as a `MontyObject`:

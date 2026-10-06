@@ -850,6 +850,8 @@ pub enum StaticStrings {
     Dist,
     /// `sys.dont_write_bytecode` attribute.
     DontWriteBytecode,
+    /// Property constructor documentation argument.
+    Doc,
     /// `re.DOTALL` flag
     #[strum(serialize = "DOTALL")]
     DotallFlag,
@@ -971,6 +973,9 @@ pub enum StaticStrings {
     /// `repr()`/`str()` text of `False`, interned so rendering allocates nothing.
     #[strum(serialize = "False")]
     FalseRepr,
+    /// Property constructor keyword arguments.
+    Fdel,
+    Fget,
     /// `namedtuple(field_names=...)` keyword argument.
     #[strum(serialize = "field_names")]
     FieldNames,
@@ -1038,6 +1043,8 @@ pub enum StaticStrings {
     /// `Path.__fspath__()` method, answered without host I/O.
     #[strum(serialize = "__fspath__")]
     Fspath,
+    /// Property constructor setter argument.
+    Fset,
     /// `math.fsum()` function.
     Fsum,
     /// `re.fullmatch()` / `pattern.fullmatch()` method

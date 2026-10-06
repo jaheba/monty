@@ -26,7 +26,7 @@ use crate::{
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
     hash::HashValue,
-    heap::{DropGuard, DropWithContext, HeapData, HeapId, HeapRead, HeapReadOutput},
+    heap::{DropGuard, DropWithContext, HeapData, HeapId, HeapObjectRead, HeapRead, HeapReadOutput},
     intern::{StaticStrings, StringId},
     modules::ModuleFunctions,
     types::{
@@ -627,7 +627,7 @@ pub(crate) fn dataclass_init<'h>(
 /// `values`. A set failure (a resource limit) leaves the untouched tail to the
 /// guard; the caller owns the instance.
 fn store_bound_fields<'h>(
-    instance: &mut HeapRead<'h, Instance>,
+    instance: &mut HeapObjectRead<'h, Instance>,
     fields: &[(StringId, bool)],
     values: Vec<Value>,
     vm: &mut VM<'h>,
@@ -638,7 +638,7 @@ fn store_bound_fields<'h>(
         let name = Value::InternString(fields[i].0);
         // Unchecked: a `frozen=True` instance refuses its own `set_attr`, as
         // CPython's generated `__init__` goes through `object.__setattr__`.
-        let replaced = instance.set_attr_unchecked(name, value, vm)?;
+        let replaced = instance.set_attr_default(name, value, vm)?;
         replaced.drop_with(vm);
     }
     Ok(())
@@ -804,9 +804,9 @@ pub(crate) fn dataclass_eq(
         let field_name = vm.interns.get_str(*name_id).to_owned();
         // Both reads are guarded so a failing comparison below (or an early
         // return) cannot strand either value.
-        let a = instance_attr(self_id, &field_name, vm);
+        let a = instance_attr(self_id, &field_name, vm)?;
         defer_drop!(a, vm);
-        let b = instance_attr(other_id, &field_name, vm);
+        let b = instance_attr(other_id, &field_name, vm)?;
         defer_drop!(b, vm);
         match (a, b) {
             (Some(a), Some(b)) if !a.py_eq_operator(b, vm)? => return Ok(Some(false)),
@@ -840,7 +840,7 @@ pub(crate) fn dataclass_hash(self_id: HeapId, field_names: &[StringId], vm: &mut
     let mut hasher = DefaultHasher::new();
     for name_id in field_names {
         let field_name = vm.interns.get_str(*name_id).to_owned();
-        let value = instance_attr(self_id, &field_name, vm);
+        let value = instance_attr(self_id, &field_name, vm)?;
         defer_drop!(value, vm);
         let Some(value) = value else {
             let class_name = class_name(class_id, vm.heap, vm.interns).into_owned();
@@ -871,7 +871,7 @@ pub(crate) fn dataclass_repr_fmt(
     // generated f-string does. A field that resolves nowhere raises.
     write_dataclass_repr(f, &name, field_names.len(), vm, heap_ids, |i, vm| {
         let field_name = vm.interns.get_str(field_names[i]).to_owned();
-        match instance_attr(self_id, &field_name, vm) {
+        match instance_attr(self_id, &field_name, vm)? {
             Some(value) => Ok((field_name, Some(value))),
             None => Err(ExcType::attribute_error(&name, &field_name)),
         }

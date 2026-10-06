@@ -699,9 +699,9 @@ pub enum Node<F> {
     /// assembles the namespace and returns a `Class`. Methods are ordinary
     /// `FunctionDef`s in that body (with `self` as the first parameter); class
     /// variables are `Assign`s. Class decorators are supported (see
-    /// [`decorators`](Self::ClassDef::decorators)); inheritance, metaclasses and
-    /// decorators on a `def` — including `classmethod`/`staticmethod`/`property`
-    /// — are rejected at parse time. See `limitations/classes.md`.
+    /// [`decorators`](Self::ClassDef::decorators)), as are method decorators.
+    /// Inheritance and metaclasses are rejected at parse time.
+    /// See `limitations/classes.md`.
     ClassDef {
         /// The class name identifier (resolved to an enclosing-scope slot at prepare time).
         name: Identifier,

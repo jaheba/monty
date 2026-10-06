@@ -13,7 +13,7 @@ use crate::{
     modules::{ModuleFunctions, collections, itertools, itertools::ItertoolsFunctions},
     types::{
         Bytes, Deque, Dict, FrozenSet, GenericAlias, List, LongInt, Partial, Path, PyTrait, Random, Range, Set, Slice,
-        Str, TimeZone, Tuple,
+        Str, TimeZone, Tuple, builtin_descriptor,
         bytes::{bytes_fromhex, bytes_repr},
         complex, date, datetime,
         dict::{DictKind, dict_fromkeys},
@@ -161,6 +161,8 @@ pub enum Type {
     Path,
     /// A property descriptor - displays as "property"
     Property,
+    ClassMethod,
+    StaticMethod,
     /// A compiled regex pattern from `re.compile()` - displays as "re.Pattern"
     #[strum(serialize = "re.Pattern")]
     RePattern,
@@ -370,6 +372,8 @@ impl Type {
             Self::Iterator => Some("iter"),
             Self::Type => Some("type"),
             Self::Property => Some("property"),
+            Self::ClassMethod => Some("classmethod"),
+            Self::StaticMethod => Some("staticmethod"),
             _ => None,
         }
     }
@@ -401,6 +405,8 @@ impl Type {
             "iter" => Some(Self::Iterator),
             "type" => Some(Self::Type),
             "property" => Some(Self::Property),
+            "classmethod" => Some(Self::ClassMethod),
+            "staticmethod" => Some(Self::StaticMethod),
             "object" => Some(Self::Object),
             _ => None,
         }
@@ -713,6 +719,9 @@ impl Type {
     pub(crate) fn call(self, vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
         match self {
             // Container types - delegate to init methods
+            Self::Property => builtin_descriptor::property_init(vm, args),
+            Self::ClassMethod => builtin_descriptor::classmethod_init(vm, args),
+            Self::StaticMethod => builtin_descriptor::staticmethod_init(vm, args),
             Self::List => List::init(vm, args),
             Self::Deque => Deque::init(vm, args),
             Self::Tuple => Tuple::init(vm, args),

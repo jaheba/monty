@@ -20,10 +20,13 @@ use crate::{
     heap::{ContainsHeap, DropGuard, DropWithContext, HeapData, HeapId, HeapReadOutput},
     heap_data::CellValue,
     intern::{FunctionId, StaticStrings, StringId},
-    modules::dataclasses,
+    modules::{ModuleFunctions, dataclasses},
     os_dispatch::{PendingEffect, release_pending_effect},
     resource_checks::check_estimated_size,
-    types::{Dict, Instance, PyTrait, Type, bytes::call_bytes_method, instance::class_name, str::call_str_method},
+    types::{
+        BoundMethod, Dict, Instance, PyTrait, Type, bytes::call_bytes_method, descriptor, instance::class_name,
+        native_method::NativeMethod, str::call_str_method,
+    },
     value::{EitherStr, VALUE_SIZE, Value},
 };
 
@@ -222,12 +225,13 @@ impl<'h> VM<'h> {
 
     /// Executes `CallAttr` opcode.
     ///
-    /// Pops the object and arguments from the stack, calls the attribute,
+    /// Pops the receiver, prepared target and arguments, then calls the attribute,
     /// and returns a `CallResult` which may indicate an OS or external call.
-    pub(super) fn exec_call_attr(&mut self, name_id: StringId, arg_count: usize) -> Result<CallResult, RunError> {
+    pub(super) fn exec_call_attr(&mut self, arg_count: usize) -> Result<CallResult, RunError> {
         let args = self.pop_n_args(arg_count);
+        let callable = self.pop();
         let obj = self.pop();
-        self.call_attr(obj, name_id, args)
+        self.call_prepared_attr(obj, callable, args)
     }
 
     /// Executes `CallAttrKw` opcode.
@@ -237,7 +241,6 @@ impl<'h> VM<'h> {
     /// Returns a `CallResult` which may indicate an OS or external call.
     pub(super) fn exec_call_attr_kw(
         &mut self,
-        name_id: StringId,
         pos_count: usize,
         kwname_ids: Vec<StringId>,
     ) -> Result<CallResult, RunError> {
@@ -250,6 +253,7 @@ impl<'h> VM<'h> {
         let pos_args = self.pop_n(pos_count);
 
         // Pop the object
+        let callable = self.pop();
         let obj = self.pop();
 
         // Build kwargs as Vec<(StringId, Value)>
@@ -267,7 +271,7 @@ impl<'h> VM<'h> {
             }
         };
 
-        self.call_attr(obj, name_id, args)
+        self.call_prepared_attr(obj, callable, args)
     }
 
     /// Executes `CallFunctionExtended` opcode.
@@ -290,22 +294,64 @@ impl<'h> VM<'h> {
     /// Executes `CallAttrExtended` opcode.
     ///
     /// Handles method calls with `*args` and/or `**kwargs` unpacking.
-    pub(super) fn exec_call_attr_extended(
-        &mut self,
-        name_id: StringId,
-        has_kwargs: bool,
-    ) -> Result<CallResult, RunError> {
+    pub(super) fn exec_call_attr_extended(&mut self, has_kwargs: bool) -> Result<CallResult, RunError> {
         // Pop kwargs dict if present
         let kwargs = if has_kwargs { Some(self.pop()) } else { None };
 
         // Pop args tuple
         let args_tuple = self.pop();
 
-        // Pop the receiver object
+        // Pop the prepared target and receiver.
+        let callable = self.pop();
         let obj = self.pop();
 
         // Unpack and call
-        self.call_attr_extended(obj, name_id, args_tuple, kwargs)
+        self.call_attr_extended(obj, callable, args_tuple, kwargs)
+    }
+
+    fn is_user_class_or_instance(&self, value: &Value) -> bool {
+        matches!(value, Value::Ref(id) if matches!(self.heap.get(*id), HeapData::Instance(_) | HeapData::Class(_)))
+    }
+
+    /// Resolve descriptor access while the receiver is still the stack top.
+    pub(super) fn prepare_call_attr(&mut self, name_id: StringId) -> RunResult<()> {
+        let this = self;
+
+        let receiver = this
+            .stack
+            .last()
+            .expect("attribute call has a receiver")
+            .clone_with_heap(this);
+        defer_drop!(receiver, this);
+
+        let callable = if this.is_user_class_or_instance(receiver) {
+            let attr = EitherStr::Interned(name_id);
+            let CallResult::Value(callable) = receiver.py_getattr(&attr, this)? else {
+                unreachable!("user class and instance attribute lookup completes synchronously")
+            };
+            callable
+        } else {
+            let func = Value::ModuleFunction(ModuleFunctions::NativeMethod(NativeMethod::new(name_id)));
+
+            let method = BoundMethod {
+                receiver: receiver.clone_with_heap(this),
+                func,
+            };
+
+            // Note: We currently allocate a new bounded method. In the future we should avoid this
+            // and keep everything on the stack.
+            Value::Ref(this.heap.allocate(HeapData::BoundMethod(method)))
+        };
+
+        this.push(callable);
+        Ok(())
+    }
+
+    fn call_prepared_attr(&mut self, receiver: Value, callable: Value, args: ArgValues) -> RunResult<CallResult> {
+        let this = self;
+        let owned = (receiver, callable);
+        defer_drop!(owned, this);
+        this.call_function(&owned.1, args)
     }
 
     // ========================================================================
@@ -348,7 +394,12 @@ impl<'h> VM<'h> {
     /// override only need a single trait impl, not parallel `StaticStrings::Foo`
     /// arms in their `py_call_attr` body. New dunder methods plug into the
     /// dispatch table here without touching individual types.
-    fn call_attr(&mut self, obj: Value, name_id: StringId, args: ArgValues) -> Result<CallResult, RunError> {
+    pub(crate) fn call_native_method(
+        &mut self,
+        obj: Value,
+        name_id: StringId,
+        args: ArgValues,
+    ) -> Result<CallResult, RunError> {
         let this = self;
         let attr = EitherStr::Interned(name_id);
 
@@ -630,7 +681,7 @@ impl<'h> VM<'h> {
     fn call_attr_extended(
         &mut self,
         obj: Value,
-        name_id: StringId,
+        callable: Value,
         args_tuple: Value,
         kwargs: Option<Value>,
     ) -> Result<CallResult, RunError> {
@@ -639,7 +690,7 @@ impl<'h> VM<'h> {
         // Building the argument pack is fallible (a refused `*args` clone, a kwargs
         // dict that cannot grow) and the receiver and kwargs are handed on only once
         // it succeeds, so the guard releases them on the error paths in between.
-        let mut pending = DropGuard::new((obj, kwargs), this);
+        let mut pending = DropGuard::new(((obj, callable), kwargs), this);
         let (pending_values, this) = pending.as_parts_mut();
 
         // Extract positional args from tuple
@@ -653,8 +704,8 @@ impl<'h> VM<'h> {
         };
 
         // Call the method (args_tuple guard drops at scope exit)
-        let ((obj, _), this) = pending.into_parts();
-        this.call_attr(obj, name_id, args)
+        let (((obj, callable), _), this) = pending.into_parts();
+        this.call_prepared_attr(obj, callable, args)
     }
 
     /// Extracts arguments from a tuple for `CallFunctionExtended`.
@@ -1092,23 +1143,18 @@ impl<'h> VM<'h> {
             Some(init_func) => {
                 let this = self;
                 defer_drop!(init_func, this);
-                // CPython's `type.__call__` looks up `__init__` with descriptor
-                // binding: only plain functions bind the new instance as `self`.
-                // Bound methods already carry their own receiver, and builtins,
-                // classes and other values are called with the constructor
-                // arguments unchanged.
-                let init_args = if this.is_function_value(init_func) {
-                    this.heap.inc_ref(instance_id);
-                    args.prepend(Value::Ref(instance_id))
-                } else {
-                    args
-                };
-                if this.is_plain_sync_function(init_func) {
+                let mut pending = DropGuard::new((Value::Ref(instance_id), args), this);
+                let (_, this) = pending.as_parts_mut();
+                let bound_init = descriptor::get(init_func, Some(instance_id), class_id, this)?;
+                let ((instance, init_args), this) = pending.into_parts();
+                let instance_id = instance.into_ref_id().expect("allocated instance");
+                defer_drop!(bound_init, this);
+                if this.is_plain_sync_function(bound_init) {
                     // Push the instance as the pending result (transferring the
                     // allocation's reference), then run __init__ as a real
                     // (suspendable) frame.
                     this.push(Value::Ref(instance_id));
-                    match this.call_function(init_func, init_args)? {
+                    match this.call_function(bound_init, init_args)? {
                         CallResult::FramePushed => {
                             // Mark the just-pushed frame so its return value is
                             // discarded (after the `None` check in the ReturnValue
@@ -1127,7 +1173,7 @@ impl<'h> VM<'h> {
                     // Exotic `__init__` (builtin, class, `async def`, non-callable,
                     // ...): run to completion synchronously — no pending instance is
                     // pushed — and enforce CPython's `None`-return contract.
-                    match this.evaluate_function("__init__", init_func, init_args) {
+                    match this.evaluate_function("__init__", bound_init, init_args) {
                         Ok(Value::None) => Ok(CallResult::Value(Value::Ref(instance_id))),
                         Ok(result) => {
                             let type_name = result.py_type_name(this);
@@ -1145,35 +1191,31 @@ impl<'h> VM<'h> {
         }
     }
 
-    /// Whether `value` is a plain Python function object (`def`, closure, or
-    /// function-with-defaults — sync or async): the kinds that act as descriptors
-    /// in CPython and therefore bind an instance when looked up as a class member.
-    fn is_function_value(&self, value: &Value) -> bool {
-        match value {
-            Value::DefFunction(_) => true,
-            Value::Ref(id) => matches!(self.heap.get(*id), HeapData::Closure(_) | HeapData::FunctionDefaults(_)),
-            _ => false,
-        }
-    }
-
     /// Whether calling `value` would push a regular synchronous frame
     /// (`CallResult::FramePushed`): a plain `def`, closure, function-with-defaults,
     /// or a bound method wrapping one — but not an `async def`, whose call creates
     /// a coroutine instead. Used by [`instantiate_class`](Self::instantiate_class)
     /// to decide whether `__init__` can run as a suspendable initializer frame.
     fn is_plain_sync_function(&self, value: &Value) -> bool {
-        match value {
-            Value::DefFunction(func_id) => !self.interns.get_function(*func_id).is_async,
-            Value::Ref(id) => match self.heap.get(*id) {
-                HeapData::Closure(closure) => !self.interns.get_function(closure.func_id).is_async,
-                HeapData::FunctionDefaults(fd) => !self.interns.get_function(fd.func_id).is_async,
-                // Bound methods never wrap another bound method, so this
-                // recursion is at most one level deep.
-                HeapData::BoundMethod(bm) => self.is_plain_sync_function(&bm.func),
-                _ => false,
-            },
-            _ => false,
+        let mut id = match value {
+            Value::DefFunction(func_id) => return !self.interns.get_function(*func_id).is_async,
+            Value::Ref(id) => *id,
+            _ => return false,
+        };
+        // Calling a longer binding chain exceeds the native re-entry budget.
+        for _ in 0..=super::recursion::MAX_RUN_REENTRY_DEPTH {
+            match self.heap.get(id) {
+                HeapData::Closure(closure) => return !self.interns.get_function(closure.func_id).is_async,
+                HeapData::FunctionDefaults(fd) => return !self.interns.get_function(fd.func_id).is_async,
+                HeapData::BoundMethod(bm) => match &bm.func {
+                    Value::DefFunction(func_id) => return !self.interns.get_function(*func_id).is_async,
+                    Value::Ref(next) => id = *next,
+                    _ => return false,
+                },
+                _ => return false,
+            }
         }
+        false
     }
 }
 

@@ -93,6 +93,8 @@ macro_rules! heap_payloads {
             /// A method bound to an instance.
             #[serde(rename = "M")]
             BoundMethod(inline $crate::types::BoundMethod),
+            #[serde(rename = "NativeDescriptor")]
+            BuiltinDescriptor(boxed $crate::types::BuiltinDescriptor),
             /// One `dataclasses.Field` held by a class's `__dataclass_fields__` dictionary.
             DataclassField(inline $crate::modules::dataclasses::DataclassField),
             /// A `list_iterator` object.
@@ -225,6 +227,7 @@ impl HeapData {
             | Self::HostClassType(_)
             | Self::Class(_)
             | Self::Instance(_)
+            | Self::BuiltinDescriptor(_)
             | Self::BoundMethod(_)
             | Self::DataclassField(_)
             | Self::ListIterator(_)
@@ -278,6 +281,9 @@ impl HeapData {
     /// so it is not simply the list of `py_call` overrides.
     #[must_use]
     pub(crate) fn is_callable(&self) -> bool {
+        if let Self::BuiltinDescriptor(descriptor) = self {
+            return descriptor.kind == Type::StaticMethod;
+        }
         matches!(
             self,
             Self::Class(_)
@@ -325,6 +331,7 @@ impl HeapData {
             Self::Class(_) => Type::Type,
             Self::Instance(instance) => Type::Instance(instance.class()),
             Self::BoundMethod(_) => Type::Function,
+            Self::BuiltinDescriptor(descriptor) => descriptor.kind,
             Self::DataclassField(_) => Type::DataclassField,
             Self::DataclassParams(_) => Type::DataclassParams,
             Self::LongInt(_) => Type::Int,
@@ -663,6 +670,7 @@ macro_rules! heap_read_output_py_trait_forward {
             Self::Class($value) => $body,
             Self::Instance($value) => $body,
             Self::BoundMethod($value) => $body,
+            Self::BuiltinDescriptor($value) => $body,
             Self::DataclassField($value) => $body,
             Self::DataclassParams($value) => $body,
             Self::LongInt($value) => $body,
@@ -1132,6 +1140,7 @@ impl<'h> PyTrait<'h> for HeapReadOutput<'h> {
             Self::Class(value) => value.py_iter(vm),
             Self::Instance(value) => value.py_iter(vm),
             Self::BoundMethod(value) => value.py_iter(vm),
+            Self::BuiltinDescriptor(value) => value.py_iter(vm),
             Self::DataclassField(value) => value.py_iter(vm),
             Self::DataclassParams(value) => value.py_iter(vm),
             Self::Path(value) => value.py_iter(vm),
@@ -1194,6 +1203,7 @@ impl<'h> PyTrait<'h> for HeapReadOutput<'h> {
             Self::Class(value) => value.py_next(vm),
             Self::Instance(value) => value.py_next(vm),
             Self::BoundMethod(value) => value.py_next(vm),
+            Self::BuiltinDescriptor(value) => value.py_next(vm),
             Self::DataclassField(value) => value.py_next(vm),
             Self::DataclassParams(value) => value.py_next(vm),
             Self::Path(value) => value.py_next(vm),

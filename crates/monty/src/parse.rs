@@ -858,7 +858,7 @@ impl<'a, 'i> Parser<'a, 'i> {
     /// `pass` and `...` are ignored; a leading docstring becomes a `__doc__`
     /// member, and annotated names a stringized `__annotations__`. Class
     /// decorators are supported (enclosing scope, applied bottom-up);
-    /// inheritance, function/method decorators, and anything else in the body
+    /// inheritance and anything else in the body
     /// are rejected as not-implemented, reserving the syntax for later.
     fn parse_class_def(&mut self, class: ast::StmtClassDef) -> Result<ParseNode, ParseError> {
         let position = self.class_keyword_range(&class);
@@ -897,11 +897,8 @@ impl<'a, 'i> Parser<'a, 'i> {
         for (i, stmt) in class.body.into_iter().enumerate() {
             match stmt {
                 Stmt::FunctionDef(function) => {
-                    if !function.decorator_list.is_empty() {
-                        return Err(ParseError::not_implemented(
-                            "method decorators (classmethod/staticmethod/property)",
-                            self.convert_range(function.range),
-                        ));
+                    for decorator in &function.decorator_list {
+                        self.reject_class_body_walrus(&decorator.expression)?;
                     }
                     // Parameter defaults evaluate in the class-body scope, so a
                     // walrus target there would become a class member (see
@@ -913,11 +910,12 @@ impl<'a, 'i> Parser<'a, 'i> {
                         }
                     }
                     let (method, decorators) = self.parse_function_def(function)?;
-                    // Rejected above, so a decorated method never reaches the
-                    // class namespace — where a decorator's return value, not a
-                    // function, would end up bound as the member.
-                    debug_assert!(decorators.is_empty(), "method decorators are rejected above");
-                    members.push(method.name);
+                    if !members
+                        .iter()
+                        .any(|member: &Identifier| member.name_id == method.name.name_id)
+                    {
+                        members.push(method.name);
+                    }
                     body.push(Node::FunctionDef {
                         def: method,
                         decorators,

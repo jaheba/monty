@@ -1,3 +1,4 @@
+pub(crate) mod builtin_descriptor;
 /// Type definitions for Python runtime values.
 ///
 /// This module contains structured types that wrap heap-allocated data
@@ -12,6 +13,7 @@ pub mod complex;
 pub mod date;
 pub mod datetime;
 pub mod deque;
+pub(crate) mod descriptor;
 pub mod dict;
 pub mod dict_view;
 pub mod ext_function;
@@ -25,6 +27,7 @@ pub mod list;
 pub mod long_int;
 pub mod module;
 pub mod namedtuple;
+pub(crate) mod native_method;
 pub mod partial;
 pub mod path;
 pub mod property;
@@ -45,6 +48,7 @@ mod unicode_type;
 mod unicode_type_data;
 pub mod union;
 
+pub(crate) use builtin_descriptor::BuiltinDescriptor;
 pub(crate) use bytes::{Bytes, BytesIterator};
 pub(crate) use class::{Class, DataclassOptions};
 pub(crate) use complex::Complex;

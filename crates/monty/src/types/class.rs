@@ -2,7 +2,7 @@ use std::fmt::Write;
 
 use monty_types::MontyUuid;
 
-use super::{Dict, LazyHeapSet, PyTrait, Type, attribute_name_value};
+use super::{Dict, LazyHeapSet, PyTrait, Type, attribute_name_value, descriptor};
 use crate::{
     args::ArgValues,
     boundary_uuid::create_uuid,
@@ -217,7 +217,11 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Class> {
         }
         // Otherwise look up a member (method or class variable) in the namespace.
         match self.get(vm.heap).namespace.get_by_str(attr_str, vm.heap, vm.interns) {
-            Some(value) => Ok(Some(CallResult::Value(value.clone_with_heap(vm.heap)))),
+            Some(value) => {
+                let value = value.clone_with_heap(vm);
+                defer_drop!(value, vm);
+                descriptor::get(value, None, self.id(), vm).map(|value| Some(CallResult::Value(value)))
+            }
             None => Err(ExcType::attribute_error_type(
                 self.get(vm.heap).name.as_str(vm.interns),
                 attr_str,
@@ -226,34 +230,14 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Class> {
     }
 
     fn py_call_attr(&mut self, vm: &mut VM<'h>, attr: &EitherStr, args: ArgValues) -> RunResult<CallResult> {
-        let attr_str = attr.as_str(vm.interns);
-        // `__name__` is a synthesized string, not a namespace member (see
-        // `py_getattr`), so calling it goes through the normal callable
-        // dispatch and raises CPython's `TypeError: 'str' object is not
-        // callable` rather than a spurious `AttributeError`.
-        if attr_str == "__name__" {
-            let name = self.get(vm.heap).name.as_str(vm.interns).to_owned();
-            let name_val = allocate_string(name, vm.heap);
-            defer_drop!(name_val, vm);
-            return vm.call_function(name_val, args);
-        }
-        // `Foo.method(args)` calls the raw (unbound) member with the given args —
-        // no `self` is inserted, the caller passes the instance explicitly.
-        let member = self
-            .get(vm.heap)
-            .namespace
-            .get_by_str(attr_str, vm.heap, vm.interns)
-            .map(|v| v.clone_with_heap(vm.heap));
-        if let Some(member) = member {
-            defer_drop!(member, vm);
-            vm.call_function(member, args)
-        } else {
-            args.drop_with(vm);
-            Err(ExcType::attribute_error_type(
-                self.get(vm.heap).name.as_str(vm.interns),
-                attr_str,
-            ))
-        }
+        let mut guard = DropGuard::new(args, vm);
+        let (_, vm) = guard.as_parts_mut();
+        let Some(CallResult::Value(callable)) = self.py_getattr(attr, vm)? else {
+            unreachable!()
+        };
+        let (args, vm) = guard.into_parts();
+        defer_drop!(callable, vm);
+        vm.call_function(callable, args)
     }
 }
 

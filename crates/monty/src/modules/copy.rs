@@ -11,10 +11,10 @@ use crate::{
     bytecode::VM,
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
-    heap::{ContainsHeap, DropGuard, DropWithContext, HeapData, HeapId, HeapReadOutput},
+    heap::{ContainsHeap, DropGuard, DropWithContext, HeapData, HeapId, HeapReadOutput, HeapReader},
     intern::StaticStrings,
     modules::ModuleFunctions,
-    types::{Dict, List, Module, instance_call_copy_hook},
+    types::{Dict, List, Module, Type, instance_call_copy_hook},
     value::{VALUE_SIZE, Value},
 };
 
@@ -102,7 +102,7 @@ fn shallow_copy(value: &Value, vm: &mut VM<'_>) -> RunResult<Value> {
         return Ok(value.clone_with_heap(vm.heap));
     };
     let id = *id;
-    match classify(&vm.heap.read(id)) {
+    match classify(&vm.heap.read(id), vm.heap) {
         Copyability::Shared | Copyability::ImmutableContainer => Ok(value.clone_with_heap(vm.heap)),
         Copyability::Refused => Err(cannot_copy(value, vm)),
         Copyability::Rebuilt => match vm.heap.read(id) {
@@ -149,8 +149,8 @@ fn shallow_copy(value: &Value, vm: &mut VM<'_>) -> RunResult<Value> {
             // A new binding over the same receiver and function, as CPython's
             // `getattr(obj, name)` reducer produces.
             HeapReadOutput::BoundMethod(bound) => {
-                let instance = bound.get(vm.heap).instance.clone_with_heap(vm.heap);
-                Ok(bound.allocate_like(instance, vm))
+                let receiver = bound.get(vm.heap).receiver.clone_with_heap(vm.heap);
+                Ok(bound.allocate_like(receiver, vm))
             }
             // A new partial over the same callable and bound values, as CPython's
             // reducer produces. Unlike the immutable containers `classify` shares,
@@ -214,7 +214,7 @@ pub(crate) fn deep_copy(source: &Value, memo: &mut Memo, vm: &mut VM<'_>) -> Run
     // Dispatched here rather than in a function of its own: every frame live
     // across the recursion is paid once per level of nesting. `classify`
     // returns before the recursion, so its frame is not one of them.
-    let copy = match classify(&vm.heap.read(id)) {
+    let copy = match classify(&vm.heap.read(id), vm.heap) {
         Copyability::Shared => Ok(source.clone_with_heap(vm.heap)),
         Copyability::Refused => Err(cannot_copy(source, vm)),
         // An immutable container's items still change, so `deepcopy` rebuilds
@@ -272,8 +272,15 @@ enum Copyability {
 }
 
 /// Decides what the two passes do with a heap value.
-fn classify(output: &HeapReadOutput<'_>) -> Copyability {
+fn classify<'h>(output: &HeapReadOutput<'h>, heap: &HeapReader<'h>) -> Copyability {
     match output {
+        HeapReadOutput::BuiltinDescriptor(descriptor) => {
+            if descriptor.get(heap).kind == Type::Property {
+                Copyability::Shared
+            } else {
+                Copyability::Refused
+            }
+        }
         HeapReadOutput::List(_)
         | HeapReadOutput::Dict(_)
         | HeapReadOutput::Set(_)

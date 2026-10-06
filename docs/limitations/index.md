@@ -23,7 +23,7 @@ They exist for development and for agents debugging code that runs on Monty; mos
 - `def`, `async def`, nested functions, closures, `lambda`
 - Decorators on functions and classes
 - Simple classes: instance methods, `__init__`, `__repr__`/`__str__`, `__eq__`/`__hash__`, `__iter__`/`__next__`,
-    `__contains__`, `__index__`, class variables
+    `__contains__`, `__index__`, class variables, custom descriptor getters/setters, and `property`, `classmethod`, `staticmethod` ([classes.md](classes.md))
 - `@dataclass`, with the `eq=` and `frozen=` options only (every other option raises `NotImplementedError`, and
     there is no `field()`, `fields()` or `asdict()`), plus host class instances passed in and out (and host classes the
     sandbox may instantiate when granted)
@@ -41,7 +41,6 @@ They exist for development and for agents debugging code that runs on Monty; mos
 **Rejected at parse time**, with `NotImplementedError` before any code runs:
 
 - Class inheritance and metaclasses (`class Foo(Bar):`)
-- Decorators on methods — so no `@classmethod`, `@staticmethod`, `@property`
 - `yield` / `yield from` — there are no generator functions.
     Generator *expressions* parse, but currently materialise to a `list`
 - `match` statements

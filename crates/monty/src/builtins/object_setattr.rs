@@ -13,7 +13,7 @@ use crate::{
 };
 
 /// `object.__setattr__(obj, name, value)` — writes an instance attribute
-/// without consulting the class.
+/// while preserving descriptor setters.
 ///
 /// The escape hatch a class that hooks attribute writes needs: its own
 /// `__setattr__` has to store the value somehow, and going through `obj.x = v`
@@ -60,8 +60,8 @@ pub fn builtin_object_setattr(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Val
     };
 
     let name = attribute_name_value(&name, vm);
-    // The write path itself, bypassing whatever the class would have done.
-    let replaced = instance.set_attr_unchecked(name, value.clone_with_heap(vm), vm)?;
+    // Bypass frozen assignment checks while preserving descriptor setters.
+    let replaced = instance.set_attr_default(name, value.clone_with_heap(vm), vm)?;
     replaced.drop_with(vm);
     Ok(Value::None)
 }
