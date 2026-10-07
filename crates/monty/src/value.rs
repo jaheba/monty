@@ -3,7 +3,7 @@ use std::{
     cmp::Ordering,
     fmt::{self, Write},
     mem,
-    str::FromStr,
+    str::{self, FromStr},
 };
 
 use num_bigint::{BigInt, Sign};
@@ -1558,7 +1558,7 @@ impl Value {
         let Self::InlineString { len, bytes } = self else {
             return None;
         };
-        Some(std::str::from_utf8(&bytes[..len.get()]).expect("inline strings contain valid UTF-8"))
+        Some(str::from_utf8(&bytes[..len.get()]).expect("inline strings contain valid UTF-8"))
     }
 
     /// Returns the Python `Type` for this value using only `&Heap` (no full VM borrow).
