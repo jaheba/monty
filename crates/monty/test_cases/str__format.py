@@ -64,7 +64,8 @@ assert '{:.２f}'.format(1.25) == '1.25'
 assert '{:._}'.format(True) == '1'
 assert '{:._}'.format('x') == 'x'
 assert capture_error('{:.6_n}', 1.234567) == ('ValueError', "Cannot specify '_' with 'n'.")
-assert '{0:.2147483647g}'.format(0.0001) == ('0.000100000000000000004792173602385929598312941379845142364501953125')
+# CPython reserves 1024 below INT_MAX for precision arithmetic.
+assert '{0:.2147482623g}'.format(0.0001) == ('0.000100000000000000004792173602385929598312941379845142364501953125')
 assert '{:}'.format(True) == 'True'
 assert '{0!r:>6}'.format(123) == '   123'
 assert '{0:{align}{width}}'.format('test', align='^', width=10) == '   test   '
