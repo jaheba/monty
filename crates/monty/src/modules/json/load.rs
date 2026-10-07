@@ -90,6 +90,7 @@ struct JsonLoadsArgs {
 fn parse_json_input(value: &Value, vm: &mut VM<'_>) -> RunResult<Value> {
     let bytes: Cow<'_, [u8]> = match value {
         Value::InternString(string_id) => Cow::Borrowed(vm.interns.get_str(*string_id).as_bytes()),
+        Value::InlineString { .. } => Cow::Owned(value.inline_str().unwrap().as_bytes().to_vec()),
         Value::InternBytes(bytes_id) => Cow::Borrowed(vm.interns.get_bytes(*bytes_id)),
         Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
             HeapData::Str(s) => Cow::Owned(s.as_str().as_bytes().to_vec()),
