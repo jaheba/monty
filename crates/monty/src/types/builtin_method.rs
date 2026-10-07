@@ -10,7 +10,7 @@ use crate::{
     intern::StringId,
 };
 
-/// A builtin method's interned name; its receiver is held by `BoundMethod`.
+/// A prepared builtin method name; the receiver stays on the VM stack.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub(crate) struct BuiltinMethod {
     #[serde(rename = "N")]
@@ -22,14 +22,23 @@ impl BuiltinMethod {
         Self { name }
     }
 
-    /// Removes the bound receiver and delegates the remaining arguments unchanged.
+    pub(crate) fn name_id(self) -> StringId {
+        self.name
+    }
+
+    /// Calls bound builtin handles, including those restored from earlier dumps.
     pub(crate) fn call(self, vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult> {
         let (receiver, args) = match args {
             ArgValues::One(receiver) => (receiver, ArgValues::Empty),
             ArgValues::Two(receiver, arg) => (receiver, ArgValues::One(arg)),
             ArgValues::ArgsKargs { mut args, kwargs } if !args.is_empty() => {
                 let receiver = args.remove(0);
-                (receiver, ArgValues::from_parts(args, kwargs))
+                let args = if args.is_empty() && !kwargs.is_empty() {
+                    ArgValues::Kwargs(kwargs)
+                } else {
+                    ArgValues::from_parts(args, kwargs)
+                };
+                (receiver, args)
             }
             args => {
                 args.drop_with(vm);

@@ -77,6 +77,7 @@ assert events == ['argument']
 xs = []
 xs.append(1)
 xs.extend(*[[2, 3]])
+xs.sort(reverse=True)
 xs.sort(**{'reverse': True})
 assert xs == [3, 2, 1]
 try:

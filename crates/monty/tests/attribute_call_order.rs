@@ -57,3 +57,18 @@ fn prepared_method_survives_suspended_argument_snapshot() {
         restored.feed_run(check, vec![], PrintWriter::Disabled).unwrap();
     }
 }
+
+#[test]
+#[cfg(feature = "ref-count-return")]
+fn builtin_call_preparation_does_not_allocate_per_call() {
+    let allocations = |iterations| {
+        let source = format!("xs = []\nfor _ in range({iterations}):\n xs.append(1)\n xs.pop()");
+        let output = MontyRun::new(source, "test.py", vec![], CompileOptions::default())
+            .unwrap()
+            .run_ref_counts(vec![])
+            .unwrap();
+        assert!(output.unreachable.is_empty(), "{:?}", output.unreachable);
+        output.allocations_since_gc
+    };
+    assert_eq!(allocations(1), allocations(50));
+}

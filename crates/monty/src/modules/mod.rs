@@ -147,7 +147,7 @@ impl StandardLib {
     }
 }
 
-/// All stdlib module function (but not builtins).
+/// Standard-library functions and prepared builtin method handles.
 ///
 /// Every dump reaches these through `Value::ModuleFunction`, encoded by variant
 /// name, so renaming a variant needs `#[serde(alias)]` (see `DUMP_VERSION`).

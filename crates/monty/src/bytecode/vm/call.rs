@@ -24,8 +24,8 @@ use crate::{
     os_dispatch::{PendingEffect, release_pending_effect},
     resource_checks::check_estimated_size,
     types::{
-        BoundMethod, Dict, Instance, PyTrait, Type, builtin_method::BuiltinMethod, bytes::call_bytes_method,
-        instance::class_name, str::call_str_method,
+        Dict, Instance, PyTrait, Type, builtin_method::BuiltinMethod, bytes::call_bytes_method, instance::class_name,
+        str::call_str_method,
     },
     value::{EitherStr, VALUE_SIZE, Value},
 };
@@ -317,29 +317,20 @@ impl<'h> VM<'h> {
     pub(super) fn prepare_call_attr(&mut self, name_id: StringId) -> RunResult<()> {
         let this = self;
 
-        let receiver = this
-            .stack
-            .last()
-            .expect("attribute call has a receiver")
-            .clone_with_heap(this);
-        defer_drop!(receiver, this);
+        let receiver = this.stack.last().expect("attribute call has a receiver");
 
         let callable = if this.is_user_class_or_instance(receiver) {
+            let receiver = receiver.clone_with_heap(this);
+            defer_drop!(receiver, this);
+
             let attr = EitherStr::Interned(name_id);
             let CallResult::Value(callable) = receiver.py_getattr(&attr, this)? else {
                 unreachable!("user class and instance attribute lookup completes synchronously")
             };
             callable
         } else {
-            let func = Value::ModuleFunction(ModuleFunctions::BuiltinMethod(BuiltinMethod::new(name_id)));
-
-            let method = BoundMethod {
-                instance: receiver.clone_with_heap(this),
-                func,
-            };
-
-            // A future method-loading optimization could keep the binding on the stack.
-            Value::Ref(this.heap.allocate(HeapData::BoundMethod(method)))
+            // CallAttr keeps the receiver on the stack for builtin dispatch.
+            Value::ModuleFunction(ModuleFunctions::BuiltinMethod(BuiltinMethod::new(name_id)))
         };
 
         this.push(callable);
@@ -347,6 +338,10 @@ impl<'h> VM<'h> {
     }
 
     fn call_prepared_attr(&mut self, receiver: Value, callable: Value, args: ArgValues) -> RunResult<CallResult> {
+        if let Value::ModuleFunction(ModuleFunctions::BuiltinMethod(method)) = &callable {
+            return self.call_builtin_method(receiver, method.name_id(), args);
+        }
+
         let this = self;
         let owned = (receiver, callable);
         defer_drop!(owned, this);
