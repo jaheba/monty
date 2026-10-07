@@ -2416,7 +2416,10 @@ impl Value {
     pub fn as_either_str(&self, heap: &Heap) -> Option<EitherStr> {
         match self {
             Self::InternString(id) => Some(EitherStr::Interned(*id)),
-            Self::InlineString { .. } => Some(EitherStr::Heap(self.inline_str().unwrap().to_owned())),
+            Self::InlineString { len, bytes } => Some(EitherStr::Inline {
+                len: *len,
+                bytes: *bytes,
+            }),
             Self::Ref(heap_id) => match heap.get(*heap_id) {
                 HeapData::Str(s) => Some(EitherStr::Heap(s.as_str().to_owned())),
                 _ => None,
@@ -2559,6 +2562,8 @@ pub(crate) fn eq_bytes(b: &[u8], other: &Value, vm: &VM<'_>) -> Option<bool> {
 pub(crate) enum EitherStr {
     /// Interned string identifier (cheap comparisons and no allocation).
     Interned(StringId),
+    /// Short UTF-8 string stored without a heap allocation.
+    Inline { len: InlineLen, bytes: [u8; 15] },
     /// Heap-owned string extracted from a `str` object.
     Heap(String),
 }
@@ -2577,37 +2582,40 @@ impl From<String> for EitherStr {
 }
 
 impl EitherStr {
-    /// Returns the keyword as a str slice for error messages or comparisons.
+    /// Returns the keyword text for error messages or comparisons.
     pub fn as_str<'a>(&'a self, interns: &'a Interns) -> &'a str {
         match self {
             Self::Interned(id) => interns.get_str(*id),
+            Self::Inline { len, bytes } => str::from_utf8(&bytes[..len.get()]).expect("inline string is valid UTF-8"),
             Self::Heap(s) => s.as_str(),
         }
     }
 
-    /// The text as a `Cow` borrowing only `interns`, so it outlives heap
-    /// borrows — error messages format the name after `drop_with` cleanup.
+    /// The text as a `Cow` that outlives heap borrows, for error messages
+    /// formatted after `drop_with` cleanup.
     pub fn to_cow<'i>(&self, interns: &'i Interns) -> Cow<'i, str> {
         match self {
             Self::Interned(id) => Cow::Borrowed(interns.get_str(*id)),
+            Self::Inline { .. } => Cow::Owned(self.as_str(interns).to_owned()),
             Self::Heap(s) => Cow::Owned(s.clone()),
         }
     }
 
-    /// Re-resolves a heap string to its interned id when the interner already
-    /// knows the text.
+    /// Re-resolves a runtime string to its interned id when the interner knows it.
     ///
     /// Builtin attribute dispatch matches on `StringId`, so a name computed at
-    /// runtime (`getattr(x, 'up' + 'per')`) arrives as [`Heap`](Self::Heap) and
-    /// misses every builtin attribute — while still resolving on instances and
-    /// modules, which compare by text. Interning is a lookup, never an insert,
-    /// so sandboxed code cannot grow the interner by guessing names.
+    /// Runtime attribute names can arrive inline or heap-owned. Interning is a
+    /// lookup, never an insert, so sandboxed code cannot grow the interner.
     #[must_use]
     pub fn resolve_interned(self, interns: &Interns) -> Self {
         match self {
             Self::Heap(s) => match interns.get_string_id_by_name(&s) {
                 Some(id) => Self::Interned(id),
                 None => Self::Heap(s),
+            },
+            Self::Inline { .. } => match interns.get_string_id_by_name(self.as_str(interns)) {
+                Some(id) => Self::Interned(id),
+                None => self,
             },
             already @ Self::Interned(_) => already,
         }
@@ -2617,6 +2625,7 @@ impl EitherStr {
     pub fn matches(&self, target: StringId, interns: &Interns) -> bool {
         match self {
             Self::Interned(id) => *id == target,
+            Self::Inline { .. } => self.as_str(interns) == interns.get_str(target),
             Self::Heap(s) => s == interns.get_str(target),
         }
     }
@@ -2626,7 +2635,7 @@ impl EitherStr {
     pub fn string_id(&self) -> Option<StringId> {
         match self {
             Self::Interned(id) => Some(*id),
-            Self::Heap(_) => None,
+            Self::Inline { .. } | Self::Heap(_) => None,
         }
     }
 
@@ -2635,17 +2644,19 @@ impl EitherStr {
     pub fn static_string(&self, interns: &Interns) -> Option<StaticStrings> {
         match self {
             Self::Interned(id) => interns.static_string(*id),
+            Self::Inline { .. } => StaticStrings::from_str(self.as_str(interns)).ok(),
             Self::Heap(value) => StaticStrings::from_str(value).ok(),
         }
     }
 
     /// Converts this `EitherStr` into an owned `String`.
     ///
-    /// For interned strings, looks up and clones the string content.
-    /// For heap strings, returns the owned string directly.
+    /// For interned strings, looks up and clones the string content. Heap
+    /// strings are returned directly; inline strings are copied into a `String`.
     pub fn into_string(self, interns: &Interns) -> String {
         match self {
             Self::Interned(id) => interns.get_str(id).to_owned(),
+            Self::Inline { .. } => self.as_str(interns).to_owned(),
             Self::Heap(s) => s,
         }
     }
@@ -2922,6 +2933,16 @@ mod tests {
         let long_int = LongInt::new(value);
         let heap_id = heap.allocate(HeapData::LongInt(long_int));
         (heap, heap_id)
+    }
+
+    #[test]
+    fn as_either_str_keeps_inline_text_inline() {
+        let heap = Heap::new(16, ResourceTracker::default());
+        let value = allocate_string("short".to_owned(), &heap);
+
+        let name = value.as_either_str(&heap).unwrap();
+        assert!(matches!(name, EitherStr::Inline { .. }));
+        assert_eq!(name.as_str(&Interns::default()), "short");
     }
 
     /// Tests that `as_index()` correctly handles a LongInt containing an i64-fitting value.
