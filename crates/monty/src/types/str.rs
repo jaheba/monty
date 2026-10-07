@@ -1,4 +1,4 @@
-use std::{cell::Cell, fmt::Write, ops};
+use std::{cell::Cell, fmt::Write, ops, str};
 
 use monty_types::{ResourceError, ResourceTracker};
 pub use monty_types::{StringRepr, string_repr_fmt};
@@ -1941,7 +1941,7 @@ impl StringIterator {
     fn as_str<'a>(&'a self, vm: &'a VM<'_>) -> &'a str {
         let string = match &self.source {
             StringIteratorSource::Intern(id) => vm.interns.get_str(*id),
-            StringIteratorSource::Inline { len, bytes } => std::str::from_utf8(&bytes[..len.get()]).unwrap(),
+            StringIteratorSource::Inline { len, bytes } => str::from_utf8(&bytes[..len.get()]).unwrap(),
             StringIteratorSource::Heap(id) => match vm.heap.get(*id) {
                 HeapData::Str(string) => string.as_str(),
                 _ => unreachable!("string iterator must retain a string"),
