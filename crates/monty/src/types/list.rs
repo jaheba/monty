@@ -3,8 +3,11 @@ use std::{cmp::Ordering, fmt::Write, mem};
 use serde::{Deserialize, Serialize};
 use smallvec::SmallVec;
 
-use super::builtin_attr::{AttrDef, builtin_attrs};
-use super::{CmpOrder, PyTrait, iter::collect_owned_iterable};
+use super::{
+    CmpOrder, PyTrait,
+    builtin_attr::{AttrDef, builtin_attrs},
+    iter::collect_owned_iterable,
+};
 use crate::{
     args::ArgValues,
     bytecode::{CallResult, ContainsVM, RecursionToken, VM},
