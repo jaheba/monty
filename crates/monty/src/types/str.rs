@@ -299,8 +299,7 @@ fn repeat_str(value: &str, count: &Value, vm: &VM<'_>) -> RunResult<Option<Value
 
 /// Allocates a single character as a string value.
 ///
-/// ASCII characters use pre-interned strings for efficiency.
-/// Non-ASCII characters are allocated on the heap.
+/// ASCII characters use pre-interned strings. Non-ASCII characters fit inline.
 ///
 /// This is used by string iteration and `chr()` builtin.
 pub fn allocate_char(c: char, heap: &Heap) -> Value {

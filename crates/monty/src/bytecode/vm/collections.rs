@@ -248,7 +248,7 @@ impl VM<'_> {
             let copied_items = copied_items.into_iter();
             defer_drop_mut!(copied_items, this);
             for (key, value) in copied_items {
-                // Validate key is a string (InternString or heap-allocated Str)
+                // Validate key is an interned, inline, or heap-allocated string.
                 let is_string = match &key {
                     Value::InternString(_) | Value::InlineString { .. } => true,
                     Value::Ref(id) => matches!(this.heap.get(*id), HeapData::Str(_)),

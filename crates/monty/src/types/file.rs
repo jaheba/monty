@@ -1112,7 +1112,7 @@ fn install_buffer<'h>(file: &HeapReadMut<'h, OpenFile>, result: Value, vm: &mut 
             } else {
                 text.to_owned()
             };
-            Some(allocate_string_no_interning(text, vm.heap))
+            Some(allocate_string_on_heap(text, vm.heap))
         }
         Value::InlineString { .. } => {
             let text = result.inline_str().unwrap();
@@ -1121,7 +1121,7 @@ fn install_buffer<'h>(file: &HeapReadMut<'h, OpenFile>, result: Value, vm: &mut 
             } else {
                 text.to_owned()
             };
-            Some(allocate_string_no_interning(text, vm.heap))
+            Some(allocate_string_on_heap(text, vm.heap))
         }
         Value::InternBytes(bytes_id) => {
             let bytes = vm.interns.get_bytes(*bytes_id).to_vec();
@@ -1129,7 +1129,7 @@ fn install_buffer<'h>(file: &HeapReadMut<'h, OpenFile>, result: Value, vm: &mut 
         }
         Value::Ref(id) => match vm.heap.get(*id) {
             HeapData::Str(text) if translate && text.as_str().contains('\r') => {
-                Some(allocate_string_no_interning(translate_newlines(text.as_str()), vm.heap))
+                Some(allocate_string_on_heap(translate_newlines(text.as_str()), vm.heap))
             }
             _ => None,
         },
