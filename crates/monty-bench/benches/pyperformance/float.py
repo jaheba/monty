@@ -4,8 +4,7 @@
 Artificial, floating point-heavy benchmark originally used by Factor.
 """
 
-from math import sin, cos, sqrt
-
+from math import cos, sin, sqrt
 
 POINTS = 3000
 

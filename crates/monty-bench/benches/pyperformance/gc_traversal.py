@@ -6,7 +6,6 @@ N_LEVELS = 500
 
 
 def create_recursive_containers(n_levels):
-
     current_list = []
     for n in range(n_levels):
         new_list = [None] * n
@@ -18,7 +17,7 @@ def create_recursive_containers(n_levels):
 
 
 def benchamark_collection(loops, n_levels):
-    all_cycles = create_recursive_containers(n_levels)
+    _all_cycles = create_recursive_containers(n_levels)
     for _ in range(loops):
         gc.collect()
         collected = gc.collect()

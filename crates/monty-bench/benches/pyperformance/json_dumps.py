@@ -1,8 +1,6 @@
 # Adapted from pyperformance bm_json_dumps at ccc0aeb7ad46d65b6dcd4160e0fdda4d885852dd.
 # See README.md for harness changes and LICENSE for upstream terms.
 import json
-import sys
-
 
 EMPTY = ({}, 2000)
 SIMPLE_DATA = {'key1': 0, 'key2': True, 'key3': 'value', 'key4': 'foo', 'key5': 'string'}

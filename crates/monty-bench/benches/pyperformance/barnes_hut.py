@@ -354,7 +354,7 @@ def bench_quadtree_nbody(loops, num_particles, iterations, theta):
     particles = create_deterministic_galaxy(num_particles, width / 2, height / 2)
 
     # Calculate initial energy
-    initial_energy = calculate_system_energy(particles)
+    _initial_energy = calculate_system_energy(particles)
 
     range_it = range(loops)
 

@@ -21,7 +21,7 @@ DEFAULT_ITERATIONS = 500
 DEFAULT_REFERENCE = 'sun'
 
 
-def combinations(l):
+def combinations(l):  #  noqa
     """Pure-Python implementation of itertools.combinations(l, 2)."""
     result = []
     for x in range(len(l) - 1):
