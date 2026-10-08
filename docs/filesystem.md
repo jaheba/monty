@@ -267,11 +267,6 @@ With `os_policy` configured to call the host, the handler also receives clock an
 Unseeded random generators and `random.seed()` call `os.urandom` only under `random_start='call_host'`
 (see [random](limitations/random.md)).
 
-The mount handler returns the destination path after a successful `Path.rename` call.
-The interpreter returns the caller's target spelling for `Path.rename` and `Path.replace`,
-and discards the host reply for `os.rename` and `os.replace`, which return `None`.
-Custom callbacks may still return `None` after performing the rename.
-
 `os` callbacks run in your process with your process's authority.
 Everything in [designing a safe tool surface](host-functions.md#designing-a-safe-tool-surface) applies.
 Python's `AbstractOS.urandom()` raises `MemoryError` before allocating when a request exceeds `max_urandom_bytes`,

@@ -609,10 +609,10 @@ fn extract_rename_args(
     method: StaticStrings,
     vm: &mut VM<'_>,
 ) -> RunResult<RenameCallArgs> {
-    let target = if method == StaticStrings::Replace {
-        PathReplaceArgs::from_args(args, vm)?.target
-    } else {
-        PathRenameArgs::from_args(args, vm)?.target
+    let target = match method {
+        StaticStrings::Rename => PathRenameArgs::from_args(args, vm)?.target,
+        StaticStrings::Replace => PathReplaceArgs::from_args(args, vm)?.target,
+        _ => unreachable!("expected rename or replace"),
     };
     defer_drop!(target, vm);
     match value_to_owned_string(target, vm.heap, vm.interns) {

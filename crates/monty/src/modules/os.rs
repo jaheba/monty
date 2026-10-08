@@ -505,10 +505,10 @@ fn rename_like(
     } else {
         Ok(CallResult::OsCallWithEffect {
             call: OsFunctionCall::Rename(RenameCallArgs { src, dst }),
-            effect: if func == "replace" {
-                PreConversionEffect::ReplaceOs
-            } else {
-                PreConversionEffect::RenameOs
+            effect: match func {
+                "rename" => PreConversionEffect::RenameOs,
+                "replace" => PreConversionEffect::ReplaceOs,
+                _ => unreachable!("expected rename or replace"),
             }
             .into(),
         })

@@ -50,7 +50,6 @@ These yield an `OsCall` for the host to resolve:
 `Path.stat()` accepts `follow_symlinks=True`; `False` raises `NotImplementedError`, as with `os.stat()`.
 `Path.unlink(missing_ok=True)` suppresses `FileNotFoundError` from mounts and custom callbacks.
 Other exceptions propagate.
-`Path.rename()` and `Path.replace()` accept a positional or keyword `target` and return the destination `Path`.
 A relative target remains relative in the returned value; the host receives an absolute path resolved against the cwd.
 Both methods use the same host rename operation, so overwrite behavior depends on the backend
 (see [os.md](os.md)).
