@@ -19,7 +19,7 @@ class Point:
         self.z = (x * x) / 2
 
     def __repr__(self):
-        return "<Point: x=%s, y=%s, z=%s>" % (self.x, self.y, self.z)
+        return '<Point: x=%s, y=%s, z=%s>' % (self.x, self.y, self.z)
 
     def normalize(self):
         x = self.x
@@ -51,6 +51,7 @@ def benchmark(n):
     for p in points:
         p.normalize()
     return maximize(points)
+
 
 result = benchmark(POINTS)
 assert abs(result.x - 0.8943723787657718) < 1e-12

@@ -27,4 +27,5 @@ def benchamark_collection(loops, n_levels):
 
     return 0
 
+
 benchamark_collection(1, N_LEVELS)

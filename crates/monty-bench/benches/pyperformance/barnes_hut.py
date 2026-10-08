@@ -19,10 +19,12 @@ G = 6.67430e-11  # Gravitational constant
 SOFTENING = 5.0  # Softening parameter to avoid singularities
 TIME_STEP = 0.1  # Time step for simulation
 
+
 class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
 
 class Particle:
     def __init__(self, x, y, mass=1.0):
@@ -49,6 +51,7 @@ class Particle:
         self.acceleration.x += fx / self.mass
         self.acceleration.y += fy / self.mass
 
+
 class Rectangle:
     def __init__(self, x, y, w, h):
         self.x = x
@@ -58,19 +61,20 @@ class Rectangle:
 
     def contains(self, point):
         return (
-            point.x >= self.x - self.w and
-            point.x < self.x + self.w and
-            point.y >= self.y - self.h and
-            point.y < self.y + self.h
+            point.x >= self.x - self.w
+            and point.x < self.x + self.w
+            and point.y >= self.y - self.h
+            and point.y < self.y + self.h
         )
 
     def intersects(self, range_rect):
         return not (
-            range_rect.x - range_rect.w > self.x + self.w or
-            range_rect.x + range_rect.w < self.x - self.w or
-            range_rect.y - range_rect.h > self.y + self.h or
-            range_rect.y + range_rect.h < self.y - self.h
+            range_rect.x - range_rect.w > self.x + self.w
+            or range_rect.x + range_rect.w < self.x - self.w
+            or range_rect.y - range_rect.h > self.y + self.h
+            or range_rect.y + range_rect.h < self.y - self.h
         )
+
 
 class QuadTree:
     def __init__(self, boundary, capacity=4):
@@ -97,10 +101,14 @@ class QuadTree:
         if not self.divided:
             self.subdivide()
 
-        if self.northeast.insert(particle): return True
-        if self.northwest.insert(particle): return True
-        if self.southeast.insert(particle): return True
-        if self.southwest.insert(particle): return True
+        if self.northeast.insert(particle):
+            return True
+        if self.northwest.insert(particle):
+            return True
+        if self.southeast.insert(particle):
+            return True
+        if self.southwest.insert(particle):
+            return True
 
         # This should never happen if the boundary check is correct
         return False
@@ -111,10 +119,12 @@ class QuadTree:
 
         # Calculate new center of mass
         if total_mass_new > 0:
-            self.center_of_mass.x = (self.center_of_mass.x * self.total_mass +
-                                    particle.position.x * particle.mass) / total_mass_new
-            self.center_of_mass.y = (self.center_of_mass.y * self.total_mass +
-                                    particle.position.y * particle.mass) / total_mass_new
+            self.center_of_mass.x = (
+                self.center_of_mass.x * self.total_mass + particle.position.x * particle.mass
+            ) / total_mass_new
+            self.center_of_mass.y = (
+                self.center_of_mass.y * self.total_mass + particle.position.y * particle.mass
+            ) / total_mass_new
 
         self.total_mass = total_mass_new
 
@@ -159,7 +169,7 @@ class QuadTree:
         # Calculate distance between particle and center of mass
         dx = self.center_of_mass.x - particle.position.x
         dy = self.center_of_mass.y - particle.position.y
-        distance = math.sqrt(dx*dx + dy*dy)
+        distance = math.sqrt(dx * dx + dy * dy)
 
         # If this is a leaf node or the distance is sufficient for approximation
         if not self.divided or (self.boundary.w * 2) / distance < theta:
@@ -200,6 +210,7 @@ class QuadTree:
             fy += fy_sw
 
         return fx, fy
+
 
 def create_deterministic_galaxy(num_particles, center_x, center_y, radius=300, spiral_factor=0.1):
     """Create a deterministic galaxy-like distribution of particles"""
@@ -269,7 +280,7 @@ def create_deterministic_galaxy(num_particles, center_x, center_y, radius=300, s
         # Vector from center to particle
         dx = p.position.x - center_x
         dy = p.position.y - center_y
-        distance = math.sqrt(dx*dx + dy*dy)
+        distance = math.sqrt(dx * dx + dy * dy)
 
         if distance > 0:
             # Direction perpendicular to radial direction
@@ -284,6 +295,7 @@ def create_deterministic_galaxy(num_particles, center_x, center_y, radius=300, s
 
     return particles
 
+
 def calculate_system_energy(particles):
     """Calculate the total energy of the system (kinetic + potential)"""
     energy = 0.0
@@ -296,7 +308,7 @@ def calculate_system_energy(particles):
 
             dx = p1.position.x - p2.position.x
             dy = p1.position.y - p2.position.y
-            distance = math.sqrt(dx*dx + dy*dy)
+            distance = math.sqrt(dx * dx + dy * dy)
 
             # Avoid division by zero
             if distance < SOFTENING:
@@ -311,6 +323,7 @@ def calculate_system_energy(particles):
         energy += 0.5 * p.mass * v_squared
 
     return energy
+
 
 def advance_system(particles, theta, time_step, width, height):
     """Advance the n-body system by one time step using the quadtree"""
@@ -330,6 +343,7 @@ def advance_system(particles, theta, time_step, width, height):
     # Update all particles
     for particle in particles:
         particle.update(time_step)
+
 
 def bench_quadtree_nbody(loops, num_particles, iterations, theta):
     # Initialize simulation space
@@ -353,6 +367,7 @@ def bench_quadtree_nbody(loops, num_particles, iterations, theta):
         final_energy = calculate_system_energy(particles)
 
     return final_energy
+
 
 result = bench_quadtree_nbody(1, DEFAULT_PARTICLES, DEFAULT_ITERATIONS, DEFAULT_THETA)
 assert abs(result - (819.5144100287567)) < 1e-06

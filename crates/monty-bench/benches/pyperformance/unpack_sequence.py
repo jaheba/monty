@@ -3,7 +3,6 @@
 """Microbenchmark for Python's sequence unpacking."""
 
 
-
 def do_unpacking(loops, to_unpack):
     range_it = range(loops)
 
@@ -428,5 +427,6 @@ def bench_all(loops):
     dt1 = bench_tuple_unpacking(loops)
     dt2 = bench_list_unpacking(loops)
     return dt1 + dt2
+
 
 bench_all(1)

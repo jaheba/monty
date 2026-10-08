@@ -14,8 +14,6 @@ Dirtily sped up by Simon Descarpentries
 Concurrency by Jason Stitt
 """
 
-
-
 DEFAULT_N = 24
 
 
@@ -64,6 +62,7 @@ def bench_spectral_norm(loops):
             vv += ve * ve
 
     return (vBv / vv) ** 0.5
+
 
 result = bench_spectral_norm(1)
 assert abs(result - (1.273989979775574)) < 1e-12

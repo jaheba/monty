@@ -8,6 +8,7 @@ http://benchmarksgame.alioth.debian.org/
 Contributed by Sokolov Yura, modified by Tupteq.
 """
 
+
 def fannkuch(n):
     count = list(range(1, n + 1))
     max_flips = 0
