@@ -23,6 +23,7 @@ cargo bench -p monty-bench --bench main -- pyperformance --sample-size 100 --war
 
 | Workload | Size |
 | --- | --- |
+| fannkuch | n = 9 |
 | spectral_norm | 130 elements, 10 power iterations |
 | nbody | 20,000 steps |
 | barnes_hut | 200 particles, 100 steps, theta 0.5 |
@@ -42,4 +43,6 @@ with upstream pyperformance timings.
 Numeric workloads return their computed values for tolerance checks, then return an integer for the Rust harness.
 Sequence unpacking returns a checksum, and JSON loads checks the decoded fixtures.
 The float workload changes `class Point(object)` to `class Point` because Monty rejects explicit base classes.
+Fannkuch replaces cached bound methods with direct calls and slice assignment with indexed writes.
+Its source and license are in the parent directory.
 The workload sizes and algorithms otherwise remain unchanged.

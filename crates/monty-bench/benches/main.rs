@@ -645,18 +645,8 @@ fn criterion_benchmark(c: &mut Criterion) {
         run_cpython(b, LIST_APPEND_INT, 4_999_950_000);
     });
 
-    // Adapted pyperformance bm_fannkuch, with its default n=9; see fannkuch.py.
-    // https://github.com/python/pyperformance/tree/main/pyperformance/data-files/benchmarks/bm_fannkuch
-    const FANNKUCH: &str = include_str!("fannkuch.py");
-    let mut fannkuch = c.benchmark_group("fannkuch");
-    #[cfg(not(codspeed))]
-    fannkuch.sampling_mode(SamplingMode::Flat);
-    fannkuch.bench_function("monty", |b| run_monty(b, FANNKUCH, 30));
-    #[cfg(not(codspeed))]
-    fannkuch.bench_function("cpython", |b| run_cpython(b, FANNKUCH, 30));
-    fannkuch.finish();
-
     for (name, code, expected) in [
+        ("fannkuch", include_str!("fannkuch.py"), 30),
         ("spectral_norm", include_str!("pyperformance/spectral_norm.py"), 0),
         ("nbody", include_str!("pyperformance/nbody.py"), 0),
         ("barnes_hut", include_str!("pyperformance/barnes_hut.py"), 0),
