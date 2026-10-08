@@ -10,8 +10,8 @@ No visualization, pure Python implementation without dependencies.
 
 import math
 
-DEFAULT_ITERATIONS = 100
-DEFAULT_PARTICLES = 200
+DEFAULT_ITERATIONS = 1
+DEFAULT_PARTICLES = 50
 DEFAULT_THETA = 0.5
 
 # Constants
@@ -355,5 +355,5 @@ def bench_quadtree_nbody(loops, num_particles, iterations, theta):
     return final_energy
 
 result = bench_quadtree_nbody(1, DEFAULT_PARTICLES, DEFAULT_ITERATIONS, DEFAULT_THETA)
-assert abs(result - (3386.616186065438)) < 1e-06
+assert abs(result - (819.5144100287567)) < 1e-06
 0

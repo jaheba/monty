@@ -18,7 +18,7 @@ Modified by Tupteq, Fredrik Johansson, and Daniel Nanz.
 
 
 __contact__ = "collinwinter@google.com (Collin Winter)"
-DEFAULT_ITERATIONS = 20000
+DEFAULT_ITERATIONS = 500
 DEFAULT_REFERENCE = 'sun'
 
 
@@ -135,5 +135,5 @@ def bench_nbody(loops, reference, iterations):
     return report_energy()
 
 result = bench_nbody(1, DEFAULT_REFERENCE, DEFAULT_ITERATIONS)
-assert abs(result - (-0.16908926275527172)) < 1e-12
+assert abs(result - (-0.1690215276653437)) < 1e-12
 0

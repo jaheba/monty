@@ -45,4 +45,4 @@ def fannkuch(n):
             return max_flips
 
 
-fannkuch(9)
+fannkuch(6)

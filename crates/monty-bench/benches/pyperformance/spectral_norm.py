@@ -16,7 +16,7 @@ Concurrency by Jason Stitt
 
 
 
-DEFAULT_N = 130
+DEFAULT_N = 24
 
 
 def eval_A(i, j):
@@ -66,5 +66,5 @@ def bench_spectral_norm(loops):
     return (vBv / vv) ** 0.5
 
 result = bench_spectral_norm(1)
-assert abs(result - (1.2742222097429006)) < 1e-12
+assert abs(result - (1.273989979775574)) < 1e-12
 0

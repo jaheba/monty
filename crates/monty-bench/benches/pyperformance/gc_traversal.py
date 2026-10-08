@@ -2,7 +2,7 @@
 # See README.md for harness changes and LICENSE for upstream terms.
 import gc
 
-N_LEVELS = 1000
+N_LEVELS = 500
 
 
 def create_recursive_containers(n_levels):

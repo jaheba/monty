@@ -7,7 +7,7 @@ Artificial, floating point-heavy benchmark originally used by Factor.
 from math import sin, cos, sqrt
 
 
-POINTS = 100000
+POINTS = 3000
 
 
 class Point:
@@ -53,7 +53,7 @@ def benchmark(n):
     return maximize(points)
 
 result = benchmark(POINTS)
-assert abs(result.x - 0.8944271890997864) < 1e-12
+assert abs(result.x - 0.8943723787657718) < 1e-12
 assert abs(result.y - 1.0) < 1e-12
-assert abs(result.z - 0.4472135954456972) < 1e-12
+assert abs(result.z - 0.4471822741567101) < 1e-12
 0

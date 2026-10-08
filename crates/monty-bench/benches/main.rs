@@ -646,7 +646,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     });
 
     for (name, code, expected) in [
-        ("fannkuch", include_str!("pyperformance/fannkuch.py"), 30),
+        ("fannkuch", include_str!("pyperformance/fannkuch.py"), 10),
         ("spectral_norm", include_str!("pyperformance/spectral_norm.py"), 0),
         ("nbody", include_str!("pyperformance/nbody.py"), 0),
         ("barnes_hut", include_str!("pyperformance/barnes_hut.py"), 0),
@@ -659,9 +659,9 @@ fn criterion_benchmark(c: &mut Criterion) {
         let mut group = c.benchmark_group(format!("pyperformance/{name}"));
         #[cfg(not(codspeed))]
         group.sampling_mode(SamplingMode::Flat);
-        group.bench_function("monty", |b| run_monty(b, code, expected));
+        group.bench_function(format!("{name}__monty"), |b| run_monty(b, code, expected));
         #[cfg(not(codspeed))]
-        group.bench_function("cpython", |b| run_cpython(b, code, expected));
+        group.bench_function(format!("{name}__cpython"), |b| run_cpython(b, code, expected));
         group.finish();
     }
 

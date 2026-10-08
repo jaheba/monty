@@ -23,15 +23,15 @@ cargo bench -p monty-bench --bench main -- pyperformance --sample-size 100 --war
 
 | Workload | Size |
 | --- | --- |
-| fannkuch | n = 9 |
-| spectral_norm | 130 elements, 10 power iterations |
-| nbody | 20,000 steps |
-| barnes_hut | 200 particles, 100 steps, theta 0.5 |
-| float | 100,000 points |
+| fannkuch | n = 6 |
+| spectral_norm | 24 elements, 10 power iterations |
+| nbody | 500 steps |
+| barnes_hut | 50 particles, 1 step, theta 0.5 |
+| float | 3,000 points |
 | unpack_sequence | 400 tuple unpackings and 400 list unpackings |
 | json_dumps | All four upstream cases and their repeat counts |
 | json_loads | All three upstream fixtures, 20 parses each |
-| gc_traversal | 1,000 levels, two collection calls |
+| gc_traversal | 500 levels, two collection calls |
 
 The `pyperf` runner, command-line functions and internal timers are removed.
 Criterion performs repetition, so each invocation of a loop-based workload runs one outer iteration.
@@ -44,4 +44,6 @@ Numeric workloads return their computed values for tolerance checks, then return
 Sequence unpacking returns a checksum, and JSON loads checks the decoded fixtures.
 The float workload changes `class Point(object)` to `class Point` because Monty rejects explicit base classes.
 Fannkuch replaces cached bound methods with direct calls and slice assignment with indexed writes.
-The workload sizes and algorithms otherwise remain unchanged.
+The heavier workloads use reduced input sizes to target less than 100 ms of simulated execution in CodSpeed.
+The algorithms otherwise remain unchanged; Monty and CPython use the same sizes.
+This target is provisional until confirmed by a CodSpeed run.
