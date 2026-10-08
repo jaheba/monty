@@ -21,17 +21,17 @@ For a longer run, override the sampling defaults:
 cargo bench -p monty-bench --bench main -- pyperformance --sample-size 100 --warm-up-time 3 --measurement-time 10
 ```
 
-| Workload | Size |
-| --- | --- |
-| fannkuch | n = 6 |
-| spectral_norm | 24 elements, 10 power iterations |
-| nbody | 500 steps |
-| barnes_hut | 50 particles, 1 step, theta 0.5 |
-| float | 3,000 points |
-| unpack_sequence | 400 tuple unpackings and 400 list unpackings |
-| json_dumps | All four upstream cases and their repeat counts |
-| json_loads | All three upstream fixtures, 20 parses each |
-| gc_traversal | 500 levels, two collection calls |
+| Workload        | Size                                            |
+| --------------- | ----------------------------------------------- |
+| fannkuch        | n = 6                                           |
+| spectral_norm   | 24 elements, 10 power iterations                |
+| nbody           | 500 steps                                       |
+| barnes_hut      | 50 particles, 1 step, theta 0.5                 |
+| float           | 3,000 points                                    |
+| unpack_sequence | 400 tuple unpackings and 400 list unpackings    |
+| json_dumps      | All four upstream cases and their repeat counts |
+| json_loads      | All three upstream fixtures, 20 parses each     |
+| gc_traversal    | 500 levels, two collection calls                |
 
 The `pyperf` runner, command-line functions and internal timers are removed.
 Criterion performs repetition, so each invocation of a loop-based workload runs one outer iteration.
