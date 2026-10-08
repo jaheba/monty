@@ -32,7 +32,7 @@ use crate::{
     object_bridge::MontyObjectExt,
     os_dispatch::{PreConversionEffect, value_to_owned_string},
     types::{
-        Bytes, Module, Property, Type,
+        Bytes, Module, Property, PyTrait, Type,
         dir_scan::{scandir_call, walk_call},
         property::ZeroArgOsProperty,
         str::allocate_string,
@@ -596,7 +596,15 @@ fn rename_like(
     if dir_fd_specified(src_dir_fd, vm)? | dir_fd_specified(dst_dir_fd, vm)? {
         Err(ExcType::not_implemented_os_arg(Some(func), "src_dir_fd and dst_dir_fd"))
     } else {
-        Ok(CallResult::OsCall(OsFunctionCall::Rename(RenameCallArgs { src, dst })))
+        Ok(CallResult::OsCallWithEffect {
+            call: OsFunctionCall::Rename(RenameCallArgs { src, dst }),
+            effect: if func == "replace" {
+                PreConversionEffect::ReplaceOs
+            } else {
+                PreConversionEffect::RenameOs
+            }
+            .into(),
+        })
     }
 }
 
@@ -797,14 +805,21 @@ fn dir_fd_specified(value: &Value, vm: &VM<'_>) -> RunResult<bool> {
 /// `'{type}' object cannot be interpreted as an integer` / the C-int
 /// `OverflowError`. The value itself is ignored — Monty does not model POSIX
 /// permission bits.
-fn check_mode(value: &Value, vm: &VM<'_>) -> RunResult<()> {
+pub(crate) fn check_mode(value: &Value, vm: &mut VM<'_>) -> RunResult<()> {
     match value {
         Value::Bool(_) => Ok(()),
         Value::Int(mode) => i32::try_from(*mode).map(|_| ()).map_err(|_| ExcType::overflow_c_int()),
         _ => match value.py_type_heap(vm.heap) {
             // Big ints (`LongInt`) are outside i64, so far outside C int.
             Type::Int => Err(ExcType::overflow_c_int()),
-            other => Err(ExcType::type_error_not_integer(&other.name(vm.heap, vm.interns))),
+            other => {
+                if let Some(index) = value.py_index_impl(vm)? {
+                    defer_drop!(index, vm);
+                    check_mode(index, vm)
+                } else {
+                    Err(ExcType::type_error_not_integer(&other.name(vm.heap, vm.interns)))
+                }
+            }
         },
     }
 }
