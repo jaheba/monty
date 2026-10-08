@@ -155,7 +155,7 @@ fn invalid_write_limit_is_rejected_during_mount_parsing() {
 
 #[test]
 fn path_and_os_mutation_contracts_on_native_mounts() {
-    let code = r#"
+    let code = r"
 from pathlib import Path
 import os
 source = Path('before.txt')
@@ -171,7 +171,7 @@ assert Path('after.txt').stat(follow_symlinks=True).st_size == 5
 assert Path('after.txt').unlink(missing_ok=False) is None
 assert Path('after.txt').unlink(missing_ok=True) is None
 assert list(Path('.').iterdir()) == []
-"#;
+";
     let script_dir = script_dir(code);
     let script = script_dir.path().join("script.py");
     for mode in ["rw", "overlay"] {

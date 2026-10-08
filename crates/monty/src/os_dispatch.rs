@@ -115,6 +115,7 @@ impl From<PostConversionEffect> for PendingEffect {
 
 /// Reshapes the raw host reply before heap conversion: plain data in, plain
 /// data out, so no variant holds a heap reference and none needs cleanup.
+// TODO: Consider separating effects from caller names so functions can share result handling.
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub(crate) enum PreConversionEffect {
     /// `os.listdir`: reduce the host's `Iterdir` result (a list of child
