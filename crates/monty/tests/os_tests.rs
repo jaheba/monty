@@ -1743,6 +1743,31 @@ fn path_stat_accepts_explicit_follow_symlinks() {
 }
 
 #[test]
+fn path_mutation_and_stat_arity_errors_count_self() {
+    for (call, message) in [
+        ("stat(True)", "Path.stat() takes 1 positional argument but 2 were given"),
+        (
+            "rename('target', 'extra')",
+            "Path.rename() takes 2 positional arguments but 3 were given",
+        ),
+        (
+            "replace('target', 'extra')",
+            "Path.replace() takes 2 positional arguments but 3 were given",
+        ),
+        (
+            "unlink(True, False)",
+            "Path.unlink() takes from 1 to 2 positional arguments but 3 were given",
+        ),
+    ] {
+        let error = host_runner(&format!("from pathlib import Path\nPath('/file').{call}"))
+            .start(vec![], ResourceTracker::default(), PrintWriter::Stdout)
+            .unwrap_err();
+        assert_eq!(error.exc_type(), ExcType::TypeError);
+        assert_eq!(error.message(), Some(message));
+    }
+}
+
+#[test]
 fn path_mkdir_validates_c_int_modes_and_counts_self() {
     for mode in ["2**40", "-(2**40)", "2**100"] {
         for code in [

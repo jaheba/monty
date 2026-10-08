@@ -469,7 +469,11 @@ pub(crate) fn build_path_os_call(
         StaticStrings::ReadText => path_only!("read_text", ReadText),
         StaticStrings::ReadBytes => path_only!("read_bytes", ReadBytes),
         StaticStrings::StatMethod => {
-            let PathStatArgs { follow_symlinks } = PathStatArgs::from_args(args, vm)?;
+            let PathStatArgs {
+                receiver,
+                follow_symlinks,
+            } = PathStatArgs::from_args(args.prepend(Value::None), vm)?;
+            receiver.drop_with(vm);
             if !follow_symlinks.bool() {
                 return Err(ExcType::not_implemented_os_arg(Some("stat"), "follow_symlinks"));
             }
@@ -478,7 +482,6 @@ pub(crate) fn build_path_os_call(
         StaticStrings::Iterdir => path_only!("iterdir", Iterdir),
         StaticStrings::Resolve => path_only!("resolve", Resolve),
         StaticStrings::Absolute => path_only!("absolute", Absolute),
-        StaticStrings::Unlink => path_only!("unlink", Unlink),
         StaticStrings::Rmdir => path_only!("rmdir", Rmdir),
         StaticStrings::WriteText => {
             OsFunctionCall::WriteText(extract_str_data("write_text", path, args, vm.heap, vm.interns)?)
@@ -588,6 +591,8 @@ fn extract_mkdir_args(path: MontyPath, args: ArgValues, vm: &mut VM<'_>) -> RunR
 #[derive(FromArgs)]
 #[from_args(name = "Path.stat", style = def)]
 struct PathStatArgs {
+    #[from_args(pos_only)]
+    receiver: Value,
     #[from_args(kw_only, default = LaxBool::new(true))]
     follow_symlinks: LaxBool,
 }
@@ -595,12 +600,16 @@ struct PathStatArgs {
 #[derive(FromArgs)]
 #[from_args(name = "Path.rename", style = def)]
 struct PathRenameArgs {
+    #[from_args(pos_only)]
+    receiver: Value,
     target: Value,
 }
 
 #[derive(FromArgs)]
 #[from_args(name = "Path.replace", style = def)]
 struct PathReplaceArgs {
+    #[from_args(pos_only)]
+    receiver: Value,
     target: Value,
 }
 
@@ -610,11 +619,18 @@ fn extract_rename_args(
     method: StaticStrings,
     vm: &mut VM<'_>,
 ) -> RunResult<RenameCallArgs> {
-    let target = match method {
-        StaticStrings::Rename => PathRenameArgs::from_args(args, vm)?.target,
-        StaticStrings::Replace => PathReplaceArgs::from_args(args, vm)?.target,
+    let (receiver, target) = match method {
+        StaticStrings::Rename => {
+            let PathRenameArgs { receiver, target } = PathRenameArgs::from_args(args.prepend(Value::None), vm)?;
+            (receiver, target)
+        }
+        StaticStrings::Replace => {
+            let PathReplaceArgs { receiver, target } = PathReplaceArgs::from_args(args.prepend(Value::None), vm)?;
+            (receiver, target)
+        }
         _ => unreachable!("expected rename or replace"),
     };
+    receiver.drop_with(vm);
     defer_drop!(target, vm);
     match value_to_owned_string(target, vm.heap, vm.interns) {
         Some(dst) => Ok(RenameCallArgs {
@@ -635,12 +651,15 @@ fn extract_rename_args(
 #[derive(FromArgs)]
 #[from_args(name = "Path.unlink", style = def)]
 struct PathUnlinkArgs {
+    #[from_args(pos_only)]
+    receiver: Value,
     #[from_args(default = LaxBool::new(false))]
     missing_ok: LaxBool,
 }
 
 pub(crate) fn build_path_unlink(path: MontyPath, args: ArgValues, vm: &mut VM<'_>) -> RunResult<CallResult> {
-    let PathUnlinkArgs { missing_ok } = PathUnlinkArgs::from_args(args, vm)?;
+    let PathUnlinkArgs { receiver, missing_ok } = PathUnlinkArgs::from_args(args.prepend(Value::None), vm)?;
+    receiver.drop_with(vm);
     Ok(CallResult::OsCallWithEffect {
         call: OsFunctionCall::Unlink(path),
         effect: PreConversionEffect::Unlink {
