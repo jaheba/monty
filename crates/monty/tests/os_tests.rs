@@ -1667,7 +1667,7 @@ fn path_rename_and_replace_return_the_spelled_target() {
         assert_eq!(result, MontyObject::path("/after".to_owned()));
 
         let code = format!("import os\nos.{method}('/before', '/after')");
-        let (_, _, result) = run_oscall_with_result(&code, MontyObject::string("ignored".to_owned()));
+        let (_, _, result) = run_oscall_with_result(&code, MontyObject::path("/after".to_owned()));
         assert_eq!(result, MontyObject::none());
     }
 }
