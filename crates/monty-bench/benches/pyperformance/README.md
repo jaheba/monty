@@ -44,5 +44,4 @@ Numeric workloads return their computed values for tolerance checks, then return
 Sequence unpacking returns a checksum, and JSON loads checks the decoded fixtures.
 The float workload changes `class Point(object)` to `class Point` because Monty rejects explicit base classes.
 Fannkuch replaces cached bound methods with direct calls and slice assignment with indexed writes.
-Its source and license are in the parent directory.
 The workload sizes and algorithms otherwise remain unchanged.

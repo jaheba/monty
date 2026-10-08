@@ -646,7 +646,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     });
 
     for (name, code, expected) in [
-        ("fannkuch", include_str!("fannkuch.py"), 30),
+        ("fannkuch", include_str!("pyperformance/fannkuch.py"), 30),
         ("spectral_norm", include_str!("pyperformance/spectral_norm.py"), 0),
         ("nbody", include_str!("pyperformance/nbody.py"), 0),
         ("barnes_hut", include_str!("pyperformance/barnes_hut.py"), 0),

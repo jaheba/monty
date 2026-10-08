@@ -1,6 +1,6 @@
 # Adapted from pyperformance bm_fannkuch at ccc0aeb7ad46d65b6dcd4160e0fdda4d885852dd.
 # Replaces the pyperf harness, cached bound methods, and slice assignment.
-# See fannkuch.LICENSE.
+# See LICENSE.
 """
 The Computer Language Benchmarks Game
 http://benchmarksgame.alioth.debian.org/
