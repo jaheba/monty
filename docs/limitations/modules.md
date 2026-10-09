@@ -27,6 +27,7 @@ in the next feed, and after a dump (see [random.md](random.md)).
 | `dataclasses` | [dataclasses.md](dataclasses.md) |
 | `datetime`    | [datetime.md](datetime.md)       |
 | `functools`   | [functools.md](functools.md)     |
+| `hashlib`     | [hashlib.md](hashlib.md)         |
 | `itertools`   | [itertools.md](itertools.md)     |
 | `json`        | [json.md](json.md)               |
 | `math`        | [math.md](math.md)               |
@@ -52,7 +53,7 @@ production sandboxes never see it.
 Common modules that are *not* importable in Monty (non-exhaustive):
 `abc`, `argparse`, `array`, `bisect`, `contextlib`, `csv`,
 `ctypes`, `decimal`, `enum`, `fractions`,
-`hashlib`, `heapq`, `hmac`, `http`, `inspect`, `io`,
+`heapq`, `hmac`, `http`, `inspect`, `io`,
 `logging`, `multiprocessing`, `operator`, `pickle`, `queue`,
 `socket`, `string`, `struct`, `subprocess`, `tempfile`, `threading`,
 `traceback`, `unittest`, `urllib`, `uuid`, `warnings`, `weakref`,
@@ -64,7 +65,8 @@ are unimplemented and may appear over time.
 
 Some available modules cover only part of their CPython surface: `functools`
 implements only `reduce` and `partial`, `copy` only `copy()` and `deepcopy()`,
-`time` everything but `tzset` and the `clock_*` family, and `collections` only the four types above.
+`time` everything but `tzset` and the `clock_*` family, `hashlib` everything but `file_digest()` and `scrypt()`,
+and `collections` only the four types above.
 The absent names are missing from
 the module namespace rather than stubbed, so they fail type checking as well as
 raising `AttributeError` at runtime; see each module's page for the specifics.
