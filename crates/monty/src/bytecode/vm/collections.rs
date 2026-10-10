@@ -495,6 +495,7 @@ impl VM<'_> {
 
         let value = this.pop();
         defer_drop!(value, this);
+
         // Fast path: tuple, list, push onto stack without a temporary vector.
         if let Value::Ref(id) = value {
             if let Some(items) = match this.heap.get(*id) {
