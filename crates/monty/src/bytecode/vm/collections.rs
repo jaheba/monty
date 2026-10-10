@@ -497,23 +497,26 @@ impl VM<'_> {
         defer_drop!(value, this);
 
         // Fast path: tuple, list, push onto stack without a temporary vector.
-        if let Value::Ref(id) = value {
-            if let Some(items) = match this.heap.get(*id) {
+        if let Value::Ref(id) = value
+            && let Some(items) = match this.heap.get(*id) {
                 HeapData::Tuple(tuple) => Some(tuple.as_slice()),
                 HeapData::List(list) => Some(list.as_slice()),
                 _ => None,
-            } {
-                if items.len() != count {
-                    return Err(unpack_size_error(count, items.len()));
-                }
-                if count > this.stack.capacity() - this.stack.len() {
-                    this.heap.tracker.check_allocation(count.saturating_mul(VALUE_SIZE))?;
-                    this.stack.reserve(count);
-                }
-                this.stack
-                    .extend(items.iter().rev().map(|item| item.clone_with_heap(this.heap)));
-                return Ok(());
             }
+        {
+            if items.len() != count {
+                return Err(unpack_size_error(count, items.len()));
+            }
+            if count > this.stack.capacity() - this.stack.len() {
+                let capacity = this.stack.len().saturating_add(count);
+                this.heap
+                    .tracker
+                    .check_allocation(capacity.saturating_mul(VALUE_SIZE))?;
+                this.stack.reserve_exact(count);
+            }
+            this.stack
+                .extend(items.iter().rev().map(|item| item.clone_with_heap(this.heap)));
+            return Ok(());
         }
         let items = unpack_exact(value, count, this)?;
         // Push items in reverse order so first item is on top
@@ -603,18 +606,18 @@ fn unpack_ex_too_few_error(min_needed: usize, actual: usize) -> RunError {
 /// endless iterable still fails.
 pub(crate) fn unpack_exact(value: &Value, count: usize, vm: &mut VM<'_>) -> RunResult<Vec<Value>> {
     // Fast path: tuple, list; unpack without iterator.
-    if let Value::Ref(id) = value {
-        if let Some(items) = match vm.heap.get(*id) {
+    if let Value::Ref(id) = value
+        && let Some(items) = match vm.heap.get(*id) {
             HeapData::Tuple(tuple) => Some(tuple.as_slice()),
             HeapData::List(list) => Some(list.as_slice()),
             _ => None,
-        } {
-            if items.len() != count {
-                return Err(unpack_size_error(count, items.len()));
-            }
-            vm.heap.tracker.check_allocation(count.saturating_mul(VALUE_SIZE))?;
-            return Ok(items.iter().map(|item| item.clone_with_heap(vm.heap)).collect());
         }
+    {
+        if items.len() != count {
+            return Err(unpack_size_error(count, items.len()));
+        }
+        vm.heap.tracker.check_allocation(count.saturating_mul(VALUE_SIZE))?;
+        return Ok(items.iter().map(|item| item.clone_with_heap(vm.heap)).collect());
     }
     if !value.py_is_iterable(vm) {
         return Err(unpack_type_error(value, vm));
