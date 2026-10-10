@@ -292,6 +292,8 @@ pub enum Expr {
     /// Raises `TypeError` for non-awaitable values.
     /// Unlike standard Python, `await` is allowed at module level (like Jupyter notebooks).
     Await(Box<ExprLoc>),
+    /// Suspend a generator and receive the next resume value.
+    Yield(Box<ExprLoc>),
     /// F-string expression containing literal and interpolated parts.
     ///
     /// At evaluation time, each part is processed in sequence:
@@ -353,6 +355,7 @@ pub enum Expr {
         signature: ParsedSignature,
         /// The lambda body expression (not yet prepared).
         body: Box<ExprLoc>,
+        is_generator: bool,
     },
     /// Lambda expression: `lambda args: body` (prepared form).
     ///
@@ -843,6 +846,7 @@ pub struct PreparedFunctionDef {
     /// When true, calling this function creates a `Coroutine` object instead of
     /// immediately pushing a frame.
     pub is_async: bool,
+    pub is_generator: bool,
 }
 
 /// Type alias for prepared AST nodes (output of prepare phase).

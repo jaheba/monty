@@ -559,6 +559,8 @@ pub enum Opcode {
     /// Unbind a name through the frame's namespace; `NameError` if absent.
     /// Operands as `LoadName`.
     DeleteName = 124,
+    /// Suspend the current generator, replacing TOS with its resume value.
+    YieldValue = 125,
 }
 
 /// `LoadName` flag: the load is in call position, so an unresolved name under
@@ -660,6 +662,7 @@ impl Opcode {
             | Self::ClearException
             | Self::CheckExcMatch
             | Self::ReturnValue
+            | Self::YieldValue
             | Self::Await
             | Self::Nop
             | Self::BeforeWith
@@ -891,7 +894,7 @@ impl Opcode {
             (Pop, Operand::None) => -1,
             (Dup, Operand::None) => 1,
             (Dup2, Operand::None) => 2,
-            (Rot2 | Rot3, Operand::None) => 0,
+            (Rot2 | Rot3 | YieldValue, Operand::None) => 0,
             (LoadNone | LoadTrue | LoadFalse | BuildCell, Operand::None) => 1,
             (LoadLocal0 | LoadLocal1 | LoadLocal2 | LoadLocal3, Operand::None) => 1,
             (

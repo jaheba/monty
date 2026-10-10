@@ -75,7 +75,7 @@ with Monty() as pool:
     [Rust](https://pydantic.dev/docs/monty/quickstart/rust/)
 - [Security model](https://pydantic.dev/docs/monty/concepts/security/), [resource
     limits](https://pydantic.dev/docs/monty/concepts/resource-limits/),
-    [snapshots](https://pydantic.dev/docs/monty/concepts/snapshots/), [the Python
+    [snapshots](https://pydantic.dev/docs/monty/concepts/snapshots/) (including suspended generators), [the Python
     subset](https://pydantic.dev/docs/monty/limitations/)
 - [`docs/`](./docs): the source of the documentation site
 

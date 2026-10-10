@@ -1,6 +1,7 @@
 use std::{
     borrow::Cow,
     fmt::{self, Display, Write},
+    ops::Deref,
 };
 
 use monty_types::{ExcData, JsonErrorData, MontyException, StackFrame, UnicodeErrorData};
@@ -16,7 +17,7 @@ use crate::{
     parse::CodeRange,
     source_map::{SourceMap, StackFrameExt},
     types::{
-        PyTrait, Type, allocate_tuple,
+        LazyHeapSet, PyTrait, Type, allocate_tuple,
         long_int::INT_MAX_STR_DIGITS,
         str::{StringRepr, allocate_string, string_repr_fmt},
     },
@@ -2362,8 +2363,30 @@ impl ExcTypeExt for ExcType {
                 "exceptions can only be called with zero or one string argument",
             )),
         }?;
-        let heap_id = vm.heap.allocate(HeapData::Exception(exc));
+        let heap_id = vm.heap.allocate(HeapData::Exception(exc.into()));
         Ok(Value::Ref(heap_id))
+    }
+}
+
+/// Heap exception payload; generator return values retain their Python identity.
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub(crate) struct ExceptionValue {
+    #[serde(rename = "E")]
+    pub(crate) exception: SimpleException,
+    #[serde(rename = "V")]
+    pub(crate) value: Option<Value>,
+}
+
+impl From<SimpleException> for ExceptionValue {
+    fn from(exception: SimpleException) -> Self {
+        Self { exception, value: None }
+    }
+}
+
+impl Deref for ExceptionValue {
+    type Target = SimpleException;
+    fn deref(&self) -> &Self::Target {
+        &self.exception
     }
 }
 
@@ -2456,7 +2479,29 @@ impl SimpleException {
     }
 }
 
-impl<'h> HeapRead<'h, SimpleException> {
+impl<'h> HeapRead<'h, ExceptionValue> {
+    pub(crate) fn py_repr_fmt(&self, f: &mut impl Write, vm: &mut VM<'h>, heap_ids: &mut LazyHeapSet) -> RunResult<()> {
+        let value = self.get(vm.heap).value.as_ref().map(|value| value.clone_with_heap(vm));
+        defer_drop!(value, vm);
+        if let Some(value) = value {
+            f.write_str("StopIteration(")?;
+            value.py_repr_fmt(f, vm, heap_ids)?;
+            f.write_char(')')?;
+            Ok(())
+        } else {
+            Ok(self.get(vm.heap).exception.py_repr_fmt(f)?)
+        }
+    }
+
+    pub(crate) fn py_str(&self, vm: &mut VM<'h>) -> RunResult<Value> {
+        let value = self.get(vm.heap).value.as_ref().map(|value| value.clone_with_heap(vm));
+        defer_drop!(value, vm);
+        match value {
+            Some(value) => value.py_str(vm),
+            None => Ok(allocate_string(self.get(vm.heap).exception.py_str(), vm.heap)),
+        }
+    }
+
     pub(crate) fn py_type(&self, vm: &VM<'h>) -> Type {
         Type::Exception(self.get(vm.heap).exc_type)
     }
@@ -2498,7 +2543,7 @@ impl SimpleException {
     }
 }
 
-impl<'h> HeapRead<'h, SimpleException> {
+impl<'h> HeapRead<'h, ExceptionValue> {
     /// Gets an attribute from this exception.
     ///
     /// Handles the `.args` attribute by allocating a tuple containing the message.
@@ -2509,7 +2554,19 @@ impl<'h> HeapRead<'h, SimpleException> {
             .static_string(vm.interns)
             .map_or_else(|| attr.as_str(vm.interns) == "args", |ss| ss == StaticStrings::Args);
 
+        if attr.as_str(vm.interns) == "value" && self.get(vm.heap).exc_type() == ExcType::StopIteration {
+            let value = self
+                .get(vm.heap)
+                .value
+                .as_ref()
+                .map_or(Value::None, |v| v.clone_with_heap(vm));
+            return Some(CallResult::Value(value));
+        }
         if is_args {
+            if let Some(value) = &self.get(vm.heap).value {
+                let value = value.clone_with_heap(vm);
+                return Some(CallResult::Value(allocate_tuple(smallvec![value], vm.heap)));
+            }
             // Construct tuple with 0 or 1 elements based on whether arg exists
             let elements = if let Some(arg_str) = &self.get(vm.heap).arg {
                 smallvec![allocate_string(arg_str.as_str(), vm.heap)]
