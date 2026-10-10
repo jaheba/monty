@@ -495,6 +495,26 @@ impl VM<'_> {
 
         let value = this.pop();
         defer_drop!(value, this);
+        // Copy tuples and lists directly onto the stack, avoiding a temporary vector.
+        if let Value::Ref(id) = value {
+            let items = match this.heap.get(*id) {
+                HeapData::Tuple(tuple) => Some(tuple.as_slice()),
+                HeapData::List(list) => Some(list.as_slice()),
+                _ => None,
+            };
+            if let Some(items) = items {
+                if items.len() != count {
+                    return Err(unpack_size_error(count, items.len()));
+                }
+                if count > this.stack.capacity() - this.stack.len() {
+                    this.heap.tracker.check_allocation(count.saturating_mul(VALUE_SIZE))?;
+                    this.stack.reserve(count);
+                }
+                this.stack
+                    .extend(items.iter().rev().map(|item| item.clone_with_heap(this.heap)));
+                return Ok(());
+            }
+        }
         let items = unpack_exact(value, count, this)?;
         // Push items in reverse order so first item is on top
         for item in items.into_iter().rev() {
@@ -582,6 +602,7 @@ fn unpack_ex_too_few_error(min_needed: usize, actual: usize) -> RunError {
 /// Python unpack (`random.setstate`). Consumes at most `count + 1` items, so an
 /// endless iterable still fails.
 pub(crate) fn unpack_exact(value: &Value, count: usize, vm: &mut VM<'_>) -> RunResult<Vec<Value>> {
+    // Fast path: tuples and lists expose their items directly, avoiding iterator setup.
     if let Value::Ref(id) = value {
         let items = match vm.heap.get(*id) {
             HeapData::Tuple(tuple) => Some(tuple.as_slice()),
