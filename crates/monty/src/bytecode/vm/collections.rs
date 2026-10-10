@@ -495,14 +495,13 @@ impl VM<'_> {
 
         let value = this.pop();
         defer_drop!(value, this);
-        // Copy tuples and lists directly onto the stack, avoiding a temporary vector.
+        // Fast path: tuple, list, push onto stack without a temporary vector.
         if let Value::Ref(id) = value {
-            let items = match this.heap.get(*id) {
+            if let Some(items) = match this.heap.get(*id) {
                 HeapData::Tuple(tuple) => Some(tuple.as_slice()),
                 HeapData::List(list) => Some(list.as_slice()),
                 _ => None,
-            };
-            if let Some(items) = items {
+            } {
                 if items.len() != count {
                     return Err(unpack_size_error(count, items.len()));
                 }
@@ -602,14 +601,13 @@ fn unpack_ex_too_few_error(min_needed: usize, actual: usize) -> RunError {
 /// Python unpack (`random.setstate`). Consumes at most `count + 1` items, so an
 /// endless iterable still fails.
 pub(crate) fn unpack_exact(value: &Value, count: usize, vm: &mut VM<'_>) -> RunResult<Vec<Value>> {
-    // Fast path: tuples and lists expose their items directly, avoiding iterator setup.
+    // Fast path: tuple, list; unpack without iterator.
     if let Value::Ref(id) = value {
-        let items = match vm.heap.get(*id) {
+        if let Some(items) = match vm.heap.get(*id) {
             HeapData::Tuple(tuple) => Some(tuple.as_slice()),
             HeapData::List(list) => Some(list.as_slice()),
             _ => None,
-        };
-        if let Some(items) = items {
+        } {
             if items.len() != count {
                 return Err(unpack_size_error(count, items.len()));
             }
