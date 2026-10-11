@@ -184,7 +184,7 @@ assert next(b) is shared
         PrintWriter::Stdout,
     )
     .unwrap();
-    let bytes = dump("test.py", None, SessionRef::Idle(&repl)).unwrap();
+    let bytes = dump("test.py", None, &[], SessionRef::Idle(&repl)).unwrap();
     let Session::Idle(mut restored) = Dump::load(&bytes).unwrap().state else {
         panic!("expected idle session")
     };
@@ -202,7 +202,7 @@ fn running_nested_generators_round_trip_during_external_call() {
             "def inner():\n    yield host_call()\ndef outer():\n    yield next(inner())\n{consumer}\nassert result == 42"
         );
         let progress = repl.feed_start(&code, vec![], PrintWriter::Stdout).unwrap();
-        let bytes = dump("test.py", None, SessionRef::Suspended(&progress)).unwrap();
+        let bytes = dump("test.py", None, &[], SessionRef::Suspended(&progress)).unwrap();
         progress
             .into_function_call()
             .unwrap()
@@ -530,7 +530,7 @@ exec('def generate():\n    try:\n        raise ValueError("original")\n    excep
 g = namespace['generate']()
 assert next(g) is namespace['token']
 "#, vec![], PrintWriter::Stdout).unwrap();
-    let bytes = dump("test.py", None, SessionRef::Idle(&repl)).unwrap();
+    let bytes = dump("test.py", None, &[], SessionRef::Idle(&repl)).unwrap();
     let Session::Idle(mut restored) = Dump::load(&bytes).unwrap().state else {
         panic!("expected idle session")
     };
@@ -811,7 +811,7 @@ assert next(g) is shared
         PrintWriter::Stdout,
     )
     .unwrap();
-    let bytes = dump("test.py", None, SessionRef::Idle(&repl)).unwrap();
+    let bytes = dump("test.py", None, &[], SessionRef::Idle(&repl)).unwrap();
     let Session::Idle(mut restored) = Dump::load(&bytes).unwrap().state else {
         panic!("expected idle session")
     };
@@ -829,7 +829,7 @@ fn yield_from_active_snapshot_during_external_call() {
             "shared = []\n{delegate}def middle():\n    return (yield from inner())\ndef outer():\n    assert (yield from middle()) is shared\ng = outer()\nassert next(g) == 42\nassert next(g, None) is None"
         );
         let progress = repl.feed_start(&code, vec![], PrintWriter::Stdout).unwrap();
-        let bytes = dump("test.py", None, SessionRef::Suspended(&progress)).unwrap();
+        let bytes = dump("test.py", None, &[], SessionRef::Suspended(&progress)).unwrap();
         progress
             .into_function_call()
             .unwrap()
@@ -938,4 +938,75 @@ fn stop_iteration_string_message_is_preserved_at_host_boundary() {
     let error = runner.run_no_limits(vec![]).unwrap_err();
     assert_eq!(error.exc_type(), ExcType::StopIteration);
     assert!(error.to_string().contains("done"));
+}
+
+#[test]
+fn nested_stop_iteration_formatting_enforces_recursion_limit() {
+    for formatter in ["repr", "str"] {
+        let code = format!("e = StopIteration()\nfor _ in range(10000):\n    e = StopIteration(e)\n{formatter}(e)");
+        let mut runner = MontyRun::new(code, "test.py", vec![], CompileOptions::default()).unwrap();
+        let error = runner
+            .run(
+                vec![],
+                ResourceTracker::new(ResourceLimits::default().max_recursion_depth(24)),
+                PrintWriter::Stdout,
+            )
+            .unwrap_err();
+        assert_eq!(error.exc_type(), ExcType::RecursionError, "{formatter}: {error}");
+    }
+}
+
+#[test]
+fn stop_iteration_formatting_releases_recursion_levels_on_error() {
+    let code = r"
+e = StopIteration()
+for _ in range(100):
+    e = StopIteration(e)
+for formatter in [repr, str]:
+    for _ in range(50):
+        try:
+            formatter(e)
+            assert False
+        except RecursionError:
+            pass
+        assert repr(StopIteration(42)) == 'StopIteration(42)'
+        assert str(StopIteration(42)) == '42'
+";
+    let mut runner = MontyRun::new(code.to_owned(), "test.py", vec![], CompileOptions::default()).unwrap();
+    runner
+        .run(
+            vec![],
+            ResourceTracker::new(ResourceLimits::default().max_recursion_depth(24)),
+            PrintWriter::Stdout,
+        )
+        .unwrap();
+}
+
+#[test]
+fn yield_from_rejects_direct_external_next_before_suspension() {
+    let code = r"
+class Iterator:
+    __next__ = host_next
+    def __iter__(self):
+        return self
+def outer():
+    yield from Iterator()
+g = outer()
+try:
+    next(g)
+    assert False
+except NotImplementedError as exc:
+    assert str(exc) == 'yield from: external callable as __next__ is not yet supported'
+assert next(g, None) is None
+";
+    let mut runner = MontyRun::new(
+        code.to_owned(),
+        "test.py",
+        vec!["host_next".to_owned()],
+        CompileOptions::default(),
+    )
+    .unwrap();
+    runner
+        .run_no_limits(vec![MontyObject::function("host_next", None)])
+        .unwrap();
 }

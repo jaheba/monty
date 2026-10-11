@@ -180,7 +180,7 @@ pub enum Type {
     #[strum(serialize = "posix.ScandirIterator")]
     ScandirIterator,
     /// The iterator `os.walk()` and `Path.walk()` return; CPython's is a generator.
-    #[strum(serialize = "generator")]
+    #[strum(disabled)]
     WalkGenerator,
     // Variants serialize by name into dumps: renaming one needs `#[serde(alias)]`.
     #[strum(serialize = "tuple_iterator")]
@@ -347,6 +347,7 @@ impl fmt::Display for Type {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(match *self {
             Self::Exception(exc_type) => exc_type.into(),
+            Self::WalkGenerator => "generator",
             Self::Instance(_) => unreachable!("Type::Instance must be rendered via Type::name"),
             other => other.into(),
         })
@@ -365,6 +366,7 @@ impl Type {
         match self {
             Self::Instance(class_id) => class_name(class_id, heap, interns),
             Self::Exception(exc_type) => Cow::Borrowed(exc_type.into()),
+            Self::WalkGenerator => Cow::Borrowed("generator"),
             other => Cow::Borrowed(other.into()),
         }
     }

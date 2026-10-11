@@ -1,6 +1,6 @@
 use std::mem;
 
-use super::{CallFrame, SerializedFrame, VM, frame_code, stack_index};
+use super::{CallFrame, CaughtException, SerializedFrame, VM, frame_code, stack_index};
 use crate::{
     args::{ArgValues, FromArgs},
     bytecode::{CallResult, FrameNamespace},
@@ -20,7 +20,7 @@ pub(crate) struct Generator {
     #[serde(skip)]
     stack_buffer: Vec<Value>,
     #[serde(skip)]
-    exception_buffer: Vec<Value>,
+    exception_buffer: Vec<CaughtException>,
     // A cached boundary owns no heap references; resumption acquires them again.
     #[serde(skip)]
     boundary_buffer: Option<Box<GeneratorBoundary>>,
@@ -45,7 +45,7 @@ struct SuspendedGenerator {
     #[serde(rename = "S")]
     stack: Vec<Value>,
     #[serde(rename = "E")]
-    exceptions: Vec<Value>,
+    exceptions: Vec<CaughtException>,
 }
 
 /// Owns the running generator and the pending iterator consumer's state.
@@ -83,7 +83,7 @@ pub(super) enum GeneratorReturn {
 impl<C: ContainsHeap> DropWithContext<C> for Box<GeneratorBoundary> {
     fn drop_with(self, heap: &mut C) {
         HeapReader::with(heap.heap_mut(), &mut (), |heap, ()| {
-            if let HeapReadOutput::Generator(mut generator) = heap.read(self.id) {
+            if let HeapReadOutput::Generator(generator) = heap.read(self.id) {
                 generator.get_mut(heap).complete();
             }
         });
@@ -131,7 +131,13 @@ impl Generator {
 
     pub(crate) fn for_each_child(&self, mut visit: impl FnMut(HeapId)) {
         if let GeneratorState::Created(saved) | GeneratorState::Suspended(saved) = &self.state {
-            for value in saved.stack.iter().chain(&saved.exceptions) {
+            for value in saved
+                .stack
+                .iter()
+                .chain(saved.exceptions.iter().map(|caught| match caught {
+                    CaughtException::Value(value) | CaughtException::Frozen { value, .. } => value,
+                }))
+            {
                 if let Value::Ref(id) = value {
                     visit(*id);
                 }
@@ -146,7 +152,13 @@ impl Generator {
 impl HeapItem for Generator {
     fn py_dec_ref_ids(&mut self, ids: &mut Vec<HeapId>) {
         if let GeneratorState::Created(saved) | GeneratorState::Suspended(saved) = &mut self.state {
-            for value in saved.stack.iter_mut().chain(&mut saved.exceptions) {
+            for value in saved
+                .stack
+                .iter_mut()
+                .chain(saved.exceptions.iter_mut().map(|caught| match caught {
+                    CaughtException::Value(value) | CaughtException::Frozen { value, .. } => value,
+                }))
+            {
                 value.py_dec_ref_ids(ids);
             }
             if let Some(namespace) = &saved.frame.namespace {
@@ -168,7 +180,7 @@ impl VM<'_> {
     }
 
     pub(crate) fn resume_generator(&mut self, id: HeapId, consumer: GeneratorConsumer) -> RunResult<CallResult> {
-        let HeapReadOutput::Generator(mut generator) = self.heap.read(id) else {
+        let HeapReadOutput::Generator(generator) = self.heap.read(id) else {
             unreachable!("resume requires a generator")
         };
         match &generator.get(self.heap).state {
@@ -269,7 +281,7 @@ impl VM<'_> {
             let caller = self.suspended_frames.pop().expect("generator has no caller");
             let mut frame = mem::replace(&mut self.current_frame, caller);
             let id = boundary.id;
-            let HeapReadOutput::Generator(mut generator) = self.heap.read(id) else {
+            let HeapReadOutput::Generator(generator) = self.heap.read(id) else {
                 unreachable!()
             };
             let buffers = generator.get_mut(self.heap);
@@ -362,7 +374,7 @@ impl VM<'_> {
     }
 
     pub(super) fn abandon_generator(&mut self, boundary: GeneratorBoundary) {
-        let HeapReadOutput::Generator(mut generator) = self.heap.read(boundary.id) else {
+        let HeapReadOutput::Generator(generator) = self.heap.read(boundary.id) else {
             unreachable!()
         };
         generator.get_mut(self.heap).complete();
@@ -372,7 +384,7 @@ impl VM<'_> {
 
     pub(super) fn return_generator(&mut self, value: Value) -> GeneratorReturn {
         let boundary = self.current_frame.generator.take().expect("generator boundary missing");
-        let HeapReadOutput::Generator(mut generator) = self.heap.read(boundary.id) else {
+        let HeapReadOutput::Generator(generator) = self.heap.read(boundary.id) else {
             unreachable!()
         };
         generator.get_mut(self.heap).complete();

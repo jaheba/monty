@@ -701,6 +701,11 @@ pub(crate) fn instance_next(self_id: HeapId, vm: &mut VM<'_>) -> RunResult<CallR
         )));
     };
     defer_drop!(member, vm);
+    if let Value::Ref(id) = member
+        && matches!(vm.heap.get(*id), HeapData::ExtFunction(_))
+    {
+        return Err(ExcType::not_implemented("yield from: external callable as __next__ is not yet supported").into());
+    }
     call_member_bound(member, self_id, ArgValues::Empty, vm)
 }
 
