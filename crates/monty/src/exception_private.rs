@@ -2564,6 +2564,8 @@ impl<'h> HeapRead<'h, ExceptionValue> {
         let value = self.get(vm.heap).value.as_ref().map(|value| value.clone_with_heap(vm));
         defer_drop!(value, vm);
         if let Some(value) = value {
+            let mut guard = vm.recursion_guard()?;
+            let vm = &mut *guard;
             f.write_str("StopIteration(")?;
             value.py_repr_fmt(f, vm, heap_ids)?;
             f.write_char(')')?;
@@ -2577,7 +2579,10 @@ impl<'h> HeapRead<'h, ExceptionValue> {
         let value = self.get(vm.heap).value.as_ref().map(|value| value.clone_with_heap(vm));
         defer_drop!(value, vm);
         match value {
-            Some(value) => value.py_str(vm),
+            Some(value) => {
+                let mut guard = vm.recursion_guard()?;
+                value.py_str(&mut guard)
+            }
             None => Ok(allocate_string(self.get(vm.heap).exception.py_str(), vm.heap)),
         }
     }

@@ -69,6 +69,9 @@ not supported; passing more than one argument raises an internal error
 `__traceback__`, `__notes__`, `add_note()`. The `raise X from Y` syntax
 parses, but the `from Y` cause is **silently dropped**: chained
 tracebacks are not preserved across `raise from`.
+When a generator lets `StopIteration` escape, Monty raises `RuntimeError` without retaining the original exception
+as `__cause__`, so its `.value` is unavailable through that error.
+Normal generator returns and custom iterator exhaustion preserve `StopIteration.value`.
 
 ## Custom subclasses
 
