@@ -355,6 +355,10 @@ impl<C: ContainsHeap> DropWithContext<C> for FrameExit {
 /// Each frame represents one level in the call stack and owns its own
 /// instruction pointer. This design avoids sync bugs on call/return.
 #[derive(Debug)]
+#[expect(
+    clippy::struct_excessive_bools,
+    reason = "independent frame lifecycle and return flags"
+)]
 pub struct CallFrame<'code> {
     /// Compiled body, stable even when runtime compilation publishes more functions.
     code: &'code Code,
@@ -411,6 +415,8 @@ pub struct CallFrame<'code> {
     /// construction. Threaded through serialization (`SerializedFrame`) so a
     /// suspended initializer resumes correctly.
     is_initializer: bool,
+    /// A custom __next__ frame whose result is consumed by the caller's yield from.
+    is_yield_from: bool,
     /// Owned generator reference and iterator consumer while its frame is active.
     generator: Option<Box<GeneratorBoundary>>,
 }
@@ -453,6 +459,7 @@ impl<'code> CallFrame<'code> {
             is_parked: false,
             namespace: None,
             is_initializer: false,
+            is_yield_from: false,
             generator: None,
         }
     }
@@ -477,6 +484,7 @@ impl<'code> CallFrame<'code> {
         self.should_return = false;
         self.is_parked = true;
         self.is_initializer = false;
+        self.is_yield_from = false;
         debug_assert!(self.generator.is_none());
         debug_assert!(self.namespace.is_none(), "parked frame still owns a namespace");
     }
@@ -511,6 +519,7 @@ impl<'code> CallFrame<'code> {
             is_parked: false,
             namespace,
             is_initializer: false,
+            is_yield_from: false,
             generator: None,
         }
     }
@@ -653,6 +662,8 @@ pub struct SerializedFrame {
     /// `None` instead of leaving the instance on the stack.
     #[serde(rename = "I")]
     is_initializer: bool,
+    #[serde(rename = "Y", default)]
+    is_yield_from: bool,
     #[serde(rename = "G", default)]
     generator: Option<Box<GeneratorBoundary>>,
 
@@ -679,6 +690,7 @@ impl CallFrame<'_> {
             exception_stack_base: self.exception_stack_base(),
             call_offset: self.call_offset,
             is_initializer: self.is_initializer,
+            is_yield_from: self.is_yield_from,
             generator: self.generator.take(),
             namespace: mem::take(&mut self.namespace),
         }
@@ -998,6 +1010,7 @@ impl<'h> VM<'h> {
                     is_parked: false,
                     namespace: sf.namespace,
                     is_initializer: sf.is_initializer,
+                    is_yield_from: sf.is_yield_from,
                     generator: sf.generator,
                 }
             })
@@ -1954,6 +1967,11 @@ impl<'h> VM<'h> {
                     }
                 }
                 // Return
+                Opcode::YieldFrom => match self.yield_from() {
+                    Ok(Some(value)) => return Ok(FrameExit::Return(value)),
+                    Ok(None) => {}
+                    Err(error) => catch!(self, error),
+                },
                 Opcode::YieldValue => {
                     if let Some(value) = self.yield_generator() {
                         return Ok(FrameExit::Return(value));
@@ -1961,6 +1979,14 @@ impl<'h> VM<'h> {
                 }
                 Opcode::ReturnValue => {
                     let value = self.pop();
+                    if self.current_frame.is_yield_from {
+                        self.pop_frame();
+                        self.push(value);
+                        if let Some(value) = self.yield_generator() {
+                            return Ok(FrameExit::Return(value));
+                        }
+                        continue;
+                    }
                     if self.current_frame.generator.is_some() {
                         match self.return_generator(value) {
                             GeneratorReturn::Continue => {}

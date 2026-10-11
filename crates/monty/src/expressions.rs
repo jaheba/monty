@@ -294,6 +294,8 @@ pub enum Expr {
     Await(Box<ExprLoc>),
     /// Suspend a generator and receive the next resume value.
     Yield(Box<ExprLoc>),
+    /// Delegate iteration and receive the iterator's completion value.
+    YieldFrom(Box<ExprLoc>),
     /// F-string expression containing literal and interpolated parts.
     ///
     /// At evaluation time, each part is processed in sequence:

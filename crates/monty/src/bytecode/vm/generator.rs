@@ -8,6 +8,7 @@ use crate::{
     exception_private::{ExcType, ExcTypeExt, ExceptionValue, RunResult, SimpleException},
     heap::{ContainsHeap, DropWithContext, HeapData, HeapId, HeapItem, HeapReadOutput, HeapReader},
     intern::FunctionId,
+    types::{PyTrait, instance::instance_next},
     value::Value,
 };
 
@@ -15,6 +16,14 @@ use crate::{
 pub(crate) struct Generator {
     #[serde(rename = "S")]
     state: GeneratorState,
+    // Empty buffers retained while the active frame owns their values.
+    #[serde(skip)]
+    stack_buffer: Vec<Value>,
+    #[serde(skip)]
+    exception_buffer: Vec<Value>,
+    // A cached boundary owns no heap references; resumption acquires them again.
+    #[serde(skip)]
+    boundary_buffer: Option<Box<GeneratorBoundary>>,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
@@ -54,6 +63,8 @@ pub(crate) enum GeneratorConsumer {
     Next(Option<Value>),
     #[serde(rename = "F")]
     For { end_ip: usize },
+    #[serde(rename = "Y")]
+    YieldFrom,
 }
 
 #[derive(FromArgs)]
@@ -73,7 +84,7 @@ impl<C: ContainsHeap> DropWithContext<C> for Box<GeneratorBoundary> {
     fn drop_with(self, heap: &mut C) {
         HeapReader::with(heap.heap_mut(), &mut (), |heap, ()| {
             if let HeapReadOutput::Generator(mut generator) = heap.read(self.id) {
-                generator.get_mut(heap).state = GeneratorState::Completed;
+                generator.get_mut(heap).complete();
             }
         });
         if let GeneratorConsumer::Next(default) = self.consumer {
@@ -96,13 +107,25 @@ impl Generator {
                     exception_stack_base: 0,
                     call_offset: None,
                     is_initializer: false,
+                    is_yield_from: false,
                     namespace,
                     generator: None,
                 },
                 stack,
                 exceptions: Vec::new(),
             }),
+            stack_buffer: Vec::new(),
+            exception_buffer: Vec::new(),
+            boundary_buffer: None,
         }
+    }
+
+    fn complete(&mut self) {
+        debug_assert!(self.stack_buffer.is_empty() && self.exception_buffer.is_empty());
+        self.state = GeneratorState::Completed;
+        self.stack_buffer = Vec::new();
+        self.exception_buffer = Vec::new();
+        self.boundary_buffer = None;
     }
 
     pub(crate) fn for_each_child(&self, mut visit: impl FnMut(HeapId)) {
@@ -179,6 +202,17 @@ impl VM<'_> {
         if resumed {
             self.push(Value::None);
         }
+        let mut boundary = generator.get_mut(self.heap).boundary_buffer.take().unwrap_or_else(|| {
+            Box::new(GeneratorBoundary {
+                id,
+                consumer: GeneratorConsumer::Next(None),
+            })
+        });
+        boundary.id = id;
+        boundary.consumer = consumer;
+        let buffers = generator.get_mut(self.heap);
+        buffers.stack_buffer = saved.stack;
+        buffers.exception_buffer = saved.exceptions;
         let sf = saved.frame;
         let code = frame_code(self.interns, self.module_code, sf.function_id);
         let frame = CallFrame {
@@ -194,7 +228,8 @@ impl VM<'_> {
             is_parked: false,
             namespace: sf.namespace,
             is_initializer: false,
-            generator: Some(Box::new(GeneratorBoundary { id, consumer })),
+            is_yield_from: false,
+            generator: Some(boundary),
         };
         self.heap.inc_ref(id);
         self.push_admitted_frame(frame);
@@ -203,6 +238,13 @@ impl VM<'_> {
 
     fn generator_exhausted(&mut self, consumer: GeneratorConsumer) -> RunResult<CallResult> {
         match consumer {
+            GeneratorConsumer::YieldFrom => {
+                let iterator = self.pop();
+                iterator.drop_with(self);
+                self.current_frame.ip += 1;
+                self.push(Value::None);
+                Ok(CallResult::FramePushed)
+            }
             GeneratorConsumer::Next(Some(default)) => Ok(CallResult::Value(default)),
             GeneratorConsumer::Next(None) => Err(ExcType::stop_iteration()),
             GeneratorConsumer::For { end_ip } => {
@@ -215,39 +257,98 @@ impl VM<'_> {
     }
 
     pub(super) fn yield_generator(&mut self) -> Option<Value> {
-        let value = self.pop();
-        let boundary = self
-            .current_frame
-            .generator
-            .take()
-            .expect("yield outside generator frame");
-        let caller = self.suspended_frames.pop().expect("generator has no caller");
-        let mut frame = mem::replace(&mut self.current_frame, caller);
-        let stack = self.stack.split_off(frame.stack_base());
-        let exceptions = self.exception_stack.split_off(frame.exception_stack_base());
-        let stop = frame.should_return;
-        frame.should_return = false;
-        let mut saved_frame = frame.serialize();
-        saved_frame.stack_base = 0;
-        saved_frame.exception_stack_base = 0;
-        saved_frame.call_offset = None;
-        let HeapReadOutput::Generator(mut generator) = self.heap.read(boundary.id) else {
-            unreachable!()
-        };
-        generator.get_mut(self.heap).state = GeneratorState::Suspended(SuspendedGenerator {
-            frame: saved_frame,
-            stack,
-            exceptions,
-        });
-        drop(generator);
-        self.decr_recursion();
-        self.instruction_ip = self.current_frame.ip;
-        self.release_generator_boundary(*boundary);
-        if stop {
-            Some(value)
-        } else {
+        loop {
+            let value = self.pop();
+            let mut boundary = self
+                .current_frame
+                .generator
+                .take()
+                .expect("yield outside generator frame");
+            let caller = self.suspended_frames.pop().expect("generator has no caller");
+            let mut frame = mem::replace(&mut self.current_frame, caller);
+            let id = boundary.id;
+            let HeapReadOutput::Generator(mut generator) = self.heap.read(id) else {
+                unreachable!()
+            };
+            let buffers = generator.get_mut(self.heap);
+            let mut stack = mem::take(&mut buffers.stack_buffer);
+            let mut exceptions = mem::take(&mut buffers.exception_buffer);
+            stack.extend(self.stack.drain(frame.stack_base()..));
+            exceptions.extend(self.exception_stack.drain(frame.exception_stack_base()..));
+            let stop = frame.should_return;
+            frame.should_return = false;
+            let mut saved_frame = frame.serialize();
+            saved_frame.stack_base = 0;
+            saved_frame.exception_stack_base = 0;
+            saved_frame.call_offset = None;
+            let consumer = mem::replace(&mut boundary.consumer, GeneratorConsumer::Next(None));
+            let saved = generator.get_mut(self.heap);
+            saved.state = GeneratorState::Suspended(SuspendedGenerator {
+                frame: saved_frame,
+                stack,
+                exceptions,
+            });
+            saved.boundary_buffer = Some(boundary);
+            drop(generator);
+            self.decr_recursion();
+            self.instruction_ip = self.current_frame.ip;
+            let delegated = matches!(consumer, GeneratorConsumer::YieldFrom);
+            if let GeneratorConsumer::Next(default) = consumer {
+                default.drop_with(self);
+            }
+            self.heap.dec_ref(id);
+            if stop {
+                return Some(value);
+            }
             self.push(value);
-            None
+            if !delegated {
+                return None;
+            }
+        }
+    }
+
+    pub(super) fn yield_from(&mut self) -> RunResult<Option<Value>> {
+        let received = self.pop();
+        debug_assert!(matches!(received, Value::None));
+        received.drop_with(self);
+        let Value::Ref(id) = *self.peek() else {
+            unreachable!("yield from requires an iterator");
+        };
+        if matches!(self.heap.read(id), HeapReadOutput::Generator(_)) {
+            // Repeat this instruction when the outer generator is resumed.
+            self.current_frame.ip -= 1;
+            self.resume_generator(id, GeneratorConsumer::YieldFrom)?;
+            return Ok(None);
+        }
+        if matches!(self.heap.read(id), HeapReadOutput::Instance(_)) {
+            self.current_frame.ip -= 1;
+            return match instance_next(id, self)? {
+                CallResult::FramePushed => {
+                    self.current_frame.is_yield_from = true;
+                    Ok(None)
+                }
+                CallResult::Value(value) => {
+                    self.push(value);
+                    Ok(self.yield_generator())
+                }
+                other => {
+                    other.drop_with(self);
+                    Err(ExcType::not_implemented("yield from: unsupported iterator call").into())
+                }
+            };
+        }
+        let mut iterator = self.heap.read(id);
+        let result = iterator.py_next(self);
+        drop(iterator);
+        if let Some(value) = result? {
+            self.current_frame.ip -= 1;
+            self.push(value);
+            Ok(self.yield_generator())
+        } else {
+            let iterator = self.pop();
+            iterator.drop_with(self);
+            self.push(Value::None);
+            Ok(None)
         }
     }
 
@@ -262,7 +363,7 @@ impl VM<'_> {
         let HeapReadOutput::Generator(mut generator) = self.heap.read(boundary.id) else {
             unreachable!()
         };
-        generator.get_mut(self.heap).state = GeneratorState::Completed;
+        generator.get_mut(self.heap).complete();
         drop(generator);
         self.release_generator_boundary(boundary);
     }
@@ -272,7 +373,7 @@ impl VM<'_> {
         let HeapReadOutput::Generator(mut generator) = self.heap.read(boundary.id) else {
             unreachable!()
         };
-        generator.get_mut(self.heap).state = GeneratorState::Completed;
+        generator.get_mut(self.heap).complete();
         drop(generator);
         self.exception_stack
             .drain(self.current_frame.exception_stack_base()..)
@@ -280,6 +381,13 @@ impl VM<'_> {
         let stop = self.pop_frame();
         self.heap.dec_ref(boundary.id);
         match boundary.consumer {
+            GeneratorConsumer::YieldFrom => {
+                let iterator = self.pop();
+                iterator.drop_with(self);
+                self.current_frame.ip += 1;
+                self.push(value);
+                GeneratorReturn::Continue
+            }
             GeneratorConsumer::Next(None) => {
                 let exception = SimpleException::new_none(ExcType::StopIteration);
                 let value = if matches!(value, Value::None) {

@@ -144,7 +144,12 @@ fn target_position(target: &UnpackTarget) -> CodeRange {
 /// Whether an expression can resume a pushed/suspended call at its end offset.
 fn return_expr_needs_padding(expr: &ExprLoc) -> bool {
     match &expr.expr {
-        Expr::Call { .. } | Expr::AttrCall { .. } | Expr::IndirectCall { .. } | Expr::Await(_) | Expr::Yield(_) => true,
+        Expr::Call { .. }
+        | Expr::AttrCall { .. }
+        | Expr::IndirectCall { .. }
+        | Expr::Await(_)
+        | Expr::Yield(_)
+        | Expr::YieldFrom(_) => true,
         Expr::IfElse { orelse, .. } => return_expr_needs_padding(orelse),
         Expr::Op {
             op: Operator::And | Operator::Or,
@@ -1378,6 +1383,12 @@ impl<'a, 'i> Compiler<'a, 'i> {
                 unreachable!("Expr::LambdaRaw should not exist after prepare phase")
             }
 
+            Expr::YieldFrom(value) => {
+                self.compile_expr(value)?;
+                self.code.emit(Opcode::GetIter)?;
+                self.compile_literal(&Literal::None)?;
+                self.code.emit(Opcode::YieldFrom)?;
+            }
             Expr::Yield(value) => {
                 self.compile_expr(value)?;
                 self.code.emit(Opcode::YieldValue)?;

@@ -101,6 +101,8 @@ pub(crate) struct SerializedTaskFrame {
     /// Whether this frame is a class `__init__` (see `CallFrame.is_initializer`).
     pub is_initializer: bool,
     #[serde(default)]
+    pub is_yield_from: bool,
+    #[serde(default)]
     pub generator: Option<Box<super::GeneratorBoundary>>,
     /// Frame namespace, owning its dict references (see `CallFrame.namespace`).
     pub namespace: Option<Box<FrameNamespace>>,

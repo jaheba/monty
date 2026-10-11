@@ -561,6 +561,8 @@ pub enum Opcode {
     DeleteName = 124,
     /// Suspend the current generator, replacing TOS with its resume value.
     YieldValue = 125,
+    /// Advance a delegate beneath TOS (the resume value), yielding or replacing it with its return value.
+    YieldFrom = 126,
 }
 
 /// `LoadName` flag: the load is in call position, so an unresolved name under
@@ -663,6 +665,7 @@ impl Opcode {
             | Self::CheckExcMatch
             | Self::ReturnValue
             | Self::YieldValue
+            | Self::YieldFrom
             | Self::Await
             | Self::Nop
             | Self::BeforeWith
@@ -895,6 +898,7 @@ impl Opcode {
             (Dup, Operand::None) => 1,
             (Dup2, Operand::None) => 2,
             (Rot2 | Rot3 | YieldValue, Operand::None) => 0,
+            (YieldFrom, Operand::None) => -1,
             (LoadNone | LoadTrue | LoadFalse | BuildCell, Operand::None) => 1,
             (LoadLocal0 | LoadLocal1 | LoadLocal2 | LoadLocal3, Operand::None) => 1,
             (

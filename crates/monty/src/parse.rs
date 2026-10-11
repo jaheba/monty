@@ -1538,10 +1538,15 @@ impl<'a, 'i> Parser<'a, 'i> {
                 };
                 Ok(ExprLoc::new(position, Expr::Yield(Box::new(value))))
             }
-            AstExpr::YieldFrom(y) => Err(ParseError::not_implemented(
-                "yield from expressions",
-                self.convert_range(y.range),
-            )),
+            AstExpr::YieldFrom(y) => {
+                let position = self.convert_range(y.range);
+                let Some(scope) = self.generator_scope.as_mut() else {
+                    return Err(ParseError::syntax("'yield' outside function", position));
+                };
+                *scope = true;
+                let value = self.parse_expression(*y.value)?;
+                Ok(ExprLoc::new(position, Expr::YieldFrom(Box::new(value))))
+            }
             AstExpr::Compare(ast::ExprCompare {
                 ops, operands, range, ..
             }) => {

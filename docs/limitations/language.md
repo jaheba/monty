@@ -19,7 +19,7 @@ any code runs.
     `@classmethod`, `@staticmethod`, `@property` and any decorator on a `def`
     inside a class body are unavailable. See [classes.md](classes.md).
 - **`async with` statements** — not yet supported.
-- **`yield from` expressions** and async generators are not supported.
+- Async generators are not supported.
     Generator *expressions* (`(x for x in ...)`) parse but currently materialize to a
     `list` rather than a lazy iterator; see `iter__generator_expr_type.py`.
 - **`match` statements** — structural pattern matching is not supported.
@@ -229,6 +229,8 @@ direct `x == x` (`False` on both). Named tuples inherit all of this from `tuple`
 
 Generator `send()` only accepts `None`; other values raise `NotImplementedError`.
 Generator methods `throw()` and `close()` are not exposed.
+For `yield from`, custom `__next__` methods may call external functions, but assigning an external callable directly
+to `__next__` is not supported.
 Generator frame attributes (`gi_frame`, `gi_code`, `gi_running`, `gi_yieldfrom`) are not exposed.
 Dropping an unfinished generator releases its references without executing pending `finally` blocks.
 For generator iteration through container constructors and iterator adaptors, see [iter.md](iter.md).

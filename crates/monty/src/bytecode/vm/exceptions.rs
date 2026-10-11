@@ -9,11 +9,13 @@ use super::VM;
 use crate::{
     builtins::Builtins,
     defer_drop,
-    exception_private::{ExcType, ExcTypeExt, ExceptionRaise, RawStackFrame, RunError, RunResult, SimpleException},
+    exception_private::{
+        ExcType, ExcTypeExt, ExceptionRaise, ExceptionValue, RawStackFrame, RunError, RunResult, SimpleException,
+    },
     expressions::CmpOperator,
     heap::{DropGuard, HeapData},
     intern::{StaticStrings, StringId},
-    types::{LazyHeapSet, PyTrait, Type},
+    types::{LazyHeapSet, PyTrait, Type, allocate_string},
     value::Value,
 };
 
@@ -364,6 +366,25 @@ impl VM<'_> {
                 return ExceptionHandlingResult::Unhandled(error);
             }
 
+            if this.current_frame.is_yield_from && error.is_stop_iteration() {
+                let value = match exc_value {
+                    Value::Ref(id) => match this.heap.get(*id) {
+                        HeapData::Exception(exception) => exception
+                            .value
+                            .as_ref()
+                            .map_or(Value::None, |v| v.clone_with_heap(this)),
+                        _ => unreachable!("raised exception is not an exception"),
+                    },
+                    _ => unreachable!("raised exception is not a heap reference"),
+                };
+                this.pop_frame();
+                let iterator = this.pop();
+                iterator.drop_with(this);
+                this.current_frame.ip += 1;
+                this.push(value);
+                return ExceptionHandlingResult::Caught;
+            }
+
             if this.current_frame.generator.is_some() && error.is_stop_iteration() {
                 error = this.attach_frame_to_error(
                     SimpleException::new_msg(ExcType::RuntimeError, "generator raised StopIteration").into(),
@@ -432,7 +453,14 @@ impl VM<'_> {
     /// Allocates an Exception on the heap and returns a Value::Ref to it.
     fn create_exception_value(&mut self, exc: &ExceptionRaise) -> Value {
         let exception = exc.exc.clone();
-        let heap_id = self.heap.allocate(HeapData::Exception(exception.into()));
+        let value = if exception.exc_type() == ExcType::StopIteration {
+            exception.arg().map(|arg| allocate_string(arg.as_str(), self.heap))
+        } else {
+            None
+        };
+        let heap_id = self
+            .heap
+            .allocate(HeapData::Exception(ExceptionValue { exception, value }));
         Value::Ref(heap_id)
     }
 

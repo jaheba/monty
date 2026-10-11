@@ -21,7 +21,7 @@ They exist for development and for agents debugging code that runs on Monty; mos
 **Supported:**
 
 - `def`, `async def`, nested functions, closures, `lambda`
-- Generator functions with `yield`, consumed by `next()` or `for`
+- Generator functions with `yield` and `yield from`, consumed by `next()` or `for`
 - Decorators on functions and classes
 - Simple classes: instance methods, `__init__`, `__repr__`/`__str__`, `__eq__`/`__hash__`, `__iter__`/`__next__`,
     `__contains__`, `__index__`, class variables
@@ -43,7 +43,7 @@ They exist for development and for agents debugging code that runs on Monty; mos
 
 - Class inheritance and metaclasses (`class Foo(Bar):`)
 - Decorators on methods — so no `@classmethod`, `@staticmethod`, `@property`
-- `yield from` and async generators
+- Async generators
 - Generator *expressions* parse, but currently materialise to a `list`
 - `match` statements
 - `del`, both `del x` and `del d[k]`

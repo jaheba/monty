@@ -2333,12 +2333,35 @@ impl ExcTypeExt for ExcType {
     /// Creates an exception instance from an exception type and arguments.
     ///
     /// Handles exception constructors like `ValueError('message')`.
-    /// Currently supports zero or one string argument.
+    /// Accepts zero or one string argument, or any single value for StopIteration.
     ///
     /// The `interns` parameter provides access to interned string content.
     /// Returns a heap-allocated exception value.
     fn call(self, vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
         defer_drop!(args, vm);
+        if self == Self::StopIteration {
+            let value = match args {
+                ArgValues::Empty => None,
+                ArgValues::One(value) => Some(value.clone_with_heap(vm)),
+                _ => return Err(Self::type_error("StopIteration accepts at most one argument")),
+            };
+            let message = match &value {
+                Some(Value::InternString(id)) => Some(vm.interns.get_str(*id).to_owned()),
+                Some(Value::Ref(id)) => match vm.heap.get(*id) {
+                    HeapData::Str(s) => Some(s.as_str().to_owned()),
+                    _ => None,
+                },
+                _ => None,
+            };
+            let exception = ExceptionValue {
+                exception: message.map_or_else(
+                    || SimpleException::new_none(self),
+                    |s| SimpleException::new_msg(self, s),
+                ),
+                value,
+            };
+            return Ok(Value::Ref(vm.heap.allocate(HeapData::Exception(exception))));
+        }
         let exc = match args {
             ArgValues::Empty => Ok(SimpleException::new_none(self)),
             ArgValues::One(value) => match value {

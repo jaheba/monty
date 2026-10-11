@@ -1,7 +1,10 @@
 use std::time::Duration;
 
 use monty::{Dump, MontyRepl, MontyRun, Session, SessionRef, dump};
-use monty_types::{CompileOptions, ExcType, MontyObject, PrintWriter, ResourceLimits, ResourceTracker};
+use monty_types::{
+    CompileOptions, ExcType, ExtFunctionResult, MontyException, MontyObject, PrintWriter, ResourceLimits,
+    ResourceTracker,
+};
 
 fn run(code: &str) {
     MontyRun::new(code.to_owned(), "test.py", vec![], CompileOptions::default())
@@ -406,6 +409,7 @@ else:
 fn generator_resumption_enforces_recursion_limits() {
     for expression in [
         "yield next(generate(depth - 1))",
+        "yield from generate(depth - 1)",
         "for value in generate(depth - 1):\n            yield value",
     ] {
         let code =
@@ -597,4 +601,341 @@ fn invalid_yield_scopes_and_async_generators_are_rejected() {
     )
     .unwrap_err();
     assert_eq!(error.exc_type(), ExcType::NotImplementedError);
+}
+
+#[test]
+#[cfg(feature = "test-hooks")]
+fn resumption_cache_does_not_retain_next_defaults() {
+    run(r"
+import gc
+gc.disable()
+def temporary():
+    value = []
+    value.append(value)
+    return value
+def generate():
+    for i in range(20):
+        yield i
+g = generate()
+gc.collect()
+for i in range(20):
+    assert next(g, temporary()) == i
+    assert gc.collect() == 1
+    assert gc.collect() == 0
+assert next(g, 'done') == 'done'
+gc.enable()
+");
+}
+
+#[test]
+fn repeated_yields_preserve_varying_operand_and_exception_stacks() {
+    run(r"
+token = []
+def generate():
+    for i in range(100):
+        result = ((yield token), [token, (yield token)], (yield token))
+        assert result == (None, [token, None], None)
+        try:
+            raise ValueError('retained')
+        except ValueError:
+            yield i
+            try:
+                raise
+            except ValueError as exc:
+                assert str(exc) == 'retained'
+g = generate()
+for i in range(100):
+    assert next(g) is token
+    assert next(g) is token
+    assert next(g) is token
+    assert next(g) == i
+assert next(g, 'done') == 'done'
+");
+}
+
+#[test]
+fn yield_from_builtin_iterators_and_lazy_creation() {
+    run(r"
+events = []
+def delegate(values):
+    events.append(1)
+    result = yield from values
+    assert result is None
+    yield 'end'
+a = delegate([1, 2])
+b = delegate(range(2))
+assert events == []
+assert next(a) == 1
+assert next(b) == 0
+assert next(a) == 2
+assert next(b) == 1
+assert next(a) == 'end'
+assert next(b) == 'end'
+assert next(a, None) is None
+for values in [(), [], '', {}, range(0)]:
+    assert next(delegate(values)) == 'end'
+assert events == [1, 1, 1, 1, 1, 1, 1]
+def unreachable():
+    if False:
+        yield from [1]
+assert next(unreachable(), 99) == 99
+def letters():
+    yield from 'ab'
+    yield from (3, 4)
+assert [v for v in letters()] == ['a', 'b', 3, 4]
+");
+}
+
+#[test]
+fn yield_from_nested_return_values_and_partial_consumption() {
+    run(r"
+shared = []
+def inner():
+    yield 1
+    yield 2
+    return shared
+def middle(g):
+    result = yield from g
+    assert result is shared
+    return result
+def outer(g):
+    result = yield from middle(g)
+    assert result is shared
+    yield 3
+    assert (yield from g) is None
+g = inner()
+assert next(g) == 1
+a = outer(g)
+assert next(a) == 2
+assert a.send(None) == 3
+assert next(a, 99) == 99
+");
+}
+
+#[test]
+fn yield_from_custom_iterator_preserves_stop_iteration_value() {
+    run(r"
+shared = []
+class Counter:
+    def __init__(self):
+        self.n = 0
+    def __iter__(self):
+        return self
+    def __next__(self):
+        self.n += 1
+        if self.n == 3:
+            raise StopIteration(shared)
+        try:
+            raise StopIteration('caught')
+        except StopIteration:
+            return self.n
+def outer():
+    result = yield from Counter()
+    assert result is shared
+    yield 42
+g = outer()
+assert next(g) == 1
+assert next(g) == 2
+assert next(g) == 42
+assert next(g, None) is None
+");
+}
+
+#[test]
+fn yield_from_exceptions_and_reentrancy() {
+    run(r"
+events = []
+def inner():
+    yield 1
+    raise ValueError('delegate')
+def outer():
+    try:
+        yield from inner()
+    except ValueError as exc:
+        assert str(exc) == 'delegate'
+        yield 2
+    finally:
+        events.append(3)
+g = outer()
+assert next(g) == 1
+assert next(g) == 2
+assert next(g, None) is None
+assert events == [3]
+def invalid():
+    yield from 123
+try:
+    next(invalid())
+    assert False
+except TypeError:
+    pass
+def recursive():
+    yield from g
+g = recursive()
+try:
+    next(g)
+    assert False
+except ValueError:
+    pass
+assert next(g, None) is None
+def bad():
+    raise StopIteration('bad')
+    yield 1
+def wrapper():
+    yield from bad()
+try:
+    next(wrapper())
+    assert False
+except RuntimeError:
+    pass
+");
+}
+
+#[test]
+fn yield_from_suspended_snapshot_preserves_delegate_identity() {
+    let mut repl = MontyRepl::new("test.py", ResourceTracker::default(), CompileOptions::default());
+    repl.feed_run(
+        r"
+shared = []
+def inner():
+    yield shared
+    yield shared
+    return shared
+def outer(g):
+    assert (yield from g) is shared
+    yield 42
+delegate = inner()
+g = outer(delegate)
+assert next(g) is shared
+",
+        vec![],
+        PrintWriter::Stdout,
+    )
+    .unwrap();
+    let bytes = dump("test.py", None, SessionRef::Idle(&repl)).unwrap();
+    let Session::Idle(mut restored) = Dump::load(&bytes).unwrap().state else {
+        panic!("expected idle session")
+    };
+    restored.feed_run("assert next(g) is shared\nassert next(g) == 42\nassert next(delegate, None) is None\nassert next(g, None) is None", vec![], PrintWriter::Stdout).unwrap();
+}
+
+#[test]
+fn yield_from_active_snapshot_during_external_call() {
+    for delegate in [
+        "def inner():\n    yield host_call()\n    return shared\n",
+        "class Iterator:\n    def __init__(self):\n        self.done = False\n    def __iter__(self):\n        return self\n    def __next__(self):\n        if self.done:\n            raise StopIteration(shared)\n        self.done = True\n        return host_call()\ndef inner():\n    return Iterator()\n",
+    ] {
+        let repl = MontyRepl::new("test.py", ResourceTracker::default(), CompileOptions::default());
+        let code = format!(
+            "shared = []\n{delegate}def middle():\n    return (yield from inner())\ndef outer():\n    assert (yield from middle()) is shared\ng = outer()\nassert next(g) == 42\nassert next(g, None) is None"
+        );
+        let progress = repl.feed_start(&code, vec![], PrintWriter::Stdout).unwrap();
+        let bytes = dump("test.py", None, SessionRef::Suspended(&progress)).unwrap();
+        progress
+            .into_function_call()
+            .unwrap()
+            .resume(MontyObject::int(42), PrintWriter::Stdout)
+            .unwrap()
+            .into_complete()
+            .unwrap();
+        let Session::Suspended(restored) = Dump::load(&bytes).unwrap().state else {
+            panic!("expected suspended session")
+        };
+        restored
+            .into_function_call()
+            .unwrap()
+            .resume(MontyObject::int(42), PrintWriter::Stdout)
+            .unwrap()
+            .into_complete()
+            .unwrap();
+    }
+}
+
+#[test]
+#[cfg(feature = "test-hooks")]
+fn gc_collects_yield_from_cycles() {
+    run(r"
+import gc
+gc.disable()
+def cycle():
+    values = []
+    def inner():
+        yield values
+    def outer():
+        yield from inner()
+    g = outer()
+    values.append(g)
+    assert next(g) is values
+    return None
+gc.collect()
+for i in range(50):
+    cycle()
+assert gc.collect() >= 150
+assert gc.collect() == 0
+gc.enable()
+");
+}
+
+#[test]
+fn yield_from_custom_iterator_consumes_host_stop_iteration() {
+    let repl = MontyRepl::new("test.py", ResourceTracker::default(), CompileOptions::default());
+    let progress = repl
+        .feed_start(
+            r"
+class Iterator:
+    def __iter__(self):
+        return self
+    def __next__(self):
+        return host_call()
+def outer():
+    assert (yield from Iterator()) == 'done'
+    yield 42
+assert next(outer()) == 42
+",
+            vec![],
+            PrintWriter::Stdout,
+        )
+        .unwrap();
+    progress
+        .into_function_call()
+        .unwrap()
+        .resume(
+            ExtFunctionResult::Error(MontyException::new(ExcType::StopIteration, Some("done".to_owned()))),
+            PrintWriter::Stdout,
+        )
+        .unwrap()
+        .into_complete()
+        .unwrap();
+}
+
+#[test]
+fn yield_from_empty_delegation_enforces_time_limit() {
+    let mut runner = MontyRun::new(
+        "def g():\n    while True:\n        yield from ()\nnext(g())".to_owned(),
+        "test.py",
+        vec![],
+        CompileOptions::default(),
+    )
+    .unwrap();
+    let error = runner
+        .run(
+            vec![],
+            ResourceTracker::new(ResourceLimits::default().max_feed_duration(Duration::from_millis(10))),
+            PrintWriter::Stdout,
+        )
+        .unwrap_err();
+    assert_eq!(error.exc_type(), ExcType::TimeoutError);
+}
+
+#[test]
+fn stop_iteration_string_message_is_preserved_at_host_boundary() {
+    let mut runner = MontyRun::new(
+        "raise StopIteration('done')".to_owned(),
+        "test.py",
+        vec![],
+        CompileOptions::default(),
+    )
+    .unwrap();
+    let error = runner.run_no_limits(vec![]).unwrap_err();
+    assert_eq!(error.exc_type(), ExcType::StopIteration);
+    assert!(error.to_string().contains("done"));
 }

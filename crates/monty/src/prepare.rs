@@ -1056,6 +1056,7 @@ impl<'i, 'g> Prepare<'i, 'g> {
     /// Returns a NameError if an attribute call references an undefined variable
     fn prepare_expression(&mut self, loc_expr: ExprLoc) -> Result<ExprLoc, ParseError> {
         let ExprLoc { position, expr } = loc_expr;
+        let is_yield_from = matches!(&expr, Expr::YieldFrom(_));
         let expr = match expr {
             Expr::Literal(object) => Expr::Literal(object),
             Expr::Builtin(callable) => Expr::Builtin(callable),
@@ -1226,14 +1227,19 @@ impl<'i, 'g> Prepare<'i, 'g> {
                 }
             }
             Expr::Await(value) => Expr::Await(Box::new(self.prepare_expression(*value)?)),
-            Expr::Yield(value) => {
+            Expr::Yield(value) | Expr::YieldFrom(value) => {
                 if self.is_class_scope || self.is_module_scope() {
                     return Err(ParseError::syntax("'yield' outside function", position));
                 }
                 if !self.comp_name_scopes.is_empty() {
                     return Err(ParseError::syntax("'yield' inside comprehension", position));
                 }
-                Expr::Yield(Box::new(self.prepare_expression(*value)?))
+                let value = Box::new(self.prepare_expression(*value)?);
+                if is_yield_from {
+                    Expr::YieldFrom(value)
+                } else {
+                    Expr::Yield(value)
+                }
             }
         };
 
@@ -2666,7 +2672,8 @@ fn collect_assigned_names_from_expr(
         | Expr::UnaryPlus(operand)
         | Expr::UnaryInvert(operand)
         | Expr::Await(operand)
-        | Expr::Yield(operand) => {
+        | Expr::Yield(operand)
+        | Expr::YieldFrom(operand) => {
             collect_assigned_names_from_expr(operand, assigned_names, interner);
         }
         Expr::Subscript { object, index } => {
@@ -3217,7 +3224,7 @@ fn collect_cell_vars_from_expr(
             // Only scan the value expression for cell vars
             collect_cell_vars_from_expr(value, our_locals, cell_vars, interner);
         }
-        Expr::Await(value) | Expr::Yield(value) => {
+        Expr::Await(value) | Expr::Yield(value) | Expr::YieldFrom(value) => {
             collect_cell_vars_from_expr(value, our_locals, cell_vars, interner);
         }
         // Leaf expressions
@@ -3630,7 +3637,7 @@ fn collect_referenced_names_from_expr(
                 collect_referenced_names_from_expr(expr, referenced, interner);
             }
         }
-        Expr::Await(value) | Expr::Yield(value) => {
+        Expr::Await(value) | Expr::Yield(value) | Expr::YieldFrom(value) => {
             collect_referenced_names_from_expr(value, referenced, interner);
         }
     }
