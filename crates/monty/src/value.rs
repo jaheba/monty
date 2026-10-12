@@ -413,6 +413,9 @@ impl<'h> PyTrait<'h> for Value {
                 (HeapReadOutput::Str(a), HeapReadOutput::Str(b)) => {
                     Ok(CmpOrder::Ordered(a.get(vm.heap).as_str().cmp(b.get(vm.heap).as_str())))
                 }
+                (HeapReadOutput::Bytes(a), HeapReadOutput::Bytes(b)) => Ok(CmpOrder::Ordered(
+                    a.get(vm.heap).as_slice().cmp(b.get(vm.heap).as_slice()),
+                )),
                 (HeapReadOutput::Tuple(a), HeapReadOutput::Tuple(b)) => a.py_cmp(&b, vm),
                 // A namedtuple orders like the tuple it subclasses, including
                 // against a plain tuple in either direction. Both sides are
@@ -455,6 +458,13 @@ impl<'h> PyTrait<'h> for Value {
             }
             (Self::InternBytes(b1), Self::InternBytes(b2)) => {
                 Ok(CmpOrder::Ordered(interns.get_bytes(*b1).cmp(interns.get_bytes(*b2))))
+            }
+            // Cross-type bytes comparisons: interned vs heap-allocated
+            (Self::InternBytes(b1), Self::Ref(id2)) if let HeapData::Bytes(b2) = vm.heap.get(*id2) => {
+                Ok(CmpOrder::Ordered(interns.get_bytes(*b1).cmp(b2.as_slice())))
+            }
+            (Self::Ref(id1), Self::InternBytes(b2)) if let HeapData::Bytes(b1) = vm.heap.get(*id1) => {
+                Ok(CmpOrder::Ordered(b1.as_slice().cmp(interns.get_bytes(*b2))))
             }
             _ => Ok(CmpOrder::Incomparable),
         }
@@ -1477,7 +1487,7 @@ impl Value {
             Self::InternBytes(_) => Type::Bytes,
             Self::Builtin(_) => Type::BuiltinFunction,
             Self::ModuleFunction(_) | Self::DefFunction(_) => Type::Function,
-            Self::Marker(_) => Type::SpecialForm,
+            Self::Marker(m) => m.py_type(),
             Self::Property(_) => Type::Property,
             Self::Ref(_) => Type::NoneType, // callers should resolve Ref via HeapData::py_type()
             #[cfg(feature = "memory-model-checks")]
@@ -1515,19 +1525,6 @@ impl Value {
                 Some(id)
             }
             _ => None,
-        }
-    }
-
-    /// Returns the module name if this value is a module, otherwise returns "<unknown>".
-    ///
-    /// Used for error messages in `from module import name` when the name doesn't exist.
-    pub fn module_name(&self, vm: &mut VM<'_>) -> String {
-        match self {
-            Self::Ref(id) => match vm.heap.get(*id) {
-                HeapData::Module(module) => vm.interns.get_str(module.name()).to_string(),
-                _ => "<unknown>".to_string(),
-            },
-            _ => "<unknown>".to_string(),
         }
     }
 
@@ -1754,6 +1751,13 @@ impl Value {
             Self::Ref(heap_id) => {
                 if let Some(call_result) = vm.heap.read(*heap_id).py_getattr(attr, vm)? {
                     return Ok(call_result);
+                }
+                // CPython names the module, not its type, for a missing module attribute.
+                if let HeapData::Module(module) = vm.heap.get(*heap_id) {
+                    return Err(ExcType::attribute_error_module(
+                        module.name_str(vm.interns),
+                        attr.as_str(vm.interns),
+                    ));
                 }
             }
             // Type objects (`list`, `date`, `chain`) answer for themselves:
@@ -2484,6 +2488,7 @@ impl EitherStr {
 ///   provide functionality in the sandboxed environment
 /// - Typing constructs from the `typing` module that are imported for type hints but
 ///   don't need runtime functionality
+/// - Stateless sentinels such as `dataclasses.MISSING`, compared only by identity
 ///
 /// Wraps a `StaticStrings` variant to leverage its string conversion capabilities.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -2506,12 +2511,13 @@ impl<'de> serde::Deserialize<'de> for Marker {
 impl Marker {
     /// Returns the Python type of this marker.
     ///
-    /// System markers (stdout, stderr) are `TextIOWrapper`; the typing
-    /// markers (Any, Optional, etc.) are `_SpecialForm`. (`typing.Union` is
-    /// a real type, `Type::Union`, not a marker.)
+    /// System markers (stdout, stderr) are `TextIOWrapper`, `dataclasses.MISSING`
+    /// is `_MISSING_TYPE`, and the typing markers (Any, Optional, etc.) are
+    /// `_SpecialForm`. (`typing.Union` is a real type, `Type::Union`, not a marker.)
     pub(crate) fn py_type(self) -> Type {
         match self.0 {
             StaticStrings::Stdout | StaticStrings::Stderr => Type::TextIOWrapper,
+            StaticStrings::Missing => Type::MissingType,
             _ => Type::SpecialForm,
         }
     }
@@ -2519,12 +2525,18 @@ impl Marker {
     /// Writes the Python repr for this marker.
     ///
     /// System markers have special repr formats ("<stdout>", "<stderr>");
+    /// `dataclasses.MISSING` is a plain object, so it prints with its `id()`;
     /// typing markers are prefixed with "typing." (e.g., "typing.Any").
     pub(crate) fn py_repr_fmt(self, f: &mut impl Write) -> fmt::Result {
         let s: &'static str = self.0.into();
         match self.0 {
             StaticStrings::Stdout => f.write_str("<stdout>")?,
             StaticStrings::Stderr => f.write_str("<stderr>")?,
+            StaticStrings::Missing => write!(
+                f,
+                "<dataclasses._MISSING_TYPE object at 0x{:x}>",
+                Identity::Marker(self).encoded()
+            )?,
             _ => write!(f, "typing.{s}")?,
         }
         Ok(())

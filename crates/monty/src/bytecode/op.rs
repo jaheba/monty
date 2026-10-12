@@ -293,8 +293,8 @@ pub enum Opcode {
     LoadAttr = 77,
     /// Pop module, push module.attr for `from ... import`. Operand: u16 name_id.
     ///
-    /// Like `LoadAttr` but raises `ImportError` instead of `AttributeError`
-    /// when the attribute is not found. Used for `from module import name`.
+    /// Missing attributes raise `ImportError` using the frame's `import_from_module`:
+    /// host-provided values need not be `Module`s.
     LoadAttrImport = 78,
     /// Pop value, pop obj, set obj.attr. Operand: u16 name_id.
     StoreAttr = 79,
@@ -428,11 +428,13 @@ pub enum Opcode {
     Nop = 105,
 
     // === Module Operations ===
-    /// Load a built-in module onto the stack. Operand: u16 module-name StringId.
-    ///
-    /// The name is resolved through the executor interner at runtime.
-    /// Creates the module on the heap and pushes a `Value::Ref` to it.
+    /// Load a top-level module. Operand: u16 module-name StringId.
+    /// Pushes a built-in module or suspends with an import OS call for the host's value.
     LoadModule = 106,
+    /// Pop a module, push its submodule. Operands: u16 attribute ID, u16 dotted-path ID.
+    /// Missing submodules raise `ModuleNotFoundError`; built-ins add "is not a package".
+    /// Saves the path as the frame's `import_from_module` for subsequent `LoadAttrImport`s.
+    LoadSubmodule = 107,
     /// Duplicate the top two stack values, preserving order: `[a, b] -> [a, b, a, b]`.
     ///
     Dup2 = 108,
@@ -711,7 +713,7 @@ impl Opcode {
             | Self::ForIter => OperandShape::Offset,
             Self::CallBuiltinFunction | Self::CallBuiltinType | Self::UnpackEx => OperandShape::U8U8,
             Self::CallAttr | Self::CallAttrExtended | Self::MakeFunction => OperandShape::U16U8,
-            Self::LoadGlobalCallable => OperandShape::U16U16,
+            Self::LoadGlobalCallable | Self::LoadSubmodule => OperandShape::U16U16,
             Self::MakeClosure => OperandShape::U16U8U8,
             Self::LoadName | Self::StoreName | Self::DeleteName => OperandShape::U16U16U8,
             Self::CallFunctionKw => OperandShape::CallKw,
@@ -966,6 +968,7 @@ impl Opcode {
             (RaiseUnboundLocal, Operand::U16(_)) => 0,
             // === Fixed-effect, U16U16 operand ===
             (LoadGlobalCallable, Operand::U16U16(..)) => 1,
+            (LoadSubmodule, Operand::U16U16(..)) => 0,
 
             // === Fixed-effect, U16U16U8 operand ===
             (LoadName, Operand::U16U16U8(..)) => 1,

@@ -21,8 +21,6 @@ use std::{
 #[cfg(target_os = "linux")]
 use std::{ffi::OsStr, os::unix::ffi::OsStrExt};
 
-// only the unix-gated exit-code test snapshots a message
-#[cfg(unix)]
 use insta::assert_snapshot;
 use monty_pool::{
     MountSpec, MountSpecMode, Pool, PoolConfig, PoolError, PrintFuture, ReplConfig, ResumeValue, TurnEvent,
@@ -34,8 +32,9 @@ use monty_proto::{encode_framed_into, pb};
 #[cfg(unix)]
 use monty_types::SourceRange;
 use monty_types::{
-    CallArgs, DateTimeSource, ExcType, MontyException, MontyObject, NameLookupResult, OsPolicy, PrintStream,
-    RandomSeed, RandomStart, ResourceLimits, SleepMode, TypeCheckingConfig, TypeCheckingFormat,
+    CallArgs, DateTimeSource, ExcType, IMPORT_CALL, IMPORT_STUBS_CALL, MontyException, MontyObject, MontyUuid,
+    NameLookupResult, OsPolicy, PrintStream, RandomSeed, RandomStart, ResourceLimits, SleepMode, TypeCheckingConfig,
+    TypeCheckingFormat,
     unstable::{self, MontyNode},
 };
 use tokio::time::sleep;
@@ -2296,9 +2295,18 @@ async fn type_check_state_is_scrubbed_between_checkouts_on_the_same_worker() {
         "worker was not reused — test is vacuous"
     );
 
-    let mut probe = async |code: &str| match session.feed(code, vec![], vec![], false, &mut no_print).await {
-        Err(PoolError::Typing(diagnostics)) => diagnostics,
-        other => panic!("expected a typing rejection for {code:?}, got {other:?}"),
+    let mut probe = async |code: &str| {
+        let fed = match session.feed(code, vec![], vec![], false, &mut no_print).await {
+            // a host module's stubs are asked for first; this host offers none
+            Ok(TurnEvent::OsCall { function_name, .. }) if function_name == IMPORT_STUBS_CALL => {
+                session.resume(ResumeValue::NotHandled, &mut no_print).await
+            }
+            other => other,
+        };
+        match fed {
+            Err(PoolError::Typing(diagnostics)) => diagnostics,
+            other => panic!("expected a typing rejection for {code:?}, got {other:?}"),
+        }
     };
     assert_eq!(
         probe("from a import SECRET").await,
@@ -2843,4 +2851,198 @@ fn position() -> pb::SourceRange {
         start: 0,
         end: 1,
     }
+}
+
+// ---- host-provided modules ---------------------------------------------------
+
+/// The host module an import is answered with, under a fixed id.
+fn host_module(name: &str, attrs: Vec<(&str, MontyObject)>) -> MontyObject {
+    MontyObject::module(
+        name,
+        MontyUuid::from_u128(2),
+        attrs.into_iter().map(|(k, v)| (MontyObject::string(k), v)),
+    )
+}
+
+fn expect_import(event: TurnEvent) -> String {
+    let TurnEvent::OsCall {
+        function_name, args, ..
+    } = event
+    else {
+        panic!("expected the import to suspend, got {event:?}");
+    };
+    assert_eq!(function_name, IMPORT_CALL);
+    let module: Vec<_> = args.args().map(|arg| arg.to_owned()).collect();
+    let [module] = module.as_slice() else {
+        panic!("expected one module name, got {module:?}");
+    };
+    module.as_ref().as_str().expect("a module name").to_owned()
+}
+
+fn expect_import_stubs(event: TurnEvent) -> Vec<String> {
+    let TurnEvent::OsCall {
+        function_name, args, ..
+    } = event
+    else {
+        panic!("expected the stubs ask, got {event:?}");
+    };
+    assert_eq!(function_name, IMPORT_STUBS_CALL);
+    let names: Vec<_> = args.args().map(|arg| arg.to_owned()).collect();
+    let [names] = names.as_slice() else {
+        panic!("expected one list of names, got {names:?}");
+    };
+    names
+        .as_ref()
+        .items()
+        .expect("a list")
+        .iter()
+        .map(|name| name.as_str().expect("a module name").to_owned())
+        .collect()
+}
+
+fn tools_stubs(source: &str) -> ResumeValue {
+    ResumeValue::Return(MontyObject::dict([(
+        MontyObject::string("tools"),
+        MontyObject::string(source),
+    )]))
+}
+
+/// Functions on the returned module dispatch as ordinary host functions.
+#[tokio::test]
+async fn an_import_is_answered_by_the_host() {
+    let pool = Pool::new(config()).await.unwrap();
+    let mut session = pool.checkout(&ReplConfig::default()).await.unwrap();
+    let event = session
+        .feed("import tools\ntools.add(1, 2)", vec![], vec![], false, &mut no_print)
+        .await
+        .unwrap();
+    assert_eq!(expect_import(event), "tools");
+    let tools = host_module("tools", vec![("add", MontyObject::function("add", None))]);
+    let event = session.resume(ResumeValue::Return(tools), &mut no_print).await.unwrap();
+    let TurnEvent::FunctionCall {
+        function_name, args, ..
+    } = event
+    else {
+        panic!("expected the tool call, got {event:?}");
+    };
+    assert_eq!(function_name, "add");
+    let summands: Vec<_> = args.args().map(|arg| arg.to_owned()).collect();
+    assert_eq!(summands, vec![MontyObject::int(1), MontyObject::int(2)]);
+    let event = session
+        .resume(ResumeValue::Return(MontyObject::int(3)), &mut no_print)
+        .await
+        .unwrap();
+    assert_eq!(expect_complete(event), MontyObject::int(3));
+
+    let event = session
+        .feed("import nope", vec![], vec![], false, &mut no_print)
+        .await
+        .unwrap();
+    assert_eq!(expect_import(event), "nope");
+    let err = session.resume(ResumeValue::NotFound, &mut no_print).await.unwrap_err();
+    let PoolError::Runtime(exc) = err else {
+        panic!("expected Runtime, got {err:?}");
+    };
+    assert_snapshot!(exc.to_string(), @r#"
+    Traceback (most recent call last):
+      File "<python-input-1>", line 1, in <module>
+        import nope
+    ModuleNotFoundError: No module named 'nope'
+    "#);
+    session.finish().await.unwrap();
+}
+
+/// Host stubs are requested once per module per session, before type checking.
+#[tokio::test]
+async fn module_stubs_type_check_imports() {
+    let pool = Pool::new(config()).await.unwrap();
+    let mut session = pool.checkout(&type_checked()).await.unwrap();
+    let event = session
+        .feed(
+            "from tools import add\nadd('x', 2)",
+            vec![],
+            vec![],
+            false,
+            &mut no_print,
+        )
+        .await
+        .unwrap();
+    assert_eq!(expect_import_stubs(event), vec!["tools".to_owned()]);
+    let err = session
+        .resume(tools_stubs("def add(a: int, b: int) -> int: ...\n"), &mut no_print)
+        .await
+        .unwrap_err();
+    let PoolError::Typing(diagnostics) = err else {
+        panic!("expected Typing, got {err:?}");
+    };
+    assert_snapshot!(diagnostics, @r#"main.py:2:5: error[invalid-argument-type] Argument to function `add` is incorrect: Expected `int`, found `Literal["x"]`"#);
+    // an import in one feed is still bound for the next feed's check
+    let event = session
+        .feed("import math as m", vec![], vec![], false, &mut no_print)
+        .await
+        .unwrap();
+    assert_eq!(expect_complete(event), MontyObject::none());
+    let err = session
+        .feed("m.sqrt('4')", vec![], vec![], false, &mut no_print)
+        .await
+        .unwrap_err();
+    assert!(matches!(err, PoolError::Typing(_)), "expected Typing, got {err:?}");
+    // the stub is kept: the next feed importing the module does not ask again
+    let event = session
+        .feed("import tools", vec![], vec![], false, &mut no_print)
+        .await
+        .unwrap();
+    assert_eq!(expect_import(event), "tools");
+    session.finish().await.unwrap();
+}
+
+fn type_checked() -> ReplConfig {
+    ReplConfig {
+        type_check: true,
+        type_check_config: TypeCheckingConfig {
+            format: TypeCheckingFormat::Concise,
+            color: false,
+        },
+        ..ReplConfig::default()
+    }
+}
+
+/// Retained stubs would expose one tenant's module types to the next session.
+#[tokio::test]
+async fn module_stubs_do_not_outlive_their_session_on_a_reused_worker() {
+    let pool = Pool::new(config()).await.unwrap();
+    let mut session = pool.checkout(&type_checked()).await.unwrap();
+    let first_id = session.worker_id().unwrap();
+    let event = session
+        .feed("import tools", vec![], vec![], false, &mut no_print)
+        .await
+        .unwrap();
+    assert_eq!(expect_import_stubs(event), vec!["tools".to_owned()]);
+    let event = session
+        .resume(tools_stubs("def add(a: int, b: int) -> int: ...\n"), &mut no_print)
+        .await
+        .unwrap();
+    assert_eq!(expect_import(event), "tools");
+    let tools = host_module("tools", vec![]);
+    let event = session.resume(ResumeValue::Return(tools), &mut no_print).await.unwrap();
+    assert_eq!(expect_complete(event), MontyObject::none());
+    session.finish().await.unwrap();
+
+    // the same worker, a session answering with no stubs: the import must not resolve
+    let mut session = pool.checkout(&type_checked()).await.unwrap();
+    assert_eq!(session.worker_id(), Some(first_id));
+    let event = session
+        .feed("import tools", vec![], vec![], false, &mut no_print)
+        .await
+        .unwrap();
+    assert_eq!(expect_import_stubs(event), vec!["tools".to_owned()]);
+    let err = session
+        .resume(ResumeValue::NotHandled, &mut no_print)
+        .await
+        .unwrap_err();
+    let PoolError::Typing(diagnostics) = err else {
+        panic!("expected Typing, got {err:?}");
+    };
+    assert_snapshot!(diagnostics, @"main.py:1:8: error[unresolved-import] Cannot resolve imported module `tools`");
+    session.finish().await.unwrap();
 }

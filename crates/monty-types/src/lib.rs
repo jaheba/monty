@@ -38,9 +38,9 @@ pub use crate::{
         MontyType, NamedValues, ObjectRef, unstable,
     },
     os::{
-        GetenvArgs, MAX_SLEEP_SECONDS, MkdirCallArgs, MontyPath, OpenCallArgs, OsFunctionCall, PathBytesDataArgs,
-        PathStringDataArgs, RenameCallArgs, SleepError, TimeCaller, UrandomArgs, dir_stat, file_stat, sleep_duration,
-        sleep_duration_saturating, stat_result, symlink_stat,
+        GetenvArgs, IMPORT_CALL, IMPORT_STUBS_CALL, IMPORT_STUBS_CALL_ID, MAX_SLEEP_SECONDS, MkdirCallArgs, MontyPath,
+        OpenCallArgs, OsFunctionCall, PathBytesDataArgs, PathStringDataArgs, RenameCallArgs, SleepError, TimeCaller,
+        UrandomArgs, dir_stat, file_stat, sleep_duration, sleep_duration_saturating, stat_result, symlink_stat,
     },
     os_policy::{
         DateTimeSource, NamedZone, OsPolicy, ProcessTime, RandomSeed, RandomStart, SandboxTimeZone, SleepMode,
@@ -53,7 +53,10 @@ pub use crate::{
     },
     results::{ExtFunctionResult, NameLookupResult},
     run_options::{AssertMessageAnnotations, CompileOptions, SOURCE_SCAN_THRESHOLD},
-    type_checking::{TypeCheckState, TypeCheckingConfig, TypeCheckingFormat},
+    type_checking::{
+        CHECKER_MODULE_NAMES, ModuleStub, ModuleStubError, SANDBOX_MODULE_NAMES, TypeCheckState, TypeCheckingConfig,
+        TypeCheckingFormat, is_identifier, validate_module_name,
+    },
     uuid::MontyUuid,
     virtual_path::{normalize_virtual_path, validate_cwd},
 };

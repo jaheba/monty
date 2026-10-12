@@ -289,6 +289,27 @@ fn class_instance_and_function_values_round_trip() {
 }
 
 #[test]
+fn module_values_round_trip() {
+    assert_value_round_trip(&MontyObject::module("tools", MontyUuid::from_u128(7), []));
+    // a submodule is a module attr of its parent, functions are named by their dotted path
+    assert_value_round_trip(&MontyObject::module(
+        "pkg",
+        MontyUuid::from_u128(8),
+        vec![
+            (
+                MontyObject::string("add".to_owned()),
+                MontyObject::function("pkg.add".to_owned(), None),
+            ),
+            (MontyObject::string("VERSION".to_owned()), MontyObject::int(3)),
+            (
+                MontyObject::string("sub".to_owned()),
+                MontyObject::module("pkg.sub", MontyUuid::from_u128(9), []),
+            ),
+        ],
+    ));
+}
+
+#[test]
 fn repr_and_cycle_round_trip() {
     assert_value_round_trip(&MontyObject::repr("<unrepresentable>".to_owned()));
 
@@ -1119,6 +1140,19 @@ fn shutdown_event_round_trips() {
     };
     let back = decode_frame::<pb::ChildEvent>(bare.encode_to_vec().as_slice()).expect("bare ShutdownDump decodes");
     assert_eq!(back, bare);
+}
+
+/// A stubs ask naming a module twice is refused: a host runs one factory per
+/// name, and a compromised child must not multiply that work.
+#[test]
+fn a_stubs_ask_repeating_a_module_is_rejected() {
+    let call = pb::os_call::Call::ImportStubs(pb::os_call::ImportStubs {
+        modules: ["tools", "other", "tools"].map(str::to_owned).into_iter().collect(),
+    });
+    assert_eq!(
+        OsFunctionCall::try_from(call).unwrap_err().to_string(),
+        "invalid value for ImportStubs.modules: module \"tools\" is asked about twice"
+    );
 }
 
 /// A child-supplied fixed offset outside `datetime.timezone`'s range is refused

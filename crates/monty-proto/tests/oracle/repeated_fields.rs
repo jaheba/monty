@@ -88,6 +88,13 @@ fn every_schema_repeated_field_is_budgeted() {
         |message: &WireFunctionCall| &message.kwargs,
     );
     check_repeated(
+        "monty.v1.OsCall.ImportStubs.modules",
+        1,
+        WireType::LengthDelimited,
+        &[],
+        |message: &pb::os_call::ImportStubs| &message.modules,
+    );
+    check_repeated(
         "monty.v1.ResolveFutures.pending_call_ids",
         1,
         WireType::Varint,

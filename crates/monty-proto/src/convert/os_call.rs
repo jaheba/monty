@@ -3,7 +3,7 @@
 //! paths) *move* between the wire and the call — never clone. The one
 //! value-typed argument (`Getenv.default`) indexes the message's arena.
 
-use std::time::Duration;
+use std::{collections::HashSet, time::Duration};
 
 use monty_types::{
     GetenvArgs, MAX_TIMEZONE_OFFSET_SECONDS, MIN_TIMEZONE_OFFSET_SECONDS, MkdirCallArgs, MontyPath, MontyTimeZone,
@@ -116,6 +116,10 @@ fn call_to_proto(call: OsFunctionCall) -> (os_call::Call, Option<WireArena>) {
         OsFunctionCall::AsyncSystemSleep(delay) => Call::AsyncSystemSleep(os_call::AsyncSleep {
             delay: delay.as_secs_f64(),
         }),
+        OsFunctionCall::Import(module) => Call::Import(os_call::Import { module }),
+        OsFunctionCall::ImportStubs(modules) => Call::ImportStubs(os_call::ImportStubs {
+            modules: modules.into(),
+        }),
     };
     (call, values)
 }
@@ -178,6 +182,19 @@ impl TryFrom<os_call::Call> for OsFunctionCall {
             os_call::Call::SystemSleep(s) => Self::SystemSleep(field_sleep_duration(s.seconds, "Sleep.seconds")?),
             os_call::Call::AsyncSystemSleep(s) => {
                 Self::AsyncSystemSleep(field_sleep_duration(s.delay, "AsyncSleep.delay")?)
+            }
+            os_call::Call::Import(i) => Self::Import(i.module),
+            os_call::Call::ImportStubs(i) => {
+                // the worker asks about each module once; a repeat would multiply the host's factory work
+                let modules: Vec<String> = i.modules.into_iter().collect();
+                let mut seen = HashSet::with_capacity(modules.len());
+                if let Some(repeated) = modules.iter().find(|m| !seen.insert(m.as_str())) {
+                    return Err(ProtoConvertError::InvalidValue {
+                        field: "ImportStubs.modules",
+                        reason: format!("module {repeated:?} is asked about twice"),
+                    });
+                }
+                Self::ImportStubs(modules)
             }
         })
     }

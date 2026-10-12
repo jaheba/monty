@@ -32,7 +32,8 @@ In practice that means:
 
 ## The three host-access mechanisms
 
-Everything the sandbox can reach outside itself goes through one of three mechanisms, and all are opt-in per feed.
+Everything the sandbox can reach outside itself goes through one of three mechanisms, and all are opt-in: host
+functions, the objects wrapped in `ClassInstance` / `ClassType`, and the filesystem per feed, host modules per session.
 
 ### Host functions
 
@@ -81,6 +82,14 @@ It cannot guarantee that what you handed it is safe.
 A host function that takes a path and reads it, or takes a URL and fetches it, is an unconstrained filesystem or network
 primitive that you wrote.
 Validate arguments in the host function as you would validate any untrusted input.
+
+`external_modules` on `checkout()` selects which host modules the session's code can import; the bindings answer an
+import only from that mapping and never consult the host's own import system.
+A dict exposes all its public items, and its callables run on the host.
+A `ClassInstance` exposes only what its wrapper policy allows.
+Imports and stub requests use runtime-generated OS calls; sandbox code cannot call them by name (`__import__` is
+undefined).
+See [importing host modules](host-functions.md#importing-host-modules).
 
 ### Host objects and classes
 

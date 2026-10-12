@@ -24,9 +24,9 @@ They exist for development and for agents debugging code that runs on Monty; mos
 - Decorators on functions and classes
 - Simple classes: instance methods, `__init__`, `__repr__`/`__str__`, `__eq__`/`__hash__`, `__iter__`/`__next__`,
     `__contains__`, `__index__`, class variables
-- `@dataclass`, with the `eq=` and `frozen=` options only (every other option raises `NotImplementedError`, and
-    there is no `field()`, `fields()` or `asdict()`), plus host class instances passed in and out (and host classes the
-    sandbox may instantiate when granted)
+- `@dataclass`, with the `eq=` and `frozen=` options only (every other option raises `NotImplementedError`),
+    `field()` (with `default=...` / `default_factory=...`) and `__post_init__`, but no `fields()` or `asdict()`, plus host
+    class instances passed in and out (and host classes the sandbox may instantiate when granted)
 - List, dict and set comprehensions
 - `try` / `except` / `else` / `finally`, `raise ... from ...`
 - `for`, `while`, `if` / `elif` / `else`, `break`, `continue`, `pass`, `assert`, `global`, `nonlocal`, `return`
@@ -34,7 +34,8 @@ They exist for development and for agents debugging code that runs on Monty; mos
 - f-strings (including the `=` debug form), `str.format()` and `format()`, with `!r` / `!s` / `!a` conversions,
     format specs and nested replacement fields
 - `async` / `await`, and `asyncio.run` / `asyncio.gather` / `asyncio.sleep`
-- `import x`, `import x.y`, `from x import y, z as w`
+- `import x`, `import x.y`, `from x import y, z as w`; a module the sandbox does not have is requested from the host,
+    see [modules.md](modules.md#host-modules)
 - Starred unpacking everywhere CPython allows it
 - Runtime generic aliases (`list[int]`) and `|` unions (`int | None`), see [typing.md](typing.md)
 
@@ -83,7 +84,9 @@ The following modules are present:
 | `json`        | [json.md](json.md)               |
 | `math`        | [math.md](math.md)               |
 | `os`          | [os.md](os.md)                   |
+| `os.path`     | [os.md](os.md)                   |
 | `pathlib`     | [pathlib.md](pathlib.md)         |
+| `posixpath`   | [os.md](os.md)                   |
 | `random`      | [random.md](random.md)           |
 | `re`          | [re.md](re.md)                   |
 | `sys`         | [sys.md](sys.md)                 |

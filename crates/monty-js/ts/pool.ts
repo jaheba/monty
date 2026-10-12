@@ -16,7 +16,7 @@ import {
   encodeOsPolicy,
   validateMaxCheckouts,
 } from './options.js'
-import { MontySession } from './session.js'
+import { type ExternalModules, HostModules, MontySession } from './session.js'
 import { captureTelemetryContext } from './telemetry.js'
 
 /** Options for [`Monty`]. */
@@ -75,8 +75,14 @@ export interface CheckoutOptions {
   limits?: ResourceLimits
   /** Type-check each fed snippet before executing it (default false). */
   typeCheck?: boolean
-  /** Stub file contents used by type checking. */
+  /** Global type-checking stubs. Supply module stubs through `ExternalModule.stubs` in `externalModules`. */
   typeCheckStubs?: string
+  /**
+   * Importable host modules for every feed of the session (see [`ExternalModules`]); missing
+   * imports raise `ModuleNotFoundError`. The record is read live, each entry validated when a
+   * snippet first imports it, so modules may be added later; a factory runs once per session.
+   */
+  externalModules?: ExternalModules
   /**
    * How `MontyTypingError` diagnostics are rendered (default `'full'`).
    * Chosen here rather than on the thrown error because the checker's
@@ -195,6 +201,7 @@ export class Monty {
     }
     const assertAnnotations = encodeAssertMessageAnnotations(options.assertMessageAnnotations)
     const osPolicy = encodeOsPolicy(options.osPolicy ?? {})
+    const modules = new HostModules(options.externalModules)
     const native = this.native.checkout({
       scriptName: options.scriptName ?? 'main.py',
       ...(options.limits !== undefined ? { limits: options.limits } : {}),
@@ -208,7 +215,7 @@ export class Monty {
     })
     const telemetryContext = captureTelemetryContext()
     await native.enter(telemetryContext)
-    return new MontySession(native)
+    return new MontySession(native, modules)
   }
 
   /**

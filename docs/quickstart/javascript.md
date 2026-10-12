@@ -77,6 +77,23 @@ Keyword arguments from the sandbox arrive as a trailing object on the call.
 An error thrown by a host function crosses into the sandbox as a Python exception, using the error's `name` when it
 matches a Python exception type and `RuntimeError` otherwise.
 
+`externalModules` on `checkout()` maps import names to `ExternalModule` values with optional type stubs, or to
+zero-argument factories returning one (a promise is awaited), run when a feed first needs the module.
+A plain object's public properties become module attributes; functions become host functions named `<module>.<attr>`:
+
+```ts
+import { ExternalModule, Monty } from '@pydantic/monty'
+
+await using pool = await Monty.create()
+const tools = new ExternalModule({ add: (a: number, b: number) => a + b })
+await using session = await pool.checkout({ externalModules: { tools } })
+
+const code = 'import tools\nfrom tools import add\ntools.add(1, 2) + add(3, 4)'
+console.log(await session.feedRun(code)) // 10
+```
+
+See [importing host modules](../host-functions.md#importing-host-modules).
+
 ### Value conversion
 
 | Python              | JavaScript                                      |
@@ -243,6 +260,9 @@ await using session = await pool.checkout({
 
 console.log(await session.feedRun('fetch_data()', { externalLookup: { fetch_data: () => 'data' } })) // data
 ```
+
+`ExternalModule.stubs` supplies a module's `.pyi` source, fetched at its first type-checked import.
+See [type checking](../type-checking.md#declaring-what-the-host-provides).
 
 Omitted `maxMemory` / `maxFeedDurationSecs` means unlimited.
 `maxFeedDurationSecs` and `maxTurnDurationSecs` bound one execution clock over one feed

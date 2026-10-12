@@ -24,7 +24,8 @@ use crate::{
     exception_private::{ExcType, RunError, SimpleException},
     expressions::{
         AssignTarget, Callable, CaptureSource, CmpOperator, Comprehension, DictItem, Expr, ExprLoc, Identifier,
-        Literal, NameScope, Node, Operator, PreparedFunctionDef, PreparedNode, SequenceItem, UnpackTarget,
+        ImportName, Literal, NameScope, Node, Operator, PreparedFunctionDef, PreparedNode, SequenceItem, Submodule,
+        UnpackTarget,
     },
     fstring::{ConversionFlag, FStringPart, FormatSpec},
     function::Function,
@@ -788,14 +789,15 @@ impl<'a, 'i> Compiler<'a, 'i> {
             } => self.compile_with(context, target.as_ref(), body)?,
             Node::Import { names } => {
                 for import_name in names {
-                    self.compile_import(import_name.module_name, &import_name.binding)?;
+                    self.compile_import(import_name)?;
                 }
             }
             Node::ImportFrom {
                 module_name,
+                submodules,
                 names,
                 position,
-            } => self.compile_import_from(*module_name, names, *position)?,
+            } => self.compile_import_from(*module_name, submodules, names, *position)?,
             Node::Break { position } => self.compile_break(*position)?,
             Node::Continue { position } => self.compile_continue(*position)?,
             // These are handled during the prepare phase and produce no bytecode
@@ -1074,12 +1076,30 @@ impl<'a, 'i> Compiler<'a, 'i> {
     }
 
     /// Compiles an import, resolving the module only when execution reaches it.
-    fn compile_import(&mut self, module_name: StringId, binding: &Identifier) -> Result<(), CompileError> {
-        let position = binding.position;
+    /// Resolves every dotted component; binds the last if aliased, otherwise the top-level module.
+    fn compile_import(&mut self, import: &ImportName) -> Result<(), CompileError> {
+        let position = import.binding.position;
         self.code.set_location(position, None);
         self.code
-            .emit_u16(Opcode::LoadModule, check_name_index_u16(module_name, position)?)?;
-        self.compile_store(binding)
+            .emit_u16(Opcode::LoadModule, check_name_index_u16(import.module_name, position)?)?;
+        if import.binds_top_level {
+            self.code.emit(Opcode::Dup)?;
+        }
+        self.compile_submodules(&import.submodules, position)?;
+        if import.binds_top_level {
+            self.code.emit(Opcode::Pop)?;
+        }
+        self.compile_store(&import.binding)
+    }
+
+    /// Replaces the stack top with each successive submodule of a dotted import.
+    fn compile_submodules(&mut self, submodules: &[Submodule], position: CodeRange) -> Result<(), CompileError> {
+        for submodule in submodules {
+            let name_idx = check_name_index_u16(submodule.name, position)?;
+            let path_idx = check_name_index_u16(submodule.path, position)?;
+            self.code.emit_u16_u16(Opcode::LoadSubmodule, name_idx, path_idx)?;
+        }
+        Ok(())
     }
 
     /// Creates the module once, then loads and binds each imported attribute.
@@ -1087,18 +1107,21 @@ impl<'a, 'i> Compiler<'a, 'i> {
     fn compile_import_from(
         &mut self,
         module_name: StringId,
+        submodules: &[Submodule],
         names: &[(StringId, Identifier)],
         position: CodeRange,
     ) -> Result<(), CompileError> {
         self.code.set_location(position, None);
-        self.code
-            .emit_u16(Opcode::LoadModule, check_name_index_u16(module_name, position)?)?;
+        let module_idx = check_name_index_u16(module_name, position)?;
+        self.code.emit_u16(Opcode::LoadModule, module_idx)?;
+        self.compile_submodules(submodules, position)?;
         for (i, (import_name, binding)) in names.iter().enumerate() {
             // Preserve the module for subsequent attributes; the last load consumes it.
             if i < names.len() - 1 {
                 self.code.emit(Opcode::Dup)?;
             }
             let name_idx = check_name_index_u16(*import_name, position)?;
+            // LoadModule or the last LoadSubmodule saved the error's module name on the frame.
             self.code.emit_u16(Opcode::LoadAttrImport, name_idx)?;
             self.compile_store(binding)?;
         }

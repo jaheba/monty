@@ -20,9 +20,9 @@ use monty_proto::{
     os_call_from_proto, pb, validate_requirement,
 };
 use monty_types::{
-    AssertMessageAnnotations, CallArgs, DEFAULT_MAX_SUSPENSIONS, ExcType, ExtFunctionResult, MONTY_VERSION,
-    MontyException, MontyObject, MontyUuid, NameLookupResult, NamedValues, OsFunctionCall, OsPolicy, PrintStream,
-    ResourceLimits, SleepMode, SourceRange, TypeCheckingConfig, validate_cwd,
+    AssertMessageAnnotations, CallArgs, DEFAULT_MAX_SUSPENSIONS, ExcType, ExtFunctionResult, IMPORT_STUBS_CALL_ID,
+    MONTY_VERSION, MontyException, MontyObject, MontyUuid, NameLookupResult, NamedValues, OsFunctionCall, OsPolicy,
+    PrintStream, ResourceLimits, SleepMode, SourceRange, TypeCheckingConfig, validate_cwd,
 };
 #[cfg(feature = "telemetry")]
 use opentelemetry::trace::{FutureExt, TraceContextExt};
@@ -282,6 +282,11 @@ pub enum TurnEvent {
     /// [`Checkout::resume`]. A caller with no handler should resume with
     /// [`ResumeValue::NotHandled`]; the sandbox then raises the call's own
     /// no-handler default.
+    ///
+    /// Answer host imports from the caller's modules before other handlers.
+    /// [`OsFunctionCall::Import`] takes a module value; `NotFound` / `NotHandled` raise
+    /// `ModuleNotFoundError`. [`OsFunctionCall::ImportStubs`] takes a dict of dotted
+    /// module paths to `.pyi` source or `None`, or `NotHandled` for no stubs.
     OsCall {
         function_name: String,
         /// One arena holding every positional and keyword argument.
@@ -334,7 +339,7 @@ pub enum ResumeValue {
     /// other tasks; resolve later via [`Checkout::resume_futures`].
     Future,
     /// No handler exists for the called name — the sandbox raises
-    /// `NameError`.
+    /// `NameError` (`ModuleNotFoundError` for an `import`).
     NotFound,
     /// No handler accepted this OS call — the sandbox raises the call's own
     /// no-handler default (`PermissionError` naming the path for filesystem
@@ -920,11 +925,10 @@ impl Checkout {
             cwd,
         }));
         let outcome = self.expect_turn(&request, on_print).await;
-        // The worker adopts the directory after type checking and before it
-        // parses or runs the snippet, so once the request reached it every
-        // reply but a typing rejection (a `SyntaxError` included) means it
-        // took effect; a lost worker takes the session with it.
-        if self.request_sent && !matches!(outcome, Err(PoolError::Typing(_))) {
+        // The worker adopts the directory as the request arrives, before the
+        // stubs ask and type checking, so once the request reached it every
+        // reply means it took effect; a lost worker takes the session with it.
+        if self.request_sent {
             self.cwd_set = true;
         }
         outcome
@@ -1852,6 +1856,18 @@ impl Checkout {
                     };
                 }
                 Some(pb::child_event::Kind::TypingError(typing)) => {
+                    // TypingError can only end a checked feed or its pending import_stubs call.
+                    // Accepting it elsewhere would falsely mark a suspended feed complete.
+                    let type_checked = match &request.kind {
+                        Some(pb::parent_request::Kind::Feed(feed)) => !feed.skip_type_check,
+                        Some(pb::parent_request::Kind::ResumeCall(resume)) => resume.call_id == IMPORT_STUBS_CALL_ID,
+                        _ => false,
+                    };
+                    if !type_checked {
+                        return Err(
+                            self.protocol_violation("TypingError reply to a request that is not a type-checked Feed")
+                        );
+                    }
                     self.pending = None;
                     self.feed_mounts = None;
                     return Err(PoolError::Typing(typing.diagnostics));

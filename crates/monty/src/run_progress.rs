@@ -16,8 +16,9 @@ use monty_types::{
 use crate::{
     asyncio::CallId,
     bytecode::{FrameExit, PendingLookupEffect, VM, VMSnapshot},
-    exception_private::{ExcTypeExt, RunError, RunResult, SimpleException},
+    exception_private::{ExcTypeExt, ExceptionRaise, RunError, RunResult, SimpleException},
     heap::{DropWithContext, Heap, HeapReader},
+    intern::StringId,
     object_bridge::MontyObjectExt,
     os_dispatch::{PendingEffect, PostConversionEffect, release_pending_effect},
     run::Executor,
@@ -179,7 +180,7 @@ impl FunctionCall {
         result: impl Into<ExtFunctionResult>,
         print: PrintWriter<'_>,
     ) -> Result<RunProgress, MontyException> {
-        self.snapshot.run(result, print)
+        self.snapshot.run(result.into(), print)
     }
 
     /// Resumes execution by pushing an `ExternalFuture` instead of a concrete value.
@@ -529,7 +530,7 @@ pub(crate) fn resume_lookup(
     let value = match (answer, effect) {
         (LookupAnswer::Error(err), effect) => {
             effect.drop_with(vm);
-            return vm.resume_with_exception(err);
+            return vm.resume_with_exception(import_from_error(err, name, vm));
         }
         (LookupAnswer::Value(value), Some(effect)) => effect.apply(Some(value), vm),
         (LookupAnswer::Undefined, Some(effect)) => effect.apply(None, vm),
@@ -553,10 +554,31 @@ pub(crate) fn resume_lookup(
             }
             value
         }
-        (LookupAnswer::Undefined, None) => return vm.resume_with_exception(undefined_lookup_error(scope, name)),
+        (LookupAnswer::Undefined, None) => {
+            return vm.resume_with_exception(import_from_error(undefined_lookup_error(scope, name), name, vm));
+        }
     };
     vm.push(value);
     vm.run_external()
+}
+
+/// Converts missing import attributes to `ImportError` for `from` imports or
+/// `ModuleNotFoundError` for dotted modules, matching synchronous loads.
+/// Other errors and non-import lookups pass through unchanged.
+fn import_from_error(err: RunError, name: &str, vm: &VM<'_>) -> RunError {
+    let RunError::Exc(exc) = &err else {
+        return err;
+    };
+    if exc.exc.exc_type() != ExcType::AttributeError {
+        return err;
+    }
+    if let Some(module) = vm.suspended_import_from() {
+        ExcType::cannot_import_name(name, vm.interns.get_str(module))
+    } else if let Some(path) = vm.suspended_submodule() {
+        ExcType::module_not_found_error(vm.interns.get_str(path), None)
+    } else {
+        err
+    }
 }
 
 /// Answers every lookup exit no host will serve — the non-iterative paths —
@@ -891,6 +913,9 @@ pub(crate) fn resume_with_result(
     result: ExtFunctionResult,
     eager_call_id: Option<u32>,
 ) -> Result<FrameExit, RunError> {
+    if let Some(module_id) = vm.suspended_import() {
+        return resume_import(vm, module_id, result, eager_call_id);
+    }
     // An eager answer and a future both register the call's future; the
     // eager one settles it in the same step.
     let future_call_id = match (&result, eager_call_id) {
@@ -935,6 +960,34 @@ pub(crate) fn resume_with_result(
             vm.resume_with_exception(ExtFunctionResult::not_found_exc(&function_name))
         }
         (ExtFunctionResult::Future(_), None) => unreachable!("a future answer always carries its call id"),
+    }
+}
+
+/// Resumes an import with the host's module value or raises its exception without carets.
+/// `NotFound` raises `ModuleNotFoundError`; futures are rejected because imports cannot await.
+fn resume_import(
+    vm: &mut VM<'_>,
+    module_id: StringId,
+    result: ExtFunctionResult,
+    eager_call_id: Option<u32>,
+) -> Result<FrameExit, RunError> {
+    match (result, eager_call_id) {
+        (ExtFunctionResult::Return(obj), None) => vm.resume(obj),
+        (ExtFunctionResult::Error(exc), None) => {
+            let mut raise = ExceptionRaise::from(exc);
+            raise.hide_caret = true;
+            vm.resume_with_exception(RunError::Exc(raise))
+        }
+        (ExtFunctionResult::NotFound(_), None) => {
+            vm.resume_with_exception(ExcType::module_not_found_error(vm.interns.get_str(module_id), None))
+        }
+        (ExtFunctionResult::Future(_), _) | (_, Some(_)) => {
+            let message = format!(
+                "import of '{}' cannot be answered with a future",
+                vm.interns.get_str(module_id)
+            );
+            vm.resume_with_exception(SimpleException::new_msg(ExcType::RuntimeError, message).into())
+        }
     }
 }
 

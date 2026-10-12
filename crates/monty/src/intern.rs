@@ -537,6 +537,8 @@ pub enum StaticStrings {
     AbsTol,
     /// `Path.absolute()` method — yields a host call.
     Absolute,
+    /// `os.path.abspath()` function.
+    Abspath,
     /// `itertools.accumulate()` function.
     Accumulate,
     /// `math.acos()` function.
@@ -659,6 +661,8 @@ pub enum StaticStrings {
     BaseExecPrefix,
     /// `sys.base_prefix` attribute.
     BasePrefix,
+    /// `os.path.basename()` function.
+    Basename,
     /// `itertools.batched()` function.
     Batched,
     /// `beta` parameter of `random.gammavariate()` and the other shape variates.
@@ -744,6 +748,12 @@ pub enum StaticStrings {
     Combine,
     /// `unicodedata.combining()` function.
     Combining,
+    /// `os.path.commonpath()` function.
+    Commonpath,
+    /// `os.path.commonprefix()` function.
+    Commonprefix,
+    /// `field(compare=...)`.
+    Compare,
     /// `re.compile()` function
     Compile,
     /// `itertools.compress()` function.
@@ -830,6 +840,11 @@ pub enum StaticStrings {
     Defaultdict,
     /// `namedtuple(..., defaults=...)` keyword argument.
     Defaults,
+    /// `os.defpath` / `os.path.defpath` constant name.
+    Defpath,
+    /// Value of `os.defpath`.
+    #[strum(serialize = "/bin:/usr/bin")]
+    DefpathString,
     /// `math.degrees()` function.
     Degrees,
     /// `delay` parameter of `asyncio.sleep()`.
@@ -858,6 +873,8 @@ pub enum StaticStrings {
     DigestSize,
     /// Kwarg name `dir_fd` — `os.stat(dir_fd=...)`, `os.mkdir(dir_fd=...)`, etc.
     DirFd,
+    /// `os.path.dirname()` function.
+    Dirname,
     /// `gc.disable()` function.
     Disable,
     /// `set.discard()` method.
@@ -866,6 +883,8 @@ pub enum StaticStrings {
     Dist,
     /// `dklen` parameter of `hashlib.pbkdf2_hmac()`.
     Dklen,
+    /// `field(doc=...)`, CPython's per-field docstring.
+    Doc,
     /// `sys.dont_write_bytecode` attribute.
     DontWriteBytecode,
     /// `re.DOTALL` flag
@@ -972,6 +991,10 @@ pub enum StaticStrings {
     Exp2,
     /// `str.expandtabs()` method.
     Expandtabs,
+    /// `os.path.expanduser()` function.
+    Expanduser,
+    /// `os.path.expandvars()` function.
+    Expandvars,
     /// `math.expm1()` function.
     Expm1,
     /// `random.expovariate()` function.
@@ -982,6 +1005,10 @@ pub enum StaticStrings {
     Extendleft,
     /// `os.extsep` constant name.
     Extsep,
+    /// Kwarg name `f1` — `os.path.samefile(f1=...)`.
+    F1,
+    /// Kwarg name `f2` — `os.path.samefile(f2=...)`.
+    F2,
     /// `math.fabs()` function.
     Fabs,
     /// `math.factorial()` function.
@@ -991,11 +1018,15 @@ pub enum StaticStrings {
     FalseRepr,
     /// `fanout` parameter of `hashlib.blake2b()`.
     Fanout,
+    /// `dataclasses.field()` function, and the `Field` type name.
+    Field,
     /// `namedtuple(field_names=...)` keyword argument.
     #[strum(serialize = "field_names")]
     FieldNames,
     /// Kwarg name `file` — `open(file=...)`.
     File,
+    /// Kwarg name `filename` — `os.path.getsize(filename=...)`, `os.path.realpath(filename=...)`.
+    Filename,
     /// `zip_longest(fillvalue=...)` keyword.
     Fillvalue,
     /// `itertools.filterfalse()` function.
@@ -1086,14 +1117,22 @@ pub enum StaticStrings {
     Generic,
     /// `dict.get()` method.
     Get,
+    /// `os.path.getatime()` function.
+    Getatime,
+    /// `os.path.getctime()` function.
+    Getctime,
     /// `os.getcwd()` function.
     Getcwd,
     /// `os.getcwdb()` function.
     Getcwdb,
     /// `os.getenv()` function.
     Getenv,
+    /// `os.path.getmtime()` function.
+    Getmtime,
     /// `random.getrandbits()` function.
     Getrandbits,
+    /// `os.path.getsize()` function.
+    Getsize,
     /// `random.getstate()` function.
     Getstate,
     /// `globals` parameter of eval/exec.
@@ -1111,6 +1150,8 @@ pub enum StaticStrings {
     Grouper,
     /// `match.groups()` method
     Groups,
+    /// `field(hash=...)`.
+    Hash,
     /// `hash_name` parameter of `hashlib.pbkdf2_hmac()`.
     HashName,
     /// `sys.flags.hash_randomization` field.
@@ -1187,6 +1228,8 @@ pub enum StaticStrings {
     IsNormalized,
     /// `Path.is_symlink()` method — yields a host call.
     IsSymlink,
+    /// `os.path.isabs()` function.
+    Isabs,
     /// `isalnum()` method, shared by `str` and `bytes`.
     Isalnum,
     /// `isalpha()` method, shared by `str` and `bytes`.
@@ -1197,20 +1240,32 @@ pub enum StaticStrings {
     Isclose,
     /// `str.isdecimal()` method.
     Isdecimal,
+    /// `os.path.isdevdrive()` function.
+    Isdevdrive,
     /// `isdigit()` method, shared by `str` and `bytes`.
     Isdigit,
+    /// `os.path.isdir()` function.
+    Isdir,
     /// `set.isdisjoint()` method.
     Isdisjoint,
+    /// `os.path.isfile()` function.
+    Isfile,
     /// `math.isfinite()` function.
     Isfinite,
     /// `str.isidentifier()` method.
     Isidentifier,
     /// `math.isinf()` function.
     Isinf,
+    /// `os.path.isjunction()` function.
+    Isjunction,
     /// `itertools.islice()` function.
     Islice,
+    /// `os.path.islink()` function.
+    Islink,
     /// `islower()` method, shared by `str` and `bytes`.
     Islower,
+    /// `os.path.ismount()` function.
+    Ismount,
     /// `math.isnan()` function.
     Isnan,
     /// `str.isnumeric()` method.
@@ -1290,6 +1345,8 @@ pub enum StaticStrings {
     LeafSize,
     /// `length` parameter of a SHAKE `digest()`.
     Length,
+    /// `os.path.lexists()` function.
+    Lexists,
     /// `math.lgamma()` function.
     Lgamma,
     /// The value of `sys.platlibdir`.
@@ -1390,6 +1447,8 @@ pub enum StaticStrings {
     Md5,
     /// `memo` parameter of `copy.deepcopy()`.
     Memo,
+    /// `field(metadata=...)`.
+    Metadata,
     /// `sys.version_info.micro` field.
     Micro,
     /// `datetime` / `time` `microsecond` attribute and constructor kwarg.
@@ -1411,6 +1470,10 @@ pub enum StaticStrings {
     Minute,
     /// `timedelta(minutes=...)` constructor kwarg.
     Minutes,
+    /// `dataclasses.MISSING` — the sentinel for an argument not given, since
+    /// `None` is a legitimate default.
+    #[strum(serialize = "MISSING")]
+    Missing,
     /// `Path.mkdir()` and `os.mkdir()` — yields a host call.
     Mkdir,
     /// `time.mktime()` function.
@@ -1486,6 +1549,10 @@ pub enum StaticStrings {
     Normalize,
     /// `random.normalvariate()` function.
     Normalvariate,
+    /// `os.path.normcase()` function.
+    Normcase,
+    /// `os.path.normpath()` function.
+    Normpath,
     /// Python's `NotImplemented` singleton representation.
     #[strum(serialize = "NotImplemented")]
     NotImplementedRepr,
@@ -1519,6 +1586,9 @@ pub enum StaticStrings {
     /// `os.fspath()` function — distinct from `Fspath` (`__fspath__`).
     #[strum(serialize = "fspath")]
     OsFspath,
+    /// Module name for `import os.path`.
+    #[strum(serialize = "os.path")]
+    OsPath,
     /// Named-tuple type name of the `os.stat()` result.
     #[strum(serialize = "StatResult")]
     OsStatResult,
@@ -1553,6 +1623,10 @@ pub enum StaticStrings {
     PathClass,
     /// Module name for `import pathlib`.
     Pathlib,
+    /// Kwarg name `paths` — `os.path.commonpath(paths=...)`.
+    Paths,
+    /// `os.pathsep` / `os.path.pathsep` constant name.
+    Pathsep,
     /// `pattern.pattern`
     #[strum(serialize = "pattern")]
     PatternAttr,
@@ -1593,6 +1667,11 @@ pub enum StaticStrings {
     Population,
     /// Value of `os.name`.
     Posix,
+    /// Module name for `import posixpath`, and the name `os.path` reports.
+    Posixpath,
+    /// `__post_init__` — the hook the synthesized `__init__` calls last.
+    #[strum(serialize = "__post_init__")]
+    PostInit,
     /// `math.pow()` function.
     Pow,
     /// `sys.prefix` attribute.
@@ -1649,12 +1728,16 @@ pub enum StaticStrings {
     Readlines,
     /// `complex.real` attribute.
     Real,
+    /// `os.path.realpath()` function.
+    Realpath,
     /// `functools.reduce()` function.
     Reduce,
     /// Kwarg name `rel_tol` — `math.isclose(rel_tol=...)`.
     RelTol,
     /// `sys.version_info.releaselevel` field.
     Releaselevel,
+    /// `os.path.relpath()` function.
+    Relpath,
     /// `math.remainder()` function.
     Remainder,
     /// `remove()` method, shared by `set`, `list` and `deque`.
@@ -1704,6 +1787,10 @@ pub enum StaticStrings {
     Rstrip,
     /// `asyncio.run()` function.
     Run,
+    /// Kwarg name `s1` — `os.path.samestat(s1=...)`.
+    S1,
+    /// Kwarg name `s2` — `os.path.samestat(s2=...)`.
+    S2,
     /// `sys.flags.safe_path` field.
     SafePath,
     /// `salt` parameter of `hashlib.blake2b()` and `pbkdf2_hmac()`.
@@ -1711,6 +1798,10 @@ pub enum StaticStrings {
     /// `blake2b.SALT_SIZE` class constant.
     #[strum(serialize = "SALT_SIZE")]
     SaltSize,
+    /// `os.path.samefile()` function.
+    Samefile,
+    /// `os.path.samestat()` function.
+    Samestat,
     /// `random.sample()` function.
     Sample,
     /// `re.search()` / `pattern.search()` method
@@ -1807,8 +1898,14 @@ pub enum StaticStrings {
     Span,
     /// `split()` method, shared by `str` and `bytes`; also `re.split()`.
     Split,
+    /// `os.path.splitdrive()` function.
+    Splitdrive,
+    /// `os.path.splitext()` function.
+    Splitext,
     /// `splitlines()` method, shared by `str` and `bytes`.
     Splitlines,
+    /// `os.path.splitroot()` function.
+    Splitroot,
     /// `math.sqrt()` function.
     Sqrt,
     /// Kwarg name `src` — `os.rename(src=...)`, `os.replace(src=...)`.
@@ -1889,6 +1986,8 @@ pub enum StaticStrings {
     Suffixes,
     /// `math.sumprod()` function.
     Sumprod,
+    /// `os.path.supports_unicode_filenames` constant name.
+    SupportsUnicodeFilenames,
     /// `swapcase()` method, shared by `str` and `bytes`.
     Swapcase,
     /// `set.symmetric_difference()` method.

@@ -248,6 +248,9 @@ value). Divergences from real CPython objects:
     `hasOwnProperty()`, `call()`, `bind()` and the like are absent; and
     `constructor`, `__proto__`, `prototype`, `arguments` and `caller` are
     refused under every policy, an explicit list included.
+- **Instances are not callable**: `x()` raises `TypeError: 'Point' object is not callable` under every wrapper policy,
+    even if the class defines `__call__`.
+    Only a host driving the protocol directly can answer the suspended `__call__` method call.
 - **A method read as a value is not a bound method**: with the name only in
     `allowed_methods`, `m = x.greeting` raises `AttributeError` and
     `hasattr(x, 'greeting')` is `False` — only the call `x.greeting(...)`

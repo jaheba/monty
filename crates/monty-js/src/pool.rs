@@ -324,6 +324,7 @@ impl NativePool {
                 // only a serving relay has profiles; its default applies
                 profile: None,
             },
+
             checkout: Arc::new(AsyncMutex::new(None)),
         })
     }

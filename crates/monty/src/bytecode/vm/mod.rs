@@ -45,13 +45,13 @@ use crate::{
     name_map::NameMap,
     object_bridge::MontyObjectExt,
     os_dispatch::{
-        PendingEffect, PostConversionEffect, release_pending_effect, resolve_call_paths, urandom_reply_error,
+        PendingEffect, PostConversionEffect, Reshaped, release_pending_effect, resolve_call_paths, urandom_reply_error,
     },
     parse::CodeRange,
     run::{Program, SessionTables, VmEnv},
     types::{
         Dict, LongInt, PyTrait, SessionRandom,
-        file::{apply_buffer_store, apply_open_name, apply_write_position},
+        file::{apply_buffer_load, apply_buffer_store, apply_file_next, apply_open_name, apply_write_position},
         random::SEED_BYTES,
         str::allocate_string,
     },
@@ -408,6 +408,11 @@ pub struct CallFrame<'code> {
     /// construction. Threaded through serialization (`SerializedFrame`) so a
     /// suspended initializer resumes correctly.
     is_initializer: bool,
+
+    /// Module name for `LoadAttrImport` errors, set by `LoadModule`/`LoadSubmodule`.
+    /// Keeping it on the frame avoids another opcode operand; the compiler emits
+    /// no intervening instructions that change it.
+    import_from_module: Option<StringId>,
 }
 
 /// Narrows a VM stack index to the frame's `u32` field.
@@ -448,6 +453,7 @@ impl<'code> CallFrame<'code> {
             is_parked: false,
             namespace: None,
             is_initializer: false,
+            import_from_module: None,
         }
     }
 
@@ -504,6 +510,7 @@ impl<'code> CallFrame<'code> {
             is_parked: false,
             namespace,
             is_initializer: false,
+            import_from_module: None,
         }
     }
 }
@@ -650,6 +657,10 @@ pub struct SerializedFrame {
     /// `CallFrame.namespace`).
     #[serde(rename = "N")]
     namespace: Option<Box<FrameNamespace>>,
+
+    /// The `from ... import` in progress, if the frame suspended inside one.
+    #[serde(default, rename = "M")]
+    import_from_module: Option<StringId>,
 }
 
 impl CallFrame<'_> {
@@ -670,6 +681,7 @@ impl CallFrame<'_> {
             call_offset: self.call_offset,
             is_initializer: self.is_initializer,
             namespace: mem::take(&mut self.namespace),
+            import_from_module: self.import_from_module,
         }
     }
 }
@@ -986,6 +998,7 @@ impl<'h> VM<'h> {
                     is_parked: false,
                     namespace: sf.namespace,
                     is_initializer: sf.is_initializer,
+                    import_from_module: sf.import_from_module,
                 }
             })
             .collect();
@@ -1607,10 +1620,22 @@ impl<'h> VM<'h> {
                     let name_id = StringId::from_index(name_idx);
                     handle_call_result!(self, self.load_attr(name_id));
                 }
+                Opcode::LoadSubmodule => {
+                    let (name_idx, path_idx) = self.current_frame.fetch_u16_u16();
+                    let path_id = StringId::from_index(path_idx);
+                    // the module a following `LoadAttrImport` names in its `ImportError`
+                    self.current_frame.import_from_module = Some(path_id);
+                    handle_call_result!(self, self.load_submodule(StringId::from_index(name_idx), path_id));
+                }
                 Opcode::LoadAttrImport => {
                     let name_idx = self.current_frame.fetch_u16();
                     let name_id = StringId::from_index(name_idx);
-                    handle_call_result!(self, self.load_attr_import(name_id));
+                    // the compiler emits this only after the statement's `LoadModule`
+                    let module_id = self
+                        .current_frame
+                        .import_from_module
+                        .expect("LoadAttrImport runs after its LoadModule set the frame's module");
+                    handle_call_result!(self, self.load_attr_import(name_id, module_id));
                 }
                 Opcode::StoreAttr => {
                     let name_idx = self.current_frame.fetch_u16();
@@ -1691,6 +1716,18 @@ impl<'h> VM<'h> {
                         return Err(RunError::internal("ForIter: expected iterator ref on stack"));
                     };
                     let mut iter = self.heap.read(heap_id);
+                    // A file nobody has read yet has no buffer to slice: load it from
+                    // the host, then re-dispatch this instruction against the buffer.
+                    if let HeapReadOutput::OpenFile(file) = &iter
+                        && file.needs_buffer_load(self)
+                    {
+                        let effect = PostConversionEffect::BufferLoad { file_id: heap_id };
+                        let call = file.buffer_load_call(self, effect);
+                        drop(iter);
+                        self.current_frame.ip = self.instruction_ip;
+                        handle_call_result!(self, Ok(call));
+                        continue;
+                    }
 
                     match iter.py_next(self) {
                         Ok(Some(value)) => self.push(value),
@@ -2038,7 +2075,9 @@ impl<'h> VM<'h> {
                 // Module Operations
                 Opcode::LoadModule => {
                     let module_id = self.current_frame.fetch_u16();
-                    try_catch!(self, self.load_module(module_id));
+                    // for the `LoadAttrImport`s of a `from ... import`; harmless for a bare `import`
+                    self.current_frame.import_from_module = Some(StringId::from_index(module_id));
+                    handle_call_result!(self, Ok(self.load_module(module_id)));
                 }
                 // Context Managers
                 Opcode::BeforeWith => {
@@ -2054,15 +2093,14 @@ impl<'h> VM<'h> {
         }
     }
 
-    /// Loads a built-in module, raising `ModuleNotFoundError` for unknown names.
-    fn load_module(&mut self, module_id: u16) -> RunResult<()> {
+    /// Loads a top-level built-in or suspends with [`OsFunctionCall::Import`].
+    /// The host's value becomes the module; `NotFound` raises `ModuleNotFoundError`.
+    /// `LoadSubmodule` resolves the remaining dotted components.
+    fn load_module(&mut self, module_id: u16) -> CallResult {
         let name_id = StringId::from_index(module_id);
-        if let Some(module) = self.interns.static_string(name_id).and_then(StandardLib::from_static) {
-            let heap_id = module.create(self);
-            self.push(Value::Ref(heap_id));
-            Ok(())
-        } else {
-            Err(ExcType::module_not_found_error(self.interns.get_str(name_id)))
+        match self.interns.static_string(name_id).and_then(StandardLib::from_static) {
+            Some(module) => CallResult::Value(Value::Ref(module.create(self))),
+            None => CallResult::OsCall(OsFunctionCall::Import(self.interns.get_str(name_id).to_owned())),
         }
     }
 
@@ -2078,7 +2116,8 @@ impl<'h> VM<'h> {
         // effect waits in the slot until the value exists to apply it to.
         let obj = match self.pending_effect.take() {
             Some(PendingEffect::Pre(effect)) => match effect.reshape(obj, self) {
-                Ok(obj) => obj,
+                Ok(Reshaped::Value(obj)) => obj,
+                Ok(Reshaped::Call { call, effect }) => return self.suspend_again(call, effect),
                 Err(err) => return self.resume_with_exception(err),
             },
             post => {
@@ -2130,30 +2169,53 @@ impl<'h> VM<'h> {
         };
         let result = match self.pending_effect.take() {
             Some(PendingEffect::Post(PostConversionEffect::BufferStore { file_id })) => {
-                apply_buffer_store(file_id, value, self)
+                apply_buffer_store(file_id, value, self).map(Some)
             }
-            Some(PendingEffect::Post(PostConversionEffect::WritePosition { file_id, .. })) => {
-                apply_write_position(file_id, value, self)
+            // Answers nothing: the `ForIter` that asked for the load re-dispatches.
+            Some(PendingEffect::Post(PostConversionEffect::BufferLoad { file_id })) => {
+                apply_buffer_load(file_id, value, self).map(|()| None)
             }
-            Some(PendingEffect::Post(PostConversionEffect::OpenName { name })) => apply_open_name(name, value, self),
+            Some(PendingEffect::Post(PostConversionEffect::FileNext { file_id, default })) => {
+                apply_file_next(file_id, default, value, self).map(Some)
+            }
+            Some(PendingEffect::Post(PostConversionEffect::WritePosition {
+                file_id, text_length, ..
+            })) => apply_write_position(file_id, text_length, value, self).map(Some),
+            Some(PendingEffect::Post(PostConversionEffect::OpenName { name, newline })) => {
+                apply_open_name(name, newline, value, self).map(Some)
+            }
             Some(PendingEffect::Post(PostConversionEffect::SeedRandom { target, retry })) => {
-                apply_seed_random(target, retry, value, self)
+                apply_seed_random(target, retry, value, self).map(Some)
             }
             Some(PendingEffect::Post(PostConversionEffect::ClockReading { reading })) => {
-                apply_clock_reading(reading, value, self)
+                apply_clock_reading(reading, value, self).map(Some)
             }
             // The sleeps were answered above; any pre-conversion effect was consumed.
             Some(
                 PendingEffect::Post(PostConversionEffect::DiscardResult | PostConversionEffect::SleepResult { .. })
                 | PendingEffect::Pre(_),
             )
-            | None => Ok(value),
+            | None => Ok(Some(value)),
         };
         match result {
             Ok(value) => {
-                self.push(value);
+                if let Some(value) = value {
+                    self.push(value);
+                }
                 self.run_external()
             }
+            Err(err) => self.resume_with_exception(err),
+        }
+    }
+
+    /// Yields the next call of a multi-step operation from `resume`: the VM is
+    /// still suspended at the same instruction, so the host sees another
+    /// `OsCall` and the eventual value is pushed where the first would have been.
+    /// A call answered locally (a NUL byte in a predicate) resumes Python at once.
+    fn suspend_again(&mut self, call: OsFunctionCall, effect: Option<PendingEffect>) -> Result<FrameExit, RunError> {
+        match self.prepare_os_call(call, effect) {
+            Ok(Some(exit)) => Ok(exit),
+            Ok(None) => self.run_external(),
             Err(err) => self.resume_with_exception(err),
         }
     }
@@ -2188,6 +2250,7 @@ impl<'h> VM<'h> {
                     file_id,
                     previous_position,
                     previous_length,
+                    ..
                 }) => {
                     if let HeapReadOutput::OpenFile(mut file) = self.heap.read(file_id) {
                         file.get_mut(self.heap)
@@ -2196,11 +2259,13 @@ impl<'h> VM<'h> {
                     }
                     self.heap.dec_ref(file_id);
                 }
-                // The generator was never seeded, so there is nothing to roll
-                // back: dropping the pin and the stashed retry is the whole undo.
-                PendingEffect::Post(PostConversionEffect::SeedRandom { target, retry }) => {
-                    PostConversionEffect::SeedRandom { target, retry }.release(self.heap);
-                }
+                // Nothing was installed or seeded, so there is nothing to roll
+                // back: dropping the pin and any stashed value is the whole undo.
+                PendingEffect::Post(
+                    effect @ (PostConversionEffect::BufferLoad { .. }
+                    | PostConversionEffect::FileNext { .. }
+                    | PostConversionEffect::SeedRandom { .. }),
+                ) => effect.release(self.heap),
                 PendingEffect::Post(PostConversionEffect::SleepResult { result }) => result.drop_with(self),
                 // Hold no state or heap references — nothing to roll back.
                 PendingEffect::Pre(_)
