@@ -39,9 +39,8 @@ use crate::{
 
 /// Primary value type representing Python objects at runtime.
 ///
-/// This enum uses a hybrid design: small immediate values (Int, Bool, None) are stored
-/// inline, while heap-allocated values (List, Str, Dict, etc.) are stored in the arena
-/// and referenced via `Ref(HeapId)`.
+/// Small immediate values and strings up to 7 UTF-8 bytes are stored inline;
+/// other heap values are stored in the arena and referenced via `Ref(HeapId)`.
 ///
 /// NOTE: `Clone` is intentionally NOT derived. Use `clone_with_heap()`. Direct cloning via `.clone()` would
 /// bypass reference counting and cause memory leaks.
@@ -68,6 +67,9 @@ pub(crate) enum Value {
     /// To get the actual string content, use `interns.get(string_id)`.
     #[serde(rename = "T")]
     InternString(StringId),
+    /// A short UTF-8 string stored directly in the value slot.
+    #[serde(rename = "S")]
+    InlineString { len: InlineLen, bytes: [u8; 7] },
     /// An interned bytes literal. The BytesId references the bytes in the Interns table.
     /// To get the actual bytes content, use `interns.get_bytes(bytes_id)`.
     #[serde(rename = "R")]
@@ -106,6 +108,37 @@ pub(crate) enum Value {
     #[cfg(feature = "memory-model-checks")]
     #[serde(rename = "G")]
     Dereferenced,
+}
+
+/// Byte length for an inline UTF-8 string.
+#[derive(Debug, Clone, Copy, serde::Serialize, serde::Deserialize)]
+#[repr(u8)]
+pub(crate) enum InlineLen {
+    #[serde(rename = "0")] L0,
+    #[serde(rename = "1")] L1,
+    #[serde(rename = "2")] L2,
+    #[serde(rename = "3")] L3,
+    #[serde(rename = "4")] L4,
+    #[serde(rename = "5")] L5,
+    #[serde(rename = "6")] L6,
+    #[serde(rename = "7")] L7,
+}
+
+impl InlineLen {
+    pub(crate) fn from_len(len: usize) -> Self {
+        match len {
+            0 => Self::L0, 1 => Self::L1, 2 => Self::L2, 3 => Self::L3,
+            4 => Self::L4, 5 => Self::L5, 6 => Self::L6, 7 => Self::L7,
+            _ => unreachable!("inline string length exceeds capacity"),
+        }
+    }
+
+    pub(crate) fn get(self) -> usize {
+        match self {
+            Self::L0 => 0, Self::L1 => 1, Self::L2 => 2, Self::L3 => 3,
+            Self::L4 => 4, Self::L5 => 5, Self::L6 => 6, Self::L7 => 7,
+        }
+    }
 }
 
 /// Scoped view of a value that keeps a referenced heap entry open for repeated operations.

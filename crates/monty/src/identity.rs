@@ -43,7 +43,7 @@ pub(crate) enum Identity {
     /// Identity of an interned string.
     InternString(usize),
     /// Content identity of a short string stored inline.
-    InlineString { len: u8, bytes: [u8; 15] },
+    InlineString { len: u8, bytes: [u8; 7] },
     /// Identity of an interned bytes value.
     InternBytes(usize),
     /// Identity of an interned long integer literal.

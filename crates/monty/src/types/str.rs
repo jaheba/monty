@@ -272,6 +272,7 @@ pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Valu
     match bytes.len() {
         0 => Value::InternString(StringId::EMPTY),
         1 => Value::InternString(StringId::from_ascii(bytes[0])),
+        2..=7 => inline_string(bytes),
         _ => allocate_string_no_interning(s, heap),
     }
 }
@@ -284,8 +285,22 @@ pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Valu
 ///
 /// Accepts `impl Into<Box<str>>` for the same reasons as [`allocate_string`].
 pub fn allocate_string_no_interning(s: impl Into<Box<str>>, heap: &Heap) -> Value {
-    let heap_id = heap.allocate(HeapData::Str(Str::new(s)));
+    let text = s.into();
+    if (2..=7).contains(&text.len()) {
+        return inline_string(text.as_bytes());
+    }
+    let heap_id = heap.allocate(HeapData::Str(Str::new(text)));
     Value::Ref(heap_id)
+}
+
+fn inline_string(bytes: &[u8]) -> Value {
+    debug_assert!((2..=7).contains(&bytes.len()));
+    let mut inline = [0; 7];
+    inline[..bytes.len()].copy_from_slice(bytes);
+    Value::InlineString {
+        len: InlineLen::from_len(bytes.len()),
+        bytes: inline,
+    }
 }
 
 /// Converts a native integer count and preflights the repeated string allocation.
