@@ -1,10 +1,8 @@
 //! Per-run string cache for `json.loads()`.
 //!
-//! Repeated JSON parsing within a single execution often encounters the same
-//! strings — especially dict keys like `"id"`, `"name"`, `"type"` — across
-//! multiple `json.loads()` calls. This cache deduplicates heap allocations for
-//! those strings by hashing incoming bytes and returning a `clone_with_heap` of
-//! a previously allocated `Value` on cache hits.
+//! This cache deduplicates repeated strings of 16–64 UTF-8 bytes across
+//! `json.loads()` calls within one execution. Shorter strings are interned or
+//! stored inline. Cache hits return a `clone_with_heap` of the existing `Value`.
 //!
 //! The design is modelled on jiter's `PyStringCache`: a fixed-capacity
 //! fully-associative cache with linear probing and no eviction (when all probe
