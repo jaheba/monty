@@ -1645,7 +1645,7 @@ pub(crate) fn extract_str_payload(data: &Value, vm: &VM<'_>) -> Option<String> {
 fn extract_bytes_payload(data: &Value, vm: &VM<'_>) -> Option<Vec<u8>> {
     match data {
         Value::InternBytes(id) => Some(vm.interns.get_bytes(*id).to_owned()),
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(HeapKind::Bytes, id) => match vm.heap.get(*id) {
             HeapData::Bytes(b) => Some(b.as_slice().to_owned()),
             _ => None,
         },

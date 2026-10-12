@@ -927,7 +927,7 @@ impl Set {
         let mut guard = DropGuard::new(iterable, vm);
         let (iterable, vm) = guard.as_parts();
         let storage = match iterable {
-            Value::Ref(_, id) => match vm.heap.get(*id) {
+            Value::Ref(HeapKind::Set | HeapKind::FrozenSet, id) => match vm.heap.get(*id) {
                 HeapData::Set(set) => Some(clone_storage_checked(&set.0, vm)?),
                 HeapData::FrozenSet(set) => Some(clone_storage_checked(&set.storage, vm)?),
                 _ => None,
@@ -1026,7 +1026,7 @@ impl<'h> HeapRead<'h, Set> {
         // Try direct extraction from Set/FrozenSet
         let entries_opt = {
             match &other {
-                Value::Ref(_, id) => match vm.heap.get(*id) {
+                Value::Ref(HeapKind::Set | HeapKind::FrozenSet, id) => match vm.heap.get(*id) {
                     HeapData::Set(s) => Some(s.0.clone_entries(vm.heap)),
                     HeapData::FrozenSet(fs) => Some(fs.storage.clone_entries(vm.heap)),
                     _ => None,
@@ -1086,7 +1086,7 @@ impl<'h> HeapRead<'h, Set> {
     fn comparison_op(&self, other: &Value, op: SetComparison, vm: &mut VM<'h>) -> RunResult<bool> {
         // Get other's storage
         let entries_opt = match other {
-            Value::Ref(_, id) => match vm.heap.get(*id) {
+            Value::Ref(HeapKind::Set | HeapKind::FrozenSet, id) => match vm.heap.get(*id) {
                 HeapData::Set(s) => Some(s.0.clone_entries(vm.heap)),
                 HeapData::FrozenSet(fs) => Some(fs.storage.clone_entries(vm.heap)),
                 _ => None,
@@ -1230,7 +1230,7 @@ impl<'h> HeapRead<'h, FrozenSet> {
     /// Set comparison operations for frozenset via HeapRead.
     fn comparison_op(&self, other: &Value, op: SetComparison, vm: &mut VM<'h>) -> RunResult<bool> {
         let entries_opt = match other {
-            Value::Ref(_, id) => match vm.heap.get(*id) {
+            Value::Ref(HeapKind::Set | HeapKind::FrozenSet, id) => match vm.heap.get(*id) {
                 HeapData::Set(s) => Some(s.0.clone_entries(vm.heap)),
                 HeapData::FrozenSet(fs) => Some(fs.storage.clone_entries(vm.heap)),
                 _ => None,
@@ -1473,7 +1473,7 @@ impl Set {
     fn get_storage_from_value(value: Value, vm: &mut VM<'_>) -> RunResult<SetStorage> {
         // Try to get entries from a Set/FrozenSet directly
         let entries_opt = match &value {
-            Value::Ref(_, id) => match vm.heap.get(*id) {
+            Value::Ref(HeapKind::Set | HeapKind::FrozenSet, id) => match vm.heap.get(*id) {
                 HeapData::Set(set) => Some(set.0.clone_entries(vm.heap)),
                 HeapData::FrozenSet(set) => Some(set.storage.clone_entries(vm.heap)),
                 _ => None,

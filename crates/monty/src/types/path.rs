@@ -338,7 +338,7 @@ fn extract_path_string<'a>(val: &Value, vm: &'a VM<'_>) -> RunResult<&'a str> {
 fn value_as_path_str<'a>(val: &Value, heap: &'a Heap, interns: &'a Interns) -> Option<&'a str> {
     match val {
         Value::InternString(string_id) => Some(interns.get_str(*string_id)),
-        Value::Ref(_, heap_id) => match heap.get(*heap_id) {
+        Value::Ref(HeapKind::Str | HeapKind::Path, heap_id) => match heap.get(*heap_id) {
             HeapData::Str(s) => Some(s.as_str()),
             HeapData::Path(p) => Some(p.as_str()),
             _ => None,

@@ -592,7 +592,7 @@ pub(crate) fn unpack_exact(value: &Value, count: usize, vm: &mut VM<'_>) -> RunR
     // one CPython error message, not a property types should declare, and
     // nothing may branch on it to decide *how* to iterate.
     let total = match value {
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(HeapKind::List | HeapKind::Tuple | HeapKind::Dict, id) => match vm.heap.get(*id) {
             HeapData::List(list) => Some(list.len()),
             HeapData::Tuple(tuple) => Some(tuple.as_slice().len()),
             HeapData::Dict(dict) => Some(dict.len()),

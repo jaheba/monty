@@ -218,7 +218,14 @@ fn operand_kind(value: &Value, vm: &VM<'_>) -> Option<Operand> {
         }
         // `typing.Any`, `typing.List` and the other forms all define `__or__`.
         Value::Marker(marker) if marker.py_type() == Type::SpecialForm => Some(Operand::TypeLike),
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(
+            HeapKind::Union
+            | HeapKind::Class
+            | HeapKind::NamedTupleClass
+            | HeapKind::HostClassType
+            | HeapKind::GenericAlias,
+            id,
+        ) => match vm.heap.get(*id) {
             HeapData::Union(_) => Some(Operand::Union),
             HeapData::Class(_)
             | HeapData::NamedTupleClass(_)
@@ -234,7 +241,9 @@ fn operand_kind(value: &Value, vm: &VM<'_>) -> Option<Operand> {
 /// tuple (a namedtuple key is one member, as in CPython). Preflights the
 /// clone like `clone_all_pairs`.
 fn tuple_items(value: &Value, vm: &mut VM<'_>) -> RunResult<Option<Vec<Value>>> {
-    let Value::Ref(_, id) = value else { return Ok(None) };
+    let Value::Ref(HeapKind::Tuple, id) = value else {
+        return Ok(None);
+    };
     let HeapData::Tuple(tuple) = vm.heap.get(*id) else {
         return Ok(None);
     };

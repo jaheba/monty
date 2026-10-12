@@ -566,7 +566,7 @@ struct CombineArgs {
 /// Extracts `(year, month, day)` from `combine`'s first argument.
 fn combine_date_part(date: &Value, vm: &mut VM<'_>) -> RunResult<(i32, i32, i32)> {
     let naive = match date {
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(HeapKind::Date | HeapKind::DateTime, id) => match vm.heap.get(*id) {
             HeapData::Date(d) => Some(d.0),
             HeapData::DateTime(dt) => Some(dt.naive.date()),
             _ => None,

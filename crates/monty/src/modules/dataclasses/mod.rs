@@ -1125,15 +1125,17 @@ fn instance_class(self_id: HeapId, vm: &VM<'_>) -> HeapId {
 fn is_dataclass(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
     let arg = args.get_one_arg("is_dataclass", vm.heap)?;
     let result = match &arg {
-        Value::Ref(_, id) => match vm.heap.get(*id) {
-            HeapData::Class(_) => is_dataclass_class(*id, vm),
-            HeapData::Instance(instance) => is_dataclass_class(instance.class(), vm),
-            // Host-backed instances and classes carry dataclass-ness as a flag
-            // set by the host when the class crossed the wire.
-            HeapData::HostClass(hc) => host_class_type(vm.heap, hc.class_id()).is_dataclass(),
-            HeapData::HostClassType(ty) => ty.is_dataclass(),
-            _ => false,
-        },
+        Value::Ref(HeapKind::Class | HeapKind::Instance | HeapKind::HostClass | HeapKind::HostClassType, id) => {
+            match vm.heap.get(*id) {
+                HeapData::Class(_) => is_dataclass_class(*id, vm),
+                HeapData::Instance(instance) => is_dataclass_class(instance.class(), vm),
+                // Host-backed instances and classes carry dataclass-ness as a flag
+                // set by the host when the class crossed the wire.
+                HeapData::HostClass(hc) => host_class_type(vm.heap, hc.class_id()).is_dataclass(),
+                HeapData::HostClassType(ty) => ty.is_dataclass(),
+                _ => false,
+            }
+        }
         _ => false,
     };
     arg.drop_with(vm);

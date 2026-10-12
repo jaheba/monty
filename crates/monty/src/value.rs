@@ -1891,7 +1891,7 @@ impl Value {
     pub(crate) fn long_int_is_negative(&self, vm: &VM<'_>) -> bool {
         match self {
             Self::InternLongInt(id) => vm.interns.get_long_int(*id).sign() == Sign::Minus,
-            Self::Ref(_, id) => matches!(vm.heap.get(*id), HeapData::LongInt(li) if li.is_negative()),
+            Self::Ref(HeapKind::LongInt, id) => matches!(vm.heap.get(*id), HeapData::LongInt(li) if li.is_negative()),
             _ => false,
         }
     }
@@ -1908,7 +1908,7 @@ impl Value {
     pub(crate) fn long_int_to_i64_saturating(&self, vm: &VM<'_>) -> Option<i64> {
         match self {
             Self::InternLongInt(id) => Some(saturating_i64(vm.interns.get_long_int(*id))),
-            Self::Ref(_, id) => match vm.heap.get(*id) {
+            Self::Ref(HeapKind::LongInt, id) => match vm.heap.get(*id) {
                 HeapData::LongInt(li) => Some(saturating_i64(li.inner())),
                 _ => None,
             },
@@ -1922,7 +1922,7 @@ impl Value {
     pub(crate) fn as_long_int<'a>(&self, vm: &'a VM<'_>) -> Option<&'a BigInt> {
         match self {
             Self::InternLongInt(id) => Some(vm.interns.get_long_int(*id)),
-            Self::Ref(_, id) => match vm.heap.get(*id) {
+            Self::Ref(HeapKind::LongInt, id) => match vm.heap.get(*id) {
                 HeapData::LongInt(li) => Some(li.inner()),
                 _ => None,
             },
@@ -2743,9 +2743,28 @@ mod tests {
 
     use super::*;
     use crate::{
+        args::{is_long_int, long_int},
         heap::HeapReader,
         run::{Program, SessionTables},
+        types::List,
     };
+
+    #[test]
+    fn long_int_helpers_reject_other_heap_kinds() {
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        let value = Value::Ref(HeapKind::List, heap.allocate(HeapData::List(List::new(Vec::new()))));
+        let mut tables = SessionTables::default();
+        let program = Program::for_tests();
+        HeapReader::with(&mut heap, &mut (&program, &mut tables), |reader, (program, tables)| {
+            let vm = VM::new(Vec::new(), tables, program, reader, PrintWriter::Disabled);
+            assert!(value.as_long_int(&vm).is_none());
+            assert!(value.long_int_to_i64_saturating(&vm).is_none());
+            assert!(!value.long_int_is_negative(&vm));
+            assert!(long_int(&value, &vm).is_none());
+            assert!(!is_long_int(&value, &vm));
+        });
+        value.drop_with(&mut heap);
+    }
 
     /// Creates a heap and directly allocates a LongInt with the given BigInt value.
     ///

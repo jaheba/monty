@@ -246,7 +246,7 @@ fn seed_from_reply(
 fn value_as_bytes<'a>(value: &'a Value, vm: &'a VM<'_>) -> Option<&'a [u8]> {
     match value {
         Value::InternBytes(id) => Some(vm.interns.get_bytes(*id)),
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(HeapKind::Bytes, id) => match vm.heap.get(*id) {
             HeapData::Bytes(bytes) => Some(bytes.as_slice()),
             _ => None,
         },
@@ -408,7 +408,7 @@ fn setstate(target: RandomTarget, args: ArgValues, vm: &mut VM<'_>) -> RunResult
         reduce_state_words(internal, vm)?
     } else {
         let tuple = match internal {
-            Value::Ref(_, id) => match vm.heap.get(*id) {
+            Value::Ref(HeapKind::Tuple, id) => match vm.heap.get(*id) {
                 HeapData::Tuple(tuple) => Some(tuple),
                 _ => None,
             },
