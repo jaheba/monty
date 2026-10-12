@@ -4,7 +4,7 @@ use super::VM;
 use crate::{
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
-    heap::{DropGuard, DropWithContext, HeapData, HeapReadOutput},
+    heap::{DropGuard, DropWithContext, Heap, HeapData, HeapReadOutput},
     intern::StringId,
     types::{
         Dict, List, PyTrait, Set, Slice, allocate_tuple, collect_iterable, collect_iterable_bounded,
@@ -497,13 +497,7 @@ impl VM<'_> {
         defer_drop!(value, this);
 
         // Fast path: tuple, list, push onto stack without a temporary vector.
-        if let Value::Ref(id) = value
-            && let Some(items) = match this.heap.get(*id) {
-                HeapData::Tuple(tuple) => Some(tuple.as_slice()),
-                HeapData::List(list) => Some(list.as_slice()),
-                _ => None,
-            }
-        {
+        if let Some(items) = exact_sequence_items(value, this.heap) {
             if items.len() != count {
                 return Err(unpack_size_error(count, items.len()));
             }
@@ -606,13 +600,7 @@ fn unpack_ex_too_few_error(min_needed: usize, actual: usize) -> RunError {
 /// endless iterable still fails.
 pub(crate) fn unpack_exact(value: &Value, count: usize, vm: &mut VM<'_>) -> RunResult<Vec<Value>> {
     // Fast path: tuple, list; unpack without iterator.
-    if let Value::Ref(id) = value
-        && let Some(items) = match vm.heap.get(*id) {
-            HeapData::Tuple(tuple) => Some(tuple.as_slice()),
-            HeapData::List(list) => Some(list.as_slice()),
-            _ => None,
-        }
-    {
+    if let Some(items) = exact_sequence_items(value, vm.heap) {
         if items.len() != count {
             return Err(unpack_size_error(count, items.len()));
         }
@@ -650,6 +638,18 @@ pub(crate) fn unpack_exact(value: &Value, count: usize, vm: &mut VM<'_>) -> RunR
         };
         items.drop_with(vm);
         Err(err)
+    }
+}
+
+/// Returns borrowed items for built-in tuples and lists so unpacking can bypass the iterator protocol.
+fn exact_sequence_items<'a>(value: &Value, heap: &'a Heap) -> Option<&'a [Value]> {
+    let Value::Ref(id) = value else {
+        return None;
+    };
+    match heap.get(*id) {
+        HeapData::Tuple(tuple) => Some(tuple.as_slice()),
+        HeapData::List(list) => Some(list.as_slice()),
+        _ => None,
     }
 }
 
