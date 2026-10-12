@@ -48,7 +48,7 @@ use crate::{
 
 /// Primary value type representing Python objects at runtime.
 ///
-/// Immediate values and strings up to 15 UTF-8 bytes are stored inline. Other
+/// Immediate values and strings up to 7 UTF-8 bytes are stored inline. Other
 /// heap values are stored in the arena and referenced via `Ref(HeapId)`.
 ///
 /// NOTE: `Clone` is intentionally NOT derived. Use `clone_with_heap()`. Direct cloning via `.clone()` would
@@ -78,7 +78,7 @@ pub(crate) enum Value {
     InternString(StringId),
     /// A short UTF-8 string stored directly in the value slot.
     #[serde(rename = "S")]
-    InlineString { len: InlineLen, bytes: [u8; 15] },
+    InlineString { len: InlineLen, bytes: [u8; 7] },
     /// An interned bytes literal. The BytesId references the bytes in the Interns table.
     /// To get the actual bytes content, use `interns.get_bytes(bytes_id)`.
     #[serde(rename = "R")]
@@ -119,8 +119,7 @@ pub(crate) enum Value {
     Dereferenced,
 }
 
-/// Byte length for an inline UTF-8 string. The invalid discriminants provide
-/// niches that let `Value` keep its existing size.
+/// Byte length for an inline UTF-8 string.
 #[derive(Debug, Clone, Copy, serde::Serialize, serde::Deserialize)]
 #[repr(u8)]
 pub(crate) enum InlineLen {
@@ -140,22 +139,6 @@ pub(crate) enum InlineLen {
     L6,
     #[serde(rename = "7")]
     L7,
-    #[serde(rename = "8")]
-    L8,
-    #[serde(rename = "9")]
-    L9,
-    #[serde(rename = "a")]
-    L10,
-    #[serde(rename = "b")]
-    L11,
-    #[serde(rename = "c")]
-    L12,
-    #[serde(rename = "d")]
-    L13,
-    #[serde(rename = "e")]
-    L14,
-    #[serde(rename = "f")]
-    L15,
 }
 
 impl InlineLen {
@@ -169,14 +152,6 @@ impl InlineLen {
             5 => Self::L5,
             6 => Self::L6,
             7 => Self::L7,
-            8 => Self::L8,
-            9 => Self::L9,
-            10 => Self::L10,
-            11 => Self::L11,
-            12 => Self::L12,
-            13 => Self::L13,
-            14 => Self::L14,
-            15 => Self::L15,
             _ => unreachable!("inline string length exceeds capacity"),
         }
     }
@@ -191,14 +166,6 @@ impl InlineLen {
             Self::L5 => 5,
             Self::L6 => 6,
             Self::L7 => 7,
-            Self::L8 => 8,
-            Self::L9 => 9,
-            Self::L10 => 10,
-            Self::L11 => 11,
-            Self::L12 => 12,
-            Self::L13 => 13,
-            Self::L14 => 14,
-            Self::L15 => 15,
         }
     }
 }
@@ -2567,7 +2534,7 @@ pub(crate) enum EitherStr {
     /// Interned string identifier (cheap comparisons and no allocation).
     Interned(StringId),
     /// Short UTF-8 string stored without a heap allocation.
-    Inline { len: InlineLen, bytes: [u8; 15] },
+    Inline { len: InlineLen, bytes: [u8; 7] },
     /// Heap-owned string extracted from a `str` object.
     Heap(String),
 }
@@ -2935,6 +2902,27 @@ mod tests {
         heap::HeapReader,
         run::{Program, SessionTables},
     };
+
+    #[test]
+    fn value_size_is_16_bytes() {
+        assert_eq!(mem::size_of::<Value>(), 16);
+    }
+
+    #[test]
+    fn inline_string_capacity_is_seven_utf8_bytes() {
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        for text in ["1234567", "ééabc"] {
+            let value = allocate_string(text.to_owned(), &heap);
+            assert!(matches!(value, Value::InlineString { .. }));
+            assert_eq!(value.inline_str(), Some(text));
+            value.drop_with(&mut heap);
+        }
+        for text in ["12345678", "ééabcd"] {
+            let value = allocate_string(text.to_owned(), &heap);
+            assert!(matches!(value, Value::Ref(_)));
+            value.drop_with(&mut heap);
+        }
+    }
 
     /// Creates a heap and directly allocates a LongInt with the given BigInt value.
     ///

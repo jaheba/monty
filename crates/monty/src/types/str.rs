@@ -164,22 +164,22 @@ fn ctor_str_arg<'a>(arg: Option<&'a Value>, default: &'a str, vm: &'a VM<'_>) ->
 }
 
 /// Uses reserved IDs for empty strings and ASCII characters, then stores up to
-/// 15 UTF-8 bytes inline. Longer strings go on the heap without interning.
+/// 7 UTF-8 bytes inline. Longer strings go on the heap without interning.
 pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Value {
     let bytes = s.as_ref().as_bytes();
     match bytes.len() {
         0 => Value::InternString(StringId::EMPTY),
         1 => Value::InternString(StringId::from_ascii(bytes[0])),
-        2..=15 => inline_string(bytes),
+        2..=7 => inline_string(bytes),
         _ => allocate_string_no_interning(s, heap),
     }
 }
 
-/// Stores a string inline when it is 2–15 bytes; longer strings go on the heap.
+/// Stores a string inline when it is 2–7 bytes; longer strings go on the heap.
 /// This skips reserved empty and ASCII string IDs.
 pub fn allocate_string_no_interning(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Value {
     let text = s.as_ref();
-    if (2..=15).contains(&text.len()) {
+    if (2..=7).contains(&text.len()) {
         return inline_string(text.as_bytes());
     }
     let heap_id = heap.allocate(HeapData::Str(Str::new(s.into())));
@@ -192,8 +192,8 @@ pub(crate) fn allocate_string_on_heap(s: impl Into<Box<str>>, heap: &Heap) -> Va
 }
 
 fn inline_string(bytes: &[u8]) -> Value {
-    debug_assert!((2..=15).contains(&bytes.len()));
-    let mut inline = [0; 15];
+    debug_assert!((2..=7).contains(&bytes.len()));
+    let mut inline = [0; 7];
     inline[..bytes.len()].copy_from_slice(bytes);
     Value::InlineString {
         len: InlineLen::from_len(bytes.len()),
@@ -1874,7 +1874,7 @@ fn str_istitle(s: &str) -> bool {
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 enum StringIteratorSource {
     Intern(StringId),
-    Inline { len: InlineLen, bytes: [u8; 15] },
+    Inline { len: InlineLen, bytes: [u8; 7] },
     Heap(HeapId),
 }
 
