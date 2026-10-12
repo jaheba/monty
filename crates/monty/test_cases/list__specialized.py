@@ -81,9 +81,13 @@ except TypeError:
 
 # A key callback sees the detached list and may change its representation.
 xs = [3, 1, 2]
+
+
 def key(v):
     xs.append('changed')
     return v
+
+
 try:
     xs.sort(key=key)
     assert False
@@ -92,8 +96,7 @@ except ValueError:
 assert xs == [1, 2, 3]
 
 # Typed float reductions agree with generic storage, including exceptional values.
-for values in ([1.5, 2.25, -0.5], [1e16, 1.0, -1e16], [-0.0],
-               [float('inf'), float('-inf')], [float('nan')]):
+for values in ([1.5, 2.25, -0.5], [1e16, 1.0, -1e16], [-0.0], [float('inf'), float('-inf')], [float('nan')]):
     generic = values.copy()
     generic.append(None)
     generic.pop()

@@ -6,7 +6,7 @@ history = readings[::4].copy()
 means = []
 spreads = []
 for start in range(0, len(readings), 256):
-    block = readings[start:start + 256]
+    block = readings[start : start + 256]
     mean = sum(block) / len(block)
     means.append(mean)
     spreads.append(sum([(value - mean) ** 2 for value in block]) / len(block))

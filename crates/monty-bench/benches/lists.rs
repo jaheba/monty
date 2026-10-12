@@ -1,5 +1,7 @@
 #[cfg(feature = "worker-alloc")]
 use std::env;
+#[cfg(feature = "worker-alloc")]
+use std::sync::atomic::Ordering;
 use std::time::Duration;
 
 #[cfg(codspeed)]
@@ -7,6 +9,8 @@ use codspeed_criterion_compat::{BatchSize, Criterion, black_box};
 #[cfg(not(codspeed))]
 use criterion::{BatchSize, Criterion, black_box};
 use monty::MontyRepl;
+#[cfg(feature = "worker-alloc")]
+use monty_types::LIVE_MEMORY;
 use monty_types::{CompileOptions, MontyObject, PrintWriter, ResourceTracker};
 
 #[cfg(feature = "worker-alloc")]
@@ -110,10 +114,6 @@ fn benchmarks(c: &mut Criterion) {
 
 #[cfg(feature = "worker-alloc")]
 fn memory() {
-    use std::sync::atomic::Ordering;
-
-    use monty_types::LIVE_MEMORY;
-
     for n in [16, 4_096, 1_000_000] {
         for (name, expression) in [
             ("int", format!("list(range({n}))")),
