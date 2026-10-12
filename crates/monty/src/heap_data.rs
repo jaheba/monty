@@ -300,27 +300,6 @@ impl HeapData {
         }
     }
 
-    /// Whether calling a `Ref` to this heap data would succeed at dispatch.
-    ///
-    /// A conservative subset of the types overriding [`PyTrait::py_call`]: it
-    /// is what `partial()` and friends screen a callable argument with, and it
-    /// has never admitted `HostClassType` or `NamedTupleClass`, both of which
-    /// dispatch perfectly well. Widening it changes what those builtins accept,
-    /// so it is not simply the list of `py_call` overrides.
-    #[must_use]
-    pub(crate) fn is_callable(&self) -> bool {
-        matches!(
-            self,
-            Self::Class(_)
-                | Self::BoundMethod(_)
-                | Self::Closure(_)
-                | Self::FunctionDefaults(_)
-                | Self::ExtFunction(_)
-                | Self::Partial(_)
-                | Self::GenericAlias(_)
-        )
-    }
-
     /// Returns the Python `Type` for this heap data without requiring VM access.
     ///
     /// This is a lightweight alternative to the `PyTrait::py_type` dispatch on
@@ -384,6 +363,89 @@ impl HeapData {
             Self::SetIterator(_) => Type::SetIterator,
             Self::CallableIterator(_) => Type::CallableIterator,
             Self::Itertools(i) => i.py_type(),
+        }
+    }
+}
+
+impl HeapKind {
+    /// Whether calling a `Ref` to this heap data would succeed at dispatch.
+    ///
+    /// A conservative subset of the types overriding [`PyTrait::py_call`]: it
+    /// is what `partial()` and friends screen a callable argument with, and it
+    /// has never admitted `HostClassType` or `NamedTupleClass`, both of which
+    /// dispatch perfectly well. Widening it changes what those builtins accept,
+    /// so it is not simply the list of `py_call` overrides.
+    pub(crate) fn is_callable(self) -> bool {
+        matches!(
+            self,
+            Self::Class
+                | Self::BoundMethod
+                | Self::Closure
+                | Self::FunctionDefaults
+                | Self::ExtFunction
+                | Self::Partial
+                | Self::GenericAlias
+        )
+    }
+
+    /// Types whose identity is fully determined by the reference tag.
+    pub(crate) fn fixed_type(self) -> Option<Type> {
+        match self {
+            Self::Str => Some(Type::Str),
+            Self::Bytes => Some(Type::Bytes),
+            Self::List => Some(Type::List),
+            Self::Deque => Some(Type::Deque),
+            Self::Tuple => Some(Type::Tuple),
+            Self::NamedTupleClass => Some(Type::Type),
+            Self::Partial => Some(Type::Partial),
+            Self::Random => Some(Type::Random),
+            Self::GenericAlias => Some(Type::GenericAlias),
+            Self::Union => Some(Type::Union),
+            Self::DictKeysView => Some(Type::DictKeys),
+            Self::DictItemsView => Some(Type::DictItems),
+            Self::DictValuesView => Some(Type::DictValues),
+            Self::Set => Some(Type::Set),
+            Self::FrozenSet => Some(Type::FrozenSet),
+            Self::Closure | Self::FunctionDefaults | Self::ExtFunction => Some(Type::Function),
+            Self::Cell => Some(Type::Cell),
+            Self::Range => Some(Type::Range),
+            Self::Slice => Some(Type::Slice),
+            Self::HostClass => Some(Type::HostClass),
+            Self::HostClassType => Some(Type::Type),
+            Self::Class => Some(Type::Type),
+            Self::BoundMethod => Some(Type::Function),
+            Self::DataclassField => Some(Type::DataclassField),
+            Self::DataclassParams => Some(Type::DataclassParams),
+            Self::LongInt => Some(Type::Int),
+            Self::Complex => Some(Type::Complex),
+            Self::Module => Some(Type::Module),
+            Self::Coroutine | Self::GatherFuture | Self::ExternalFuture => Some(Type::Coroutine),
+            Self::Path => Some(Type::Path),
+            Self::RePattern => Some(Type::RePattern),
+            Self::ReMatch => Some(Type::ReMatch),
+            Self::Date => Some(Type::Date),
+            Self::DateTime => Some(Type::DateTime),
+            Self::Time => Some(Type::Time),
+            Self::TimeDelta => Some(Type::TimeDelta),
+            Self::TimeZone => Some(Type::TimeZone),
+            Self::ListIterator => Some(Type::ListIterator),
+            Self::DequeIterator => Some(Type::DequeIterator),
+            Self::TupleIterator => Some(Type::TupleIterator),
+            Self::BytesIterator => Some(Type::BytesIterator),
+            Self::RangeIterator => Some(Type::RangeIterator),
+            Self::DictKeyIterator => Some(Type::DictKeyIterator),
+            Self::DictItemIterator => Some(Type::DictItemIterator),
+            Self::DictValueIterator => Some(Type::DictValueIterator),
+            Self::SetIterator => Some(Type::SetIterator),
+            Self::CallableIterator => Some(Type::CallableIterator),
+            Self::Dict
+            | Self::NamedTuple
+            | Self::HashObject
+            | Self::Exception
+            | Self::Instance
+            | Self::OpenFile
+            | Self::StringIterator
+            | Self::Itertools => None,
         }
     }
 }

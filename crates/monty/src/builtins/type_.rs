@@ -60,13 +60,13 @@ pub fn builtin_type(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
 /// marker.
 fn type_of(vm: &mut VM<'_>, value: Value) -> Value {
     defer_drop!(value, vm);
-    if let Value::Ref(_, id) = &value
+    if let Value::Ref(HeapKind::Instance, id) = &value
         && let HeapData::Instance(inst) = vm.heap.get(*id)
     {
         let class_id = inst.class();
         vm.heap.inc_ref(class_id);
         Value::Ref(HeapKind::Class, class_id)
-    } else if let Value::Ref(_, id) = &value
+    } else if let Value::Ref(HeapKind::NamedTuple, id) = &value
         && let HeapData::NamedTuple(nt) = vm.heap.get(*id)
         && let Some(class_id) = nt.class_id()
     {
@@ -75,7 +75,7 @@ fn type_of(vm: &mut VM<'_>, value: Value) -> Value {
         // tuples like `sys.version_info` have no class and fall through).
         vm.heap.inc_ref(class_id);
         Value::Ref(HeapKind::NamedTupleClass, class_id)
-    } else if let Value::Ref(_, id) = &value
+    } else if let Value::Ref(HeapKind::HostClass, id) = &value
         && let HeapData::HostClass(hc) = vm.heap.get(*id)
     {
         let class_id = hc.class_id();

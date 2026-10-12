@@ -283,7 +283,7 @@ impl<'h> PyTrait<'h> for Value {
             Self::DefFunction(_) => Type::Function,
             Self::Marker(m) => m.py_type(),
             Self::Property(_) => Type::Property,
-            Self::Ref(_, id) => vm.heap.read(*id).py_type(vm),
+            Self::Ref(kind, id) => kind.fixed_type().unwrap_or_else(|| vm.heap.read(*id).py_type(vm)),
             #[cfg(feature = "memory-model-checks")]
             Self::Dereferenced => panic!("Cannot access Dereferenced object"),
         }
@@ -1410,17 +1410,11 @@ impl<C: ContainsHeap> DropWithContext<C> for Value {
 }
 
 impl Value {
-    /// Returns the Python `Type` for this value using only `&Heap` (no full VM borrow).
-    ///
-    /// Wraps [`py_type_shallow`](Self::py_type_shallow) for immediate values and
-    /// delegates to [`HeapData::py_type`] for `Value::Ref`. Useful in code paths
-    /// that need a type label (e.g. CPython-style "argument N must be X, not Y"
-    /// errors) but don't have a `&VM` handy — notably the macro-generated
-    /// `from_args` bodies, which are passed `heap` + `interns` rather than a VM.
+    /// Returns the Python type, reading the heap only for data-dependent types.
     #[must_use]
     pub(crate) fn py_type_heap(&self, heap: &Heap) -> Type {
         match self {
-            Self::Ref(_, id) => heap.get(*id).py_type(),
+            Self::Ref(kind, id) => kind.fixed_type().unwrap_or_else(|| heap.get(*id).py_type()),
             _ => self.py_type_shallow(),
         }
     }
@@ -1458,7 +1452,7 @@ impl Value {
     /// the qualified `random.Random`, but messages use the bare class name.
     #[must_use]
     fn dynamic_class_name<'i>(&self, heap: &Heap, interns: &'i Interns) -> Option<Cow<'i, str>> {
-        let Self::Ref(_, heap_id) = self else {
+        let Self::Ref(HeapKind::NamedTuple | HeapKind::HostClass | HeapKind::Random, heap_id) = self else {
             return None;
         };
         let name = match heap.get(*heap_id) {
@@ -2256,7 +2250,7 @@ impl Value {
     pub fn as_either_str(&self, heap: &Heap) -> Option<EitherStr> {
         match self {
             Self::InternString(id) => Some(EitherStr::Interned(*id)),
-            Self::Ref(_, heap_id) => match heap.get(*heap_id) {
+            Self::Ref(HeapKind::Str, heap_id) => match heap.get(*heap_id) {
                 HeapData::Str(s) => Some(EitherStr::Heap(s.as_str().to_owned())),
                 _ => None,
             },
@@ -2283,7 +2277,7 @@ impl Value {
     pub(crate) fn to_str_heap<'a>(&'a self, heap: &'a Heap, interns: &'a Interns) -> RunResult<&'a str> {
         match self {
             Self::InternString(string_id) => return Ok(interns.get_str(*string_id)),
-            Self::Ref(_, heap_id) => {
+            Self::Ref(HeapKind::Str, heap_id) => {
                 if let HeapData::Str(s) = heap.get(*heap_id) {
                     return Ok(s.as_str());
                 }
@@ -2297,12 +2291,8 @@ impl Value {
     }
 
     /// check if the value is a string.
-    pub fn is_str(&self, heap: &Heap) -> bool {
-        match self {
-            Self::InternString(_) => true,
-            Self::Ref(_, heap_id) => matches!(heap.get(*heap_id), HeapData::Str(_)),
-            _ => false,
-        }
+    pub fn is_str(&self, _heap: &Heap) -> bool {
+        matches!(self, Self::InternString(_) | Self::Ref(HeapKind::Str, _))
     }
 
     /// Whether calling this value would succeed at dispatch.
@@ -2310,10 +2300,10 @@ impl Value {
     /// Dispatch can't double as the predicate — it pushes a frame, clones
     /// defaults, constructs an instance — so the two are kept in lockstep by
     /// `debug_assert!`s in dispatch's "not callable" arms.
-    pub(crate) fn is_callable(&self, heap: &Heap) -> bool {
+    pub(crate) fn is_callable(&self, _heap: &Heap) -> bool {
         match self {
             Self::Builtin(_) | Self::ModuleFunction(_) | Self::DefFunction(_) => true,
-            Self::Ref(_, id) => heap.get(*id).is_callable(),
+            Self::Ref(kind, _) => kind.is_callable(),
             _ => false,
         }
     }
