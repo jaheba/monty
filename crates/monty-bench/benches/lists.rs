@@ -1,15 +1,15 @@
-#[cfg(feature = "worker-alloc")]
+#[cfg(all(feature = "worker-alloc", not(codspeed)))]
 use std::env;
-#[cfg(feature = "worker-alloc")]
+#[cfg(all(feature = "worker-alloc", not(codspeed)))]
 use std::sync::atomic::Ordering;
 use std::time::Duration;
 
 #[cfg(codspeed)]
-use codspeed_criterion_compat::{BatchSize, Criterion, black_box};
+use codspeed_criterion_compat::{BatchSize, Criterion, black_box, criterion_group, criterion_main};
 #[cfg(not(codspeed))]
 use criterion::{BatchSize, Criterion, black_box};
 use monty::MontyRepl;
-#[cfg(feature = "worker-alloc")]
+#[cfg(all(feature = "worker-alloc", not(codspeed)))]
 use monty_types::LIVE_MEMORY;
 use monty_types::{CompileOptions, MontyObject, PrintWriter, ResourceTracker};
 
@@ -112,7 +112,7 @@ fn benchmarks(c: &mut Criterion) {
     group.finish();
 }
 
-#[cfg(feature = "worker-alloc")]
+#[cfg(all(feature = "worker-alloc", not(codspeed)))]
 fn memory() {
     for n in [16, 4_096, 1_000_000] {
         for (name, expression) in [
@@ -130,6 +130,7 @@ fn memory() {
     }
 }
 
+#[cfg(not(codspeed))]
 fn main() {
     #[cfg(feature = "worker-alloc")]
     if env::args().any(|arg| arg == "--memory") {
@@ -140,3 +141,8 @@ fn main() {
     benchmarks(&mut c);
     c.final_summary();
 }
+
+#[cfg(codspeed)]
+criterion_group!(benches, benchmarks);
+#[cfg(codspeed)]
+criterion_main!(benches);

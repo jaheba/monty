@@ -98,7 +98,7 @@ Numeric copy, slice, concatenation and repetition keep typed storage.
 Integer `sum()` uses an exact `i128` accumulator and checks the execution deadline every block of 64 elements.
 Float `sum()` walks typed storage directly, retaining the existing left-to-right addition order.
 Empty lists and unsupported start types use the generic reduction.
-Snapshots retain the previous sequence-of-`Value` encoding.
+Snapshots serialize the list variants directly; dump version 14 replaces the previous sequence-of-`Value` encoding.
 
 ## Local comparison
 

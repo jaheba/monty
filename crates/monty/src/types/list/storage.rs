@@ -1,22 +1,12 @@
 use std::{mem, ops::Deref};
 
 use monty_types::{ResourceError, ResourceTracker};
-use serde::{Deserialize, Deserializer, Serialize, Serializer, ser::SerializeSeq};
 
+use super::List;
 use crate::{
     heap::{ContainsHeap, DropWithContext, Heap},
     value::{VALUE_SIZE, Value},
 };
-
-/// Numeric buffers contain immediate values only. Generic buffers own their values.
-#[derive(Debug, Default)]
-pub(super) enum Storage {
-    #[default]
-    Empty,
-    Int(Vec<i64>),
-    Float(Vec<f64>),
-    Generic(Vec<Value>),
-}
 
 /// A numeric element materialized on the stack, or a borrowed generic element.
 pub(crate) enum Item<'a> {
@@ -35,7 +25,8 @@ impl Deref for Item<'_> {
     }
 }
 
-impl Storage {
+impl List {
+    /// Takes ownership of values without incrementing their reference counts.
     pub fn new(values: Vec<Value>) -> Self {
         if values.is_empty() {
             Self::Empty
@@ -60,7 +51,10 @@ impl Storage {
             floats.shrink_to_fit();
             Self::Float(floats)
         } else {
-            Self::Generic(values)
+            Self::Generic {
+                contains_refs: values.iter().any(|v| matches!(v, Value::Ref(_))),
+                items: values,
+            }
         }
     }
 
@@ -69,7 +63,7 @@ impl Storage {
             Self::Empty => 0,
             Self::Int(v) => v.len(),
             Self::Float(v) => v.len(),
-            Self::Generic(v) => v.len(),
+            Self::Generic { items: v, .. } => v.len(),
         }
     }
 
@@ -82,7 +76,7 @@ impl Storage {
             Self::Empty => None,
             Self::Int(v) => v.get(index).map(|&i| Item::Immediate(Value::Int(i))),
             Self::Float(v) => v.get(index).map(|&f| Item::Immediate(Value::Float(f))),
-            Self::Generic(v) => v.get(index).map(Item::Borrowed),
+            Self::Generic { items: v, .. } => v.get(index).map(Item::Borrowed),
         }
     }
 
@@ -92,16 +86,16 @@ impl Storage {
 
     fn accepts(&self, value: &Value) -> bool {
         match self {
-            Self::Empty | Self::Generic(_) => true,
+            Self::Empty | Self::Generic { .. } => true,
             Self::Int(_) => matches!(value, Value::Int(_)),
             Self::Float(_) => matches!(value, Value::Float(_)),
         }
     }
 
-    pub fn element_size(&self) -> usize {
+    pub(super) fn element_size(&self) -> usize {
         match self {
             Self::Empty | Self::Int(_) | Self::Float(_) => 8,
-            Self::Generic(_) => VALUE_SIZE,
+            Self::Generic { .. } => VALUE_SIZE,
         }
     }
 
@@ -110,12 +104,12 @@ impl Storage {
             Self::Empty => 0,
             Self::Int(v) => v.capacity(),
             Self::Float(v) => v.capacity(),
-            Self::Generic(v) => v.capacity(),
+            Self::Generic { items: v, .. } => v.capacity(),
         }
     }
 
     /// Promotion allocates the entire generic buffer while the numeric buffer is live.
-    pub fn check_insert(&self, value: &Value, tracker: &ResourceTracker) -> Result<(), ResourceError> {
+    pub(super) fn check_insert(&self, value: &Value, tracker: &ResourceTracker) -> Result<(), ResourceError> {
         if !self.accepts(value) {
             return tracker.check_allocation(self.len().saturating_add(1).max(4).saturating_mul(VALUE_SIZE));
         }
@@ -127,7 +121,7 @@ impl Storage {
         tracker.check_growth(self.len(), self.capacity(), size)
     }
 
-    pub fn check_replace(&self, value: &Value, tracker: &ResourceTracker) -> Result<(), ResourceError> {
+    pub(super) fn check_replace(&self, value: &Value, tracker: &ResourceTracker) -> Result<(), ResourceError> {
         if self.accepts(value) {
             Ok(())
         } else {
@@ -135,7 +129,7 @@ impl Storage {
         }
     }
 
-    pub fn check_extend(&self, values: &[Value], tracker: &ResourceTracker) -> Result<(), ResourceError> {
+    pub(super) fn check_extend(&self, values: &[Value], tracker: &ResourceTracker) -> Result<(), ResourceError> {
         if values.is_empty() || matches!(self, Self::Empty) {
             // Empty storage takes the admitted vector, compacting numeric values in place.
             return Ok(());
@@ -155,7 +149,7 @@ impl Storage {
 
     /// Callers preflight before changing representation; no Python runs during conversion.
     fn promote(&mut self, additional: usize) {
-        if matches!(self, Self::Generic(_)) {
+        if matches!(self, Self::Generic { .. }) {
             return;
         }
         let mut values = Vec::with_capacity(self.len().saturating_add(additional).max(4));
@@ -163,17 +157,23 @@ impl Storage {
             Self::Int(v) => values.extend(v.into_iter().map(Value::Int)),
             Self::Float(v) => values.extend(v.into_iter().map(Value::Float)),
             Self::Empty => {}
-            Self::Generic(_) => unreachable!(),
+            Self::Generic { .. } => unreachable!(),
         }
-        *self = Self::Generic(values);
+        *self = Self::Generic {
+            items: values,
+            contains_refs: false,
+        };
     }
 
-    pub fn push(&mut self, value: Value) {
+    pub(super) fn push(&mut self, value: Value) {
         if matches!(self, Self::Empty) {
             *self = match &value {
                 Value::Int(_) => Self::Int(Vec::new()),
                 Value::Float(_) => Self::Float(Vec::new()),
-                _ => Self::Generic(Vec::new()),
+                _ => Self::Generic {
+                    items: Vec::new(),
+                    contains_refs: false,
+                },
             };
         }
         if !self.accepts(&value) {
@@ -182,12 +182,21 @@ impl Storage {
         match (self, value) {
             (Self::Int(v), Value::Int(i)) => v.push(i),
             (Self::Float(v), Value::Float(f)) => v.push(f),
-            (Self::Generic(v), value) => v.push(value),
+            (
+                Self::Generic {
+                    items: v,
+                    contains_refs,
+                },
+                value,
+            ) => {
+                *contains_refs |= matches!(value, Value::Ref(_));
+                v.push(value);
+            }
             _ => unreachable!("storage accepts value"),
         }
     }
 
-    pub fn insert(&mut self, index: usize, value: Value) {
+    pub(super) fn insert(&mut self, index: usize, value: Value) {
         if index >= self.len() {
             self.push(value);
             return;
@@ -198,12 +207,21 @@ impl Storage {
         match (self, value) {
             (Self::Int(v), Value::Int(i)) => v.insert(index, i),
             (Self::Float(v), Value::Float(f)) => v.insert(index, f),
-            (Self::Generic(v), value) => v.insert(index, value),
+            (
+                Self::Generic {
+                    items: v,
+                    contains_refs,
+                },
+                value,
+            ) => {
+                *contains_refs |= matches!(value, Value::Ref(_));
+                v.insert(index, value);
+            }
             _ => unreachable!("storage accepts value"),
         }
     }
 
-    pub fn replace(&mut self, index: usize, value: &mut Value) {
+    pub(super) fn replace(&mut self, index: usize, value: &mut Value) {
         if !self.accepts(value) {
             self.promote(0);
         }
@@ -216,11 +234,18 @@ impl Storage {
                 let Value::Float(f) = value else { unreachable!() };
                 mem::swap(&mut v[index], f);
             }
-            Self::Generic(v) => mem::swap(&mut v[index], value),
+            Self::Generic {
+                items: v,
+                contains_refs,
+            } => {
+                *contains_refs |= matches!(*value, Value::Ref(_));
+                mem::swap(&mut v[index], value);
+            }
             Self::Empty => unreachable!("index validated"),
         }
     }
 
+    /// Takes ownership of preflighted values, preserving their reference counts.
     pub fn extend_owned(&mut self, values: Vec<Value>) {
         if values.is_empty() {
             return;
@@ -247,7 +272,11 @@ impl Storage {
                     _ => unreachable!(),
                 }));
             }
-            Self::Generic(v) => {
+            Self::Generic {
+                items: v,
+                contains_refs,
+            } => {
+                *contains_refs |= values.iter().any(|v| matches!(v, Value::Ref(_)));
                 v.reserve_exact(values.len());
                 v.extend(values);
             }
@@ -255,21 +284,21 @@ impl Storage {
         }
     }
 
-    pub fn remove(&mut self, index: usize) -> Value {
+    pub(super) fn remove(&mut self, index: usize) -> Value {
         match self {
             Self::Int(v) => Value::Int(v.remove(index)),
             Self::Float(v) => Value::Float(v.remove(index)),
-            Self::Generic(v) => v.remove(index),
+            Self::Generic { items: v, .. } => v.remove(index),
             Self::Empty => unreachable!("index validated"),
         }
     }
 
-    pub fn reverse(&mut self) {
+    pub(super) fn reverse(&mut self) {
         match self {
             Self::Empty => {}
             Self::Int(v) => v.reverse(),
             Self::Float(v) => v.reverse(),
-            Self::Generic(v) => v.reverse(),
+            Self::Generic { items: v, .. } => v.reverse(),
         }
     }
 
@@ -278,20 +307,26 @@ impl Storage {
             Self::Empty => unreachable!("indices validated"),
             Self::Int(v) => v.swap(a, b),
             Self::Float(v) => v.swap(a, b),
-            Self::Generic(v) => v.swap(a, b),
+            Self::Generic { items: v, .. } => v.swap(a, b),
         }
     }
 
-    pub fn copy(&self, heap: &Heap) -> Self {
+    pub(super) fn copy(&self, heap: &Heap) -> Self {
         match self {
             Self::Empty => Self::Empty,
             Self::Int(v) => Self::Int(v.clone()),
             Self::Float(v) => Self::Float(v.clone()),
-            Self::Generic(v) => Self::Generic(v.iter().map(|v| v.clone_with_heap(heap)).collect()),
+            Self::Generic {
+                items: v,
+                contains_refs,
+            } => Self::Generic {
+                items: v.iter().map(|v| v.clone_with_heap(heap)).collect(),
+                contains_refs: *contains_refs,
+            },
         }
     }
 
-    pub fn concat_element_size(&self, other: &Self) -> usize {
+    pub(super) fn concat_element_size(&self, other: &Self) -> usize {
         if self.is_empty() {
             other.element_size()
         } else if other.is_empty() {
@@ -304,7 +339,7 @@ impl Storage {
         }
     }
 
-    pub fn concat(&self, other: &Self, heap: &Heap) -> Self {
+    pub(super) fn concat(&self, other: &Self, heap: &Heap) -> Self {
         if self.is_empty() {
             return other.copy(heap);
         }
@@ -328,43 +363,29 @@ impl Storage {
             _ => {
                 let mut values = Vec::with_capacity(len);
                 values.extend(self.iter().chain(other.iter()).map(|v| v.clone_with_heap(heap)));
-                Self::Generic(values)
+                Self::Generic {
+                    items: values,
+                    contains_refs: self.contains_refs() || other.contains_refs(),
+                }
             }
         }
     }
 
-    pub fn into_values(self) -> Vec<Value> {
+    pub(super) fn into_values(self) -> Vec<Value> {
         match self {
             Self::Empty => Vec::new(),
             Self::Int(v) => v.into_iter().map(Value::Int).collect(),
             Self::Float(v) => v.into_iter().map(Value::Float).collect(),
-            Self::Generic(v) => v,
+            Self::Generic { items: v, .. } => v,
         }
     }
 }
 
-impl<C: ContainsHeap> DropWithContext<C> for Storage {
+impl<C: ContainsHeap> DropWithContext<C> for List {
     fn drop_with(self, ctx: &mut C) {
-        if let Self::Generic(values) = self {
+        if let Self::Generic { items: values, .. } = self {
             values.drop_with(ctx);
         }
-    }
-}
-
-// Keep the persisted list field as a sequence of Values, independent of storage.
-impl Serialize for Storage {
-    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        let mut seq = serializer.serialize_seq(Some(self.len()))?;
-        for item in self.iter() {
-            seq.serialize_element(&*item)?;
-        }
-        seq.end()
-    }
-}
-
-impl<'de> Deserialize<'de> for Storage {
-    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        Vec::<Value>::deserialize(deserializer).map(Self::new)
     }
 }
 
@@ -374,34 +395,38 @@ mod tests {
 
     #[test]
     fn numeric_storage_has_eight_byte_slots_and_promotes_without_coercion() {
-        let mut ints = Storage::new((0..128).map(Value::Int).collect());
+        let mut ints = List::new((0..128).map(Value::Int).collect());
         assert_eq!(ints.element_size(), 8);
         assert_eq!(ints.capacity(), 128);
         ints.push(Value::Bool(true));
-        assert!(matches!(ints, Storage::Generic(_)));
+        assert!(matches!(ints, List::Generic { .. }));
         assert!(matches!(*ints.get(0).unwrap(), Value::Int(0)));
         assert!(matches!(*ints.get(128).unwrap(), Value::Bool(true)));
         ints.remove(128);
-        assert!(matches!(ints, Storage::Generic(_)));
+        assert!(matches!(ints, List::Generic { .. }));
         ints.drop_with(&mut Heap::new(16, ResourceTracker::default()));
     }
 
     #[test]
-    fn numeric_storage_keeps_the_value_sequence_dump_encoding() {
-        for values in [
-            vec![Value::Int(i64::MIN), Value::Int(0), Value::Int(i64::MAX)],
-            vec![Value::Float(-0.0), Value::Float(f64::INFINITY), Value::Float(f64::NAN)],
-            vec![Value::Int(1), Value::None, Value::Bool(true)],
+    fn snapshots_preserve_list_variants() {
+        for list in [
+            List::Empty,
+            List::Int(vec![i64::MIN, 0, i64::MAX]),
+            List::Int(Vec::new()),
+            List::Float(vec![-0.0, f64::INFINITY, f64::NAN]),
+            List::Float(Vec::new()),
+            List::Generic {
+                items: vec![Value::None, Value::Bool(true)],
+                contains_refs: false,
+            },
         ] {
-            let old = minicbor_serde::to_vec(&values).unwrap();
-            let storage = Storage::new(values);
-            let new = minicbor_serde::to_vec(&storage).unwrap();
-            assert_eq!(old, new);
-            let restored: Storage = minicbor_serde::from_slice(&old).unwrap();
-            assert_eq!(minicbor_serde::to_vec(&restored).unwrap(), old);
+            let encoded = minicbor_serde::to_vec(&list).unwrap();
+            let restored: List = minicbor_serde::from_slice(&encoded).unwrap();
+            assert_eq!(mem::discriminant(&list), mem::discriminant(&restored));
+            assert_eq!(encoded, minicbor_serde::to_vec(&restored).unwrap());
             let mut heap = Heap::new(16, ResourceTracker::default());
+            list.drop_with(&mut heap);
             restored.drop_with(&mut heap);
-            storage.drop_with(&mut heap);
         }
     }
 }
