@@ -1937,9 +1937,9 @@ impl EitherStr {
 
     /// Re-resolves a runtime string to its interned id when the interner knows it.
     ///
-    /// Builtin attribute dispatch matches on `StringId`, so a name computed at
-    /// Runtime attribute names can arrive inline or heap-owned. Interning is a
-    /// lookup, never an insert, so sandboxed code cannot grow the interner.
+    /// Builtin attribute dispatch needs a `StringId` for inline or heap-owned names;
+    /// instances and modules compare names by text. This only looks up existing
+    /// entries, so sandboxed code cannot grow the interner.
     #[must_use]
     pub fn resolve_interned(self, interns: &Interns) -> Self {
         match self {
