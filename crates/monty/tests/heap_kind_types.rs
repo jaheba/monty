@@ -94,12 +94,15 @@ assert copy(values[0]) == [1]
 assert deepcopy({'x': values[0]}) == {'x': [1]}
 assert json.loads('[]') == []
 for value in values:
-    try:
-        'abc'.startswith(value)
-    except TypeError:
-        pass
+    if isinstance(value, str):
+        assert 'abc'.startswith(value) is False
     else:
-        assert isinstance(value, (str, tuple))
+        try:
+            'abc'.startswith(value)
+        except TypeError:
+            pass
+        else:
+            assert False
 
 class Indexed:
     def __index__(self):

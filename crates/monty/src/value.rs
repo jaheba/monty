@@ -1396,11 +1396,13 @@ impl<'h> PyTrait<'h> for Value {
         // but, as in CPython, are not their own iterators.
         match self {
             Self::Ref(HeapKind::Instance, id) => vm.heap.read(*id).py_is_iterator(vm),
-            Self::Ref(kind, _) => kind
-                .fixed_type()
-                .map_or(matches!(kind, HeapKind::StringIterator | HeapKind::Itertools), |ty| {
-                    ty.is_iterator()
-                }),
+            Self::Ref(kind, _) => kind.fixed_type().map_or(
+                matches!(
+                    kind,
+                    HeapKind::StringIterator | HeapKind::Itertools | HeapKind::OpenFile
+                ),
+                |ty| ty.is_iterator(),
+            ),
             _ => false,
         }
     }
