@@ -165,10 +165,7 @@ mod tests {
     use monty_types::ResourceTracker;
 
     use super::*;
-    use crate::{
-        heap::{DropWithContext, Heap},
-        value::Value,
-    };
+    use crate::{heap::Heap, value::Value};
 
     #[test]
     fn inline_strings_bypass_the_cache() {
