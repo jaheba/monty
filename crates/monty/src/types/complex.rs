@@ -18,6 +18,7 @@ use crate::{
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::{HashValue, hash_f64},
     heap::{Heap, HeapData, HeapId, HeapItem, HeapObjectRead},
+    heap_data::HeapKind,
     intern::StaticStrings,
     types::{
         LazyHeapSet, PyTrait, Type,
@@ -56,7 +57,7 @@ impl Complex {
 
     /// Allocates this complex on the heap, handing back the owning value.
     pub(crate) fn into_value(self, heap: &Heap) -> Value {
-        Value::Ref(heap.allocate(HeapData::Complex(self)))
+        Value::Ref(HeapKind::Complex, heap.allocate(HeapData::Complex(self)))
     }
 
     /// `-z`.
@@ -322,7 +323,7 @@ fn operand(value: &Value, vm: &VM<'_>) -> RunResult<Option<Operand>> {
         Value::Float(f) => Some(Operand::Real(*f)),
         Value::Int(i) => Some(Operand::Real(*i as f64)),
         Value::Bool(b) => Some(Operand::Real(f64::from(*b))),
-        Value::Ref(id) => match vm.heap.get(*id) {
+        Value::Ref(_, id) => match vm.heap.get(*id) {
             HeapData::Complex(c) => Some(Operand::Complex(*c)),
             HeapData::LongInt(li) => Some(Operand::Real(li.to_f64_checked()?)),
             _ => None,
@@ -374,7 +375,7 @@ pub(crate) fn init(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
 
 /// `complex(x)`: the one form that also accepts a string.
 fn init_single(value: Value, vm: &mut VM<'_>) -> RunResult<Value> {
-    if let Value::Ref(id) = &value
+    if let Value::Ref(_, id) = &value
         && matches!(vm.heap.get(*id), HeapData::Complex(_))
     {
         return Ok(value);
@@ -439,7 +440,7 @@ impl FromValue for Part {
 /// `complex.from_number(x)`: a number or complex, never a string.
 pub(crate) fn class_from_number(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
     let value = args.get_one_arg("complex.from_number", vm.heap)?;
-    if let Value::Ref(id) = &value
+    if let Value::Ref(_, id) = &value
         && matches!(vm.heap.get(*id), HeapData::Complex(_))
     {
         return Ok(value);
@@ -594,7 +595,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Complex> {
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
         let c = *self.get(vm.heap);
         Ok(match other {
-            Value::Ref(id) if let HeapData::Complex(o) = vm.heap.get(*id) => Some(c.eq(*o)),
+            Value::Ref(_, id) if let HeapData::Complex(o) = vm.heap.get(*id) => Some(c.eq(*o)),
             _ => eq_f64(c.real, other, vm).map(|real_eq| real_eq && c.imag == 0.0),
         })
     }

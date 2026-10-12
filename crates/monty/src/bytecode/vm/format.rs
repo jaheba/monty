@@ -169,7 +169,7 @@ impl VM<'_> {
 
     /// Keeps temporal strftime specs out of generic mini-language parsing.
     fn try_format_temporal(&mut self, value: &Value, spec_str: &str) -> Result<Option<String>, RunError> {
-        let Value::Ref(id) = value else {
+        let Value::Ref(_, id) = value else {
             return Ok(None);
         };
         let id = *id;

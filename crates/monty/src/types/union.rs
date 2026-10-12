@@ -22,6 +22,7 @@ use crate::{
         ContainsHeap, DropGuard, DropWithContext, HeapData, HeapId, HeapItem, HeapObjectRead, HeapPayload,
         HeapReadOutput,
     },
+    heap_data::HeapKind,
     intern::StaticStrings,
     types::{LazyHeapSet, PyTrait, Type, generic_alias::repr_type_arg, list::repr_check_time, tuple::allocate_tuple},
     value::{EitherStr, VALUE_SIZE, Value},
@@ -102,7 +103,7 @@ impl Union {
     /// `typing.Optional[key]` is `key | None`. Takes ownership of `key`.
     pub(crate) fn optional(key: Value, vm: &mut VM<'_>) -> RunResult<Value> {
         // CPython rejects a tuple as a whole, naming it in the error.
-        if matches!(&key, Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::Tuple(_))) {
+        if matches!(&key, Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::Tuple(_))) {
             defer_drop!(key, vm);
             let repr = key.py_repr(vm)?;
             defer_drop!(repr, vm);
@@ -142,13 +143,16 @@ impl Union {
             Ok(flat.remove(0))
         } else {
             let args = allocate_tuple(SmallVec::from_vec(flat), vm.heap);
-            Ok(Value::Ref(vm.heap.allocate(HeapData::Union(Self { args }))))
+            Ok(Value::Ref(
+                HeapKind::Union,
+                vm.heap.allocate(HeapData::Union(Self { args })),
+            ))
         }
     }
 
     /// Invokes `on_child` for the heap id this union owns (GC trace hook).
     pub(crate) fn for_each_child_id(&self, mut on_child: impl FnMut(HeapId)) {
-        if let Value::Ref(id) = self.args {
+        if let Value::Ref(_, id) = self.args {
             on_child(id);
         }
     }
@@ -214,7 +218,7 @@ fn operand_kind(value: &Value, vm: &VM<'_>) -> Option<Operand> {
         }
         // `typing.Any`, `typing.List` and the other forms all define `__or__`.
         Value::Marker(marker) if marker.py_type() == Type::SpecialForm => Some(Operand::TypeLike),
-        Value::Ref(id) => match vm.heap.get(*id) {
+        Value::Ref(_, id) => match vm.heap.get(*id) {
             HeapData::Union(_) => Some(Operand::Union),
             HeapData::Class(_)
             | HeapData::NamedTupleClass(_)
@@ -230,7 +234,7 @@ fn operand_kind(value: &Value, vm: &VM<'_>) -> Option<Operand> {
 /// tuple (a namedtuple key is one member, as in CPython). Preflights the
 /// clone like `clone_all_pairs`.
 fn tuple_items(value: &Value, vm: &mut VM<'_>) -> RunResult<Option<Vec<Value>>> {
-    let Value::Ref(id) = value else { return Ok(None) };
+    let Value::Ref(_, id) = value else { return Ok(None) };
     let HeapData::Tuple(tuple) = vm.heap.get(*id) else {
         return Ok(None);
     };
@@ -243,7 +247,7 @@ fn tuple_items(value: &Value, vm: &mut VM<'_>) -> RunResult<Option<Vec<Value>>> 
 
 /// Owned clones of a union's members, or `None` when `value` is not a union.
 fn tuple_items_of_union(value: &Value, vm: &mut VM<'_>) -> RunResult<Option<Vec<Value>>> {
-    let Value::Ref(id) = value else { return Ok(None) };
+    let Value::Ref(_, id) = value else { return Ok(None) };
     let HeapData::Union(union) = vm.heap.get(*id) else {
         return Ok(None);
     };

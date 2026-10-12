@@ -31,7 +31,7 @@ pub fn builtin_pow(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
             let int_modulus = normalize_bool(modulus);
             let result = match int_base {
                 Value::Int(base) => modular_pow(&BigInt::from(*base), int_exp, int_modulus, vm.heap)?,
-                Value::Ref(id) if let HeapData::LongInt(base) = vm.heap.get(*id) => {
+                Value::Ref(_, id) if let HeapData::LongInt(base) = vm.heap.get(*id) => {
                     modular_pow(base.inner(), int_exp, int_modulus, vm.heap)?
                 }
                 _ => None,

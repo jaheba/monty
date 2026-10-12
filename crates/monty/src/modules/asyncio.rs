@@ -18,6 +18,7 @@ use crate::{
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunResult},
     heap::{Heap, HeapData, HeapId},
+    heap_data::HeapKind,
     heap_traits::DropGuard,
     intern::StaticStrings,
     modules::{
@@ -175,7 +176,7 @@ pub(crate) fn gather(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
     for arg in awaitables.iter() {
         if !matches!(
             arg,
-            Value::Ref(id)
+            Value::Ref(_, id)
                 if matches!(
                     vm.heap.get(*id),
                     HeapData::Coroutine(_) | HeapData::ExternalFuture(_) | HeapData::GatherFuture(_)
@@ -193,7 +194,7 @@ pub(crate) fn gather(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
         .collect();
     let gather_future = GatherFuture::new(items);
     let id = vm.heap.allocate(HeapData::GatherFuture(Box::new(gather_future)));
-    Ok(Value::Ref(id))
+    Ok(Value::Ref(HeapKind::GatherFuture, id))
 }
 
 /// `asyncio.gather(*awaitables)` — variadic positional, no kwargs accepted.

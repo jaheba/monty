@@ -31,7 +31,7 @@ pub fn builtin_ord(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
                 .into())
             }
         }
-        Value::Ref(id) if let HeapData::Str(s) = vm.heap.get(*id) => {
+        Value::Ref(_, id) if let HeapData::Str(s) = vm.heap.get(*id) => {
             let mut chars = s.as_str().chars();
             if let (Some(c), None) = (chars.next(), chars.next()) {
                 Ok(Value::Int(c as i64))

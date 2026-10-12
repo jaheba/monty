@@ -27,6 +27,7 @@ use crate::{
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::{HashValue, hash_python_long_int},
     heap::{Heap, HeapData, HeapObjectRead, HeapRead},
+    heap_data::HeapKind,
     resource_checks::{check_div_size, check_lshift_size, check_mult_size, check_pow_size},
     types::{LazyHeapSet, PyTrait, Type, str::allocate_string, tuple::allocate_tuple},
     value::{Value, eq_bigint, float_divmod_tuple, float_pow_value, py_float_divmod, py_float_mod},
@@ -64,7 +65,7 @@ pub struct LongInt(pub BigInt);
 pub(crate) fn wide_i128_into_value(value: i128, heap: &Heap) -> Value {
     debug_assert!(i64::try_from(value).is_err());
     let id = heap.allocate(HeapData::LongInt(LongInt::new(BigInt::from(value))));
-    Value::Ref(id)
+    Value::Ref(HeapKind::LongInt, id)
 }
 
 impl LongInt {
@@ -82,7 +83,7 @@ impl LongInt {
         } else {
             let long_int = Self::new(BigInt::from(value));
             let heap_id = heap.allocate(HeapData::LongInt(long_int));
-            Value::Ref(heap_id)
+            Value::Ref(HeapKind::LongInt, heap_id)
         }
     }
 
@@ -116,7 +117,7 @@ impl LongInt {
             Value::Int(i)
         } else {
             let heap_id = heap.allocate(HeapData::LongInt(self));
-            Value::Ref(heap_id)
+            Value::Ref(HeapKind::LongInt, heap_id)
         }
     }
 
@@ -255,7 +256,7 @@ pub(crate) fn repeat_count(value: &Value, vm: &VM<'_>) -> RunResult<Option<usize
             usize::try_from(*value).map_err(|_| ExcType::overflow_index_sized_int())?
         })),
         Value::Bool(value) => Ok(Some(usize::from(*value))),
-        Value::Ref(id) if let HeapData::LongInt(value) = vm.heap.get(*id) => Ok(Some(value.repeat_count()?)),
+        Value::Ref(_, id) if let HeapData::LongInt(value) = vm.heap.get(*id) => Ok(Some(value.repeat_count()?)),
         _ => Ok(None),
     }
 }
@@ -449,7 +450,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, LongInt> {
             Value::Int(rhs) => lhs.inner() + rhs,
             Value::Bool(rhs) => lhs.inner() + i64::from(*rhs),
             Value::Float(rhs) => return Ok(Some(Value::Float(lhs.to_f64_checked()? + rhs))),
-            Value::Ref(id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => lhs.inner() + rhs.inner(),
+            Value::Ref(_, id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => lhs.inner() + rhs.inner(),
             _ => return Ok(None),
         };
         Ok(Some(LongInt::new(result).into_value(vm.heap)))
@@ -479,7 +480,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, LongInt> {
             Value::Int(rhs) => lhs.inner() - rhs,
             Value::Bool(rhs) => lhs.inner() - i64::from(*rhs),
             Value::Float(rhs) => return Ok(Some(Value::Float(lhs.to_f64_checked()? - rhs))),
-            Value::Ref(id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => lhs.inner() - rhs.inner(),
+            Value::Ref(_, id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => lhs.inner() - rhs.inner(),
             _ => return Ok(None),
         };
         Ok(Some(LongInt::new(result).into_value(vm.heap)))
@@ -491,7 +492,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, LongInt> {
             Value::Int(lhs) => BigInt::from(*lhs) - rhs.inner(),
             Value::Bool(lhs) => BigInt::from(*lhs) - rhs.inner(),
             Value::Float(lhs) => return Ok(Some(Value::Float(lhs - rhs.to_f64_checked()?))),
-            Value::Ref(id) if let HeapData::LongInt(lhs) = vm.heap.get(*id) => lhs.inner() - rhs.inner(),
+            Value::Ref(_, id) if let HeapData::LongInt(lhs) = vm.heap.get(*id) => lhs.inner() - rhs.inner(),
             _ => return Ok(None),
         };
         Ok(Some(LongInt::new(result).into_value(vm.heap)))
@@ -505,7 +506,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, LongInt> {
             Value::Bool(true) => BigInt::ZERO,
             Value::Float(0.0) => return Err(ExcType::zero_division().into()),
             Value::Float(rhs) => return Ok(Some(Value::Float(py_float_mod(bigint_to_f64_checked(lhs)?, *rhs)))),
-            Value::Ref(id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => {
+            Value::Ref(_, id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => {
                 if rhs.is_zero() {
                     return Err(ExcType::zero_division().into());
                 }
@@ -525,7 +526,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, LongInt> {
             Value::Int(lhs) => BigInt::from(*lhs).mod_floor(rhs.inner()),
             Value::Bool(lhs) => BigInt::from(*lhs).mod_floor(rhs.inner()),
             Value::Float(lhs) => return Ok(Some(Value::Float(py_float_mod(*lhs, rhs.to_f64_checked()?)))),
-            Value::Ref(id) if let HeapData::LongInt(lhs) = vm.heap.get(*id) => lhs.inner().mod_floor(rhs.inner()),
+            Value::Ref(_, id) if let HeapData::LongInt(lhs) = vm.heap.get(*id) => lhs.inner().mod_floor(rhs.inner()),
             _ => return Ok(None),
         };
         Ok(Some(LongInt::new(result).into_value(vm.heap)))
@@ -544,7 +545,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, LongInt> {
                 Value::Int(0)
             }),
             Value::Float(rhs) => Some(Value::Float(lhs.to_f64_checked()? * rhs)),
-            Value::Ref(id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => {
+            Value::Ref(_, id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => {
                 check_mult_size(lhs.bits(), rhs.bits(), &vm.heap.tracker)?;
                 Some(LongInt::new(lhs.inner() * rhs.inner()).into_value(vm.heap))
             }
@@ -564,7 +565,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, LongInt> {
             Value::Bool(rhs) => bigint_true_divide(lhs.inner(), &BigInt::from(*rhs), &vm.heap.tracker)?,
             Value::Float(0.0) => return Err(ExcType::zero_division().into()),
             Value::Float(rhs) => lhs.to_f64_checked()? / rhs,
-            Value::Ref(id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => {
+            Value::Ref(_, id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => {
                 bigint_true_divide(lhs.inner(), rhs.inner(), &vm.heap.tracker)?
             }
             _ => return Ok(None),
@@ -595,7 +596,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, LongInt> {
             Value::Bool(true) => lhs.inner().clone(),
             Value::Float(0.0) => return Err(ExcType::zero_division().into()),
             Value::Float(rhs) => return Ok(Some(Value::Float(py_float_divmod(lhs.to_f64_checked()?, *rhs).0))),
-            Value::Ref(id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => {
+            Value::Ref(_, id) if let HeapData::LongInt(rhs) = vm.heap.get(*id) => {
                 if rhs.is_zero() {
                     return Err(ExcType::zero_division().into());
                 }
@@ -769,7 +770,7 @@ impl<'h> HeapRead<'h, LongInt> {
         let rhs = match other {
             Value::Int(value) => BigInt::from(*value),
             Value::Bool(value) => BigInt::from(*value),
-            Value::Ref(id) if let HeapData::LongInt(value) = vm.heap.get(*id) => value.inner().clone(),
+            Value::Ref(_, id) if let HeapData::LongInt(value) = vm.heap.get(*id) => value.inner().clone(),
             _ => return None,
         };
         let result = operation(self.get(vm.heap).inner().clone(), rhs);
@@ -885,7 +886,7 @@ fn integer_value<'a>(value: &'a Value, heap: &'a Heap) -> Option<Cow<'a, BigInt>
     match value {
         Value::Int(value) => Some(Cow::Owned(BigInt::from(*value))),
         Value::Bool(value) => Some(Cow::Owned(BigInt::from(*value))),
-        Value::Ref(id) if let HeapData::LongInt(value) = heap.get(*id) => Some(Cow::Borrowed(value.inner())),
+        Value::Ref(_, id) if let HeapData::LongInt(value) = heap.get(*id) => Some(Cow::Borrowed(value.inner())),
         _ => None,
     }
 }
@@ -1004,7 +1005,7 @@ fn shift_amount(value: &Value, vm: &VM<'_>) -> RunResult<Option<u64>> {
     let value = match value {
         Value::Int(value) => return shift_i64(*value).map(Some),
         Value::Bool(value) => return Ok(Some(u64::from(*value))),
-        Value::Ref(id) if let HeapData::LongInt(value) = vm.heap.get(*id) => value,
+        Value::Ref(_, id) if let HeapData::LongInt(value) = vm.heap.get(*id) => value,
         _ => return Ok(None),
     };
     if value.is_negative() {

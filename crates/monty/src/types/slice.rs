@@ -18,6 +18,7 @@ use crate::{
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::HashValue,
     heap::{HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
+    heap_data::HeapKind,
     intern::StaticStrings,
     types::{PyTrait, Type},
     value::{EitherStr, Value},
@@ -80,7 +81,7 @@ impl Slice {
             _ => return Err(ExcType::type_error_at_most("slice", 3, pos_args.len())),
         };
 
-        Ok(Value::Ref(vm.heap.allocate(HeapData::Slice(slice))))
+        Ok(Value::Ref(HeapKind::Slice, vm.heap.allocate(HeapData::Slice(slice))))
     }
 
     /// Computes concrete indices for a sequence of the given length.

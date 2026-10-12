@@ -1509,7 +1509,7 @@ fn is_callable(value: &Value, heap: &Heap) -> bool {
         Value::Builtin(_) | Value::ModuleFunction(_) | Value::DefFunction(_) => true,
         // A `Class`, `NamedTupleClass`, or `BoundMethod` is also callable but is
         // not a function, so keep only the function-like heap variants.
-        Value::Ref(id) => matches!(
+        Value::Ref(_, id) => matches!(
             heap.get(*id),
             HeapData::Closure(_) | HeapData::FunctionDefaults(_) | HeapData::ExtFunction(_)
         ),

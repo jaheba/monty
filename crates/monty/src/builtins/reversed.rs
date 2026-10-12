@@ -5,6 +5,7 @@ use crate::{
     bytecode::VM,
     exception_private::{ExcType, ExcTypeExt, RunResult},
     heap::HeapData,
+    heap_data::HeapKind,
     types::{List, iter::collect_owned_iterable},
     value::Value,
 };
@@ -43,7 +44,7 @@ pub fn builtin_reversed(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
     items.reverse();
 
     let heap_id = vm.heap.allocate(HeapData::List(List::new(items)));
-    Ok(Value::Ref(heap_id))
+    Ok(Value::Ref(HeapKind::List, heap_id))
 }
 
 /// Whether `reversed()` accepts this value, mirroring CPython's requirement of
@@ -56,7 +57,7 @@ pub fn builtin_reversed(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
 fn is_reversible(value: &Value, vm: &VM<'_>) -> bool {
     match value {
         Value::InternString(_) | Value::InternBytes(_) => true,
-        Value::Ref(id) => matches!(
+        Value::Ref(_, id) => matches!(
             vm.heap.get(*id),
             HeapData::List(_)
                 | HeapData::Tuple(_)

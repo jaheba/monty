@@ -280,7 +280,7 @@ pub(crate) fn is_long_int(value: &Value, vm: &VM<'_>) -> bool {
 pub(crate) fn long_int<'a>(value: &'a Value, vm: &'a VM<'_>) -> Option<&'a BigInt> {
     match value {
         Value::InternLongInt(id) => Some(vm.interns.get_long_int(*id)),
-        Value::Ref(id) => match vm.heap.get(*id) {
+        Value::Ref(_, id) => match vm.heap.get(*id) {
             HeapData::LongInt(big) => Some(big.inner()),
             _ => None,
         },

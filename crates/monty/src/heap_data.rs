@@ -179,6 +179,16 @@ macro_rules! define_heap_data {
         $(#[$meta:meta])*
         $variant:ident($storage:ident $payload:ty)
     ),* $(,)?) => {
+        /// Payload variant carried by a heap reference, independent of its Python type.
+        #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+        #[repr(u8)]
+        pub(crate) enum HeapKind {
+            $(
+                $(#[$meta])*
+                $variant,
+            )*
+        }
+
         /// Every runtime value that can be stored in the heap arena.
         #[derive(Debug, serde::Serialize, serde::Deserialize)]
         pub(crate) enum HeapData {
@@ -186,6 +196,14 @@ macro_rules! define_heap_data {
                 $(#[$meta])*
                 $variant(heap_storage_type!($storage $payload)),
             )*
+        }
+
+        impl HeapData {
+            pub(crate) fn kind(&self) -> HeapKind {
+                match self {
+                    $(Self::$variant(_) => HeapKind::$variant,)*
+                }
+            }
         }
     };
 }
@@ -609,7 +627,7 @@ impl HeapItem for GatherFuture {
                     result.py_dec_ref_ids(stack);
                 }
             }
-            GatherState::Completed(Value::Ref(id)) => stack.push(*id),
+            GatherState::Completed(Value::Ref(_, id)) => stack.push(*id),
             GatherState::Pending | GatherState::Failed(_) | GatherState::Completed(_) => {}
         }
     }

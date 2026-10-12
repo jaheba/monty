@@ -204,7 +204,7 @@ fn snippet_source(name: &str, source: &Value, vm: &mut VM<'_>) -> RunResult<Arc<
     let bytes: &[u8] = match source {
         Value::InternString(id) => return Ok(Arc::from(vm.interns.get_str(*id))),
         Value::InternBytes(id) => vm.interns.get_bytes(*id),
-        Value::Ref(id) => match vm.heap.get(*id) {
+        Value::Ref(_, id) => match vm.heap.get(*id) {
             HeapData::Str(s) => return Ok(Arc::from(s.as_str())),
             HeapData::Bytes(b) => b.as_slice(),
             _ => return Err(source_type_error(name)),
@@ -237,7 +237,7 @@ fn source_type_error(name: &str) -> RunError {
 fn globals_dict(globals: &Value, builtin: Builtin, vm: &mut VM<'_>) -> RunResult<Option<HeapId>> {
     match globals {
         Value::None => Ok(None),
-        Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::Dict(_)) => Ok(Some(*id)),
+        Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::Dict(_)) => Ok(Some(*id)),
         other => {
             let ty = other.py_type(vm);
             Err(match builtin {
@@ -264,7 +264,7 @@ fn globals_dict(globals: &Value, builtin: Builtin, vm: &mut VM<'_>) -> RunResult
 fn locals_dict(locals: &Value, builtin: Builtin, vm: &mut VM<'_>) -> RunResult<Option<HeapId>> {
     match locals {
         Value::None => Ok(None),
-        Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::Dict(_)) => Ok(Some(*id)),
+        Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::Dict(_)) => Ok(Some(*id)),
         other => Err(match builtin {
             Builtin::Eval => ExcType::type_error("locals must be a mapping"),
             Builtin::Exec => ExcType::type_error(format!(

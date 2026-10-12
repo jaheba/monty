@@ -12,6 +12,7 @@ use crate::{
     defer_drop,
     fstring::{FormatError, ascii_escape},
     heap::{DropWithContext, HeapData, HeapRead},
+    heap_data::HeapKind,
     intern::{Interns, StaticStrings, StringId},
     parse::CodeRange,
     source_map::{SourceMap, StackFrameExt},
@@ -2402,7 +2403,7 @@ impl ExcTypeExt for ExcType {
                     self,
                     vm.interns.get_str(*string_id).to_owned(),
                 )),
-                Value::Ref(heap_id) => {
+                Value::Ref(_, heap_id) => {
                     if let HeapData::Str(s) = vm.heap.get(*heap_id) {
                         Ok(SimpleException::new_msg(self, s.as_str().to_owned()))
                     } else {
@@ -2420,7 +2421,7 @@ impl ExcTypeExt for ExcType {
             )),
         }?;
         let heap_id = vm.heap.allocate(HeapData::Exception(exc));
-        Ok(Value::Ref(heap_id))
+        Ok(Value::Ref(HeapKind::Exception, heap_id))
     }
 }
 

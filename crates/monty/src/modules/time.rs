@@ -22,6 +22,7 @@ use crate::{
     bytecode::{CallResult, VM},
     exception_private::{ExcType, ExcTypeExt, RunResult},
     heap::{DropWithContext, HeapData, HeapId, HeapReadOutput},
+    heap_data::HeapKind,
     intern::StaticStrings,
     modules::ModuleFunctions,
     os_dispatch::PostConversionEffect,
@@ -712,7 +713,10 @@ fn struct_time_value(fields: &TimeFields, vm: &mut VM<'_>) -> Value {
             zone_name,
         ],
     );
-    Value::Ref(vm.heap.allocate(HeapData::NamedTuple(Box::new(named_tuple))))
+    Value::Ref(
+        HeapKind::NamedTuple,
+        vm.heap.allocate(HeapData::NamedTuple(Box::new(named_tuple))),
+    )
 }
 
 /// Reads the `struct_time` (or bare 9-element tuple) that `mktime`, `asctime`

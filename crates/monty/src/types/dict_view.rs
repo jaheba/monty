@@ -8,6 +8,7 @@ use crate::{
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
     heap::{ContainsHeap, DropGuard, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapRead, HeapReadOutput},
+    heap_data::HeapKind,
     intern::StaticStrings,
     types::{
         Dict, FrozenSet, LazyHeapSet, PyTrait, Set, Type, allocate_tuple,
@@ -121,7 +122,7 @@ impl<'h> HeapRead<'h, DictKeysView> {
             }
         }
         let (result, vm) = result_guard.into_parts();
-        Ok(Some(Value::Ref(vm.heap.allocate(HeapData::Set(result)))))
+        Ok(Some(Value::Ref(HeapKind::Set, vm.heap.allocate(HeapData::Set(result)))))
     }
 
     /// Applies a reflected set-like operation after validating the left iterable.
@@ -136,7 +137,7 @@ impl<'h> HeapRead<'h, DictKeysView> {
         let rhs = self.to_set(vm)?;
         defer_drop!(rhs, vm);
         let result = operation(lhs, rhs, vm)?;
-        Ok(Some(Value::Ref(vm.heap.allocate(HeapData::Set(result)))))
+        Ok(Some(Value::Ref(HeapKind::Set, vm.heap.allocate(HeapData::Set(result)))))
     }
 
     /// Implements `dict_keys.isdisjoint(iterable)` with CPython's iterable semantics.
@@ -347,7 +348,7 @@ impl<'h> HeapRead<'h, DictItemsView> {
         } else {
             self.intersect_unhashable_items(other, vm)?
         };
-        Ok(Some(Value::Ref(vm.heap.allocate(HeapData::Set(result)))))
+        Ok(Some(Value::Ref(HeapKind::Set, vm.heap.allocate(HeapData::Set(result)))))
     }
 
     /// Returns whether every live value can participate in an item tuple hash.
@@ -403,7 +404,7 @@ impl<'h> HeapRead<'h, DictItemsView> {
         let rhs = self.to_set(vm)?;
         defer_drop!(rhs, vm);
         let result = operation(lhs, rhs, vm)?;
-        Ok(Some(Value::Ref(vm.heap.allocate(HeapData::Set(result)))))
+        Ok(Some(Value::Ref(HeapKind::Set, vm.heap.allocate(HeapData::Set(result)))))
     }
 
     /// Implements `dict_items.isdisjoint(iterable)` with CPython's iterable semantics.
@@ -762,7 +763,7 @@ fn dict_view_binary_op_value(
 
     let result = operation(lhs_set, rhs_set, vm)?;
     let result_id = vm.heap.allocate(HeapData::Set(result));
-    Ok(Some(Value::Ref(result_id)))
+    Ok(Some(Value::Ref(HeapKind::Set, result_id)))
 }
 
 /// Computes dictionary-view intersection.
@@ -862,7 +863,7 @@ fn sets_are_disjoint(left: &Set, right: &Set, vm: &mut VM<'_>) -> RunResult<bool
 /// also accepts namedtuples of length two so tuple-like runtime values behave
 /// sensibly even though namedtuples are not modeled as a true tuple subclass.
 pub(crate) fn cloned_items_view_candidate(item: &Value, heap: &impl ContainsHeap) -> Option<(Value, Value)> {
-    let Value::Ref(heap_id) = item else {
+    let Value::Ref(_, heap_id) = item else {
         return None;
     };
 

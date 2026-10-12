@@ -402,7 +402,7 @@ fn wrapping_u32(value: &Value, vm: &VM<'_>) -> RunResult<u32> {
     match value {
         Value::Int(int) => Ok(u32::try_from(int.rem_euclid(MODULUS)).expect("reduced below 2**32")),
         Value::Bool(flag) => Ok(u32::from(*flag)),
-        Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
+        Value::Ref(_, heap_id) => match vm.heap.get(*heap_id) {
             HeapData::LongInt(long) => {
                 // `&` on a `BigInt` is two's-complement, so this is Python's
                 // own `value & 0xffffffff` for negatives as well.
@@ -510,7 +510,7 @@ fn hex_separator(sep: Option<&Value>, vm: &VM<'_>) -> RunResult<Option<u8>> {
 fn is_bytes(value: &Value, vm: &VM<'_>) -> bool {
     match value {
         Value::InternBytes(_) => true,
-        Value::Ref(heap_id) => matches!(vm.heap.get(*heap_id), HeapData::Bytes(_)),
+        Value::Ref(_, heap_id) => matches!(vm.heap.get(*heap_id), HeapData::Bytes(_)),
         _ => false,
     }
 }

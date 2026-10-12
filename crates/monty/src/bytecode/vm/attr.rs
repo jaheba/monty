@@ -166,7 +166,7 @@ impl VM<'_> {
 /// (its submodules are module attributes), a bundled one is not.
 fn module_package(value: &Value, heap: &Heap) -> Option<bool> {
     match value {
-        Value::Ref(id) => match heap.get(*id) {
+        Value::Ref(_, id) => match heap.get(*id) {
             HeapData::Module(module) => Some(module.id().is_some()),
             _ => None,
         },

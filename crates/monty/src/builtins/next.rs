@@ -38,7 +38,7 @@ struct NextArgs {
 pub fn builtin_next(vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult> {
     let NextArgs { iterator, default } = NextArgs::from_args(args, vm)?;
     defer_drop!(iterator, vm);
-    if let Value::Ref(id) = iterator
+    if let Value::Ref(_, id) = iterator
         && let HeapReadOutput::OpenFile(file) = vm.heap.read(*id)
         && file.needs_buffer_load(vm)
     {

@@ -31,7 +31,7 @@ pub fn builtin_bin(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
             let s = if *b { "0b1" } else { "0b0" };
             Ok(allocate_string_no_interning(s.to_string(), vm.heap))
         }
-        Value::Ref(id) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
+        Value::Ref(_, id) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
             let bin_str = format_bigint_bin(li.inner());
             Ok(allocate_string_no_interning(bin_str, vm.heap))
         }

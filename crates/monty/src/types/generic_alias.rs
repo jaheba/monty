@@ -24,6 +24,7 @@ use crate::{
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::HashValue,
     heap::{ContainsHeap, DropWithContext, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
+    heap_data::HeapKind,
     intern::StaticStrings,
     types::{LazyHeapSet, PyTrait, Type, Union, instance::class_name, list::repr_check_time, tuple::allocate_tuple},
     value::{EitherStr, Value},
@@ -53,13 +54,16 @@ impl GenericAlias {
         debug_assert!(origin.has_class_getitem(), "{origin} is not a generic type");
         // A tuple key is `__args__` itself, as in CPython, so `tuple[()]`
         // has empty args and `list[int, str]` two.
-        let is_tuple = matches!(&key, Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::Tuple(_)));
+        let is_tuple = matches!(&key, Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::Tuple(_)));
         let args = if is_tuple {
             key
         } else {
             allocate_tuple(smallvec![key], vm.heap)
         };
-        Value::Ref(vm.heap.allocate(HeapData::GenericAlias(Self { origin, args })))
+        Value::Ref(
+            HeapKind::GenericAlias,
+            vm.heap.allocate(HeapData::GenericAlias(Self { origin, args })),
+        )
     }
 
     /// The value `__origin__` reports and a call dispatches to.
@@ -76,7 +80,7 @@ impl GenericAlias {
 
     /// Invokes `on_child` for the heap id this alias owns (GC trace hook).
     pub(crate) fn for_each_child_id(&self, mut on_child: impl FnMut(HeapId)) {
-        if let Value::Ref(id) = self.args {
+        if let Value::Ref(_, id) = self.args {
             on_child(id);
         }
     }
@@ -265,7 +269,7 @@ pub(crate) fn repr_type_arg(
         Value::Builtin(Builtins::Type(ty)) => Ok(f.write_str(&ty.name(vm.heap, vm.interns))?),
         Value::Builtin(Builtins::ExcType(exc_type)) => Ok(f.write_str(exc_type.into())?),
         Value::Builtin(Builtins::Function(BuiltinsFunctions::Type)) => Ok(f.write_str("type")?),
-        Value::Ref(id) => match vm.heap.get(*id) {
+        Value::Ref(_, id) => match vm.heap.get(*id) {
             HeapData::Class(_) => Ok(f.write_str(&class_name(*id, vm.heap, vm.interns))?),
             HeapData::NamedTupleClass(class) => Ok(f.write_str(class.name(vm.interns))?),
             HeapData::HostClassType(class) => Ok(f.write_str(class.name(vm.interns))?),

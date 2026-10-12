@@ -133,7 +133,7 @@ fn count_repeat_len(value: &Value, vm: &mut VM<'_>) -> RunResult<usize> {
     match value {
         Value::Int(i) => Ok(usize::try_from(*i).unwrap_or(0)),
         Value::Bool(b) => Ok(usize::from(*b)),
-        Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::LongInt(_)) => Err(ExcType::overflow_c_ssize_t()),
+        Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::LongInt(_)) => Err(ExcType::overflow_c_ssize_t()),
         Value::InternLongInt(_) => Err(ExcType::overflow_c_ssize_t()),
         other => Err(ExcType::type_error_not_an_integer(&other.py_type_name(vm))),
     }
@@ -193,9 +193,9 @@ pub(crate) fn counter_update<'h>(
     if let Some(source) = source
         && !matches!(source, Value::None)
     {
-        let is_mapping = matches!(&source, Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::Dict(_)));
+        let is_mapping = matches!(&source, Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::Dict(_)));
         if is_mapping {
-            let Value::Ref(src_id) = source else {
+            let Value::Ref(_, src_id) = source else {
                 unreachable!("mapping is a ref");
             };
             // Snapshot (key, delta) pairs first so `c.update(c)` is well-defined.
@@ -380,7 +380,7 @@ pub(crate) fn counter_most_common<'h>(
         Some(Value::Bool(b)) => Some(usize::from(b)),
         // `value @` binds the whole `Value` (so it is dropped, not plain-`Drop`ped
         // — the `Ref` owns a heap refcount), while `id` reads the entry.
-        Some(value @ Value::Ref(id)) if matches!(vm.heap.get(id), HeapData::LongInt(_)) => {
+        Some(value @ Value::Ref(_, id)) if matches!(vm.heap.get(id), HeapData::LongInt(_)) => {
             let negative = match vm.heap.get(id) {
                 HeapData::LongInt(li) => li.is_negative(),
                 _ => unreachable!("guarded by the matches! above"),

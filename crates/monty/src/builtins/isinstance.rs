@@ -39,22 +39,22 @@ fn isinstance_check(obj: &Value, classinfo: &Value, vm: &mut VM<'_>) -> RunResul
             Ok(matches!(obj.py_type(vm), Type::Exception(exc_type) if exc_type.is_subclass_of(*handler_type)))
         }
         // A user-defined class: true iff `obj` is an instance of exactly this class.
-        Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::Class(_)) => Ok(instance_of_class(obj, *id, vm)),
+        Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::Class(_)) => Ok(instance_of_class(obj, *id, vm)),
         // A `collections.namedtuple` class, matched by the instance's `class_id`.
-        Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::NamedTupleClass(_)) => {
+        Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::NamedTupleClass(_)) => {
             Ok(instance_of_namedtuple_class(obj, *id, vm))
         }
-        Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::HostClassType(_)) => {
+        Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::HostClassType(_)) => {
             Ok(instance_of_host_class(obj, *id, vm))
         }
-        Value::Ref(id) if let HeapReadOutput::Tuple(tuple) = vm.heap.read(*id) => {
+        Value::Ref(_, id) if let HeapReadOutput::Tuple(tuple) = vm.heap.read(*id) => {
             isinstance_check_tuple(obj, &tuple, vm)
         }
-        Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::GenericAlias(_)) => {
+        Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::GenericAlias(_)) => {
             Err(ExcType::isinstance_parameterized_generic())
         }
         // `int | None`: true when any member matches, tested in order.
-        Value::Ref(id) if let HeapData::Union(union) = vm.heap.get(*id) => {
+        Value::Ref(_, id) if let HeapData::Union(union) = vm.heap.get(*id) => {
             let args = union.args(vm.heap);
             defer_drop!(args, vm);
             let Some(HeapReadOutput::Tuple(members)) = args.read_heap(vm) else {
@@ -69,12 +69,12 @@ fn isinstance_check(obj: &Value, classinfo: &Value, vm: &mut VM<'_>) -> RunResul
 /// Whether `obj` is a host instance whose class entry is `class_id` (exact
 /// class only: the host never sends bases, so subclasses are unknown).
 fn instance_of_host_class(obj: &Value, class_id: HeapId, vm: &VM<'_>) -> bool {
-    matches!(obj, Value::Ref(obj_id) if matches!(vm.heap.get(*obj_id), HeapData::HostClass(hc) if hc.class_id() == class_id))
+    matches!(obj, Value::Ref(_, obj_id) if matches!(vm.heap.get(*obj_id), HeapData::HostClass(hc) if hc.class_id() == class_id))
 }
 
 /// Whether `obj` is an instance whose class object is `class_id`.
 fn instance_of_class(obj: &Value, class_id: HeapId, vm: &VM<'_>) -> bool {
-    matches!(obj, Value::Ref(obj_id) if matches!(vm.heap.get(*obj_id), HeapData::Instance(inst) if inst.class() == class_id))
+    matches!(obj, Value::Ref(_, obj_id) if matches!(vm.heap.get(*obj_id), HeapData::Instance(inst) if inst.class() == class_id))
 }
 
 /// Whether `obj` is a namedtuple instance built from the class `class_id`.
@@ -82,7 +82,7 @@ fn instance_of_class(obj: &Value, class_id: HeapId, vm: &VM<'_>) -> bool {
 /// Instances created by Monty internally (`sys.version_info`, host imports)
 /// carry no `class_id`, so they never match a factory class.
 fn instance_of_namedtuple_class(obj: &Value, class_id: HeapId, vm: &VM<'_>) -> bool {
-    matches!(obj, Value::Ref(obj_id) if matches!(vm.heap.get(*obj_id), HeapData::NamedTuple(nt) if nt.class_id() == Some(class_id)))
+    matches!(obj, Value::Ref(_, obj_id) if matches!(vm.heap.get(*obj_id), HeapData::NamedTuple(nt) if nt.class_id() == Some(class_id)))
 }
 
 /// Recursively walks a tuple of classinfo entries.
@@ -102,30 +102,30 @@ fn isinstance_check_tuple<'h>(obj: &Value, tuple: &HeapRead<'h, Tuple>, vm: &mut
                     return Ok(true);
                 }
             }
-            Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::Class(_)) => {
+            Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::Class(_)) => {
                 if instance_of_class(obj, *id, vm) {
                     return Ok(true);
                 }
             }
-            Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::NamedTupleClass(_)) => {
+            Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::NamedTupleClass(_)) => {
                 if instance_of_namedtuple_class(obj, *id, vm) {
                     return Ok(true);
                 }
             }
-            Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::HostClassType(_)) => {
+            Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::HostClassType(_)) => {
                 if instance_of_host_class(obj, *id, vm) {
                     return Ok(true);
                 }
             }
-            Value::Ref(nested_id) if let HeapReadOutput::Tuple(nested) = vm.heap.read(*nested_id) => {
+            Value::Ref(_, nested_id) if let HeapReadOutput::Tuple(nested) = vm.heap.read(*nested_id) => {
                 if isinstance_check_tuple(obj, &nested, vm)? {
                     return Ok(true);
                 }
             }
-            Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::GenericAlias(_)) => {
+            Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::GenericAlias(_)) => {
                 return Err(ExcType::isinstance_parameterized_generic());
             }
-            Value::Ref(id) if let HeapData::Union(union) = vm.heap.get(*id) => {
+            Value::Ref(_, id) if let HeapData::Union(union) = vm.heap.get(*id) => {
                 let args = union.args(vm.heap);
                 defer_drop!(args, vm);
                 let Some(HeapReadOutput::Tuple(members)) = args.read_heap(vm) else {

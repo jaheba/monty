@@ -31,7 +31,7 @@ pub fn builtin_oct(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
             let s = if *b { "0o1" } else { "0o0" };
             Ok(allocate_string_no_interning(s.to_string(), vm.heap))
         }
-        Value::Ref(id) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
+        Value::Ref(_, id) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
             let oct_str = format_bigint_oct(li.inner());
             Ok(allocate_string_no_interning(oct_str, vm.heap))
         }

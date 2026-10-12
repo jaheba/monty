@@ -12,6 +12,7 @@ use crate::{
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
     heap::{ContainsHeap, DropGuard, DropWithContext, HeapData, HeapId, HeapReadOutput},
+    heap_data::HeapKind,
     intern::StaticStrings,
     modules::ModuleFunctions,
     types::{Dict, List, Module, instance_call_copy_hook},
@@ -98,7 +99,7 @@ fn call_deepcopy(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
 /// [`classify`] settles what happens to each heap type; this only spells out
 /// the rebuilds, which need the typed handle its arm binds.
 fn shallow_copy(value: &Value, vm: &mut VM<'_>) -> RunResult<Value> {
-    let Value::Ref(id) = value else {
+    let Value::Ref(_, id) = value else {
         return Ok(value.clone_with_heap(vm.heap));
     };
     let id = *id;
@@ -108,17 +109,20 @@ fn shallow_copy(value: &Value, vm: &mut VM<'_>) -> RunResult<Value> {
         Copyability::Rebuilt => match vm.heap.read(id) {
             HeapReadOutput::List(list) => {
                 let items = clone_items(list.get(vm.heap).len(), vm, |index, vm| list.clone_item(index, vm))?;
-                Ok(Value::Ref(vm.heap.allocate(HeapData::List(List::new(items)))))
+                Ok(Value::Ref(
+                    HeapKind::List,
+                    vm.heap.allocate(HeapData::List(List::new(items))),
+                ))
             }
             HeapReadOutput::Dict(dict) => {
                 let pairs = dict.clone_all_pairs(vm)?;
                 let copy_id = dict.allocate_empty_like(vm);
                 let filled = insert_pairs(copy_id, pairs, vm);
-                release_on_error(Value::Ref(copy_id), filled, vm)
+                release_on_error(Value::Ref(HeapKind::Dict, copy_id), filled, vm)
             }
             HeapReadOutput::Set(set) => {
                 let copy = set.copy(vm);
-                Ok(Value::Ref(vm.heap.allocate(HeapData::Set(copy))))
+                Ok(Value::Ref(HeapKind::Set, vm.heap.allocate(HeapData::Set(copy))))
             }
             HeapReadOutput::Deque(deque) => {
                 let items = clone_items(deque.get(vm.heap).len(), vm, |index, vm| {
@@ -143,7 +147,7 @@ fn shallow_copy(value: &Value, vm: &mut VM<'_>) -> RunResult<Value> {
                     let pairs = clone_attrs(id, vm)?;
                     let copy_id = instance.allocate_empty_like(vm);
                     let filled = insert_attrs(copy_id, pairs, vm);
-                    release_on_error(Value::Ref(copy_id), filled, vm)
+                    release_on_error(Value::Ref(HeapKind::Instance, copy_id), filled, vm)
                 }
             }
             // A new binding over the same receiver and function, as CPython's
@@ -197,7 +201,7 @@ pub(crate) trait PyDeepCopy<'h> {
 /// The whole walk runs inside one call, past no instruction checkpoint, so
 /// every fill loop polls the duration limit as the container iterators do.
 pub(crate) fn deep_copy(source: &Value, memo: &mut Memo, vm: &mut VM<'_>) -> RunResult<Value> {
-    let Value::Ref(id) = source else {
+    let Value::Ref(_, id) = source else {
         return Ok(source.clone_with_heap(vm.heap));
     };
     let id = *id;
@@ -365,7 +369,7 @@ pub(crate) fn deep_copy_attrs(
     memo: &mut Memo,
     vm: &mut VM<'_>,
 ) -> RunResult<Value> {
-    let mut guard = DropGuard::new(Value::Ref(copy_id), vm);
+    let mut guard = DropGuard::new(Value::Ref(HeapKind::Instance, copy_id), vm);
     let (copy, vm) = guard.as_parts_mut();
     memo.insert(source, copy, vm)?;
     let expected_len = attrs(source_id, vm).len();
@@ -468,8 +472,8 @@ impl Memo {
     /// what the pass recorded.
     fn new(memo: Value, vm: &mut VM<'_>) -> RunResult<Self> {
         let dict = match memo {
-            Value::None => Value::Ref(vm.heap.allocate(HeapData::Dict(Dict::new()))),
-            Value::Ref(id) if matches!(vm.heap.read(id), HeapReadOutput::Dict(_)) => memo,
+            Value::None => Value::Ref(HeapKind::Dict, vm.heap.allocate(HeapData::Dict(Dict::new()))),
+            Value::Ref(_, id) if matches!(vm.heap.read(id), HeapReadOutput::Dict(_)) => memo,
             other => {
                 let type_name = other.py_type_name(vm);
                 other.drop_with(vm);
