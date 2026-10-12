@@ -210,7 +210,7 @@ fn push_unique(flat: &mut Vec<Value>, member: &Value, vm: &mut VM<'_>) -> RunRes
 
 /// Classifies `value` for [`Union::try_or`]; `None` for a value `|` never
 /// unions with (an instance, a number, a string, ...).
-fn operand_kind(value: &Value, vm: &VM<'_>) -> Option<Operand> {
+fn operand_kind(value: &Value, _vm: &VM<'_>) -> Option<Operand> {
     match value {
         Value::None => Some(Operand::NoneValue),
         Value::Builtin(Builtins::Type(_) | Builtins::ExcType(_) | Builtins::Function(BuiltinsFunctions::Type)) => {
@@ -218,21 +218,11 @@ fn operand_kind(value: &Value, vm: &VM<'_>) -> Option<Operand> {
         }
         // `typing.Any`, `typing.List` and the other forms all define `__or__`.
         Value::Marker(marker) if marker.py_type() == Type::SpecialForm => Some(Operand::TypeLike),
+        Value::Ref(HeapKind::Union, _) => Some(Operand::Union),
         Value::Ref(
-            HeapKind::Union
-            | HeapKind::Class
-            | HeapKind::NamedTupleClass
-            | HeapKind::HostClassType
-            | HeapKind::GenericAlias,
-            id,
-        ) => match vm.heap.get(*id) {
-            HeapData::Union(_) => Some(Operand::Union),
-            HeapData::Class(_)
-            | HeapData::NamedTupleClass(_)
-            | HeapData::HostClassType(_)
-            | HeapData::GenericAlias(_) => Some(Operand::TypeLike),
-            _ => None,
-        },
+            HeapKind::Class | HeapKind::NamedTupleClass | HeapKind::HostClassType | HeapKind::GenericAlias,
+            _,
+        ) => Some(Operand::TypeLike),
         _ => None,
     }
 }

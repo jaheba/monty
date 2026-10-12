@@ -1016,11 +1016,7 @@ fn a85_wrapcol(wrapcol: &Value, floor: u8, vm: &mut VM<'_>) -> RunResult<usize> 
 /// past the address space is not an error — everything lands on one line.
 /// Having beaten a floor of 1, such a width can only be large and positive.
 fn a85_width(wrapcol: &Value, vm: &mut VM<'_>) -> RunResult<usize> {
-    let long = match wrapcol {
-        Value::InternLongInt(_) => true,
-        Value::Ref(_, heap_id) => matches!(vm.heap.get(*heap_id), HeapData::LongInt(_)),
-        _ => false,
-    };
+    let long = matches!(wrapcol, Value::InternLongInt(_) | Value::Ref(HeapKind::LongInt, _));
     if long {
         Ok(usize::MAX)
     } else {

@@ -26,6 +26,7 @@ use crate::{
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
     heap::{DropWithContext, HeapData, HeapId},
+    heap_data::HeapKind,
     intern::StaticStrings,
     modules::{
         ModuleFunctions,
@@ -507,12 +508,8 @@ fn hex_separator(sep: Option<&Value>, vm: &VM<'_>) -> RunResult<Option<u8>> {
 
 /// Whether a value is `bytes`, which is all `hexlify` accepts as a separator
 /// besides `str` — a buffer that `encode_input` would take is still rejected.
-fn is_bytes(value: &Value, vm: &VM<'_>) -> bool {
-    match value {
-        Value::InternBytes(_) => true,
-        Value::Ref(_, heap_id) => matches!(vm.heap.get(*heap_id), HeapData::Bytes(_)),
-        _ => false,
-    }
+fn is_bytes(value: &Value, _vm: &VM<'_>) -> bool {
+    matches!(value, Value::InternBytes(_) | Value::Ref(HeapKind::Bytes, _))
 }
 
 /// The `ValueError`s `hexlify` raises for a malformed separator, whose

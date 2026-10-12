@@ -316,7 +316,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Tuple> {
 
     fn py_getitem(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<Value> {
         // Check for slice first (Value::Ref pointing to HeapData::Slice)
-        if let Value::Ref(_, key_id) = key
+        if let Value::Ref(HeapKind::Slice, key_id) = key
             && let HeapData::Slice(slice_obj) = vm.heap.get(*key_id)
         {
             let items =
