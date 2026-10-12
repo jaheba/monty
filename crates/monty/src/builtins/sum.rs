@@ -36,13 +36,10 @@ pub fn builtin_sum(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
 
     let mut iterable_guard = DropGuard::new(iterable, vm);
     let (iterable, vm) = iterable_guard.as_parts_mut();
-    if let Some(HeapReadOutput::List(list)) = iterable.read_heap(vm) {
-        if let Some(result) = list.sum_int(start, vm)? {
-            return Ok(result);
-        }
-        if let Some(result) = list.sum_float(start, vm)? {
-            return Ok(result);
-        }
+    if let Some(HeapReadOutput::List(list)) = iterable.read_heap(vm)
+        && let Some(result) = list.sum(start, vm)?
+    {
+        return Ok(result);
     }
     let (iterable, vm) = iterable_guard.into_parts();
     let iter = iterable.into_py_iter(vm)?;
