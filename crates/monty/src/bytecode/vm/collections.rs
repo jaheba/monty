@@ -593,6 +593,16 @@ fn unpack_ex_too_few_error(min_needed: usize, actual: usize) -> RunError {
 /// Python unpack (`random.setstate`). Consumes at most `count + 1` items, so an
 /// endless iterable still fails.
 pub(crate) fn unpack_exact(value: &Value, count: usize, vm: &mut VM<'_>) -> RunResult<Vec<Value>> {
+    if let Value::Ref(id) = value
+        && let HeapData::List(list) = vm.heap.get(*id)
+    {
+        if list.len() != count {
+            return Err(unpack_size_error(count, list.len()));
+        }
+        vm.heap.tracker.check_allocation(count.saturating_mul(VALUE_SIZE))?;
+        return Ok(list.iter().map(|item| item.clone_with_heap(vm.heap)).collect());
+    }
+
     // Fast path: tuple, list; unpack without iterator.
     if let Some(items) = exact_sequence_items(value, vm.heap) {
         if items.len() != count {
@@ -642,7 +652,7 @@ fn exact_sequence_items<'a>(value: &Value, heap: &'a Heap) -> Option<&'a [Value]
     };
     match heap.get(*id) {
         HeapData::Tuple(tuple) => Some(tuple.as_slice()),
-        HeapData::List(list) => Some(list.as_slice()),
+        HeapData::List(List::Generic { items, .. }) => Some(items),
         _ => None,
     }
 }

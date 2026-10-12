@@ -111,14 +111,24 @@ impl<'h> HeapRead<'h, List> {
         if !matches!(self.get(vm.heap), List::Generic { .. }) {
             // Slice assignment uses generic storage; preflight conversion while the numeric buffer is live.
             vm.heap.tracker.check_allocation(
-                self.get(vm.heap).len().saturating_add(growth).max(4).saturating_mul(VALUE_SIZE),
+                self.get(vm.heap)
+                    .len()
+                    .saturating_add(growth)
+                    .max(4)
+                    .saturating_mul(VALUE_SIZE),
             )?;
         }
 
         if items.len() == count {
             let list = self.get_mut(vm.heap);
             list.promote(0);
-            let List::Generic { items: target, contains_refs } = list else { unreachable!() };
+            let List::Generic {
+                items: target,
+                contains_refs,
+            } = list
+            else {
+                unreachable!()
+            };
             *contains_refs |= items.iter().any(|item| matches!(item, Value::Ref(_)));
             if step == 1 {
                 let start = usize::try_from(start).expect("positive slice start is non-negative");
@@ -141,7 +151,13 @@ impl<'h> HeapRead<'h, List> {
 
             let list = self.get_mut(vm.heap);
             list.promote(growth);
-            let List::Generic { items: target, contains_refs } = list else { unreachable!() };
+            let List::Generic {
+                items: target,
+                contains_refs,
+            } = list
+            else {
+                unreachable!()
+            };
             *contains_refs |= items.iter().any(|item| matches!(item, Value::Ref(_)));
             let start = usize::try_from(start).expect("positive slice start is non-negative");
             let removed: Vec<Value> = target.splice(start..start + count, items.drain(..)).collect();
@@ -150,7 +166,6 @@ impl<'h> HeapRead<'h, List> {
 
         Ok(())
     }
-
 }
 
 /// A numeric element materialized on the stack, or a borrowed generic element.
@@ -717,7 +732,11 @@ impl<'h> HeapRead<'h, List> {
             index = index.saturating_add(step);
         }
         let (items, vm) = guard.into_parts();
-        Ok(Value::Ref(vm.heap.allocate(HeapData::List(List::new(items)))))
+        let result = List::Generic {
+            items,
+            contains_refs: self.get(vm.heap).contains_refs(),
+        };
+        Ok(Value::Ref(vm.heap.allocate(HeapData::List(result))))
     }
 
     /// Clones the item at the given index with proper refcount management.
@@ -1128,7 +1147,11 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, List> {
             result.extend(self.get(vm.heap).iter().map(|value| value.clone_with_heap(vm.heap)));
         }
         let (result, vm) = guard.into_parts();
-        Ok(Some(Value::Ref(vm.heap.allocate(HeapData::List(List::new(result))))))
+        let result = List::Generic {
+            items: result,
+            contains_refs: self.get(vm.heap).contains_refs(),
+        };
+        Ok(Some(Value::Ref(vm.heap.allocate(HeapData::List(result)))))
     }
 
     fn py_rmul_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
@@ -1703,7 +1726,7 @@ mod tests {
     use crate::{
         heap::{Heap, HeapReader},
         run::{Program, SessionTables},
-        types::LongInt,
+        types::{LongInt, Slice},
     };
 
     #[test]
@@ -1832,6 +1855,36 @@ mod tests {
 
         Value::Ref(list_id).drop_with(&mut heap);
     }
+    #[test]
+    fn generic_numeric_slices_and_repeats_keep_the_preflighted_representation() {
+        for items in [
+            vec![Value::Int(1), Value::Int(2)],
+            vec![Value::Float(1.0), Value::Float(2.0)],
+        ] {
+            let mut heap = Heap::new(16, ResourceTracker::default());
+            let id = heap.allocate(HeapData::List(List::Generic {
+                items,
+                contains_refs: false,
+            }));
+            let mut tables = SessionTables::default();
+            let program = Program::for_tests();
+            HeapReader::with(&mut heap, &mut (&program, &mut tables), |reader, (program, tables)| {
+                let mut vm = VM::new(Vec::new(), tables, program, reader, PrintWriter::Disabled);
+                let HeapReadOutput::List(list) = vm.heap.read(id) else {
+                    unreachable!()
+                };
+                let slice = list.getitem_slice(&Slice::new(None, None, None), &mut vm).unwrap();
+                let repeated = list.py_mul_impl(&Value::Int(2), &mut vm).unwrap().unwrap();
+                for result in [slice, repeated] {
+                    let Value::Ref(result_id) = &result else { unreachable!() };
+                    assert!(matches!(vm.heap.get(*result_id), HeapData::List(List::Generic { .. })));
+                    result.drop_with(&mut vm);
+                }
+            });
+            Value::Ref(id).drop_with(&mut heap);
+        }
+    }
+
     #[test]
     fn numeric_storage_has_eight_byte_slots_and_promotes_without_coercion() {
         let mut ints = List::new((0..128).map(Value::Int).collect());

@@ -1243,10 +1243,10 @@ fn large_allocations_are_rejected_before_the_hard_limit() {
             1_250_723,
         ),
         // A `DictReader` row's dict is sized from `fieldnames` up front, preflighted like a
-        // dict copy.
+        // dict copy. The integer fieldnames use eight-byte list slots.
         (
             "import csv\nnames = list(range(30_000))\nnext(csv.DictReader(['x'], fieldnames=names))",
-            1_965_832,
+            1_725_832,
         ),
         // A list `fieldnames` is copied per row, and the keys of a row dict are copied for
         // the `extrasaction='raise'` check: both bulk copies are preflighted.

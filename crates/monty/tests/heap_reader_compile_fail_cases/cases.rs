@@ -30,9 +30,9 @@ fn heap_mutation_while_reading(list_id: HeapId, heap: &mut Heap) {
             HeapReadOutput::List(list) => list,
             _ => unreachable!(),
         };
-        let slice = a.get(heap).as_slice();
+        let items = a.get(heap).iter();
         let _ = allocate_string("boom", heap.heap_mut());
-        let _ = slice.len();
+        let _ = items.len();
     });
 }
 
@@ -74,7 +74,7 @@ fn dec_ref_while_reading(list_id: HeapId, heap: &mut Heap) {
         };
         let list_ref = a.get(heap);
         heap.heap_mut().dec_ref(list_id);
-        let _ = list_ref.as_slice().len();
+        let _ = list_ref.len();
     });
 }
 
@@ -113,7 +113,6 @@ fn mutation_in_map_closure(list_id: HeapId, other_id: HeapId, heap: &mut Heap) {
         };
         let result: Vec<bool> = a
             .get(heap)
-            .as_slice()
             .iter()
             .map(|_v| {
                 heap.heap_mut().dec_ref(other_id);

@@ -13,7 +13,7 @@
 
 Construction is timed along with processing; there is no prebuilt input fixture.
 Sales reports exercise typed slices and integer reductions.
-Latency analysis includes sorting, which currently expands numeric storage into `Value` elements.
+Latency and sales sorting currently expand numeric storage into `Value` elements.
 Sensor summaries exercise float copies and slices alongside ordinary float reductions.
 Portfolio valuation spends more time in Python arithmetic and indexing, so it serves as a control for dispatch costs.
 All workloads retain homogeneous numeric lists throughout processing.
@@ -78,7 +78,8 @@ Construction cases build their lists inside the timed function.
 The `len_int` case measures the fixed call overhead.
 Fresh sessions prevent mutating cases from measuring an already-promoted list on subsequent iterations.
 
-Run on the unspecialized revision to record a baseline, then compare on the specialized revision:
+Copy `benches/lists.rs` and its `[[bench]]` target from `Cargo.toml` into the unspecialized revision first.
+Run the same harness on that revision to record a baseline, then compare on the specialized revision:
 
 ```sh
 cargo bench -p monty-bench --bench lists --features worker-alloc -- --save-baseline lists-before
