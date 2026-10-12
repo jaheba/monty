@@ -98,7 +98,7 @@ impl Str {
         let bytes: &[u8] = match object {
             Value::InternBytes(bytes_id) => vm.interns.get_bytes(*bytes_id),
             Value::InternString(_) => return Err(ExcType::type_error_decoding_str_not_supported()),
-            Value::Ref(_, heap_id) => match vm.heap.get(*heap_id) {
+            Value::Ref(HeapKind::Bytes | HeapKind::Str, heap_id) => match vm.heap.get(*heap_id) {
                 HeapData::Bytes(b) => b.as_slice(),
                 HeapData::Str(_) => return Err(ExcType::type_error_decoding_str_not_supported()),
                 _ => return Err(ExcType::type_error_decoding_need_bytes(object.py_type_name(vm))),
@@ -279,7 +279,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Str> {
 
     fn py_getitem(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<Value> {
         // Check for slice first (Value::Ref pointing to HeapData::Slice)
-        if let Value::Ref(_, id) = key
+        if let Value::Ref(HeapKind::Slice, id) = key
             && let HeapData::Slice(slice) = vm.heap.get(*id)
         {
             return self.get(vm.heap).getitem_slice(vm, slice);
@@ -331,7 +331,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Str> {
     fn py_add_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
         let other = match other {
             Value::InternString(id) => vm.interns.get_str(*id),
-            Value::Ref(_, id) if let HeapData::Str(value) = vm.heap.get(*id) => value.as_str(),
+            Value::Ref(HeapKind::Str, id) if let HeapData::Str(value) = vm.heap.get(*id) => value.as_str(),
             _ => return Ok(None),
         };
         Ok(Some(concat_allocate_str(self.get(vm.heap).as_str(), other, vm.heap)?))
@@ -589,8 +589,10 @@ fn str_join<'h>(separator: &HeapRead<'h, str>, iterable: Value, vm: &mut VM<'h>)
             Value::InternString(id) => {
                 result.push_str(vm.interns.get_str(*id));
             }
-            Value::Ref(_, heap_id) => {
-                if let HeapData::Str(s) = vm.heap.get(*heap_id) {
+            Value::Ref(kind, heap_id) => {
+                if matches!(kind, HeapKind::Str)
+                    && let HeapData::Str(s) = vm.heap.get(*heap_id)
+                {
                     result.push_str(s.as_str());
                 } else {
                     let t = item.py_type_name(vm);
@@ -949,13 +951,13 @@ fn affix_matches(
     let check = |a: &str| matcher(slice, a);
     match affix {
         Value::InternString(id) => Ok(check(vm.interns.get_str(*id))),
-        Value::Ref(_, heap_id) => match vm.heap.get(*heap_id) {
+        Value::Ref(HeapKind::Str | HeapKind::Tuple, heap_id) => match vm.heap.get(*heap_id) {
             HeapData::Str(a) => Ok(check(a.as_str())),
             HeapData::Tuple(tuple) => {
                 for item in tuple.as_slice() {
                     let matched = match item {
                         Value::InternString(id) => check(vm.interns.get_str(*id)),
-                        Value::Ref(_, hid) if let HeapData::Str(a) = vm.heap.get(*hid) => check(a.as_str()),
+                        Value::Ref(HeapKind::Str, hid) if let HeapData::Str(a) = vm.heap.get(*hid) => check(a.as_str()),
                         _ => {
                             return Err(ExcType::type_error_affix_tuple_item(
                                 short_method,
@@ -1020,8 +1022,10 @@ fn parse_search_args(
 fn extract_string_arg(value: &Value, vm: &mut VM<'_>) -> RunResult<String> {
     match value {
         Value::InternString(id) => Ok(vm.interns.get_str(*id).to_owned()),
-        Value::Ref(_, heap_id) => {
-            if let HeapData::Str(s) = vm.heap.get(*heap_id) {
+        Value::Ref(kind, heap_id) => {
+            if matches!(kind, HeapKind::Str)
+                && let HeapData::Str(s) = vm.heap.get(*heap_id)
+            {
                 Ok(s.as_str().to_owned())
             } else {
                 Err(ExcType::type_error("expected str"))
@@ -1982,8 +1986,10 @@ pub(crate) fn str_contains(container_str: &str, item: &Value, heap: &Heap, inter
             let item_str = interns.get_str(*item_id);
             Ok(container_str.contains(item_str))
         }
-        Value::Ref(_, item_heap_id) => {
-            if let HeapData::Str(item_str) = heap.get(*item_heap_id) {
+        Value::Ref(kind, item_heap_id) => {
+            if matches!(kind, HeapKind::Str)
+                && let HeapData::Str(item_str) = heap.get(*item_heap_id)
+            {
                 Ok(container_str.contains(item_str.as_str()))
             } else {
                 Err(ExcType::type_error(format!(

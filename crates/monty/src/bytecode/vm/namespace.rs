@@ -340,7 +340,7 @@ impl VM<'_> {
         }
         for (slot, name_id) in names.filter(|(slot, _)| cell_slots.contains(slot)) {
             let value = match &this.stack[base + slot] {
-                Value::Ref(_, cell_id) => match this.heap.get(*cell_id) {
+                Value::Ref(HeapKind::Cell, cell_id) => match this.heap.get(*cell_id) {
                     HeapData::Cell(cell) => cell.0.clone_with_heap(this.heap),
                     _ => Value::Undefined,
                 },

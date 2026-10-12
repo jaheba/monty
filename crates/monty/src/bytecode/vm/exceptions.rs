@@ -80,8 +80,10 @@ impl VM<'_> {
     pub(super) fn make_exception(&mut self, exc_value: &Value, is_raise: bool) -> RunError {
         let simple_exc = match exc_value {
             // Exception instance on heap
-            Value::Ref(_, heap_id) => {
-                if let HeapData::Exception(exc) = self.heap.get(*heap_id) {
+            Value::Ref(kind, heap_id) => {
+                if matches!(kind, HeapKind::Exception)
+                    && let HeapData::Exception(exc) = self.heap.get(*heap_id)
+                {
                     exc.clone()
                 } else {
                     // Not an exception type
@@ -456,8 +458,10 @@ impl VM<'_> {
             }
             // Flat tuple of exception classes. CPython does not descend into
             // nested tuples in this position, so neither do we.
-            Value::Ref(_, id) => {
-                if let HeapData::Tuple(tuple) = self.heap.get(*id) {
+            Value::Ref(kind, id) => {
+                if matches!(kind, HeapKind::Tuple)
+                    && let HeapData::Tuple(tuple) = self.heap.get(*id)
+                {
                     let mut matched = false;
                     for v in tuple.as_slice() {
                         match v {

@@ -428,7 +428,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, RePattern> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::RePattern(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::RePattern(other)) = other.read_heap(vm, &[HeapKind::RePattern]) else {
             return Ok(None);
         };
         Ok(Some(self.get(vm.heap) == other.get(vm.heap)))

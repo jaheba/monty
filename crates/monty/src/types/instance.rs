@@ -183,7 +183,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Instance> {
             return Ok(None);
         };
         if matches!(result, Value::Int(_) | Value::Bool(_) | Value::InternLongInt(_))
-            || matches!(&result, Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::LongInt(_)))
+            || matches!(&result, Value::Ref(HeapKind::LongInt, _))
         {
             Ok(Some(result))
         } else {
@@ -855,14 +855,14 @@ fn call_member_bound(member: &Value, self_id: HeapId, args: ArgValues, vm: &mut 
 /// Whether a value is a user-defined function (so it should bind `self` when
 /// accessed as a method). Class variables that are not functions are returned
 /// unbound.
-fn is_method_value(value: &Value, vm: &VM<'_>) -> bool {
+fn is_method_value(value: &Value, _vm: &VM<'_>) -> bool {
     match value {
         Value::DefFunction(_) => true,
-        Value::Ref(_, id) => matches!(
-            vm.heap.get(*id),
+        Value::Ref(kind, _) => matches!(
+            kind,
             // `functools.partial` is a descriptor in CPython 3.14 too, and binds
             // the instance the same way: after the arguments it already carries.
-            HeapData::Closure(_) | HeapData::FunctionDefaults(_) | HeapData::Partial(_)
+            HeapKind::Closure | HeapKind::FunctionDefaults | HeapKind::Partial
         ),
         _ => false,
     }

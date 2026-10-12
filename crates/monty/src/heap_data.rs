@@ -319,7 +319,57 @@ impl HeapData {
             Self::OpenFile(file) => file.file_type(),
             Self::StringIterator(iter) => iter.py_type(),
             Self::Itertools(i) => i.py_type(),
-            _ => unreachable!("fixed types are handled by HeapKind::fixed_type"),
+            Self::List(_)
+            | Self::Deque(_)
+            | Self::Tuple(_)
+            | Self::NamedTupleClass(_)
+            | Self::DictKeysView(_)
+            | Self::DictItemsView(_)
+            | Self::DictValuesView(_)
+            | Self::Set(_)
+            | Self::FrozenSet(_)
+            | Self::Closure(_)
+            | Self::FunctionDefaults(_)
+            | Self::Cell(_)
+            | Self::HostClass(_)
+            | Self::HostClassType(_)
+            | Self::Class(_)
+            | Self::BoundMethod(_)
+            | Self::DataclassField(_)
+            | Self::ListIterator(_)
+            | Self::DequeIterator(_)
+            | Self::TupleIterator(_)
+            | Self::DictKeyIterator(_)
+            | Self::DictItemIterator(_)
+            | Self::DictValueIterator(_)
+            | Self::SetIterator(_)
+            | Self::CallableIterator(_)
+            | Self::Module(_)
+            | Self::Coroutine(_)
+            | Self::GatherFuture(_)
+            | Self::ExternalFuture(_)
+            | Self::Partial(_)
+            | Self::GenericAlias(_)
+            | Self::Union(_)
+            | Self::Str(_)
+            | Self::Bytes(_)
+            | Self::Range(_)
+            | Self::Slice(_)
+            | Self::DataclassParams(_)
+            | Self::BytesIterator(_)
+            | Self::RangeIterator(_)
+            | Self::LongInt(_)
+            | Self::Complex(_)
+            | Self::Path(_)
+            | Self::RePattern(_)
+            | Self::ReMatch(_)
+            | Self::ExtFunction(_)
+            | Self::Date(_)
+            | Self::DateTime(_)
+            | Self::Time(_)
+            | Self::TimeDelta(_)
+            | Self::TimeZone(_)
+            | Self::Random(_) => unreachable!("fixed types are handled by HeapKind::fixed_type"),
         }
     }
 }
@@ -526,7 +576,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Closure> {
     /// Two closures over the same `def` are equal only if they captured the
     /// same cells; the defaults play no part, as in CPython.
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        Ok(match other.read_heap(vm) {
+        Ok(match other.read_heap(vm, &[HeapKind::Closure]) {
             Some(HeapReadOutput::Closure(other)) => {
                 let this = self.get(vm.heap);
                 let other = other.get(vm.heap);
@@ -570,7 +620,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, FunctionDefaults> {
     /// Equal when they decorate the same `def`: with no captured scope, the
     /// defaults are all that could differ and CPython ignores those too.
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        Ok(match other.read_heap(vm) {
+        Ok(match other.read_heap(vm, &[HeapKind::FunctionDefaults]) {
             Some(HeapReadOutput::FunctionDefaults(other)) => {
                 Some(self.get(vm.heap).func_id == other.get(vm.heap).func_id)
             }

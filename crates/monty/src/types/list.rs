@@ -450,7 +450,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, List> {
 
     fn py_getitem(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<Value> {
         // Check for slice first (Value::Ref pointing to HeapData::Slice)
-        if let Value::Ref(_, id) = key
+        if let Value::Ref(HeapKind::Slice, id) = key
             && let HeapData::Slice(slice) = vm.heap.get(*id)
         {
             return self.getitem_slice(slice, vm);
@@ -486,8 +486,10 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, List> {
         let index = match *key {
             Value::Int(i) => i,
             Value::Bool(b) => i64::from(b),
-            Value::Ref(_, heap_id) => {
-                if let HeapData::LongInt(li) = vm.heap.get(heap_id) {
+            Value::Ref(kind, heap_id) => {
+                if matches!(kind, HeapKind::LongInt)
+                    && let HeapData::LongInt(li) = vm.heap.get(heap_id)
+                {
                     if let Some(i) = li.to_i64() {
                         i
                     } else {
@@ -528,7 +530,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, List> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::List(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::List(other)) = other.read_heap(vm, &[HeapKind::List]) else {
             return Ok(None);
         };
         if self.get(vm.heap).items.len() != other.get(vm.heap).items.len() {
@@ -562,7 +564,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, List> {
     }
 
     fn py_add_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        let Some(HeapReadOutput::List(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::List(other)) = other.read_heap(vm, &[HeapKind::List]) else {
             return Ok(None);
         };
         let mut items = self.clone_all_items(vm)?;
@@ -593,7 +595,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, List> {
     }
 
     fn py_iadd_impl(&mut self, other: &Value, vm: &mut VM<'h>) -> RunResult<bool> {
-        let Value::Ref(_, other_id) = other else {
+        let Value::Ref(HeapKind::List, other_id) = other else {
             return Ok(false);
         };
 

@@ -2403,8 +2403,10 @@ impl ExcTypeExt for ExcType {
                     self,
                     vm.interns.get_str(*string_id).to_owned(),
                 )),
-                Value::Ref(_, heap_id) => {
-                    if let HeapData::Str(s) = vm.heap.get(*heap_id) {
+                Value::Ref(kind, heap_id) => {
+                    if matches!(kind, HeapKind::Str)
+                        && let HeapData::Str(s) = vm.heap.get(*heap_id)
+                    {
                         Ok(SimpleException::new_msg(self, s.as_str().to_owned()))
                     } else {
                         Err(RunError::internal(

@@ -478,7 +478,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Path> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::Path(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Path(other)) = other.read_heap(vm, &[HeapKind::Path]) else {
             return Ok(None);
         };
         Ok(Some(self.get(vm.heap).path == other.get(vm.heap).path))

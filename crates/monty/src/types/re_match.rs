@@ -388,7 +388,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, ReMatch> {
                 let name = vm.interns.get_str(*id);
                 self.get(vm.heap).get_group_by_name(name, vm.heap)
             }
-            Value::Ref(_, heap_id) => match vm.heap.get(*heap_id) {
+            Value::Ref(HeapKind::Str, heap_id) => match vm.heap.get(*heap_id) {
                 HeapData::Str(s) => {
                     let name = s.as_str().to_owned();
                     self.get(vm.heap).get_group_by_name(&name, vm.heap)
@@ -449,7 +449,7 @@ fn resolve_group_arg(m: &ReMatch, val: &Value, vm: &VM<'_>) -> RunResult<Value> 
             let name = vm.interns.get_str(*id);
             m.get_group_by_name(name, vm.heap)
         }
-        Value::Ref(_, heap_id) => match vm.heap.get(*heap_id) {
+        Value::Ref(HeapKind::Str, heap_id) => match vm.heap.get(*heap_id) {
             HeapData::Str(s) => {
                 let name = s.as_str().to_owned();
                 m.get_group_by_name(&name, vm.heap)

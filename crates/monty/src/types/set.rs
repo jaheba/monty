@@ -1292,7 +1292,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Set> {
         // `set` and `frozenset` compare equal by their members, regardless of
         // mutability. `set == dict_keys`/`dict_items` is handled by the reflected
         // pass via the dict-view impls.
-        match other.read_heap(vm) {
+        match other.read_heap(vm, &[HeapKind::Set, HeapKind::FrozenSet]) {
             Some(HeapReadOutput::Set(other)) => Ok(Some(self.storage().eq(&other.storage(), vm)?)),
             Some(HeapReadOutput::FrozenSet(other)) => Ok(Some(self.storage().eq(&other.storage(), vm)?)),
             _ => Ok(None),
@@ -1601,7 +1601,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, FrozenSet> {
         // `frozenset` and `set` compare equal by their members, regardless of
         // mutability. `frozenset == dict_keys`/`dict_items` is handled by the
         // reflected pass via the dict-view impls.
-        match other.read_heap(vm) {
+        match other.read_heap(vm, &[HeapKind::FrozenSet, HeapKind::Set]) {
             Some(HeapReadOutput::FrozenSet(other)) => Ok(Some(self.storage().eq(&other.storage(), vm)?)),
             Some(HeapReadOutput::Set(other)) => Ok(Some(self.storage().eq(&other.storage(), vm)?)),
             _ => Ok(None),
@@ -1729,7 +1729,8 @@ impl HeapItem for FrozenSet {
 /// only accept CPython's set-like operands (`set`, `frozenset`, `dict_keys`,
 /// and `dict_items`), while method forms accept any iterable.
 fn get_storage_from_set_operand(value: &Value, vm: &mut VM<'_>) -> RunResult<Option<SetStorage>> {
-    let Value::Ref(_, id) = value else {
+    let Value::Ref(HeapKind::Set | HeapKind::FrozenSet | HeapKind::DictKeysView | HeapKind::DictItemsView, id) = value
+    else {
         return Ok(None);
     };
 
@@ -1931,7 +1932,7 @@ fn set_element_hash(value: &Value, vm: &mut VM<'_>) -> RunResult<u64> {
 
 /// Finds the nested value responsible for a tuple-like element being unhashable.
 fn unhashable_type_name(value: &Value, vm: &mut VM<'_>) -> RunResult<String> {
-    let Value::Ref(_, id) = value else {
+    let Value::Ref(HeapKind::Tuple | HeapKind::NamedTuple, id) = value else {
         return Ok(value.py_type_name(vm).into_owned());
     };
     let len = match vm.heap.get(*id) {

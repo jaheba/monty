@@ -103,7 +103,7 @@ impl Union {
     /// `typing.Optional[key]` is `key | None`. Takes ownership of `key`.
     pub(crate) fn optional(key: Value, vm: &mut VM<'_>) -> RunResult<Value> {
         // CPython rejects a tuple as a whole, naming it in the error.
-        if matches!(&key, Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::Tuple(_))) {
+        if matches!(&key, Value::Ref(HeapKind::Tuple, _)) {
             defer_drop!(key, vm);
             let repr = key.py_repr(vm)?;
             defer_drop!(repr, vm);
@@ -246,7 +246,9 @@ fn tuple_items(value: &Value, vm: &mut VM<'_>) -> RunResult<Option<Vec<Value>>> 
 
 /// Owned clones of a union's members, or `None` when `value` is not a union.
 fn tuple_items_of_union(value: &Value, vm: &mut VM<'_>) -> RunResult<Option<Vec<Value>>> {
-    let Value::Ref(_, id) = value else { return Ok(None) };
+    let Value::Ref(HeapKind::Union, id) = value else {
+        return Ok(None);
+    };
     let HeapData::Union(union) = vm.heap.get(*id) else {
         return Ok(None);
     };
@@ -289,7 +291,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Union> {
 
     /// Two unions are equal when they have the same members in any order.
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::Union(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Union(other)) = other.read_heap(vm, &[HeapKind::Union]) else {
             return Ok(None);
         };
         let args = self.get(vm.heap).args(vm.heap);
@@ -356,7 +358,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Union> {
         let vm = &mut *guard;
         let args = self.get(vm.heap).args(vm.heap);
         defer_drop!(args, vm);
-        let Some(HeapReadOutput::Tuple(args)) = args.read_heap(vm) else {
+        let Some(HeapReadOutput::Tuple(args)) = args.read_heap(vm, &[HeapKind::Tuple]) else {
             unreachable!("Union::args is always a tuple")
         };
         let count = args.get(vm.heap).as_slice().len();

@@ -894,7 +894,7 @@ pub(crate) fn apply_open_name(
 ) -> RunResult<Value> {
     let parsed = newline.as_deref().map_or(Some(Newline::default()), Newline::parse);
     if let Some(parsed) = parsed
-        && let Value::Ref(_, id) = &value
+        && let Value::Ref(HeapKind::OpenFile, id) = &value
         && let HeapReadOutput::OpenFile(mut file) = vm.heap.read(*id)
     {
         let file = file.get_mut(vm.heap);
@@ -1032,12 +1032,13 @@ fn install_buffer<'h>(file: &mut HeapRead<'h, OpenFile>, result: Value, vm: &mut
                 vm.heap.allocate(HeapData::Bytes(Bytes::new(bytes))),
             ))
         }
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(HeapKind::Str, id) => match vm.heap.get(*id) {
             HeapData::Str(text) if translate && text.as_str().contains('\r') => {
                 Some(allocate_string_no_interning(translate_newlines(text.as_str()), vm.heap))
             }
             _ => None,
         },
+        Value::Ref(_, _) => None,
         _ => {
             return Err(RunError::internal(
                 "install_buffer: OS result must be a string or bytes value",
@@ -1632,7 +1633,7 @@ fn validate_write_data(data: &Value, binary: bool, vm: &VM<'_>) -> RunResult<()>
 pub(crate) fn extract_str_payload(data: &Value, vm: &VM<'_>) -> Option<String> {
     match data {
         Value::InternString(id) => Some(vm.interns.get_str(*id).to_owned()),
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(HeapKind::Str, id) => match vm.heap.get(*id) {
             HeapData::Str(s) => Some(s.as_str().to_owned()),
             _ => None,
         },
@@ -1654,10 +1655,10 @@ fn extract_bytes_payload(data: &Value, vm: &VM<'_>) -> Option<Vec<u8>> {
 }
 
 /// Returns whether a value is a Python `bytes` object.
-fn is_bytes(data: &Value, heap: &Heap) -> bool {
+fn is_bytes(data: &Value, _heap: &Heap) -> bool {
     match data {
         Value::InternBytes(_) => true,
-        Value::Ref(_, id) => matches!(heap.get(*id), HeapData::Bytes(_)),
+        Value::Ref(kind, _) => matches!(kind, HeapKind::Bytes),
         _ => false,
     }
 }

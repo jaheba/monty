@@ -180,7 +180,7 @@ pub(crate) fn from_total_microseconds(total_microseconds: i128) -> RunResult<Tim
 /// The zero check lives here so `/`, `//`, `%` and `divmod` all raise the same
 /// `ZeroDivisionError` rather than each repeating it.
 pub(crate) fn rhs_microseconds(other: &Value, vm: &VM<'_>) -> RunResult<Option<i128>> {
-    let Value::Ref(_, id) = other else {
+    let Value::Ref(HeapKind::TimeDelta, id) = other else {
         return Ok(None);
     };
     let HeapData::TimeDelta(rhs) = vm.heap.get(*id) else {
@@ -369,7 +369,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, TimeDelta> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::TimeDelta(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::TimeDelta(other)) = other.read_heap(vm, &[HeapKind::TimeDelta]) else {
             return Ok(None);
         };
         Ok(Some(
@@ -436,7 +436,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, TimeDelta> {
     }
 
     fn py_add_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        match other.read_heap(vm) {
+        match other.read_heap(vm, &[HeapKind::Date, HeapKind::DateTime, HeapKind::TimeDelta]) {
             Some(HeapReadOutput::Date(other)) => Ok(date::py_add(*other.get(vm.heap), *self.get(vm.heap), vm.heap)),
             Some(HeapReadOutput::DateTime(other)) => {
                 let other = other.get(vm.heap).clone();
@@ -459,7 +459,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, TimeDelta> {
     }
 
     fn py_sub_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        let Some(HeapReadOutput::TimeDelta(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::TimeDelta(other)) = other.read_heap(vm, &[HeapKind::TimeDelta]) else {
             return Ok(None);
         };
         let total = total_microseconds(self.get(vm.heap)).checked_sub(total_microseconds(other.get(vm.heap)));

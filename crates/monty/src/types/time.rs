@@ -482,7 +482,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Time> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::Time(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Time(other)) = other.read_heap(vm, &[HeapKind::Time]) else {
             return Ok(None);
         };
         let (a, b) = (self.get(vm.heap), other.get(vm.heap));

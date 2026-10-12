@@ -171,7 +171,7 @@ impl VM<'_> {
         let list_ref = this.pop();
         defer_drop!(list_ref, this);
 
-        let Value::Ref(_, id) = list_ref else {
+        let Value::Ref(HeapKind::List, id) = list_ref else {
             return Err(RunError::internal("ListToTuple: expected list ref"));
         };
         let HeapData::List(list) = this.heap.get(*id) else {
@@ -224,7 +224,7 @@ impl VM<'_> {
         let (dict_ref, this) = dict_ref_guard.as_parts();
 
         // Check that mapping is a dict (Ref pointing to Dict) and clone key-value pairs
-        let copied_items: Vec<(Value, Value)> = if let Value::Ref(_, id) = mapping {
+        let copied_items: Vec<(Value, Value)> = if let Value::Ref(HeapKind::Dict, id) = mapping {
             if let HeapData::Dict(dict) = this.heap.get(*id) {
                 dict.iter()
                     .map(|(k, v)| (k.clone_with_heap(this), v.clone_with_heap(this)))
@@ -250,11 +250,7 @@ impl VM<'_> {
             defer_drop_mut!(copied_items, this);
             for (key, value) in copied_items {
                 // Validate key is a string (InternString or heap-allocated Str)
-                let is_string = match &key {
-                    Value::InternString(_) => true,
-                    Value::Ref(_, id) => matches!(this.heap.get(*id), HeapData::Str(_)),
-                    _ => false,
-                };
+                let is_string = matches!(&key, Value::InternString(_) | Value::Ref(HeapKind::Str, _));
                 if !is_string {
                     key.drop_with(this);
                     value.drop_with(this);
@@ -264,8 +260,10 @@ impl VM<'_> {
                 // Get the string key for error messages (needed before moving key into closure)
                 let key_str = match &key {
                     Value::InternString(id) => this.interns.get_str(*id).to_string(),
-                    Value::Ref(_, id) => {
-                        if let HeapData::Str(s) = this.heap.get(*id) {
+                    Value::Ref(kind, id) => {
+                        if matches!(kind, HeapKind::Str)
+                            && let HeapData::Str(s) = this.heap.get(*id)
+                        {
                             s.as_str().to_string()
                         } else {
                             "<unknown>".to_string()
@@ -313,7 +311,7 @@ impl VM<'_> {
         defer_drop!(mapping, this);
 
         // Clone all key/value pairs out of the mapping before mutating the target dict
-        let copied_items: Vec<(Value, Value)> = if let Value::Ref(_, id) = mapping {
+        let copied_items: Vec<(Value, Value)> = if let Value::Ref(HeapKind::Dict, id) = mapping {
             if let HeapData::Dict(dict) = this.heap.get(*id) {
                 dict.iter()
                     .map(|(k, v)| (k.clone_with_heap(this), v.clone_with_heap(this)))
@@ -413,7 +411,7 @@ impl VM<'_> {
         let list_pos = stack_len - 1 - depth;
 
         // Get the list reference
-        let Value::Ref(_, list_id) = self.stack[list_pos] else {
+        let Value::Ref(HeapKind::List, list_id) = self.stack[list_pos] else {
             value.drop_with(self);
             return Err(RunError::internal("ListAppend: expected list ref on stack"));
         };
@@ -436,7 +434,7 @@ impl VM<'_> {
         let set_pos = stack_len - 1 - depth;
 
         // Get the set reference
-        let Value::Ref(_, set_id) = self.stack[set_pos] else {
+        let Value::Ref(HeapKind::Set, set_id) = self.stack[set_pos] else {
             value.drop_with(self);
             return Err(RunError::internal("SetAdd: expected set ref on stack"));
         };
@@ -462,7 +460,7 @@ impl VM<'_> {
         let dict_pos = stack_len - 1 - depth;
 
         // Get the dict reference
-        let Value::Ref(_, dict_id) = self.stack[dict_pos] else {
+        let Value::Ref(HeapKind::Dict, dict_id) = self.stack[dict_pos] else {
             key.drop_with(self);
             value.drop_with(self);
             return Err(RunError::internal("DictSetItem: expected dict ref on stack"));

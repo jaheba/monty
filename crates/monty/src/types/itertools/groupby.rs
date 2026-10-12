@@ -198,7 +198,7 @@ pub(super) fn grouper_next<'h>(
     let target = grouper.target_key.clone_with_heap(vm.heap);
     defer_drop!(parent, vm);
     defer_drop!(target, vm);
-    let Value::Ref(_, parent_id) = parent else {
+    let Value::Ref(HeapKind::Itertools, parent_id) = parent else {
         unreachable!("a grouper's parent is always a heap groupby")
     };
     let HeapReadOutput::Itertools(mut parent) = vm.heap.read(*parent_id) else {

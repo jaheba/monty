@@ -251,7 +251,7 @@ pub(crate) fn seed_key_from_value(value: &Value, version: i64, vm: &VM<'_>) -> R
         Value::InternString(id) => key_from_text(&SeedText::Str(vm.interns.get_str(*id)), version),
         Value::InternBytes(id) => key_from_text(&SeedText::Bytes(vm.interns.get_bytes(*id)), version),
         Value::InternLongInt(id) => key_from_bigint(vm.interns.get_long_int(*id)),
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(HeapKind::LongInt | HeapKind::Str | HeapKind::Bytes, id) => match vm.heap.get(*id) {
             HeapData::LongInt(li) => key_from_bigint(li.inner()),
             HeapData::Str(s) => key_from_text(&SeedText::Str(s.as_str()), version),
             HeapData::Bytes(b) => key_from_text(&SeedText::Bytes(b.as_slice()), version),

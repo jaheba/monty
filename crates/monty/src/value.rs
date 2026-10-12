@@ -224,7 +224,7 @@ impl<'a> PythonIdDisplay<'a> {
     fn new(value: &'a Value, heap: &'a Heap) -> Self {
         match value {
             Value::Int(value) => Self::Int(*value),
-            Value::Ref(_, id) => match heap.get(*id) {
+            Value::Ref(HeapKind::LongInt, id) => match heap.get(*id) {
                 HeapData::LongInt(value) => Self::LongInt(value.inner()),
                 _ => unreachable!("identity values are integers"),
             },
@@ -387,86 +387,112 @@ impl<'h> PyTrait<'h> for Value {
             (Self::Bool(s), _) => Self::Int(i64::from(*s)).py_cmp(other, vm),
             (_, Self::Bool(s)) => self.py_cmp(&Self::Int(i64::from(*s)), vm),
             // Int vs LongInt comparison
-            (Self::Int(a), Self::Ref(_, id)) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
+            (Self::Int(a), Self::Ref(HeapKind::LongInt, id)) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
                 Ok(CmpOrder::Ordered(bigint_cmp_i64(li.inner(), *a).reverse()))
             }
-            (Self::InternLongInt(a), Self::Ref(_, id)) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
+            (Self::InternLongInt(a), Self::Ref(HeapKind::LongInt, id))
+                if let HeapData::LongInt(li) = vm.heap.get(*id) =>
+            {
                 Ok(CmpOrder::Ordered(interns.get_long_int(*a).cmp(li.inner())))
             }
             // LongInt vs Int comparison
-            (Self::Ref(_, id), Self::Int(b)) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
+            (Self::Ref(HeapKind::LongInt, id), Self::Int(b)) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
                 Ok(CmpOrder::Ordered(bigint_cmp_i64(li.inner(), *b)))
             }
-            (Self::Ref(_, id), Self::InternLongInt(b)) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
+            (Self::Ref(HeapKind::LongInt, id), Self::InternLongInt(b))
+                if let HeapData::LongInt(li) = vm.heap.get(*id) =>
+            {
                 Ok(CmpOrder::Ordered(li.inner().cmp(interns.get_long_int(*b))))
             }
             // Float vs LongInt comparison (exact, no precision loss)
-            (Self::Float(s), Self::Ref(_, id)) if let HeapData::LongInt(li) = vm.heap.get(*id) => Ok(
+            (Self::Float(s), Self::Ref(HeapKind::LongInt, id)) if let HeapData::LongInt(li) = vm.heap.get(*id) => Ok(
                 CmpOrder::from_numeric(bigint_cmp_f64(li.inner(), *s).map(Ordering::reverse)),
             ),
             // LongInt vs Float comparison (exact, no precision loss)
-            (Self::Ref(_, id), Self::Float(o)) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
+            (Self::Ref(HeapKind::LongInt, id), Self::Float(o)) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
                 Ok(CmpOrder::from_numeric(li.partial_cmp_f64(*o)))
             }
             // Ref vs Ref comparison: handles LongInt, Str, Tuple, and List
-            (Self::Ref(_, id1), Self::Ref(_, id2)) => match (vm.heap.read(*id1), vm.heap.read(*id2)) {
-                (HeapReadOutput::LongInt(a), HeapReadOutput::LongInt(b)) => {
-                    Ok(CmpOrder::Ordered(a.get(vm.heap).inner().cmp(b.get(vm.heap).inner())))
+            (Self::Ref(kind1, id1), Self::Ref(kind2, id2))
+                if matches!(
+                    (kind1, kind2),
+                    (
+                        HeapKind::Tuple | HeapKind::NamedTuple,
+                        HeapKind::Tuple | HeapKind::NamedTuple
+                    )
+                ) || (kind1 == kind2
+                    && matches!(
+                        kind1,
+                        HeapKind::LongInt
+                            | HeapKind::Str
+                            | HeapKind::Bytes
+                            | HeapKind::List
+                            | HeapKind::Deque
+                            | HeapKind::Date
+                            | HeapKind::DateTime
+                            | HeapKind::Time
+                            | HeapKind::TimeDelta
+                    )) =>
+            {
+                match (vm.heap.read(*id1), vm.heap.read(*id2)) {
+                    (HeapReadOutput::LongInt(a), HeapReadOutput::LongInt(b)) => {
+                        Ok(CmpOrder::Ordered(a.get(vm.heap).inner().cmp(b.get(vm.heap).inner())))
+                    }
+                    (HeapReadOutput::Str(a), HeapReadOutput::Str(b)) => {
+                        Ok(CmpOrder::Ordered(a.get(vm.heap).as_str().cmp(b.get(vm.heap).as_str())))
+                    }
+                    (HeapReadOutput::Bytes(a), HeapReadOutput::Bytes(b)) => Ok(CmpOrder::Ordered(
+                        a.get(vm.heap).as_slice().cmp(b.get(vm.heap).as_slice()),
+                    )),
+                    (HeapReadOutput::Tuple(a), HeapReadOutput::Tuple(b)) => a.py_cmp(&b, vm),
+                    // A namedtuple orders like the tuple it subclasses, including
+                    // against a plain tuple in either direction. Both sides are
+                    // cloned first because the comparison needs `&mut VM`, which
+                    // cannot coexist with two live `HeapRead`s.
+                    (HeapReadOutput::NamedTuple(a), HeapReadOutput::NamedTuple(b)) => {
+                        let (a, b) = (a.cloned_items(vm)?, b.cloned_items(vm)?);
+                        cmp_item_seqs(a, b, vm)
+                    }
+                    (HeapReadOutput::NamedTuple(a), HeapReadOutput::Tuple(b)) => {
+                        let (a, b) = (a.cloned_items(vm)?, b.cloned_items(vm)?);
+                        cmp_item_seqs(a, b, vm)
+                    }
+                    (HeapReadOutput::Tuple(a), HeapReadOutput::NamedTuple(b)) => {
+                        let (a, b) = (a.cloned_items(vm)?, b.cloned_items(vm)?);
+                        cmp_item_seqs(a, b, vm)
+                    }
+                    (HeapReadOutput::List(a), HeapReadOutput::List(b)) => a.py_cmp(&b, vm),
+                    (HeapReadOutput::Deque(a), HeapReadOutput::Deque(b)) => a.py_cmp(&b, vm),
+                    (HeapReadOutput::Date(a), HeapReadOutput::Date(b)) => {
+                        Ok(CmpOrder::from_total(a.get(vm.heap).partial_cmp(b.get(vm.heap))))
+                    }
+                    (HeapReadOutput::DateTime(a), HeapReadOutput::DateTime(b)) => a.py_cmp(&b, vm),
+                    (HeapReadOutput::Time(a), HeapReadOutput::Time(b)) => a.py_cmp(&b, vm),
+                    (HeapReadOutput::TimeDelta(a), HeapReadOutput::TimeDelta(b)) => {
+                        Ok(CmpOrder::from_total(a.get(vm.heap).partial_cmp(b.get(vm.heap))))
+                    }
+                    _ => Ok(CmpOrder::Incomparable),
                 }
-                (HeapReadOutput::Str(a), HeapReadOutput::Str(b)) => {
-                    Ok(CmpOrder::Ordered(a.get(vm.heap).as_str().cmp(b.get(vm.heap).as_str())))
-                }
-                (HeapReadOutput::Bytes(a), HeapReadOutput::Bytes(b)) => Ok(CmpOrder::Ordered(
-                    a.get(vm.heap).as_slice().cmp(b.get(vm.heap).as_slice()),
-                )),
-                (HeapReadOutput::Tuple(a), HeapReadOutput::Tuple(b)) => a.py_cmp(&b, vm),
-                // A namedtuple orders like the tuple it subclasses, including
-                // against a plain tuple in either direction. Both sides are
-                // cloned first because the comparison needs `&mut VM`, which
-                // cannot coexist with two live `HeapRead`s.
-                (HeapReadOutput::NamedTuple(a), HeapReadOutput::NamedTuple(b)) => {
-                    let (a, b) = (a.cloned_items(vm)?, b.cloned_items(vm)?);
-                    cmp_item_seqs(a, b, vm)
-                }
-                (HeapReadOutput::NamedTuple(a), HeapReadOutput::Tuple(b)) => {
-                    let (a, b) = (a.cloned_items(vm)?, b.cloned_items(vm)?);
-                    cmp_item_seqs(a, b, vm)
-                }
-                (HeapReadOutput::Tuple(a), HeapReadOutput::NamedTuple(b)) => {
-                    let (a, b) = (a.cloned_items(vm)?, b.cloned_items(vm)?);
-                    cmp_item_seqs(a, b, vm)
-                }
-                (HeapReadOutput::List(a), HeapReadOutput::List(b)) => a.py_cmp(&b, vm),
-                (HeapReadOutput::Deque(a), HeapReadOutput::Deque(b)) => a.py_cmp(&b, vm),
-                (HeapReadOutput::Date(a), HeapReadOutput::Date(b)) => {
-                    Ok(CmpOrder::from_total(a.get(vm.heap).partial_cmp(b.get(vm.heap))))
-                }
-                (HeapReadOutput::DateTime(a), HeapReadOutput::DateTime(b)) => a.py_cmp(&b, vm),
-                (HeapReadOutput::Time(a), HeapReadOutput::Time(b)) => a.py_cmp(&b, vm),
-                (HeapReadOutput::TimeDelta(a), HeapReadOutput::TimeDelta(b)) => {
-                    Ok(CmpOrder::from_total(a.get(vm.heap).partial_cmp(b.get(vm.heap))))
-                }
-                _ => Ok(CmpOrder::Incomparable),
-            },
+            }
             // Interned string comparisons
             (Self::InternString(s1), Self::InternString(s2)) => {
                 Ok(CmpOrder::Ordered(interns.get_str(*s1).cmp(interns.get_str(*s2))))
             }
             // Cross-type string comparisons: interned vs heap-allocated
-            (Self::InternString(s1), Self::Ref(_, id2)) if let HeapData::Str(s2) = vm.heap.get(*id2) => {
+            (Self::InternString(s1), Self::Ref(HeapKind::Str, id2)) if let HeapData::Str(s2) = vm.heap.get(*id2) => {
                 Ok(CmpOrder::Ordered(interns.get_str(*s1).cmp(s2.as_str())))
             }
-            (Self::Ref(_, id1), Self::InternString(s2)) if let HeapData::Str(s1) = vm.heap.get(*id1) => {
+            (Self::Ref(HeapKind::Str, id1), Self::InternString(s2)) if let HeapData::Str(s1) = vm.heap.get(*id1) => {
                 Ok(CmpOrder::Ordered(s1.as_str().cmp(interns.get_str(*s2))))
             }
             (Self::InternBytes(b1), Self::InternBytes(b2)) => {
                 Ok(CmpOrder::Ordered(interns.get_bytes(*b1).cmp(interns.get_bytes(*b2))))
             }
             // Cross-type bytes comparisons: interned vs heap-allocated
-            (Self::InternBytes(b1), Self::Ref(_, id2)) if let HeapData::Bytes(b2) = vm.heap.get(*id2) => {
+            (Self::InternBytes(b1), Self::Ref(HeapKind::Bytes, id2)) if let HeapData::Bytes(b2) = vm.heap.get(*id2) => {
                 Ok(CmpOrder::Ordered(interns.get_bytes(*b1).cmp(b2.as_slice())))
             }
-            (Self::Ref(_, id1), Self::InternBytes(b2)) if let HeapData::Bytes(b1) = vm.heap.get(*id1) => {
+            (Self::Ref(HeapKind::Bytes, id1), Self::InternBytes(b2)) if let HeapData::Bytes(b1) = vm.heap.get(*id1) => {
                 Ok(CmpOrder::Ordered(b1.as_slice().cmp(interns.get_bytes(*b2))))
             }
             _ => Ok(CmpOrder::Incomparable),
@@ -533,20 +559,20 @@ impl<'h> PyTrait<'h> for Value {
             Self::InternBytes(bytes_id) => Ok(bytes_repr_fmt(interns.get_bytes(*bytes_id), f)?),
             Self::Marker(m) => Ok(m.py_repr_fmt(f)?),
             Self::Property(p) => Ok(write!(f, "<property {p:?}>")?),
-            Self::Ref(_, id) => {
+            Self::Ref(kind, id) => {
                 if heap_ids.contains(id) {
                     // Cycle detected - write type-specific placeholder following Python semantics
-                    match vm.heap.get(*id) {
-                        HeapData::List(_) => Ok(f.write_str("[...]")?),
-                        HeapData::Tuple(_) => Ok(f.write_str("(...)")?),
-                        HeapData::Dict(_) => Ok(f.write_str("{...}")?),
+                    match kind {
+                        HeapKind::List => Ok(f.write_str("[...]")?),
+                        HeapKind::Tuple => Ok(f.write_str("(...)")?),
+                        HeapKind::Dict => Ok(f.write_str("{...}")?),
                         // A deque prints its items inside list-shaped brackets
                         // (`deque([...])`), so the placeholder is a list's.
-                        HeapData::Deque(_) => Ok(f.write_str("[...]")?),
+                        HeapKind::Deque => Ok(f.write_str("[...]")?),
                         // Other types don't typically have cycles, but handle gracefully
                         _ => Ok(f.write_str("...")?),
                     }
-                } else if matches!(vm.heap.get(*id), HeapData::Instance(_)) {
+                } else if matches!(kind, HeapKind::Instance) {
                     // Instances manage their own recursion state: synthesized
                     // dataclass reprs use `heap_ids`, while a user `__repr__`
                     // recurses until the VM's re-entry guard raises RecursionError.
@@ -600,9 +626,9 @@ impl<'h> PyTrait<'h> for Value {
             // same value back (inc-ref'd for the heap case) instead of cloning
             // the bytes into a fresh allocation.
             Self::InternString(string_id) => Ok(Self::InternString(*string_id)),
-            Self::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::Str(_)) => Ok(self.clone_with_heap(vm.heap)),
+            Self::Ref(HeapKind::Str, _) => Ok(self.clone_with_heap(vm.heap)),
             // Instances dispatch to a user `__str__`/`__repr__` (needs the heap id).
-            Self::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::Instance(_)) => instance_str(*id, vm),
+            Self::Ref(HeapKind::Instance, id) => instance_str(*id, vm),
             Self::Ref(_, id) => vm.heap.read(*id).py_str(vm),
             _ => self.py_repr(vm),
         }
@@ -703,16 +729,24 @@ impl<'h> PyTrait<'h> for Value {
                 vm.heap,
             )?)),
             // for strings we need to account for the fact they might be either interned or not
-            (Self::InternString(string_id), Self::Ref(_, id2)) if let HeapData::Str(s2) = vm.heap.get(*id2) => Ok(
-                Some(concat_allocate_str(interns.get_str(*string_id), s2.as_str(), vm.heap)?),
-            ),
+            (Self::InternString(string_id), Self::Ref(HeapKind::Str, id2))
+                if let HeapData::Str(s2) = vm.heap.get(*id2) =>
+            {
+                Ok(Some(concat_allocate_str(
+                    interns.get_str(*string_id),
+                    s2.as_str(),
+                    vm.heap,
+                )?))
+            }
             // same for bytes
             (Self::InternBytes(lhs), Self::InternBytes(rhs)) => Ok(Some(concat_bytes(
                 interns.get_bytes(*lhs),
                 interns.get_bytes(*rhs),
                 vm.heap,
             )?)),
-            (Self::InternBytes(lhs), Self::Ref(_, rhs)) if let HeapData::Bytes(rhs) = vm.heap.get(*rhs) => {
+            (Self::InternBytes(lhs), Self::Ref(HeapKind::Bytes, rhs))
+                if let HeapData::Bytes(rhs) = vm.heap.get(*rhs) =>
+            {
                 Ok(Some(concat_bytes(interns.get_bytes(*lhs), rhs.as_slice(), vm.heap)?))
             }
             (Self::Ref(_, id), _) => vm.heap.read(*id).py_add_impl(other, vm),
@@ -1289,7 +1323,7 @@ impl<'h> PyTrait<'h> for Value {
             Self::Ref(_, id) => heap_subscript(vm.heap.read(*id), key, vm),
             Self::InternString(string_id) => {
                 // Check for slice first
-                if let Self::Ref(_, key_id) = key
+                if let Self::Ref(HeapKind::Slice, key_id) = key
                     && let HeapData::Slice(slice_obj) = vm.heap.get(*key_id)
                 {
                     let s = interns.get_str(*string_id);
@@ -1308,7 +1342,7 @@ impl<'h> PyTrait<'h> for Value {
             }
             Self::InternBytes(bytes_id) => {
                 // Check for slice first
-                if let Self::Ref(_, key_id) = key
+                if let Self::Ref(HeapKind::Slice, key_id) = key
                     && let HeapData::Slice(slice_obj) = vm.heap.get(*key_id)
                 {
                     let bytes = interns.get_bytes(*bytes_id);
@@ -1361,7 +1395,12 @@ impl<'h> PyTrait<'h> for Value {
         // No immediate value is an iterator; interned `str`/`bytes` are iterable
         // but, as in CPython, are not their own iterators.
         match self {
-            Self::Ref(_, id) => vm.heap.read(*id).py_is_iterator(vm),
+            Self::Ref(HeapKind::Instance, id) => vm.heap.read(*id).py_is_iterator(vm),
+            Self::Ref(kind, _) => kind
+                .fixed_type()
+                .map_or(matches!(kind, HeapKind::StringIterator | HeapKind::Itertools), |ty| {
+                    ty.is_iterator()
+                }),
             _ => false,
         }
     }
@@ -1371,7 +1410,36 @@ impl<'h> PyTrait<'h> for Value {
             // Interned string and bytes literals iterate without ever reaching
             // the heap, so they answer here rather than in `HeapReadOutput`.
             Self::InternString(_) | Self::InternBytes(_) => true,
-            Self::Ref(_, id) => vm.heap.read(*id).py_is_iterable(vm),
+            Self::Ref(HeapKind::Instance, id) => vm.heap.read(*id).py_is_iterable(vm),
+            Self::Ref(kind, _) => matches!(
+                kind,
+                HeapKind::List
+                    | HeapKind::Tuple
+                    | HeapKind::NamedTuple
+                    | HeapKind::Deque
+                    | HeapKind::Str
+                    | HeapKind::Bytes
+                    | HeapKind::Range
+                    | HeapKind::Dict
+                    | HeapKind::Set
+                    | HeapKind::FrozenSet
+                    | HeapKind::DictKeysView
+                    | HeapKind::DictItemsView
+                    | HeapKind::DictValuesView
+                    | HeapKind::ListIterator
+                    | HeapKind::DequeIterator
+                    | HeapKind::TupleIterator
+                    | HeapKind::StringIterator
+                    | HeapKind::BytesIterator
+                    | HeapKind::RangeIterator
+                    | HeapKind::DictKeyIterator
+                    | HeapKind::DictItemIterator
+                    | HeapKind::DictValueIterator
+                    | HeapKind::SetIterator
+                    | HeapKind::CallableIterator
+                    | HeapKind::Itertools
+                    | HeapKind::OpenFile
+            ),
             _ => false,
         }
     }
@@ -1574,9 +1642,7 @@ impl Value {
 
     /// Runs one side of rich equality, using `NotImplemented` to request reflected dispatch.
     fn py_rich_eq_impl(&self, other: &Self, vm: &mut VM<'_>) -> RunResult<Self> {
-        if let Self::Ref(_, id) = self
-            && matches!(vm.heap.get(*id), HeapData::Instance(_))
-        {
+        if let Self::Ref(HeapKind::Instance, id) = self {
             if let Some(result) = instance_user_eq(*id, other, vm)? {
                 Ok(result)
             } else if self.is(other) {
@@ -1625,13 +1691,13 @@ impl Value {
     }
 
     /// Reads the heap entry this value references, or `None` if it is not a
-    /// heap reference.
+    /// heap reference of one of the accepted kinds.
     ///
     /// Used by per-type [`PyTrait::py_eq_impl`] impls to resolve the other operand
     /// to a heap object of their own type, returning `NotImplemented` otherwise.
-    pub(crate) fn read_heap<'a>(&self, vm: &VM<'a>) -> Option<HeapReadOutput<'a>> {
+    pub(crate) fn read_heap<'a>(&self, vm: &VM<'a>, kinds: &[HeapKind]) -> Option<HeapReadOutput<'a>> {
         match self {
-            Self::Ref(_, id) => Some(vm.heap.read(*id)),
+            Self::Ref(kind, id) if kinds.contains(kind) => Some(vm.heap.read(*id)),
             _ => None,
         }
     }
@@ -1742,15 +1808,17 @@ impl Value {
             // Instances resolve attributes (instance dict → class methods/vars,
             // binding methods) in a dedicated path that has the heap id needed to
             // build bound methods.
-            Self::Ref(_, heap_id) if matches!(vm.heap.get(*heap_id), HeapData::Instance(_)) => {
+            Self::Ref(HeapKind::Instance, heap_id) => {
                 return instance_getattr(*heap_id, attr, vm);
             }
-            Self::Ref(_, heap_id) => {
+            Self::Ref(kind, heap_id) => {
                 if let Some(call_result) = vm.heap.read(*heap_id).py_getattr(attr, vm)? {
                     return Ok(call_result);
                 }
                 // CPython names the module, not its type, for a missing module attribute.
-                if let HeapData::Module(module) = vm.heap.get(*heap_id) {
+                if matches!(kind, HeapKind::Module)
+                    && let HeapData::Module(module) = vm.heap.get(*heap_id)
+                {
                     return Err(ExcType::attribute_error_module(
                         module.name_str(vm.interns),
                         attr.as_str(vm.interns),
@@ -1872,7 +1940,7 @@ impl Value {
             Self::Int(i) => Ok(*i),
             Self::Bool(b) => Ok(i64::from(*b)),
             Self::InternLongInt(id) => vm.interns.get_long_int(*id).to_i64().ok_or_else(on_overflow),
-            Self::Ref(_, id) => match vm.heap.get(*id) {
+            Self::Ref(HeapKind::LongInt, id) => match vm.heap.get(*id) {
                 HeapData::LongInt(li) => li.to_i64().ok_or_else(on_overflow),
                 _ => unreachable!("py_index_impl validated the result is an int"),
             },
@@ -2328,7 +2396,9 @@ pub(crate) fn eq_i64(a: i64, other: &Value, vm: &VM<'_>) -> Option<bool> {
         Value::Bool(b) => Some(a == i64::from(*b)),
         Value::Float(f) => Some(i64_cmp_f64(a, *f) == Some(Ordering::Equal)),
         Value::InternLongInt(id) => Some(bigint_eq_i64(vm.interns.get_long_int(*id), a)),
-        Value::Ref(_, id) if let HeapData::LongInt(li) = vm.heap.get(*id) => Some(bigint_eq_i64(li.inner(), a)),
+        Value::Ref(HeapKind::LongInt, id) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
+            Some(bigint_eq_i64(li.inner(), a))
+        }
         _ => None,
     }
 }
@@ -2340,7 +2410,9 @@ pub(crate) fn eq_f64(f: f64, other: &Value, vm: &VM<'_>) -> Option<bool> {
         Value::Int(o) => Some(i64_cmp_f64(*o, f) == Some(Ordering::Equal)),
         Value::Bool(o) => Some(i64_cmp_f64(i64::from(*o), f) == Some(Ordering::Equal)),
         Value::InternLongInt(id) => Some(bigint_eq_f64(vm.interns.get_long_int(*id), f)),
-        Value::Ref(_, id) if let HeapData::LongInt(li) = vm.heap.get(*id) => Some(bigint_eq_f64(li.inner(), f)),
+        Value::Ref(HeapKind::LongInt, id) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
+            Some(bigint_eq_f64(li.inner(), f))
+        }
         _ => None,
     }
 }
@@ -2354,7 +2426,7 @@ pub(crate) fn eq_bigint(b: &BigInt, other: &Value, vm: &VM<'_>) -> Option<bool> 
         Value::Bool(o) => Some(bigint_eq_i64(b, i64::from(*o))),
         Value::Float(f) => Some(bigint_eq_f64(b, *f)),
         Value::InternLongInt(id) => Some(b == vm.interns.get_long_int(*id)),
-        Value::Ref(_, id) if let HeapData::LongInt(li) = vm.heap.get(*id) => Some(b == li.inner()),
+        Value::Ref(HeapKind::LongInt, id) if let HeapData::LongInt(li) = vm.heap.get(*id) => Some(b == li.inner()),
         _ => None,
     }
 }
@@ -2363,7 +2435,7 @@ pub(crate) fn eq_bigint(b: &BigInt, other: &Value, vm: &VM<'_>) -> Option<bool> 
 pub(crate) fn eq_str(s: &str, other: &Value, vm: &VM<'_>) -> Option<bool> {
     match other {
         Value::InternString(id) => Some(s == vm.interns.get_str(*id)),
-        Value::Ref(_, id) if let HeapData::Str(o) = vm.heap.get(*id) => Some(s == o.as_str()),
+        Value::Ref(HeapKind::Str, id) if let HeapData::Str(o) = vm.heap.get(*id) => Some(s == o.as_str()),
         _ => None,
     }
 }
@@ -2372,7 +2444,7 @@ pub(crate) fn eq_str(s: &str, other: &Value, vm: &VM<'_>) -> Option<bool> {
 pub(crate) fn eq_bytes(b: &[u8], other: &Value, vm: &VM<'_>) -> Option<bool> {
     match other {
         Value::InternBytes(id) => Some(b == vm.interns.get_bytes(*id)),
-        Value::Ref(_, id) if let HeapData::Bytes(o) = vm.heap.get(*id) => Some(b == o.as_slice()),
+        Value::Ref(HeapKind::Bytes, id) if let HeapData::Bytes(o) = vm.heap.get(*id) => Some(b == o.as_slice()),
         _ => None,
     }
 }

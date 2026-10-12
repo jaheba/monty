@@ -114,7 +114,7 @@ fn create_class(
     };
 
     match bases {
-        Value::Ref(_, id) if let HeapData::Tuple(t) = vm.heap.get(*id) => {
+        Value::Ref(HeapKind::Tuple, id) if let HeapData::Tuple(t) = vm.heap.get(*id) => {
             // Monty divergence: classes cannot inherit, so even `(object,)` is
             // rejected — the parse-time equivalent (`class Foo(Bar)`) is a
             // syntax error, and this is its runtime counterpart.
@@ -128,7 +128,7 @@ fn create_class(
         }
     }
 
-    let Value::Ref(_, ns_id) = namespace else {
+    let Value::Ref(HeapKind::Dict, ns_id) = namespace else {
         let got = namespace.py_type(vm).cpython_arg_name(vm.heap, vm.interns);
         return Err(ExcType::type_error_bad_arg_pos("type.__new__", 3, "dict", got));
     };

@@ -341,7 +341,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Tuple> {
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
         // A tuple equals another tuple; `tuple == namedtuple` is handled by the
         // reflected pass via `NamedTuple::py_eq_impl`.
-        let Some(HeapReadOutput::Tuple(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Tuple(other)) = other.read_heap(vm, &[HeapKind::Tuple]) else {
             return Ok(None);
         };
         if self.get(vm.heap).items.len() != other.get(vm.heap).items.len() {
@@ -435,7 +435,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Tuple> {
     }
 
     fn py_add_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        let Some(HeapReadOutput::Tuple(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Tuple(other)) = other.read_heap(vm, &[HeapKind::Tuple]) else {
             return Ok(None);
         };
         let mut items = self.clone_all_items(vm)?;

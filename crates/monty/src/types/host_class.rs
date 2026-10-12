@@ -154,7 +154,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, HostClass> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::HostClass(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::HostClass(other)) = other.read_heap(vm, &[HeapKind::HostClass]) else {
             return Ok(None);
         };
         // Equal only for the same class (one type entry per class uuid, so the
@@ -502,7 +502,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, HostClassType> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::HostClassType(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::HostClassType(other)) = other.read_heap(vm, &[HeapKind::HostClassType]) else {
             return Ok(None);
         };
         // Same class identity — uuids are collision-free, so no name gate

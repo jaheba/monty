@@ -563,8 +563,10 @@ impl Dict {
                 let entry_key = &self.entries[idx].key;
                 match entry_key {
                     Value::InternString(id) => interns.get_str(*id) == key_str,
-                    Value::Ref(_, id) => {
-                        if let HeapData::Str(s) = heap.get(*id) {
+                    Value::Ref(kind, id) => {
+                        if matches!(kind, HeapKind::Str)
+                            && let HeapData::Str(s) = heap.get(*id)
+                        {
                             s.as_str() == key_str
                         } else {
                             false
@@ -820,11 +822,11 @@ pub(crate) fn probe_native_eq(candidate: &Value, key: &Value, vm: &VM<'_>) -> Op
 /// (tuples, frozensets) recurse into element comparisons that might; those and
 /// any unlisted heap type return false. A conservative fast-path filter for
 /// the dict/set probes, not a complete classification.
-pub(crate) fn eq_is_native(value: &Value, heap: &Heap) -> bool {
+pub(crate) fn eq_is_native(value: &Value, _heap: &Heap) -> bool {
     match value {
-        Value::Ref(_, id) => matches!(
-            heap.get(*id),
-            HeapData::Str(_) | HeapData::Bytes(_) | HeapData::LongInt(_) | HeapData::Range(_)
+        Value::Ref(kind, _) => matches!(
+            kind,
+            HeapKind::Str | HeapKind::Bytes | HeapKind::LongInt | HeapKind::Range
         ),
         _ => true,
     }
@@ -1048,7 +1050,7 @@ impl<'h> HeapRead<'h, Dict> {
     fn merge_from_value(&mut self, other_value: Value, vm: &mut VM<'h>) -> RunResult<()> {
         let mut guard = DropGuard::new(other_value, vm);
         let (other_value, vm) = guard.as_parts_mut();
-        if let Value::Ref(_, id) = other_value {
+        if let Value::Ref(HeapKind::Dict, id) = other_value {
             let src_id = *id;
             if let HeapReadOutput::Dict(src) = vm.heap.read(src_id) {
                 let iter = src.iter(vm)?;
@@ -1486,7 +1488,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Dict> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        match other.read_heap(vm) {
+        match other.read_heap(vm, &[HeapKind::Dict]) {
             Some(HeapReadOutput::Dict(other)) => {
                 // Two Counters compare as multisets (zero counts ignored); any
                 // other pairing is plain dict equality.
@@ -1517,7 +1519,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Dict> {
             // Only the four ordering operators reach `py_cmp_op`.
             _ => return Ok(None),
         };
-        let Some(HeapReadOutput::Dict(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Dict(other)) = other.read_heap(vm, &[HeapKind::Dict]) else {
             return Ok(None);
         };
         if self.get(vm.heap).is_counter() && other.get(vm.heap).is_counter() {
@@ -1769,7 +1771,7 @@ impl<'h> HeapObjectRead<'h, Dict> {
     /// `TypeError`, matching CPython: `Counter.__add__` returns `NotImplemented`
     /// for a non-Counter, and a plain dict has no `+` of its own.
     fn counter_binary(&self, other: &Value, op: CounterOp, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        let Some(HeapReadOutput::Dict(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Dict(other)) = other.read_heap(vm, &[HeapKind::Dict]) else {
             return Ok(None);
         };
         if self.get(vm.heap).is_counter() && other.get(vm.heap).is_counter() {
@@ -1905,7 +1907,7 @@ fn dict_copy<'h>(dict: &mut HeapRead<'h, Dict>, vm: &mut VM<'h>) -> RunResult<Va
 /// first); otherwise the result is a plain dict, as `PyDict_Copy` of a
 /// Counter is, so `Counter | dict` and `dict | Counter` are plain dicts.
 fn dict_or<'h>(left: &HeapRead<'h, Dict>, right: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-    let Some(HeapReadOutput::Dict(right_dict)) = right.read_heap(vm) else {
+    let Some(HeapReadOutput::Dict(right_dict)) = right.read_heap(vm, &[HeapKind::Dict]) else {
         return Ok(None);
     };
     // `from_pairs` builds a fresh dict of exactly these pairs while the snapshot
@@ -1980,7 +1982,7 @@ fn dict_merge_from_value(dict: &mut Dict, other_value: Value, vm: &mut VM<'_>) -
     let mut other_value_guard = DropGuard::new(other_value, vm);
     {
         let (other_value, vm) = other_value_guard.as_parts();
-        if let Value::Ref(_, id) = other_value
+        if let Value::Ref(HeapKind::Dict, id) = other_value
             && let HeapData::Dict(src_dict) = vm.heap.get(*id)
         {
             // The snapshot stays live while the pairs are applied, so charge it

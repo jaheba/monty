@@ -595,7 +595,7 @@ fn combine_date_part(date: &Value, vm: &mut VM<'_>) -> RunResult<(i32, i32, i32)
 /// alive — which is exactly how long [`class_combine`] uses it.
 fn combine_time_part(time: &Value, vm: &mut VM<'_>) -> RunResult<Time> {
     match time {
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(HeapKind::Time, id) => match vm.heap.get(*id) {
             HeapData::Time(t) => Ok(t.clone()),
             _ => Err(combine_bad_time_arg(time, vm)),
         },
@@ -965,10 +965,13 @@ pub(crate) fn tzinfo_from_value(
 ) -> RunResult<(Option<TimeZone>, Option<HeapId>)> {
     match value {
         Value::None => Ok((None, None)),
-        Value::Ref(_, id) => match heap.get(*id) {
+        Value::Ref(HeapKind::TimeZone, id) => match heap.get(*id) {
             HeapData::TimeZone(tz) => Ok((Some(tz.clone()), Some(*id))),
-            other => Err(ExcType::type_error_tzinfo(&other.py_type().name(heap, interns))),
+            _ => unreachable!("the pointer is tagged as a timezone"),
         },
+        Value::Ref(_, _) => Err(ExcType::type_error_tzinfo(
+            &value.py_type_heap(heap).name(heap, interns),
+        )),
         _ => Err(ExcType::type_error_tzinfo(&value.py_type_shallow().name(heap, interns))),
     }
 }
@@ -1220,7 +1223,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, DateTime> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::DateTime(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::DateTime(other)) = other.read_heap(vm, &[HeapKind::DateTime]) else {
             return Ok(None);
         };
         let a = self.get(vm.heap);
@@ -1305,7 +1308,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, DateTime> {
     }
 
     fn py_add_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        let Some(HeapReadOutput::TimeDelta(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::TimeDelta(other)) = other.read_heap(vm, &[HeapKind::TimeDelta]) else {
             return Ok(None);
         };
         let value = self.get(vm.heap).clone();
@@ -1314,7 +1317,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, DateTime> {
     }
 
     fn py_sub_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        match other.read_heap(vm) {
+        match other.read_heap(vm, &[HeapKind::DateTime, HeapKind::TimeDelta]) {
             Some(HeapReadOutput::DateTime(other)) => {
                 let value = self.get(vm.heap).clone();
                 let other = other.get(vm.heap).clone();

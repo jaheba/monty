@@ -249,7 +249,7 @@ fn apply_dataclass(vm: &mut VM<'_>, cls: Value, options: DataclassOptions) -> Ru
     let (cls, vm) = guard.as_parts();
     // Read once and pass the handle down: everything below then works from a
     // value already known to be a class, and the guard's reference keeps it alive.
-    let Value::Ref(_, class_id) = cls else {
+    let Value::Ref(HeapKind::Class, class_id) = cls else {
         return Err(non_class_error(cls, vm));
     };
     let HeapReadOutput::Class(mut class) = vm.heap.read(*class_id) else {
@@ -392,7 +392,7 @@ fn adopted_field_ids(fields_id: HeapId, vm: &VM<'_>) -> Vec<(StringId, HeapId)> 
     fields
         .iter()
         .filter_map(|(_, value)| match value {
-            Value::Ref(_, id) => Some((field_at_id(vm, *id)?.name()?, *id)),
+            Value::Ref(HeapKind::DataclassField, id) => Some((field_at_id(vm, *id)?.name()?, *id)),
             _ => None,
         })
         .collect()
@@ -470,7 +470,7 @@ fn annotations_dict<'a, 'h>(class: &HeapRead<'h, Class>, vm: &'a VM<'h>) -> Opti
         .namespace()
         .get_by_str("__annotations__", vm.heap, vm.interns)
     {
-        Some(Value::Ref(_, id)) => match vm.heap.get(*id) {
+        Some(Value::Ref(HeapKind::Dict, id)) => match vm.heap.get(*id) {
             HeapData::Dict(annotations) => Some(annotations),
             _ => None,
         },
@@ -530,7 +530,9 @@ fn validate_fields(vm: &mut VM<'_>, fields: &[Value]) -> RunResult<()> {
 /// A collected field's name, annotation text, and a **cloned** default — the
 /// three things validation needs, read before it takes the heap mutably.
 fn read_field(field: &Value, vm: &VM<'_>) -> Option<(StringId, String, Option<Value>)> {
-    let Value::Ref(_, id) = field else { return None };
+    let Value::Ref(HeapKind::DataclassField, id) = field else {
+        return None;
+    };
     let field = field_at_id(vm, *id)?;
     let annotation = field.annotation().map_or_else(String::new, |a| annotation_text(a, vm));
     Some((
@@ -548,7 +550,9 @@ fn read_field(field: &Value, vm: &VM<'_>) -> Option<(StringId, String, Option<Va
 fn first_non_default_after_default(fields: &[Value], vm: &VM<'_>) -> Option<(StringId, StringId)> {
     let mut last_default = None;
     fields.iter().find_map(|field| {
-        let Value::Ref(_, id) = field else { return None };
+        let Value::Ref(HeapKind::DataclassField, id) = field else {
+            return None;
+        };
         let field = field_at_id(vm, *id)?;
         let name = field.name().expect("collection adopts every field");
         match (field.has_default(), last_default) {
@@ -599,7 +603,7 @@ fn annotation_head(annotation: &str, name: &str) -> bool {
 fn fields_dict_id(namespace: &Dict, vm: &VM<'_>) -> Option<HeapId> {
     let name: &'static str = StaticStrings::DataclassFields.into();
     match namespace.get_by_str(name, vm.heap, vm.interns) {
-        Some(Value::Ref(_, id)) if matches!(vm.heap.get(*id), HeapData::Dict(_)) => Some(*id),
+        Some(Value::Ref(HeapKind::Dict, id)) => Some(*id),
         _ => None,
     }
 }
@@ -634,7 +638,7 @@ pub(crate) fn dataclass_options(class_id: HeapId, vm: &VM<'_>) -> Option<Datacla
 fn namespace_options(namespace: &Dict, vm: &VM<'_>) -> DataclassOptions {
     let name: &'static str = StaticStrings::DataclassParams.into();
     match namespace.get_by_str(name, vm.heap, vm.interns) {
-        Some(Value::Ref(_, id)) => match vm.heap.get(*id) {
+        Some(Value::Ref(HeapKind::DataclassParams, id)) => match vm.heap.get(*id) {
             HeapData::DataclassParams(params) => params.options(),
             _ => DataclassOptions::default(),
         },
@@ -722,7 +726,9 @@ fn field_specs(fields_id: HeapId, vm: &VM<'_>) -> Vec<(StringId, bool)> {
     fields
         .iter()
         .filter_map(|(key, value)| match (key, value) {
-            (Value::InternString(name), Value::Ref(_, id)) => Some((*name, field_at_id(vm, *id)?.has_default())),
+            (Value::InternString(name), Value::Ref(HeapKind::DataclassField, id)) => {
+                Some((*name, field_at_id(vm, *id)?.has_default()))
+            }
             _ => None,
         })
         .collect()
@@ -757,7 +763,7 @@ pub(crate) fn dataclass_init<'h>(
     // Read once for the whole construction. The handle is declared after the
     // guard so it is released first — a guard that frees the instance must not
     // find a live reader.
-    let Value::Ref(_, instance_id) = instance else {
+    let Value::Ref(HeapKind::Instance, instance_id) = instance else {
         unreachable!("the caller just allocated the instance")
     };
     let HeapReadOutput::Instance(mut instance) = vm.heap.read(*instance_id) else {
@@ -1019,7 +1025,7 @@ pub(crate) fn dataclass_eq(
 ) -> RunResult<Option<bool>> {
     let class_id = instance_class(self_id, vm);
     // Only the same dataclass type can be equal; otherwise NotImplemented.
-    let &Value::Ref(_, other_id) = other else {
+    let &Value::Ref(HeapKind::Instance, other_id) = other else {
         return Ok(None);
     };
     if !matches!(vm.heap.get(other_id), HeapData::Instance(inst) if inst.class() == class_id) {

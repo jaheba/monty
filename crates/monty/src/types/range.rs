@@ -231,7 +231,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Range> {
 
     fn py_getitem(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<Value> {
         // Check for slice first (Value::Ref pointing to HeapData::Slice)
-        if let Value::Ref(_, id) = key
+        if let Value::Ref(HeapKind::Slice, id) = key
             && let HeapData::Slice(slice) = vm.heap.get(*id)
         {
             let range = *self.get(vm.heap);
@@ -267,7 +267,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Range> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::Range(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Range(other)) = other.read_heap(vm, &[HeapKind::Range]) else {
             return Ok(None);
         };
         let a = self.get(vm.heap);

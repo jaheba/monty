@@ -167,7 +167,7 @@ pub(crate) fn defaultdict_init(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Va
         }
     };
 
-    let Value::Ref(_, dict_id) = dict_value else {
+    let Value::Ref(HeapKind::Dict, dict_id) = dict_value else {
         unreachable!("Dict::init returns a dict ref");
     };
     let HeapReadOutput::Dict(mut dict) = vm.heap.read(dict_id) else {

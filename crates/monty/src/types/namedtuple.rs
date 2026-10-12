@@ -402,7 +402,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, NamedTuple> {
     fn py_getitem(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<Value> {
         // A slice degrades to a plain tuple, as in CPython — the field names
         // describe the original instance only, so they cannot survive a slice.
-        if let Value::Ref(_, key_id) = key
+        if let Value::Ref(HeapKind::Slice, key_id) = key
             && let HeapData::Slice(slice_obj) = vm.heap.get(*key_id)
         {
             let items = slice_collect_iterator(vm, slice_obj, self.get(vm.heap).as_vec().iter(), |v| {
@@ -480,7 +480,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, NamedTuple> {
         // plain tuple with the same elements (class name is ignored). Both
         // directions of the tuple case are covered here, so `Tuple::py_eq_impl`
         // need not know about namedtuples.
-        match other.read_heap(vm) {
+        match other.read_heap(vm, &[HeapKind::NamedTuple, HeapKind::Tuple]) {
             Some(HeapReadOutput::NamedTuple(other)) => {
                 if self.get(vm.heap).len() != other.get(vm.heap).len() {
                     return Ok(Some(false));
@@ -1084,7 +1084,7 @@ pub(crate) fn cmp_item_seqs(a: Vec<Value>, b: Vec<Value>, vm: &mut VM<'_>) -> Ru
 /// Shared by named-tuple concatenation (`+`), whose result is always a plain
 /// tuple regardless of which operand is the namedtuple.
 fn cloned_tuple_like_items(value: &Value, vm: &VM<'_>) -> RunResult<Option<Vec<Value>>> {
-    let Value::Ref(_, id) = value else {
+    let Value::Ref(HeapKind::Tuple | HeapKind::NamedTuple, id) = value else {
         return Ok(None);
     };
     let id = *id;

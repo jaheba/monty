@@ -134,7 +134,7 @@ impl Partial {
             self.keywords.is_empty(),
             "flatten() overwrites keywords rather than merging"
         );
-        let Value::Ref(_, inner_id) = self.func else {
+        let Value::Ref(HeapKind::Partial, inner_id) = self.func else {
             return Ok(());
         };
         let HeapData::Partial(inner) = vm.heap.get(inner_id) else {

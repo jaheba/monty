@@ -221,7 +221,7 @@ impl Bytes {
                 let b = vm.interns.get_bytes(*bytes_id);
                 b.to_vec()
             }
-            Some(v @ Value::Ref(_, id)) => match vm.heap.get(*id) {
+            Some(v @ Value::Ref(HeapKind::Bytes, id)) => match vm.heap.get(*id) {
                 HeapData::Bytes(b) => b.as_slice().to_vec(),
                 _ => return Err(ExcType::type_error_bytes_init(&v.py_type_name(vm))),
             },
@@ -319,7 +319,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Bytes> {
 
     fn py_getitem(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<Value> {
         // Check for slice first (Value::Ref pointing to HeapData::Slice)
-        if let Value::Ref(_, id) = key
+        if let Value::Ref(HeapKind::Slice, id) = key
             && let HeapData::Slice(slice) = vm.heap.get(*id)
         {
             let b = self.get(vm.heap);
@@ -370,7 +370,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Bytes> {
     fn py_add_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
         let other = match other {
             Value::InternBytes(id) => vm.interns.get_bytes(*id),
-            Value::Ref(_, id) if let HeapData::Bytes(value) = vm.heap.get(*id) => value.as_slice(),
+            Value::Ref(HeapKind::Bytes, id) if let HeapData::Bytes(value) = vm.heap.get(*id) => value.as_slice(),
             _ => return Ok(None),
         };
         Ok(Some(concat_bytes(self.get(vm.heap).as_slice(), other, vm.heap)?))
@@ -845,7 +845,7 @@ fn extract_bytes_for_prefix_suffix(value: &Value, method: &str, vm: &VM<'_>) -> 
         Value::InternString(_) => Err(ExcType::type_error(format!(
             "{method_name} first arg must be bytes or a tuple of bytes, not str"
         ))),
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(HeapKind::Bytes | HeapKind::Str | HeapKind::Tuple, id) => match vm.heap.get(*id) {
             HeapData::Bytes(b) => Ok(PrefixSuffixArg::Single(b.as_slice().to_vec())),
             HeapData::Str(_) => Err(ExcType::type_error(format!(
                 "{method_name} first arg must be bytes or a tuple of bytes, not str"
@@ -884,7 +884,7 @@ fn extract_single_bytes_for_prefix_suffix(value: &Value, vm: &VM<'_>) -> RunResu
     match value {
         Value::InternBytes(id) => Ok(vm.interns.get_bytes(*id).to_vec()),
         Value::InternString(_) => Err(ExcType::type_error("expected bytes, not str")),
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(HeapKind::Bytes, id) => match vm.heap.get(*id) {
             HeapData::Bytes(b) => Ok(b.as_slice().to_vec()),
             _ => Err(ExcType::type_error("expected bytes")),
         },
@@ -900,7 +900,7 @@ fn extract_bytes_only<'a>(value: &Value, vm: &'a VM<'_>) -> RunResult<&'a [u8]> 
     match value {
         Value::InternBytes(id) => Ok(vm.interns.get_bytes(*id)),
         Value::InternString(_) => Err(ExcType::type_error("a bytes-like object is required, not 'str'")),
-        Value::Ref(_, id) => match vm.heap.get(*id) {
+        Value::Ref(HeapKind::Bytes | HeapKind::Str, id) => match vm.heap.get(*id) {
             HeapData::Bytes(b) => Ok(b.as_slice()),
             HeapData::Str(_) => Err(ExcType::type_error("a bytes-like object is required, not 'str'")),
             _ => Err(ExcType::type_error("a bytes-like object is required")),
@@ -2054,8 +2054,10 @@ fn bytes_join<'h>(separator: &HeapRead<'h, [u8]>, iterable: Value, vm: &mut VM<'
             Value::InternBytes(id) => {
                 result.extend_from_slice(vm.interns.get_bytes(*id));
             }
-            Value::Ref(_, heap_id) => {
-                if let HeapData::Bytes(b) = vm.heap.get(*heap_id) {
+            Value::Ref(kind, heap_id) => {
+                if matches!(kind, HeapKind::Bytes)
+                    && let HeapData::Bytes(b) = vm.heap.get(*heap_id)
+                {
                     result.extend_from_slice(b.as_slice());
                 } else {
                     let t = item.py_type_name(vm);
@@ -2170,7 +2172,7 @@ fn parse_bytes_hex_args(args: ArgValues, vm: &mut VM<'_>) -> RunResult<(Option<c
     let sep_bytes = match sep_value {
         Value::InternString(id) => vm.interns.get_str(*id).as_bytes(),
         Value::InternBytes(id) => vm.interns.get_bytes(*id),
-        Value::Ref(_, heap_id) => match vm.heap.get(*heap_id) {
+        Value::Ref(HeapKind::Str | HeapKind::Bytes, heap_id) => match vm.heap.get(*heap_id) {
             HeapData::Str(s) => s.as_bytes(),
             HeapData::Bytes(b) => b.as_slice(),
             _ => return Err(ExcType::type_error("sep must be str or bytes")),
@@ -2231,8 +2233,10 @@ pub fn bytes_fromhex(args: ArgValues, vm: &mut VM<'_>) -> RunResult<Value> {
 
     let hex_str = match hex_value {
         Value::InternString(id) => vm.interns.get_str(*id),
-        Value::Ref(_, heap_id) => {
-            if let HeapData::Str(s) = vm.heap.get(*heap_id) {
+        Value::Ref(kind, heap_id) => {
+            if matches!(kind, HeapKind::Str)
+                && let HeapData::Str(s) = vm.heap.get(*heap_id)
+            {
                 s.as_str()
             } else {
                 return Err(ExcType::type_error("fromhex() argument must be str, not bytes"));
@@ -2438,7 +2442,7 @@ pub(crate) fn bytes_contains(container: &[u8], item: &Value, vm: &VM<'_>) -> Run
         Value::Int(i) => Some(*i),
         Value::Bool(b) => Some(i64::from(*b)),
         Value::InternLongInt(_) => None,
-        Value::Ref(_, id) if matches!(vm.heap.get(*id), HeapData::LongInt(_)) => None,
+        Value::Ref(HeapKind::LongInt, _) => None,
         // A bytes-like probe is a substring test.
         Value::InternBytes(_) | Value::Ref(..) => {
             let needle = extract_bytes_only(item, vm)?;

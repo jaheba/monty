@@ -663,7 +663,7 @@ impl<'h> VM<'h> {
     /// Panics if `args_tuple` is not a tuple. This indicates a compiler bug since
     /// the compiler always emits `ListToTuple` before `CallFunctionExtended`.
     fn extract_args_tuple(&mut self, args_tuple: &Value) -> RunResult<Vec<Value>> {
-        let Value::Ref(_, id) = args_tuple else {
+        let Value::Ref(HeapKind::Tuple, id) = args_tuple else {
             unreachable!("CallFunctionExtended: args_tuple must be a Ref")
         };
         let HeapData::Tuple(tuple) = self.heap.get(*id) else {
@@ -682,7 +682,7 @@ impl<'h> VM<'h> {
         defer_drop!(kwargs_ref, this);
 
         // Extract kwargs dict items
-        let Value::Ref(_, id) = kwargs_ref else {
+        let Value::Ref(HeapKind::Dict, id) = kwargs_ref else {
             unreachable!("CallFunctionExtended: kwargs must be a Ref")
         };
         let HeapData::Dict(dict) = this.heap.get(*id) else {
@@ -741,7 +741,7 @@ impl<'h> VM<'h> {
     /// Panics if `args_tuple` is not a tuple. This indicates a compiler bug since
     /// the compiler always emits `ListToTuple` before `CallAttrExtended`.
     fn extract_args_tuple_for_attr(&mut self, args_tuple: &Value) -> RunResult<Vec<Value>> {
-        let Value::Ref(_, id) = args_tuple else {
+        let Value::Ref(HeapKind::Tuple, id) = args_tuple else {
             unreachable!("CallAttrExtended: args_tuple must be a Ref")
         };
         let HeapData::Tuple(tuple) = self.heap.get(*id) else {
@@ -764,7 +764,7 @@ impl<'h> VM<'h> {
         defer_drop!(kwargs_ref, this);
 
         // Extract kwargs dict items
-        let Value::Ref(_, id) = kwargs_ref else {
+        let Value::Ref(HeapKind::Dict, id) = kwargs_ref else {
             unreachable!("CallAttrExtended: kwargs must be a Ref")
         };
         let HeapData::Dict(dict) = this.heap.get(*id) else {
@@ -1099,7 +1099,7 @@ impl<'h> VM<'h> {
                 // Bound methods already carry their own receiver, and builtins,
                 // classes and other values are called with the constructor
                 // arguments unchanged.
-                let init_args = if this.is_function_value(init_func) {
+                let init_args = if Self::is_function_value(init_func) {
                     this.heap.inc_ref(instance_id);
                     args.prepend(Value::Ref(HeapKind::Instance, instance_id))
                 } else {
@@ -1150,12 +1150,11 @@ impl<'h> VM<'h> {
     /// Whether `value` is a plain Python function object (`def`, closure, or
     /// function-with-defaults — sync or async): the kinds that act as descriptors
     /// in CPython and therefore bind an instance when looked up as a class member.
-    fn is_function_value(&self, value: &Value) -> bool {
-        match value {
-            Value::DefFunction(_) => true,
-            Value::Ref(_, id) => matches!(self.heap.get(*id), HeapData::Closure(_) | HeapData::FunctionDefaults(_)),
-            _ => false,
-        }
+    fn is_function_value(value: &Value) -> bool {
+        matches!(
+            value,
+            Value::DefFunction(_) | Value::Ref(HeapKind::Closure | HeapKind::FunctionDefaults, _)
+        )
     }
 
     /// Whether calling `value` would push a regular synchronous frame
@@ -1166,14 +1165,16 @@ impl<'h> VM<'h> {
     fn is_plain_sync_function(&self, value: &Value) -> bool {
         match value {
             Value::DefFunction(func_id) => !self.interns.get_function(*func_id).is_async,
-            Value::Ref(_, id) => match self.heap.get(*id) {
-                HeapData::Closure(closure) => !self.interns.get_function(closure.func_id).is_async,
-                HeapData::FunctionDefaults(fd) => !self.interns.get_function(fd.func_id).is_async,
-                // Bound methods never wrap another bound method, so this
-                // recursion is at most one level deep.
-                HeapData::BoundMethod(bm) => self.is_plain_sync_function(&bm.func),
-                _ => false,
-            },
+            Value::Ref(HeapKind::Closure | HeapKind::FunctionDefaults | HeapKind::BoundMethod, id) => {
+                match self.heap.get(*id) {
+                    HeapData::Closure(closure) => !self.interns.get_function(closure.func_id).is_async,
+                    HeapData::FunctionDefaults(fd) => !self.interns.get_function(fd.func_id).is_async,
+                    // Bound methods never wrap another bound method, so this
+                    // recursion is at most one level deep.
+                    HeapData::BoundMethod(bm) => self.is_plain_sync_function(&bm.func),
+                    _ => false,
+                }
+            }
             _ => false,
         }
     }

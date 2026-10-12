@@ -176,11 +176,10 @@ pub(crate) fn gather(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
     for arg in awaitables.iter() {
         if !matches!(
             arg,
-            Value::Ref(_, id)
-                if matches!(
-                    vm.heap.get(*id),
-                    HeapData::Coroutine(_) | HeapData::ExternalFuture(_) | HeapData::GatherFuture(_)
-                )
+            Value::Ref(
+                HeapKind::Coroutine | HeapKind::ExternalFuture | HeapKind::GatherFuture,
+                _
+            )
         ) {
             return Err(ExcType::type_error(
                 "An asyncio.Future, a coroutine or an awaitable is required",

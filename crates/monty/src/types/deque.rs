@@ -245,7 +245,9 @@ fn read_ssize(value: &Value, vm: &VM<'_>, overflow: fn() -> RunError) -> Option<
     match value {
         Value::Int(i) => Some(Ok(*i)),
         Value::Bool(b) => Some(Ok(i64::from(*b))),
-        Value::Ref(_, id) if let HeapData::LongInt(li) = vm.heap.get(*id) => Some(li.to_i64().ok_or_else(overflow)),
+        Value::Ref(HeapKind::LongInt, id) if let HeapData::LongInt(li) = vm.heap.get(*id) => {
+            Some(li.to_i64().ok_or_else(overflow))
+        }
         _ => None,
     }
 }
@@ -327,9 +329,7 @@ impl<'h> HeapRead<'h, Deque> {
     /// Resolves a Python index (negative counts from the right) to a real one.
     fn resolve_index(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<usize> {
         // A slice is rejected with CPython's sequence wording (names the type).
-        if let Value::Ref(_, id) = key
-            && matches!(vm.heap.get(*id), HeapData::Slice(_))
-        {
+        if let Value::Ref(HeapKind::Slice, _) = key {
             return Err(ExcType::type_error_sequence_index("slice"));
         }
         // A big int is a valid index, raising `IndexError` if it can't fit.
@@ -448,7 +448,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Deque> {
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
         // A deque only ever equals another deque — unlike NamedTuple/tuple, there
         // is no cross-type equality with list. `maxlen` is not part of equality.
-        let Some(HeapReadOutput::Deque(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Deque(other)) = other.read_heap(vm, &[HeapKind::Deque]) else {
             return Ok(None);
         };
         let len = self.get(vm.heap).len();
@@ -550,7 +550,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Deque> {
     /// (so the result can truncate). Any non-deque right operand returns `None`,
     /// yielding CPython's "can only concatenate deque" `TypeError`.
     fn py_add_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        let Some(HeapReadOutput::Deque(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Deque(other)) = other.read_heap(vm, &[HeapKind::Deque]) else {
             return Ok(None);
         };
         let maxlen = self.get(vm.heap).maxlen();

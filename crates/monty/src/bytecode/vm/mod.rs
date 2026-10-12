@@ -1483,8 +1483,10 @@ impl<'h> VM<'h> {
                     match value {
                         Value::Int(n) => self.push(Value::Int(!n)),
                         Value::Bool(b) => self.push(Value::Int(!i64::from(b))),
-                        Value::Ref(_, id) => {
-                            if let HeapData::LongInt(li) = self.heap.get(id) {
+                        Value::Ref(kind, id) => {
+                            if matches!(kind, HeapKind::LongInt)
+                                && let HeapData::LongInt(li) = self.heap.get(id)
+                            {
                                 // LongInt bitwise NOT: ~x = -(x + 1)
                                 let inverted = -(li.inner() + 1i32);
                                 value.drop_with(self);
@@ -1907,12 +1909,11 @@ impl<'h> VM<'h> {
                     // Re-raise an instance as-is so `raise e` preserves `e`'s
                     // identity, like CPython. A bare type or non-exception has
                     // nothing to reuse and rebuilds from the error.
-                    let raised = match &exc {
-                        Value::Ref(_, id) if matches!(self.heap.get(*id), HeapData::Exception(_)) => Some(exc),
-                        _ => {
-                            exc.drop_with(self);
-                            None
-                        }
+                    let raised = if let Value::Ref(HeapKind::Exception, _) = &exc {
+                        Some(exc)
+                    } else {
+                        exc.drop_with(self);
+                        None
                     };
                     if let Some(result) = self.handle_exception_with_value(error, raised) {
                         return Err(result);

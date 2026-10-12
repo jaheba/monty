@@ -195,7 +195,7 @@ pub(crate) fn allocate_ymd(year: i32, month: i32, day: i32, heap: &Heap) -> Valu
 pub(crate) fn extract_str_arg(value: &Value, method_name: &str, heap: &Heap, interns: &Interns) -> RunResult<String> {
     match value {
         Value::InternString(string_id) => Ok(interns.get_str(*string_id).to_owned()),
-        Value::Ref(_, heap_id) => match heap.get(*heap_id) {
+        Value::Ref(HeapKind::Str, heap_id) => match heap.get(*heap_id) {
             HeapData::Str(s) => Ok(s.as_str().to_owned()),
             _ => Err(ExcType::type_error(format!("{method_name}: argument must be str"))),
         },
@@ -219,7 +219,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Date> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::Date(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Date(other)) = other.read_heap(vm, &[HeapKind::Date]) else {
             return Ok(None);
         };
         Ok(Some(*self.get(vm.heap) == *other.get(vm.heap)))
@@ -251,14 +251,14 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Date> {
     }
 
     fn py_add_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        let Some(HeapReadOutput::TimeDelta(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::TimeDelta(other)) = other.read_heap(vm, &[HeapKind::TimeDelta]) else {
             return Ok(None);
         };
         Ok(py_add(*self.get(vm.heap), *other.get(vm.heap), vm.heap))
     }
 
     fn py_sub_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        match other.read_heap(vm) {
+        match other.read_heap(vm, &[HeapKind::Date, HeapKind::TimeDelta]) {
             Some(HeapReadOutput::Date(other)) => Ok(py_sub_date(*self.get(vm.heap), *other.get(vm.heap), vm.heap)),
             Some(HeapReadOutput::TimeDelta(other)) => {
                 Ok(py_sub_timedelta(*self.get(vm.heap), *other.get(vm.heap), vm.heap))

@@ -219,7 +219,7 @@ fn validate_ignored_open_kwarg(name: &str, value: &Value, vm: &VM<'_>) -> Result
             } else if value.is_str(vm.heap) {
                 let s = match value {
                     Value::InternString(id) => vm.interns.get_str(*id),
-                    Value::Ref(_, id) => match vm.heap.get(*id) {
+                    Value::Ref(HeapKind::Str, id) => match vm.heap.get(*id) {
                         HeapData::Str(s) => s.as_str(),
                         _ => "",
                     },

@@ -188,7 +188,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, DictKeysView> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        match other.read_heap(vm) {
+        match other.read_heap(vm, &[HeapKind::DictKeysView, HeapKind::Set, HeapKind::FrozenSet]) {
             Some(HeapReadOutput::DictKeysView(other)) => {
                 if self.get(vm.heap).dict_id == other.get(vm.heap).dict_id {
                     return Ok(Some(true));
@@ -470,7 +470,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, DictItemsView> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        match other.read_heap(vm) {
+        match other.read_heap(vm, &[HeapKind::DictItemsView, HeapKind::Set, HeapKind::FrozenSet]) {
             Some(HeapReadOutput::DictItemsView(other)) => {
                 if self.get(vm.heap).dict_id == other.get(vm.heap).dict_id {
                     return Ok(Some(true));
@@ -863,7 +863,7 @@ fn sets_are_disjoint(left: &Set, right: &Set, vm: &mut VM<'_>) -> RunResult<bool
 /// also accepts namedtuples of length two so tuple-like runtime values behave
 /// sensibly even though namedtuples are not modeled as a true tuple subclass.
 pub(crate) fn cloned_items_view_candidate(item: &Value, heap: &impl ContainsHeap) -> Option<(Value, Value)> {
-    let Value::Ref(_, heap_id) = item else {
+    let Value::Ref(HeapKind::Tuple | HeapKind::NamedTuple, heap_id) = item else {
         return None;
     };
 

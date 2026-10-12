@@ -59,7 +59,7 @@ impl<'h> VM<'h> {
         );
 
         match awaitable {
-            Value::Ref(_, heap_id) => {
+            Value::Ref(HeapKind::Coroutine | HeapKind::GatherFuture | HeapKind::ExternalFuture, heap_id) => {
                 let heap_id = *heap_id;
                 let poll = match this.heap.read(heap_id) {
                     HeapReadOutput::Coroutine(coro) => return this.await_coroutine(coro),

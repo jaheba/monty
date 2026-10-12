@@ -213,7 +213,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Slice> {
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
-        let Some(HeapReadOutput::Slice(other)) = other.read_heap(vm) else {
+        let Some(HeapReadOutput::Slice(other)) = other.read_heap(vm, &[HeapKind::Slice]) else {
             return Ok(None);
         };
         let a = self.get(vm.heap);
