@@ -1170,6 +1170,16 @@ fn large_allocations_are_rejected_before_the_hard_limit() {
         ("x = [None] * 40_000\nx += x", 1_962_551),
         ("t = (None,) * 40_000\nt + t", 1_322_547),
         ("x = [None] * 40_000\nx.copy()", 1_322_293),
+        // Numeric copies and promotions preflight before changing the live list.
+        ("x = [1] * 45_000\nx + x", 1_122_600),
+        ("x = [1] * 65_000\nx.copy()", 1_082_293),
+        ("x = [1] * 65_000\nx[:]", 1_082_293),
+        ("x = [1] * 60_000\nx.append(None)", 1_482_600),
+        ("x = [1] * 60_000\nx.insert(0, None)", 1_482_600),
+        ("x = [1] * 60_000\nx[0] = None", 1_482_600),
+        ("x = [1] * 60_000\nx.extend([None])", 1_482_600),
+        ("x = [1] * 60_000\nx += [None]", 1_482_600),
+        ("x = [1] * 60_000\nx.sort()", 1_482_600),
         // `dict | dict` snapshots the left pairs and builds the merged dict
         // while that snapshot is live, so both are preflighted together.
         ("d = dict.fromkeys(range(12_000))\nd | {}", 1_805_423),
@@ -1185,11 +1195,11 @@ fn large_allocations_are_rejected_before_the_hard_limit() {
         // Reading `p.args` / `p.keywords` rebuilds them in full, so both are
         // preflighted like any other bulk container copy.
         (
-            "import functools\ndef f(*a):\n    return 0\np = functools.partial(f, *range(20_000))\njunk = [0] * 40_000\np.args",
+            "import functools\ndef f(*a):\n    return 0\np = functools.partial(f, *range(20_000))\njunk = [None] * 40_000\np.args",
             1_326_311,
         ),
         (
-            "import functools\ndef f(**k):\n    return 0\np = functools.partial(f, **{str(i): i for i in range(6_000)})\njunk = [0] * 30_000\np.keywords",
+            "import functools\ndef f(**k):\n    return 0\np = functools.partial(f, **{str(i): i for i in range(6_000)})\njunk = [None] * 30_000\np.keywords",
             1_055_460,
         ),
         // `deque.extend` preflights exact-hint iterators up front.
@@ -1699,9 +1709,12 @@ fn cycles_export_one_placeholder_each() {
 fn an_export_that_outgrows_the_hard_limit_exits_with_the_oom_code() {
     let mut child = ChildProc::spawn_stderr_piped();
     child.create_repl_with(configure_with_max_memory(8 * 1024 * 1024));
-    // 100,000 ints: 2 MB in the heap, 7.2 MB as nodes plus the frame, past
-    // the 4 MiB headroom; `len(...)` of the same list completes
-    child.feed_expecting_death("list(range(100_000))");
+    // Compact integers fit in the heap; their exported nodes exceed the hard ceiling.
+    assert_eq!(
+        child.feed_complete("len(list(range(200_000)))"),
+        MontyObject::int(200_000)
+    );
+    child.feed_expecting_death("list(range(200_000))");
     let (status, stderr) = child.reap_with_stderr();
     assert_eq!(status.code(), Some(monty_types::OOM_EXIT_CODE), "got {status:?}");
     assert!(stderr.contains("exceeds the memory limit"), "{stderr}");
@@ -1780,7 +1793,7 @@ fn reading_partial_args_cannot_kill_the_worker() {
     let build = "import functools\n\
                  def f(*a):\n    return 0\n\
                  p = functools.partial(f, *range(1_000_000))\n\
-                 junk = [0] * 2_800_000";
+                 junk = [None] * 2_800_000";
     assert_eq!(child.feed_complete(build), MontyObject::none());
 
     let (_, event) = child.feed("p.args");
@@ -2956,6 +2969,34 @@ fn slice_assignment_rejects_large_replacement_without_killing_worker() {
         let (_, event) = child.feed(code);
         assert_eq!(expect_error(event).exc_type, "MemoryError", "{code}");
         assert_eq!(child.feed_complete("1 + 1"), MontyObject::int(2));
+        child.shutdown();
+    }
+}
+
+#[test]
+fn rejected_numeric_promotions_preserve_the_list_and_iterator() {
+    for operation in [
+        "xs.append(None)",
+        "xs.append(xs)",
+        "xs.insert(0, None)",
+        "xs[0] = None",
+        "xs.extend([{}])",
+        "xs += [None]",
+        "xs.sort()",
+    ] {
+        let mut child = ChildProc::spawn();
+        child.create_repl_with(configure_with_max_memory(1024 * 1024));
+        assert_eq!(
+            child.feed_complete("xs = [1] * 60_000\nit = iter(xs)\nnext(it)"),
+            MontyObject::int(1)
+        );
+        let (_, event) = child.feed(operation);
+        assert_eq!(expect_error(event).exc_type, "MemoryError", "{operation}");
+        assert_eq!(
+            child.feed_complete("len(xs) == 60_000 and sum(xs) == 60_000 and next(it) == 1"),
+            MontyObject::bool(true),
+            "{operation}",
+        );
         child.shutdown();
     }
 }

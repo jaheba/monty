@@ -259,11 +259,11 @@ fn parse_separators_value(value: Value, vm: &mut VM<'_>) -> RunResult<Option<(St
                 )
             }
             HeapReadOutput::List(list) => {
-                let items = list.get(vm.heap).as_slice();
-                check_separators_length(items.len())?;
+                let list = list.get(vm.heap);
+                check_separators_length(list.len())?;
                 (
-                    json_separator_to_string(&items[0], "item_separator", vm)?,
-                    json_separator_to_string(&items[1], "key_separator", vm)?,
+                    json_separator_to_string(&list.get(0).expect("length checked"), "item_separator", vm)?,
+                    json_separator_to_string(&list.get(1).expect("length checked"), "key_separator", vm)?,
                 )
             }
             _ => {

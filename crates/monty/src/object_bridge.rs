@@ -258,7 +258,6 @@ impl GraphExporter {
                 // Snapshot before recursing: a nested `__repr__` may mutate this list.
                 let children: Vec<Value> = list
                     .get(vm.heap)
-                    .as_slice()
                     .iter()
                     .map(|item| item.clone_with_heap(vm.heap))
                     .collect();

@@ -1,5 +1,7 @@
 //! Collection building and unpacking helpers for the VM.
 
+use std::mem;
+
 use super::VM;
 use crate::{
     defer_drop, defer_drop_mut,
@@ -138,20 +140,12 @@ impl VM<'_> {
             let copied_items: Vec<Value> = collect_iterable(iterable, this)?;
             defer_drop_mut!(copied_items, this);
 
-            // Check if any copied items are refs (for updating contains_refs)
-            let has_refs = copied_items.iter().any(|v| matches!(v, Value::Ref(_)));
-
             // Extend the list
             if let Value::Ref(id) = list_ref {
                 let HeapReadOutput::List(mut list) = this.heap.read(*id) else {
                     panic!("list_extend: expected List on heap");
                 };
-                let list = list.get_mut(this.heap);
-                // Update contains_refs before extending
-                if has_refs {
-                    list.set_contains_refs();
-                }
-                list.as_vec_mut().append(copied_items);
+                list.extend_items(this, mem::take(copied_items))?;
             }
         }
 
@@ -176,7 +170,7 @@ impl VM<'_> {
         let HeapData::List(list) = this.heap.get(*id) else {
             return Err(RunError::internal("ListToTuple: expected list"));
         };
-        let items = list.as_slice().iter().map(|v| v.clone_with_heap(this.heap)).collect();
+        let items = list.iter().map(|v| v.clone_with_heap(this.heap)).collect();
         let value = allocate_tuple(items, this.heap);
         this.push(value);
         Ok(())

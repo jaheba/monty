@@ -1792,8 +1792,8 @@ fn for_each_child_id<F: FnMut(HeapId)>(data: &HeapData, mut on_child: F) {
             if !list.contains_refs() {
                 return;
             }
-            for value in list.as_slice() {
-                if let Value::Ref(id) = value {
+            for value in list.iter() {
+                if let Value::Ref(id) = &*value {
                     on_child(*id);
                 }
             }
@@ -2302,8 +2302,7 @@ mod tests {
         let data = unsafe { &mut *entry.data.0.get() };
         match data {
             HeapData::List(list) => {
-                list.set_contains_refs();
-                list.as_vec_mut().push(Value::Ref(id));
+                list.extend_owned(vec![Value::Ref(id)]);
             }
             _ => unreachable!(),
         }
@@ -2339,10 +2338,7 @@ mod tests {
             let data = unsafe { &mut *entry.data.0.get() };
             match data {
                 HeapData::List(list) => {
-                    list.set_contains_refs();
-                    for r in refs {
-                        list.as_vec_mut().push(Value::Ref(*r));
-                    }
+                    list.extend_owned(refs.iter().map(|r| Value::Ref(*r)).collect());
                 }
                 _ => unreachable!(),
             }
@@ -2458,7 +2454,7 @@ mod tests {
             heap.dec_ref(id);
             // Read through the now-invalidated `SharedReadWrite` raw pointer.
             // Miri's aliasing model fails here.
-            let _ = list.get(heap).as_slice().len();
+            let _ = list.get(heap).len();
         });
     }
 
@@ -2653,8 +2649,7 @@ mod tests {
                 unreachable!("just allocated a list")
             };
             let l = l.get_mut(reader);
-            l.set_contains_refs();
-            l.as_vec_mut().push(Value::Ref(iter));
+            l.extend_owned(vec![Value::Ref(iter)]);
         });
         // list.rc = 2, iter.rc = 2, sentinel.rc = 2.
 
