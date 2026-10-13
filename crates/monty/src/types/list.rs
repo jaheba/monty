@@ -138,6 +138,8 @@ impl<'h> HeapRead<'h, List> {
     fn setitem_slice(&mut self, slice: &super::Slice, value: &Value, vm: &mut VM<'h>) -> RunResult<()> {
         // Reject a zero step before executing the replacement iterator.
         slice.indices(self.get(vm.heap).len())?;
+
+        // Collect replacements before mutation to support self-assignment.
         let items = match value.read_heap(vm) {
             Some(HeapReadOutput::List(list)) => list.clone_all_items(vm)?,
             Some(HeapReadOutput::Tuple(tuple)) => tuple.cloned_items(vm)?,
@@ -165,6 +167,7 @@ impl<'h> HeapRead<'h, List> {
             0
         };
 
+        // Only step 1 permits resizing; other steps require one value per selected position.
         if step != 1 && items.len() != count {
             return Err(ExcType::value_error(format!(
                 "attempt to assign sequence of size {} to extended slice of size {count}",
