@@ -2236,7 +2236,37 @@ mod tests {
         heap::HeapReader,
         run::{Program, SessionTables},
         types::LongInt,
+        types::str::allocate_string_no_interning,
     };
+
+    #[test]
+    fn value_size_is_16_bytes() {
+        assert_eq!(mem::size_of::<Value>(), 16);
+    }
+
+    #[test]
+    fn inline_string_capacity_is_seven_utf8_bytes() {
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        for text in ["1234567", "ééabc"] {
+            for value in [
+                allocate_string(text.to_owned(), &heap),
+                allocate_string_no_interning(text.to_owned(), &heap),
+            ] {
+                assert!(matches!(value, Value::InlineString { .. }));
+                assert_eq!(value.inline_str(), Some(text));
+                value.drop_with(&mut heap);
+            }
+        }
+        for text in ["12345678", "ééabcd"] {
+            for value in [
+                allocate_string(text.to_owned(), &heap),
+                allocate_string_no_interning(text.to_owned(), &heap),
+            ] {
+                assert!(matches!(value, Value::Ref(_)));
+                value.drop_with(&mut heap);
+            }
+        }
+    }
 
     /// Creates a heap and directly allocates a LongInt with the given BigInt value.
     ///
@@ -2257,6 +2287,30 @@ mod tests {
         let name = value.as_either_str(&heap).unwrap();
         assert!(matches!(name, EitherStr::Inline { .. }));
         assert_eq!(name.as_str(&Interns::default()), "short");
+    }
+
+    #[test]
+    fn inline_attribute_names_resolve_without_inserting() {
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        let interns = Interns::default();
+        let start = interns.intern_static(StaticStrings::Start);
+        let value = allocate_string("start".to_owned(), &heap);
+        let name = value.as_either_str(&heap).unwrap();
+        assert!(name.matches(start, &interns));
+        assert_eq!(name.string_id(), None);
+        assert_eq!(name.static_string(&interns), interns.static_string(start));
+        assert!(matches!(name.to_cow(&interns), Cow::Owned(text) if text == "start"));
+        assert!(matches!(name.resolve_interned(&interns), EitherStr::Interned(id) if id == start));
+        value.drop_with(&mut heap);
+
+        let value = allocate_string("zzq".to_owned(), &heap);
+        let name = value.as_either_str(&heap).unwrap().resolve_interned(&interns);
+        assert!(matches!(name, EitherStr::Inline { .. }));
+        assert!(!name.matches(start, &interns));
+        assert_eq!(name.static_string(&interns), None);
+        assert_eq!(name.into_string(&interns), "zzq");
+        assert!(interns.get_string_id_by_name("zzq").is_none());
+        value.drop_with(&mut heap);
     }
 
     /// Tests that `as_index()` correctly handles a LongInt containing an i64-fitting value.
