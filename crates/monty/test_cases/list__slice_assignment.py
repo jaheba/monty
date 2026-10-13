@@ -41,21 +41,28 @@ try:
     a[:] = 42
     assert False, 'expected TypeError'
 except TypeError as exc:
-    assert str(exc) == "must assign iterable to extended slice"
+    assert str(exc) == 'must assign iterable to extended slice'
+
 
 class Replacement:
     def __iter__(self):
         a[:] = [0, 1]
         return iter([9])
+
+
 a = [0, 1, 2, 3]
 a[1:] = Replacement()
 assert a == [0, 9]
 
+
 class Broken:
     def __iter__(self):
         return self
+
     def __next__(self):
         raise ValueError('broken')
+
+
 a = [[1], [2]]
 try:
     a[:] = Broken()
@@ -84,20 +91,26 @@ assert a == [[1], [3], [4], [5]]
 a[-100:-99] = [[0]]
 assert a == [[0], [1], [3], [4], [5]]
 
+
 class TypeErrorIterator:
     def __iter__(self):
         return self
+
     def __next__(self):
         raise TypeError('from next')
+
+
 try:
     a[:] = TypeErrorIterator()
     assert False, 'expected TypeError'
 except TypeError as exc:
     assert str(exc) == 'from next'
 
+
 class BrokenIterable:
     def __iter__(self):
         raise error
+
 
 error = ValueError('from iter')
 a = [[1], [2]]
