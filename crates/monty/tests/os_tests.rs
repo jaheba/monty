@@ -2104,6 +2104,56 @@ fn path_unlink_suppresses_only_missing_files_when_requested() {
 }
 
 #[test]
+fn path_rename_and_replace_reject_invalid_targets() {
+    for method in ["rename", "replace"] {
+        for target in ["None", "42", "[]", "b'after'"] {
+            let code = format!("from pathlib import Path\nPath('/before').{method}(target={target})");
+            let error = host_runner(&code)
+                .start(vec![], ResourceTracker::default(), PrintWriter::Stdout)
+                .unwrap_err();
+            assert_eq!(error.exc_type(), ExcType::TypeError);
+            assert_eq!(
+                error.message(),
+                Some(format!("Path.{method}() argument 'target' must be str or Path").as_str())
+            );
+        }
+    }
+}
+
+#[test]
+fn path_and_os_mkdir_validate_mode_types() {
+    for expression in ["Path('/dir').mkdir", "os.mkdir"] {
+        let prefix = "from pathlib import Path\nimport os\n";
+        let path_arg = if expression == "os.mkdir" { "'/dir', " } else { "" };
+        for mode in ["True", "False"] {
+            let code = format!("{prefix}{expression}({path_arg}mode={mode})");
+            assert_eq!(run_to_oscall(&code).0, "Path.mkdir");
+        }
+        for mode in ["None", "'700'", "1.5", "[]"] {
+            let code = format!("{prefix}{expression}({path_arg}mode={mode})");
+            let error = host_runner(&code)
+                .start(vec![], ResourceTracker::default(), PrintWriter::Stdout)
+                .unwrap_err();
+            assert_eq!(error.exc_type(), ExcType::TypeError);
+            assert!(error.message().unwrap().contains("cannot be interpreted as an integer"));
+        }
+        for (body, expected) in [
+            ("return 2**40", ExcType::OverflowError),
+            ("return '700'", ExcType::TypeError),
+            ("raise ValueError('invalid mode')", ExcType::ValueError),
+        ] {
+            let code = format!(
+                "{prefix}class Mode:\n    def __index__(self):\n        {body}\n{expression}({path_arg}mode=Mode())"
+            );
+            let error = host_runner(&code)
+                .start(vec![], ResourceTracker::default(), PrintWriter::Stdout)
+                .unwrap_err();
+            assert_eq!(error.exc_type(), expected);
+        }
+    }
+}
+
+#[test]
 fn path_rename_host_errors_propagate() {
     for method in ["rename", "replace"] {
         let code = format!("from pathlib import Path\nPath('/before').{method}('/after')");
@@ -2238,6 +2288,10 @@ fn path_and_os_mkdir_accept_index_modes() {
 #[test]
 fn mutation_effects_name_the_python_operation() {
     for (code, operation) in [
+        (
+            "from pathlib import Path\nPath('/file').unlink(missing_ok=True)",
+            "Path.unlink",
+        ),
         ("import os\nos.rename('/before', '/after')", "os.rename"),
         ("import os\nos.replace('/before', '/after')", "os.replace"),
         (
