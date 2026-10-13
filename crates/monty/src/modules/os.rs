@@ -547,7 +547,7 @@ fn rename(vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult> {
         src_dir_fd,
         dst_dir_fd,
     } = RenameArgs::from_args(args, vm)?;
-    rename_like(src, dst, src_dir_fd, dst_dir_fd, "rename", vm)
+    rename_like(src, dst, src_dir_fd, dst_dir_fd, false, vm)
 }
 
 /// `os.replace(src, dst, *, src_dir_fd=None, dst_dir_fd=None)` argument shape.
@@ -571,7 +571,7 @@ fn replace(vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult> {
         src_dir_fd,
         dst_dir_fd,
     } = ReplaceArgs::from_args(args, vm)?;
-    rename_like(src, dst, src_dir_fd, dst_dir_fd, "replace", vm)
+    rename_like(src, dst, src_dir_fd, dst_dir_fd, true, vm)
 }
 
 /// Shared body of [`rename`] / [`replace`]: validate both endpoints and the
@@ -582,9 +582,10 @@ fn rename_like(
     dst: Value,
     src_dir_fd: Value,
     dst_dir_fd: Value,
-    func: &'static str,
+    replace: bool,
     vm: &mut VM<'_>,
 ) -> RunResult<CallResult> {
+    let func = if replace { "replace" } else { "rename" };
     defer_drop!(src, vm);
     defer_drop!(dst, vm);
     defer_drop!(src_dir_fd, vm);
@@ -598,10 +599,10 @@ fn rename_like(
     } else {
         Ok(CallResult::OsCallWithEffect {
             call: OsFunctionCall::Rename(RenameCallArgs { src, dst }),
-            effect: match func {
-                "rename" => PreConversionEffect::RenameOs,
-                "replace" => PreConversionEffect::ReplaceOs,
-                _ => unreachable!("expected rename or replace"),
+            effect: if replace {
+                PreConversionEffect::ReplaceOs
+            } else {
+                PreConversionEffect::RenameOs
             }
             .into(),
         })

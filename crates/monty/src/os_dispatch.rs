@@ -634,7 +634,7 @@ pub(crate) fn build_path_os_call(
         }
         StaticStrings::Mkdir => OsFunctionCall::Mkdir(extract_mkdir_args(path, args, vm)?),
         StaticStrings::Rename | StaticStrings::Replace => {
-            OsFunctionCall::Rename(extract_rename_args(path, args, method, vm)?)
+            OsFunctionCall::Rename(extract_rename_args(path, args, method == StaticStrings::Replace, vm)?)
         }
         _ => {
             // Unreachable in practice — callers gate on `is_path_os_method`.
@@ -757,22 +757,13 @@ struct PathReplaceArgs {
     target: Value,
 }
 
-fn extract_rename_args(
-    src: MontyPath,
-    args: ArgValues,
-    method: StaticStrings,
-    vm: &mut VM<'_>,
-) -> RunResult<RenameCallArgs> {
-    let (receiver, target) = match method {
-        StaticStrings::Rename => {
-            let PathRenameArgs { receiver, target } = PathRenameArgs::from_args(args.prepend(Value::None), vm)?;
-            (receiver, target)
-        }
-        StaticStrings::Replace => {
-            let PathReplaceArgs { receiver, target } = PathReplaceArgs::from_args(args.prepend(Value::None), vm)?;
-            (receiver, target)
-        }
-        _ => unreachable!("expected rename or replace"),
+fn extract_rename_args(src: MontyPath, args: ArgValues, replace: bool, vm: &mut VM<'_>) -> RunResult<RenameCallArgs> {
+    let (receiver, target) = if replace {
+        let PathReplaceArgs { receiver, target } = PathReplaceArgs::from_args(args.prepend(Value::None), vm)?;
+        (receiver, target)
+    } else {
+        let PathRenameArgs { receiver, target } = PathRenameArgs::from_args(args.prepend(Value::None), vm)?;
+        (receiver, target)
     };
     receiver.drop_with(vm);
     defer_drop!(target, vm);
@@ -783,11 +774,7 @@ fn extract_rename_args(
         }),
         None => Err(ExcType::type_error(format!(
             "Path.{}() argument 'target' must be str or Path",
-            if method == StaticStrings::Replace {
-                "replace"
-            } else {
-                "rename"
-            }
+            if replace { "replace" } else { "rename" }
         ))),
     }
 }
