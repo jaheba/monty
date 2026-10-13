@@ -132,6 +132,9 @@ impl List {
 }
 
 impl<'h> HeapRead<'h, List> {
+    /// Collects replacements before assignment to support self-assignment and avoid
+    /// partial writes on iterator failure. Bounds are normalized after collection
+    /// because the iterator may have resized the target.
     fn setitem_slice(&mut self, slice: &super::Slice, value: &Value, vm: &mut VM<'h>) -> RunResult<()> {
         // Reject a zero step before executing the replacement iterator.
         slice.indices(self.get(vm.heap).len())?;

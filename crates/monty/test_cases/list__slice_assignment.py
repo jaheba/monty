@@ -12,13 +12,13 @@ assert a == [3, 4, 'x', 'y', 3, 2, 1, 0, 0]
 a[:] = []
 assert a == []
 
-for container in [list, tuple]:
+for container in [list, tuple, iter]:
     for step in [1, 2, -1, -2, 10**30, -(10**30)]:
         a = [[0], [1], [2], [3], [4]]
         expected = a[:]
         indices = list(range(5))[::step]
-        replacement = container([[i + 10] for i in indices])
-        a[::step] = replacement
+        replacement = [[i + 10] for i in indices]
+        a[::step] = container(replacement)
         for i, item in zip(indices, replacement):
             expected[i] = item
         assert a == expected
@@ -27,19 +27,19 @@ for step in [2, -1]:
     a = [[1], [2], [3]]
     try:
         a[::step] = [[9]]
-        assert False
+        assert False, 'expected ValueError'
     except ValueError:
         pass
     assert a == [[1], [2], [3]]
 
 try:
     a[::0] = []
-    assert False
+    assert False, 'expected ValueError'
 except ValueError:
     pass
 try:
     a[:] = 42
-    assert False
+    assert False, 'expected TypeError'
 except TypeError as exc:
     assert str(exc) == "must assign iterable to extended slice"
 
@@ -59,7 +59,7 @@ class Broken:
 a = [[1], [2]]
 try:
     a[:] = Broken()
-    assert False
+    assert False, 'expected ValueError'
 except ValueError:
     pass
 assert a == [[1], [2]]
@@ -91,6 +91,27 @@ class TypeErrorIterator:
         raise TypeError('from next')
 try:
     a[:] = TypeErrorIterator()
-    assert False
+    assert False, 'expected TypeError'
 except TypeError as exc:
     assert str(exc) == 'from next'
+
+class BrokenIterable:
+    def __iter__(self):
+        raise error
+
+error = ValueError('from iter')
+a = [[1], [2]]
+try:
+    a[:] = BrokenIterable()
+    assert False, 'expected ValueError'
+except ValueError as exc:
+    assert str(exc) == 'from iter'
+assert a == [[1], [2]]
+
+error = TypeError('from iter')
+try:
+    a[:] = BrokenIterable()
+    assert False, 'expected TypeError'
+except TypeError as exc:
+    assert str(exc) == 'must assign iterable to extended slice'
+assert a == [[1], [2]]
