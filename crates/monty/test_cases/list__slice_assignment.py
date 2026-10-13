@@ -12,15 +12,16 @@ assert a == [3, 4, 'x', 'y', 3, 2, 1, 0, 0]
 a[:] = []
 assert a == []
 
-for step in [1, 2, -1, -2, 10**30, -(10**30)]:
-    a = [[0], [1], [2], [3], [4]]
-    expected = a[:]
-    indices = list(range(5))[::step]
-    replacement = [[i + 10] for i in indices]
-    a[::step] = replacement
-    for i, item in zip(indices, replacement):
-        expected[i] = item
-    assert a == expected
+for container in [list, tuple]:
+    for step in [1, 2, -1, -2, 10**30, -(10**30)]:
+        a = [[0], [1], [2], [3], [4]]
+        expected = a[:]
+        indices = list(range(5))[::step]
+        replacement = container([[i + 10] for i in indices])
+        a[::step] = replacement
+        for i, item in zip(indices, replacement):
+            expected[i] = item
+        assert a == expected
 
 for step in [2, -1]:
     a = [[1], [2], [3]]

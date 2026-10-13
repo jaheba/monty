@@ -135,15 +135,22 @@ impl<'h> HeapRead<'h, List> {
     fn setitem_slice(&mut self, slice: &super::Slice, value: &Value, vm: &mut VM<'h>) -> RunResult<()> {
         // Reject a zero step before executing the replacement iterator.
         slice.indices(self.get(vm.heap).len())?;
-        let iterator = value.py_iter(vm).map_err(|error| {
-            if matches!(&error, RunError::Exc(raise) if raise.exc.exc_type() == ExcType::TypeError) {
-                ExcType::type_error("must assign iterable to extended slice")
-            } else {
-                error
+        let items = match value.read_heap(vm) {
+            Some(HeapReadOutput::List(list)) => list.clone_all_items(vm)?,
+            Some(HeapReadOutput::Tuple(tuple)) => tuple.cloned_items(vm)?,
+            _ => {
+                let iterator = value.py_iter(vm).map_err(|error| {
+                    if matches!(&error, RunError::Exc(raise) if raise.exc.exc_type() == ExcType::TypeError) {
+                        ExcType::type_error("must assign iterable to extended slice")
+                    } else {
+                        error
+                    }
+                })?;
+                collect_python_iterator(iterator, vm)?
             }
-        })?;
-        let items: Vec<Value> = collect_python_iterator(iterator, vm)?;
+        };
         defer_drop_mut!(items, vm);
+
         // Iteration may have changed the target list's length.
         let (start, stop, step) = slice.indices(self.get(vm.heap).len())?;
         let count = if step > 0 && start < stop {
@@ -154,34 +161,43 @@ impl<'h> HeapRead<'h, List> {
         } else {
             0
         };
+
         if step != 1 && items.len() != count {
             return Err(ExcType::value_error(format!(
                 "attempt to assign sequence of size {} to extended slice of size {count}",
                 items.len()
             )));
         }
+
         if items.len() == count {
             let list = self.get_mut(vm.heap);
             list.contains_refs |= items.iter().any(|item| matches!(item, Value::Ref(_)));
-            let mut index = i128::from(start);
-            for item in items.iter_mut() {
-                mem::swap(
-                    &mut list.items[usize::try_from(index).expect("slice index is within the list")],
-                    item,
-                );
-                index += i128::from(step);
+            if step == 1 {
+                let start = usize::try_from(start).expect("positive slice start is non-negative");
+                list.items[start..start + count].swap_with_slice(items);
+            } else {
+                let mut index = i128::from(start);
+                for item in items.iter_mut() {
+                    mem::swap(
+                        &mut list.items[usize::try_from(index).expect("slice index is within the list")],
+                        item,
+                    );
+                    index += i128::from(step);
+                }
             }
         } else {
             let growth = items.len().saturating_sub(count);
             vm.heap
                 .tracker
                 .check_allocation(growth.saturating_add(count).saturating_mul(VALUE_SIZE))?;
+
             let list = self.get_mut(vm.heap);
             list.contains_refs |= items.iter().any(|item| matches!(item, Value::Ref(_)));
             let start = usize::try_from(start).expect("positive slice start is non-negative");
             let removed: Vec<Value> = list.items.splice(start..start + count, items.drain(..)).collect();
             removed.drop_with(vm);
         }
+
         Ok(())
     }
 
