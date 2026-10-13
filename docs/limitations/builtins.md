@@ -18,6 +18,9 @@ Python.
 `set`, `slice`, `str`, `tuple`. Exception classes (`ValueError`,
 `TypeError`, etc.) are also names in the builtin namespace.
 
+Lists support slice assignment from iterables, including resizing with `items[start:stop] = values`.
+Stepped assignments such as `items[::2] = values` require one replacement per selected element.
+
 ## Builtins that are NOT implemented
 
 These raise `NameError`:

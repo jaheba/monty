@@ -2835,3 +2835,15 @@ fn drop_stdin(_child: &mut ChildProc) {
     // ChildProc owns ChildStdin; nothing to do — the test just stops
     // writing. Present for readability at call sites.
 }
+
+#[test]
+fn slice_assignment_rejects_large_replacement_without_killing_worker() {
+    for code in ["a = []\na[:] = range(1_000_000)", "a = [None] * 40_000\na[:0] = a"] {
+        let mut child = ChildProc::spawn();
+        child.create_repl_with(configure_with_max_memory(1024 * 1024));
+        let (_, event) = child.feed(code);
+        assert_eq!(expect_error(event).exc_type, "MemoryError", "{code}");
+        assert_eq!(child.feed_complete("1 + 1"), MontyObject::int(2));
+        child.shutdown();
+    }
+}
