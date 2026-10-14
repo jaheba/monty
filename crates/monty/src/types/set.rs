@@ -319,24 +319,18 @@ impl<'h> HeapRead<'h, SetStorage> {
     }
 
     /// Set ordering tests containment; overlapping sets can satisfy neither <= nor >=.
-    fn compare(&self, other: &Self, op: CmpOperator, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
+    fn compare_storage(&self, other: &Self, op: CmpOperator, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
         let lhs_len = self.get(vm.heap).len();
         let rhs_len = other.get(vm.heap).len();
 
         // Strict containment requires different lengths; non-strict containment includes equality.
-        let (subset, superset) = match op {
-            CmpOperator::Lt => (lhs_len < rhs_len, false),
-            CmpOperator::LtE => (lhs_len <= rhs_len, false),
-            CmpOperator::Gt => (false, lhs_len > rhs_len),
-            CmpOperator::GtE => (false, lhs_len >= rhs_len),
+        let (smaller, larger) = match op {
+            CmpOperator::Lt if lhs_len < rhs_len => (self, other),
+            CmpOperator::LtE if lhs_len <= rhs_len => (self, other),
+            CmpOperator::Gt if lhs_len > rhs_len => (other, self),
+            CmpOperator::GtE if lhs_len >= rhs_len => (other, self),
+            CmpOperator::Lt | CmpOperator::LtE | CmpOperator::Gt | CmpOperator::GtE => return Ok(Some(false)),
             _ => return Ok(None),
-        };
-        let (smaller, larger) = if subset {
-            (self, other)
-        } else if superset {
-            (other, self)
-        } else {
-            return Ok(Some(false));
         };
 
         // Reuse the stored hashes so comparisons never call a set member's __hash__ again.
@@ -354,8 +348,8 @@ impl<'h> HeapRead<'h, SetStorage> {
     /// Other iterables (including dict_values) are accepted by issubset/issuperset, but not by these operators.
     fn compare_operand(&self, other: &Value, op: CmpOperator, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
         match other.read_heap(vm) {
-            Some(HeapReadOutput::Set(other)) => self.compare(&other.storage(), op, vm),
-            Some(HeapReadOutput::FrozenSet(other)) => self.compare(&other.storage(), op, vm),
+            Some(HeapReadOutput::Set(other)) => self.compare_storage(&other.storage(), op, vm),
+            Some(HeapReadOutput::FrozenSet(other)) => self.compare_storage(&other.storage(), op, vm),
             Some(view @ (HeapReadOutput::DictKeysView(_) | HeapReadOutput::DictItemsView(_))) => {
                 let lhs_len = self.get(vm.heap).len();
                 let rhs_len = view.py_len(vm).expect("dict views have a length");
@@ -387,7 +381,7 @@ impl<'h> HeapRead<'h, SetStorage> {
                     return Ok(None);
                 };
                 defer_drop!(storage, vm);
-                self.compare(&vm.heap.protect(storage), op, vm)
+                self.compare_storage(&vm.heap.protect(storage), op, vm)
             }
             _ => Ok(None),
         }
