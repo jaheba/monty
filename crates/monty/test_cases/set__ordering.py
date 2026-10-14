@@ -80,6 +80,13 @@ for collection in (set, frozenset):
     assert {1: 'a'}.keys() <= a
     assert {1: 'a', 2: 'b'}.keys() > a
     assert {}.keys() < a
+
+    a = collection([(1, 'a')])
+    assert {1: 'a'}.items() <= a
+    assert {}.items() < a
+    assert {1: 'a'}.items() >= a
+    assert {1: 'a', 2: 'b'}.items() > a
+
     items = {1: []}.items()
     assert not collection([(1, 2)]) <= items
     assert not collection([(1, 2)]) < items
