@@ -72,6 +72,9 @@ impl VM<'_> {
         if let Some(result) = lhs.py_cmp_op(rhs, op, self)? {
             return Ok(result);
         }
+
+        // The right operand may handle a comparison the left declines:
+        // dict_keys <= set is answered by set >= dict_keys.
         let reflected_op = match op {
             CmpOperator::Lt => CmpOperator::Gt,
             CmpOperator::LtE => CmpOperator::GtE,
@@ -82,6 +85,7 @@ impl VM<'_> {
         if let Some(result) = rhs.py_cmp_op(lhs, reflected_op, self)? {
             return Ok(result);
         }
+
         match lhs.py_cmp(rhs, self)? {
             CmpOrder::Ordered(ordering) => Ok(match op {
                 CmpOperator::Lt => ordering.is_lt(),

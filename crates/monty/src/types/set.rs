@@ -318,9 +318,12 @@ impl<'h> HeapRead<'h, SetStorage> {
         Ok(true)
     }
 
+    /// Set ordering tests containment; overlapping sets can satisfy neither <= nor >=.
     fn compare(&self, other: &Self, op: CmpOperator, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
         let lhs_len = self.get(vm.heap).len();
         let rhs_len = other.get(vm.heap).len();
+
+        // Strict containment requires different lengths; non-strict containment includes equality.
         let (subset, superset) = match op {
             CmpOperator::Lt => (lhs_len < rhs_len, false),
             CmpOperator::LtE => (lhs_len <= rhs_len, false),
@@ -335,6 +338,8 @@ impl<'h> HeapRead<'h, SetStorage> {
         } else {
             return Ok(Some(false));
         };
+
+        // Reuse the stored hashes so comparisons never call a set member's __hash__ again.
         let iter = smaller.iter(vm)?;
         defer_drop_mut!(iter, vm);
         while let Some((elem, hash)) = iter.next_entry(vm)? {
@@ -345,6 +350,8 @@ impl<'h> HeapRead<'h, SetStorage> {
         Ok(Some(true))
     }
 
+    /// Ordering accepts set, frozenset, dict_keys and dict_items, in either operand position.
+    /// Other iterables (including dict_values) are accepted by issubset/issuperset, but not by these operators.
     fn compare_operand(&self, other: &Value, op: CmpOperator, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
         match other.read_heap(vm) {
             Some(HeapReadOutput::Set(other)) => self.compare(&other.storage(), op, vm),
@@ -362,6 +369,9 @@ impl<'h> HeapRead<'h, SetStorage> {
                 if !possible {
                     return Ok(Some(false));
                 }
+
+                // Probe the view directly: an items view may contain unhashable values
+                // without preventing a set from being its subset.
                 if matches!(op, CmpOperator::Lt | CmpOperator::LtE) {
                     let iter = self.iter(vm)?;
                     defer_drop_mut!(iter, vm);
@@ -372,6 +382,7 @@ impl<'h> HeapRead<'h, SetStorage> {
                     }
                     return Ok(Some(true));
                 }
+
                 let Some(storage) = get_storage_from_set_operand(other, vm)? else {
                     return Ok(None);
                 };
