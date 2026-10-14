@@ -123,3 +123,66 @@ for collection in (set, frozenset):
             assert str(exc) == 'comparison failed'
         else:
             assert False, 'expected ValueError'
+
+
+for collection in (set, frozenset):
+    for method in ('issubset', 'issuperset'):
+        if method == 'issubset':
+            assert collection(['a']).issubset('a')
+            assert collection(['a']).issubset(['a', 'b'])
+        else:
+            assert collection(['a']).issuperset('a')
+            assert collection(['a', 'b']).issuperset(['a'])
+        for other in (1, None):
+            try:
+                if method == 'issubset':
+                    collection().issubset(other)
+                else:
+                    collection().issuperset(other)
+            except TypeError:
+                pass
+            else:
+                assert False, 'expected TypeError'
+
+    for left_dict, right_dict, expected in (
+        ({}, {}, {'<': False, '<=': True, '>': False, '>=': True}),
+        ({}, {1: 'a'}, {'<': True, '<=': True, '>': False, '>=': False}),
+        ({1: 'a'}, {}, {'<': False, '<=': False, '>': True, '>=': True}),
+        ({1: 'a'}, {1: 'a'}, {'<': False, '<=': True, '>': False, '>=': True}),
+        ({1: 'a'}, {2: 'b', 3: 'c'}, {'<': False, '<=': False, '>': False, '>=': False}),
+        ({1: 'a', 2: 'b'}, {3: 'c'}, {'<': False, '<=': False, '>': False, '>=': False}),
+    ):
+        for left_view, right_view in (
+            (left_dict.keys(), right_dict.keys()),
+            (left_dict.items(), right_dict.items()),
+        ):
+            for op, result in expected.items():
+                assert cmp(collection(left_view), op, right_view) == result
+                assert cmp(left_view, op, collection(right_view)) == result
+
+    for op in ('<=', '>='):
+        try:
+            cmp(collection([ExplodingEquality()]), op, {ExplodingEquality(): 1}.keys())
+        except ValueError as exc:
+            assert str(exc) == 'comparison failed'
+        else:
+            assert False, 'expected ValueError'
+
+    for op in ('<=', '>='):
+        try:
+            cmp({ExplodingEquality(): 1}.keys(), op, collection([ExplodingEquality()]))
+        except ValueError as exc:
+            assert str(exc) == 'comparison failed'
+        else:
+            assert False, 'expected ValueError'
+
+    # A successful subset test must not hash unrelated items in the view.
+    assert collection([(1, 'a')]) <= {1: 'a', 2: []}.items()
+    assert collection([(1, 'a')]) < {1: 'a', 2: []}.items()
+
+    try:
+        collection([(1, 'a')]) >= {2: []}.items()
+    except TypeError:
+        pass
+    else:
+        assert False, 'expected TypeError'
