@@ -72,6 +72,16 @@ impl VM<'_> {
         if let Some(result) = lhs.py_cmp_op(rhs, op, self)? {
             return Ok(result);
         }
+        let reflected_op = match op {
+            CmpOperator::Lt => CmpOperator::Gt,
+            CmpOperator::LtE => CmpOperator::GtE,
+            CmpOperator::Gt => CmpOperator::Lt,
+            CmpOperator::GtE => CmpOperator::LtE,
+            _ => unreachable!("cmp_ordering reached with a non-ordering operator"),
+        };
+        if let Some(result) = rhs.py_cmp_op(lhs, reflected_op, self)? {
+            return Ok(result);
+        }
         match lhs.py_cmp(rhs, self)? {
             CmpOrder::Ordered(ordering) => Ok(match op {
                 CmpOperator::Lt => ordering.is_lt(),

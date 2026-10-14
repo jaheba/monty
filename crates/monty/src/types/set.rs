@@ -8,6 +8,7 @@ use crate::{
     bytecode::{CallResult, ContainsVM, RecursionToken, VM},
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
+    expressions::CmpOperator,
     hash::HashValue,
     heap::{
         BorrowedHeapRead, BorrowedHeapReadMut, ContainsHeap, DropGuard, DropWithContext, Heap, HeapData, HeapId,
@@ -315,6 +316,70 @@ impl<'h> HeapRead<'h, SetStorage> {
             }
         }
         Ok(true)
+    }
+
+    fn compare(&self, other: &Self, op: CmpOperator, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
+        let lhs_len = self.get(vm.heap).len();
+        let rhs_len = other.get(vm.heap).len();
+        let (subset, superset) = match op {
+            CmpOperator::Lt => (lhs_len < rhs_len, false),
+            CmpOperator::LtE => (lhs_len <= rhs_len, false),
+            CmpOperator::Gt => (false, lhs_len > rhs_len),
+            CmpOperator::GtE => (false, lhs_len >= rhs_len),
+            _ => return Ok(None),
+        };
+        let (smaller, larger) = if subset {
+            (self, other)
+        } else if superset {
+            (other, self)
+        } else {
+            return Ok(Some(false));
+        };
+        let iter = smaller.iter(vm)?;
+        defer_drop_mut!(iter, vm);
+        while let Some((elem, hash)) = iter.next_entry(vm)? {
+            if !larger.contains_with_hash(elem, hash, vm)? {
+                return Ok(Some(false));
+            }
+        }
+        Ok(Some(true))
+    }
+
+    fn compare_operand(&self, other: &Value, op: CmpOperator, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
+        match other.read_heap(vm) {
+            Some(HeapReadOutput::Set(other)) => self.compare(&other.storage(), op, vm),
+            Some(HeapReadOutput::FrozenSet(other)) => self.compare(&other.storage(), op, vm),
+            Some(view @ (HeapReadOutput::DictKeysView(_) | HeapReadOutput::DictItemsView(_))) => {
+                let lhs_len = self.get(vm.heap).len();
+                let rhs_len = view.py_len(vm).expect("dict views have a length");
+                let possible = match op {
+                    CmpOperator::Lt => lhs_len < rhs_len,
+                    CmpOperator::LtE => lhs_len <= rhs_len,
+                    CmpOperator::Gt => lhs_len > rhs_len,
+                    CmpOperator::GtE => lhs_len >= rhs_len,
+                    _ => return Ok(None),
+                };
+                if !possible {
+                    return Ok(Some(false));
+                }
+                if matches!(op, CmpOperator::Lt | CmpOperator::LtE) {
+                    let iter = self.iter(vm)?;
+                    defer_drop_mut!(iter, vm);
+                    while let Some(elem) = iter.next(vm)? {
+                        if view.py_contains_impl(elem, vm)? != Some(true) {
+                            return Ok(Some(false));
+                        }
+                    }
+                    return Ok(Some(true));
+                }
+                let Some(storage) = get_storage_from_set_operand(other, vm)? else {
+                    return Ok(None);
+                };
+                defer_drop!(storage, vm);
+                self.compare(&vm.heap.protect(storage), op, vm)
+            }
+            _ => Ok(None),
+        }
     }
 
     /// Returns a stack-borrowed lending iterator over the set's elements in
@@ -1078,6 +1143,10 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Set> {
         Some(self.get(vm.heap).len())
     }
 
+    fn py_cmp_op(&self, other: &Value, op: CmpOperator, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
+        self.storage().compare_operand(other, op, vm)
+    }
+
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
         // `set` and `frozenset` compare equal by their members, regardless of
         // mutability. `set == dict_keys`/`dict_items` is handled by the reflected
@@ -1385,6 +1454,10 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, FrozenSet> {
 
     fn py_len(&self, vm: &VM<'h>) -> Option<usize> {
         Some(self.get(vm.heap).len())
+    }
+
+    fn py_cmp_op(&self, other: &Value, op: CmpOperator, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
+        self.storage().compare_operand(other, op, vm)
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
