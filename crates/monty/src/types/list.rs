@@ -552,17 +552,15 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, List> {
     }
 
     fn py_setitem(&mut self, key: Value, value: Value, vm: &mut VM<'h>) -> RunResult<()> {
-        if let Value::Ref(id) = &key
+        defer_drop!(key, vm);
+        defer_drop_mut!(value, vm);
+
+        if let Value::Ref(id) = key
             && let HeapData::Slice(slice) = vm.heap.get(*id)
         {
             let slice = slice.clone();
-            defer_drop!(key, vm);
-            defer_drop!(value, vm);
             return self.setitem_slice(&slice, value, vm);
         }
-
-        defer_drop!(key, vm);
-        defer_drop_mut!(value, vm);
 
         // Extract integer index, accepting Int, Bool (True=1, False=0), and LongInt.
         // Note: The LongInt-to-i64 conversion is defensive code. In normal execution,
