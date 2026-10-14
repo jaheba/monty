@@ -45,7 +45,8 @@ use crate::{
     name_map::NameMap,
     object_bridge::MontyObjectExt,
     os_dispatch::{
-        PendingEffect, PostConversionEffect, PreConversionEffect, Reshaped, release_pending_effect, resolve_call_paths, urandom_reply_error,
+        PendingEffect, PostConversionEffect, PreConversionEffect, Reshaped, release_pending_effect, resolve_call_paths,
+        urandom_reply_error,
     },
     parse::CodeRange,
     run::{Program, SessionTables, VmEnv},

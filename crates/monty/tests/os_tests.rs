@@ -4,7 +4,7 @@
 //! `RunProgress::OsCall` with the correct `OsFunction` variant and arguments,
 //! and that return values are correctly used by Python code.
 
-use monty::{Dump, Session, SessionRef, dump, MontyRepl, MontyRun, ReplProgress, RunProgress};
+use monty::{Dump, MontyRepl, MontyRun, ReplProgress, RunProgress, Session, SessionRef, dump};
 use monty_types::{
     CallArgs, CompileOptions, DateTimeSource, ExcType, ExtFunctionResult, FileMode, MontyDate, MontyDateTime,
     MontyException, MontyFileHandle, MontyObject, OsFunctionCall, OsPolicy, PrintWriter, ResourceLimits,

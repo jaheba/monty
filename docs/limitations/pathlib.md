@@ -56,7 +56,7 @@ A relative target remains relative in the returned value; the host receives an a
 Both methods use the same host rename operation, so overwrite behavior depends on the backend
 (see [os.md](os.md)).
 
-`Path.glob()`, `Path.rglob()` and `Path.walk()` count only the visible parameters in arity errors the same way.
+`Path.glob()`, `Path.rglob()` and `Path.walk()` count only the visible parameters in arity errors, excluding bound `self`.
 
 Not implemented: `touch`, `chmod`, `lchmod`, `owner`,
 `group`, `symlink_to`, `hardlink_to`, `link_to`, `readlink`, `lstat`,

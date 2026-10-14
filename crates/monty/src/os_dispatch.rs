@@ -775,25 +775,24 @@ fn extract_rename_args(src: MontyPath, args: ArgValues, replace: bool, vm: &mut 
     };
     receiver.drop_with(vm);
     defer_drop!(target, vm);
-    match value_to_owned_string(target, vm.heap, vm.interns) {
-        Some(dst) => Ok(RenameCallArgs {
+    if let Some(dst) = value_to_owned_string(target, vm.heap, vm.interns) {
+        Ok(RenameCallArgs {
             src,
             dst: MontyPath::new(dst),
-        }),
-        None => {
-            // pathlib delegates to os.rename/replace; bytes paths remain unsupported in Monty.
-            let accepted = if target.py_type_heap(vm.heap) == Type::Bytes {
-                "string or os.PathLike"
-            } else {
-                "string, bytes or os.PathLike"
-            };
-            Err(ExcType::type_error_os_path(
-                if replace { "replace" } else { "rename" },
-                "dst",
-                accepted,
-                &target.py_type_name_heap(vm.heap, vm.interns),
-            ))
-        }
+        })
+    } else {
+        // pathlib delegates to os.rename/replace; bytes paths remain unsupported in Monty.
+        let accepted = if target.py_type_heap(vm.heap) == Type::Bytes {
+            "string or os.PathLike"
+        } else {
+            "string, bytes or os.PathLike"
+        };
+        Err(ExcType::type_error_os_path(
+            if replace { "replace" } else { "rename" },
+            "dst",
+            accepted,
+            &target.py_type_name_heap(vm.heap, vm.interns),
+        ))
     }
 }
 
