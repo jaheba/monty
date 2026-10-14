@@ -1,23 +1,40 @@
+def cmp(left, op, right):
+    if op == '<':
+        return left < right
+    if op == '<=':
+        return left <= right
+    if op == '>':
+        return left > right
+    if op == '>=':
+        return left >= right
+    raise ValueError('unknown comparison: ' + op)
+
+
 for left_type in (set, frozenset):
     for right_type in (set, frozenset):
         for left, right, expected in (
-            ([], [], (False, True, False, True)),
-            ([], [1], (True, True, False, False)),
-            ([1], [], (False, False, True, True)),
-            ([1, 2], [2, 1], (False, True, False, True)),
-            ([1], [1, 2], (True, True, False, False)),
-            ([1, 2], [1], (False, False, True, True)),
-            ([1], [2], (False, False, False, False)),
-            ([1, 2], [2, 3, 4], (False, False, False, False)),
-            ([1, 2, 3], [2, 4], (False, False, False, False)),
-            ([frozenset([1])], [frozenset([1]), frozenset([2])], (True, True, False, False)),
+            ([], [], {'<': False, '<=': True, '>': False, '>=': True}),
+            ([], [1], {'<': True, '<=': True, '>': False, '>=': False}),
+            ([1], [], {'<': False, '<=': False, '>': True, '>=': True}),
+            ([1, 2], [2, 1], {'<': False, '<=': True, '>': False, '>=': True}),
+            ([1], [1, 2], {'<': True, '<=': True, '>': False, '>=': False}),
+            ([1, 2], [1], {'<': False, '<=': False, '>': True, '>=': True}),
+            ([1], [2], {'<': False, '<=': False, '>': False, '>=': False}),
+            ([1, 2], [2, 3, 4], {'<': False, '<=': False, '>': False, '>=': False}),
+            ([1, 2, 3], [2, 4], {'<': False, '<=': False, '>': False, '>=': False}),
+            ([frozenset([1])], [frozenset([1]), frozenset([2])], {'<': True, '<=': True, '>': False, '>=': False}),
         ):
             a = left_type(left)
             b = right_type(right)
-            assert (a < b, a <= b, a > b, a >= b) == expected
+
+            for op, result in expected.items():
+                assert cmp(a, op, b) == result
 
     a = left_type([1])
-    assert (a < a, a <= a, a > a, a >= a) == (False, True, False, True)
+    assert not a < a
+    assert a <= a
+    assert not a > a
+    assert a >= a
     assert a <= {1: 'a'}.keys()
     assert a < {1: 'a', 2: 'b'}.keys()
     assert a >= {1: 'a'}.keys()
@@ -28,14 +45,7 @@ for left_type in (set, frozenset):
         for first, second in ((a, other), (other, a)):
             for op in ('<', '<=', '>', '>='):
                 try:
-                    if op == '<':
-                        first < second
-                    elif op == '<=':
-                        first <= second
-                    elif op == '>':
-                        first > second
-                    else:
-                        first >= second
+                    cmp(first, op, second)
                 except TypeError as exc:
                     expected = (
                         "'" + op + "' not supported between instances of '"
@@ -90,10 +100,7 @@ for collection in (set, frozenset):
     assert not a > b
     for op in ('<=', '>='):
         try:
-            if op == '<=':
-                a <= b
-            else:
-                a >= b
+            cmp(a, op, b)
         except ValueError as exc:
             assert str(exc) == 'comparison failed'
         else:
