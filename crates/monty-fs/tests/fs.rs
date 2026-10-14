@@ -555,7 +555,7 @@ fn rw_rename() {
 
     assert_eq!(
         call_ok(&mut mt, &rename("/mnt/hello.txt", "/mnt/renamed.txt")),
-        MontyObject::path("/mnt/renamed.txt".to_owned())
+        MontyObject::none()
     );
     assert_eq!(
         call_ok(&mut mt, &OsFunctionCall::Exists("/mnt/hello.txt".into())),
@@ -1100,7 +1100,7 @@ fn ovl_mem_rename() {
 
     assert_eq!(
         call_ok(&mut mt, &rename("/mnt/hello.txt", "/mnt/moved.txt")),
-        MontyObject::path("/mnt/moved.txt".to_owned())
+        MontyObject::none()
     );
     assert_eq!(
         call_ok(&mut mt, &OsFunctionCall::Exists("/mnt/hello.txt".into())),
@@ -1336,7 +1336,7 @@ fn ovl_mem_rename_to_same_path() {
 
     assert_eq!(
         call_ok(&mut mt, &rename("/mnt/hello.txt", "/mnt/hello.txt")),
-        MontyObject::path("/mnt/hello.txt".to_owned())
+        MontyObject::none()
     );
     assert_eq!(
         call_ok(&mut mt, &OsFunctionCall::Exists("/mnt/hello.txt".into())),

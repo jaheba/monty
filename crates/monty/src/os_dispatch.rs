@@ -44,7 +44,7 @@ use crate::{
         random::RandomRetry,
         time::ClockReading,
     },
-    types::{Path, dir_scan::ScanEffect, file::FileName, random::RandomTarget},
+    types::{Path, Type, dir_scan::ScanEffect, file::FileName, random::RandomTarget},
     value::Value,
     virtual_path::posix_join,
 };
@@ -149,10 +149,6 @@ pub(crate) enum PreConversionEffect {
     RenamePath { target: String },
     /// Return the destination path after Path.replace succeeds.
     ReplacePath { target: String },
-    /// Return None after os.rename succeeds.
-    RenameOs,
-    /// Return None after os.replace succeeds.
-    ReplaceOs,
     /// Suppress a missing-file exception only when requested by Path.unlink.
     Unlink { missing_ok: bool },
     /// `os.chdir`: the target was sent to the host as a `Path.stat` call;
@@ -221,7 +217,7 @@ impl PreConversionEffect {
         let reply = match self {
             Self::ListdirNames => listdir_names(value),
             Self::RenamePath { target } | Self::ReplacePath { target } => Ok(MontyObject::path(target)),
-            Self::Unlink { .. } | Self::RenameOs | Self::ReplaceOs => Ok(MontyObject::none()),
+            Self::Unlink { .. } => Ok(MontyObject::none()),
             Self::IterdirPaths { path } => iterdir_paths(value, &path, &vm.heap.tracker),
             Self::UrandomLength { size } => urandom_reply(value, size),
             Self::Chdir { path, spelled } => {
@@ -251,8 +247,6 @@ impl PreConversionEffect {
             Self::ListdirNames => "os.listdir",
             Self::RenamePath { .. } => "Path.rename",
             Self::ReplacePath { .. } => "Path.replace",
-            Self::RenameOs => "os.rename",
-            Self::ReplaceOs => "os.replace",
             Self::Unlink { .. } => "Path.unlink",
             Self::Chdir { .. } => "os.chdir",
             Self::IterdirPaths { .. } => "Path.iterdir",
@@ -577,18 +571,14 @@ pub(crate) fn is_path_os_method(method: StaticStrings) -> bool {
     )
 }
 
-/// Builds an [`OsFunctionCall`] for a `pathlib.Path` method invocation —
-/// dispatches on `method` and pulls any extra args out of `args` into the
-/// matching typed struct.
-///
-/// Returns `Ok(None)` if `method` isn't an OS call. Owns `path`/`args` and
-/// is responsible for refcount cleanup on every code path.
+/// Builds a host request and its resume action for a `pathlib.Path` OS method.
+/// Owns `args` and cleans up its references on every error path.
 pub(crate) fn build_path_os_call(
     method: StaticStrings,
     path: MontyPath,
     args: ArgValues,
     vm: &mut VM<'_>,
-) -> RunResult<Option<OsFunctionCall>> {
+) -> RunResult<CallResult> {
     // Simple "no extra args" path operations are bundled into one arm to avoid
     // 12 near-identical case lines.
     macro_rules! path_only {
@@ -616,7 +606,17 @@ pub(crate) fn build_path_os_call(
             }
             OsFunctionCall::Stat(path)
         }
-        StaticStrings::Iterdir => path_only!("iterdir", Iterdir),
+        StaticStrings::Iterdir => {
+            args.check_zero_args("iterdir", vm.heap)?;
+            return Ok(CallResult::OsCallWithEffect {
+                effect: PreConversionEffect::IterdirPaths {
+                    path: path.as_str().to_owned(),
+                }
+                .into(),
+                call: OsFunctionCall::Iterdir(path),
+            });
+        }
+        StaticStrings::Unlink => return build_path_unlink(path, args, vm),
         StaticStrings::Resolve => path_only!("resolve", Resolve),
         StaticStrings::Absolute => path_only!("absolute", Absolute),
         StaticStrings::Rmdir => path_only!("rmdir", Rmdir),
@@ -634,17 +634,25 @@ pub(crate) fn build_path_os_call(
         }
         StaticStrings::Mkdir => OsFunctionCall::Mkdir(extract_mkdir_args(path, args, vm)?),
         StaticStrings::Rename | StaticStrings::Replace => {
-            OsFunctionCall::Rename(extract_rename_args(path, args, method == StaticStrings::Replace, vm)?)
+            let args = extract_rename_args(path, args, method == StaticStrings::Replace, vm)?;
+            let target = args.dst.as_str().to_owned();
+            let effect = if method == StaticStrings::Replace {
+                PreConversionEffect::ReplacePath { target }
+            } else {
+                PreConversionEffect::RenamePath { target }
+            };
+
+            return Ok(CallResult::OsCallWithEffect {
+                call: OsFunctionCall::Rename(args),
+                effect: effect.into(),
+            });
         }
         _ => {
-            // Unreachable in practice — callers gate on `is_path_os_method`.
-            // Drop the owned inputs anyway so a stray call doesn't leak refs.
-            let _ = path;
             args.drop_with(vm.heap);
-            return Ok(None);
+            unreachable!("is_path_os_method gates the call");
         }
     };
-    Ok(Some(call))
+    Ok(CallResult::OsCall(call))
 }
 
 /// Extracts the `data` arg for `write_text` / `append_text`. Error wording
@@ -772,10 +780,20 @@ fn extract_rename_args(src: MontyPath, args: ArgValues, replace: bool, vm: &mut 
             src,
             dst: MontyPath::new(dst),
         }),
-        None => Err(ExcType::type_error(format!(
-            "Path.{}() argument 'target' must be str or Path",
-            if replace { "replace" } else { "rename" }
-        ))),
+        None => {
+            // pathlib delegates to os.rename/replace; bytes paths remain unsupported in Monty.
+            let accepted = if target.py_type_heap(vm.heap) == Type::Bytes {
+                "string or os.PathLike"
+            } else {
+                "string, bytes or os.PathLike"
+            };
+            Err(ExcType::type_error_os_path(
+                if replace { "replace" } else { "rename" },
+                "dst",
+                accepted,
+                &target.py_type_name_heap(vm.heap, vm.interns),
+            ))
+        }
     }
 }
 
@@ -788,7 +806,7 @@ struct PathUnlinkArgs {
     missing_ok: LaxBool,
 }
 
-pub(crate) fn build_path_unlink(path: MontyPath, args: ArgValues, vm: &mut VM<'_>) -> RunResult<CallResult> {
+fn build_path_unlink(path: MontyPath, args: ArgValues, vm: &mut VM<'_>) -> RunResult<CallResult> {
     let PathUnlinkArgs { receiver, missing_ok } = PathUnlinkArgs::from_args(args.prepend(Value::None), vm)?;
     receiver.drop_with(vm);
     Ok(CallResult::OsCallWithEffect {

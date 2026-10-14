@@ -597,15 +597,7 @@ fn rename_like(
     if dir_fd_specified(src_dir_fd, vm)? | dir_fd_specified(dst_dir_fd, vm)? {
         Err(ExcType::not_implemented_os_arg(Some(func), "src_dir_fd and dst_dir_fd"))
     } else {
-        Ok(CallResult::OsCallWithEffect {
-            call: OsFunctionCall::Rename(RenameCallArgs { src, dst }),
-            effect: if replace {
-                PreConversionEffect::ReplaceOs
-            } else {
-                PreConversionEffect::RenameOs
-            }
-            .into(),
-        })
+        Ok(CallResult::OsCall(OsFunctionCall::Rename(RenameCallArgs { src, dst })))
     }
 }
 

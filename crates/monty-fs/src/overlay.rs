@@ -1396,7 +1396,7 @@ fn rename(
         state.insert_unchecked(new_rel, child);
     }
 
-    Ok(MontyObject::path(dst_vpath.to_owned()))
+    Ok(MontyObject::none())
 }
 
 /// Refuses to rename or remove the mount root, which has no name inside the

@@ -2054,7 +2054,7 @@ fn path_rename_and_replace_return_the_spelled_target() {
         assert_eq!(result, MontyObject::path("/after".to_owned()));
 
         let code = format!("import os\nos.{method}('/before', '/after')");
-        let (_, _, result) = run_oscall_with_result(&code, MontyObject::path("/after".to_owned()));
+        let (_, _, result) = run_oscall_with_result(&code, MontyObject::none());
         assert_eq!(result, MontyObject::none());
     }
 }
@@ -2106,7 +2106,12 @@ fn path_unlink_suppresses_only_missing_files_when_requested() {
 #[test]
 fn path_rename_and_replace_reject_invalid_targets() {
     for method in ["rename", "replace"] {
-        for target in ["None", "42", "[]", "b'after'"] {
+        for (target, accepted, type_name) in [
+            ("None", "string, bytes or os.PathLike", "NoneType"),
+            ("42", "string, bytes or os.PathLike", "int"),
+            ("[]", "string, bytes or os.PathLike", "list"),
+            ("b'after'", "string or os.PathLike", "bytes"),
+        ] {
             let code = format!("from pathlib import Path\nPath('/before').{method}(target={target})");
             let error = host_runner(&code)
                 .start(vec![], ResourceTracker::default(), PrintWriter::Stdout)
@@ -2114,7 +2119,7 @@ fn path_rename_and_replace_reject_invalid_targets() {
             assert_eq!(error.exc_type(), ExcType::TypeError);
             assert_eq!(
                 error.message(),
-                Some(format!("Path.{method}() argument 'target' must be str or Path").as_str())
+                Some(format!("{method}: dst should be {accepted}, not {type_name}").as_str())
             );
         }
     }
@@ -2292,8 +2297,6 @@ fn mutation_effects_name_the_python_operation() {
             "from pathlib import Path\nPath('/file').unlink(missing_ok=True)",
             "Path.unlink",
         ),
-        ("import os\nos.rename('/before', '/after')", "os.rename"),
-        ("import os\nos.replace('/before', '/after')", "os.replace"),
         (
             "from pathlib import Path\nPath('/before').rename('/after')",
             "Path.rename",
