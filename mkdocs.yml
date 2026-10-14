@@ -64,6 +64,7 @@ nav:
       - collections: 'limitations/collections.md'
       - copy: 'limitations/copy.md'
       - datetime: 'limitations/datetime.md'
+      - bisect: 'limitations/bisect.md'
       - functools: 'limitations/functools.md'
       - hashlib: 'limitations/hashlib.md'
       - itertools: 'limitations/itertools.md'

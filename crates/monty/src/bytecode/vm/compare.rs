@@ -15,7 +15,7 @@ impl VM<'_> {
     /// Shared by fused asserts and comparison helpers that need truth rather
     /// than the arbitrary value a direct `==` expression may produce.
     #[inline]
-    pub(super) fn cmp_values(&mut self, op: CmpOperator, lhs: &Value, rhs: &Value) -> RunResult<bool> {
+    pub(crate) fn cmp_values(&mut self, op: CmpOperator, lhs: &Value, rhs: &Value) -> RunResult<bool> {
         match op {
             CmpOperator::Eq | CmpOperator::NotEq => {
                 let result = lhs.py_rich_eq(rhs, self)?;
