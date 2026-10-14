@@ -48,12 +48,18 @@ for left_type in (set, frozenset):
                     cmp(first, op, second)
                 except TypeError as exc:
                     expected = (
-                        "'" + op + "' not supported between instances of '"
-                        + type(first).__name__ + "' and '" + type(second).__name__ + "'"
+                        "'"
+                        + op
+                        + "' not supported between instances of '"
+                        + type(first).__name__
+                        + "' and '"
+                        + type(second).__name__
+                        + "'"
                     )
                     assert str(exc) == expected
                 else:
                     assert False, 'expected TypeError'
+
 
 class Key:
     def __init__(self, value):
@@ -65,6 +71,7 @@ class Key:
 
     def __eq__(self, other):
         return self.value == other.value
+
 
 reject_hash = False
 for left_type in (set, frozenset):
@@ -93,12 +100,14 @@ for collection in (set, frozenset):
     assert not collection([(1, 2)]) > items
     assert not collection() >= items
 
+
 class ExplodingEquality:
     def __hash__(self):
         return 1
 
     def __eq__(self, other):
         raise ValueError('comparison failed')
+
 
 for collection in (set, frozenset):
     a = collection([ExplodingEquality()])
