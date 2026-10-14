@@ -80,6 +80,8 @@ for left_type in (set, frozenset):
         b = right_type([Key(1), Key(2)])
         reject_hash = True
         assert a < b and a <= b and b > a and b >= a
+        assert a.issubset(b) and b.issuperset(a)
+        assert not b.issubset(a) and not a.issuperset(b)
         reject_hash = False
 
 for collection in (set, frozenset):

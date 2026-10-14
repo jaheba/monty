@@ -333,15 +333,19 @@ impl<'h> HeapRead<'h, SetStorage> {
             _ => return Ok(None),
         };
 
-        // Reuse the stored hashes so comparisons never call a set member's __hash__ again.
-        let iter = smaller.iter(vm)?;
+        Ok(Some(smaller.is_subset(larger, vm)?))
+    }
+
+    /// Tests containment using cached hashes, without cloning either set's storage.
+    fn is_subset(&self, other: &Self, vm: &mut VM<'h>) -> RunResult<bool> {
+        let iter = self.iter(vm)?;
         defer_drop_mut!(iter, vm);
         while let Some((elem, hash)) = iter.next_entry(vm)? {
-            if !larger.contains_with_hash(elem, hash, vm)? {
-                return Ok(Some(false));
+            if !other.contains_with_hash(elem, hash, vm)? {
+                return Ok(false);
             }
         }
-        Ok(Some(true))
+        Ok(true)
     }
 
     /// Ordering accepts set, frozenset, dict_keys and dict_items, in either operand position.
@@ -476,25 +480,6 @@ impl<'h, C: ContainsVM<'h>> DropWithContext<C> for SetIter<'_, 'h> {
 }
 
 impl SetStorage {
-    /// Returns true if this set is a subset of other.
-    fn is_subset(&self, other: &Self, vm: &mut VM<'_>) -> RunResult<bool> {
-        for entry in self.live() {
-            if !vm
-                .heap
-                .protect(other)
-                .contains_with_hash(&entry.value, entry.hash, vm)?
-            {
-                return Ok(false);
-            }
-        }
-        Ok(true)
-    }
-
-    /// Returns true if this set is a superset of other.
-    fn is_superset(&self, other: &Self, vm: &mut VM<'_>) -> RunResult<bool> {
-        other.is_subset(self, vm)
-    }
-
     /// Returns true if this set has no elements in common with other.
     fn is_disjoint(&self, other: &Self, vm: &mut VM<'_>) -> RunResult<bool> {
         // Iterate over the smaller set for efficiency
@@ -974,9 +959,12 @@ impl<'h> HeapRead<'h, Set> {
         let self_storage = self.get(vm.heap).0.clone_with_heap(vm.heap);
         defer_drop!(self_storage, vm);
 
+        let self_read = vm.heap.protect(self_storage);
+        let other_read = vm.heap.protect(other_storage);
+
         match op {
-            SetComparison::Subset => self_storage.is_subset(other_storage, vm),
-            SetComparison::Superset => self_storage.is_superset(other_storage, vm),
+            SetComparison::Subset => self_read.is_subset(&other_read, vm),
+            SetComparison::Superset => other_read.is_subset(&self_read, vm),
             SetComparison::Disjoint => self_storage.is_disjoint(other_storage, vm),
         }
     }
@@ -1109,9 +1097,12 @@ impl<'h> HeapRead<'h, FrozenSet> {
         let self_storage = self.get(vm.heap).storage.clone_with_heap(vm.heap);
         defer_drop!(self_storage, vm);
 
+        let self_read = vm.heap.protect(self_storage);
+        let other_read = vm.heap.protect(other_storage);
+
         match op {
-            SetComparison::Subset => self_storage.is_subset(other_storage, vm),
-            SetComparison::Superset => self_storage.is_superset(other_storage, vm),
+            SetComparison::Subset => self_read.is_subset(&other_read, vm),
+            SetComparison::Superset => other_read.is_subset(&self_read, vm),
             SetComparison::Disjoint => self_storage.is_disjoint(other_storage, vm),
         }
     }
