@@ -90,11 +90,17 @@ for insert in [bisect.insort_left, bisect.insort_right]:
             assert str(exc) == message
 
 # Range lengths can exceed the signed index width without allocating the elements.
-try:
-    bisect.bisect_left(range(-(2**62), 2**62), 0)
-    assert False, 'expected failure'
-except OverflowError as exc:
-    assert str(exc) == 'Python int too large to convert to C ssize_t'
+for function in [bisect.bisect_left, bisect.bisect_right, bisect.insort_left, bisect.insort_right]:
+    for bounds in [{}, {'hi': None}, {'hi': -1}]:
+        try:
+            function(range(-(2**62), 2**62), 0, **bounds)
+            assert False, 'expected failure'
+        except OverflowError as exc:
+            assert str(exc) == 'Python int too large to convert to C ssize_t'
+
+# An explicit upper bound avoids consulting even an overflowing range length.
+assert bisect.bisect_left(range(-(2**62), 2**62), 0, hi=0) == 0
+assert bisect.bisect_right(range(-(2**62), 2**62), 0, hi=1) == 1
 
 
 class EqualityFailure:

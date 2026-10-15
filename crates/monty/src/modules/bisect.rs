@@ -6,7 +6,7 @@ use crate::{
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunResult},
     expressions::CmpOperator,
-    heap::{HeapData, HeapId},
+    heap::{HeapData, HeapId, HeapReadOutput},
     intern::StaticStrings,
     modules::ModuleFunctions,
     types::{Module, PyTrait, Type},
@@ -166,10 +166,16 @@ fn search(
         return Err(ExcType::value_error("lo must be non-negative"));
     }
     if hi == -1 {
-        let len = a
-            .py_len(vm)
-            .ok_or_else(|| ExcType::type_error(format!("object of type '{}' has no len()", a.py_type_name(vm))))?;
-        hi = i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?;
+        // Ranges can exceed usize without allocating elements. Use their exact
+        // length so Monty's fixed i64 index limit also applies on 32-bit wasm.
+        hi = if let Some(HeapReadOutput::Range(range)) = a.read_heap(vm) {
+            i64::try_from(range.get(vm.heap).len_i128()).map_err(|_| ExcType::overflow_c_ssize_t())?
+        } else {
+            let len = a
+                .py_len(vm)
+                .ok_or_else(|| ExcType::type_error(format!("object of type '{}' has no len()", a.py_type_name(vm))))?;
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?
+        };
     }
     // _bisect obtains sq_item even when the search interval is empty.
     match a.py_type(vm) {

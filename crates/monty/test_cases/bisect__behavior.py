@@ -135,3 +135,10 @@ for function, name in [
     (bisect.insort, 'insort_right'),
 ]:
     assert name in repr(function)
+
+
+# Lengths above 32-bit usize still fit Monty's fixed 64-bit index width.
+large_range = range(2**40)
+assert bisect_left(large_range, 2**39) == 2**39
+assert bisect_right(large_range, 2**39) == 2**39 + 1
+assert bisect_left(range(-(2**62), 2**62 - 1), 0) == 2**62

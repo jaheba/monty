@@ -5,6 +5,8 @@
 - **Sequences must be built-in containers.** Searches accept lists, tuples, strings, bytes, ranges and deques;
     integer-indexed `Counter` objects also support searches. Insertion accepts lists and deques. User-defined
     sequences cannot supply `__len__` and `__getitem__`, following the general [class limitations](classes.md).
+- **Index width is fixed at 64 bits.** Bounds and implicit range lengths use signed 64-bit indices even on
+    32-bit WebAssembly; CPython uses its platform index width.
 - **Key functions cannot suspend to the host.** As with `sorted(key=...)`, a key function that calls an external or
     OS function raises `NotImplementedError` at the suspension point. Ordinary sandbox functions and built-in
     callables work.
