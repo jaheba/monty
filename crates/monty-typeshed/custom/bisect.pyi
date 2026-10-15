@@ -3,8 +3,6 @@ from typing import SupportsIndex, TypeVar, overload
 
 from _typeshed import SupportsLenAndGetItem, SupportsRichComparison, SupportsRichComparisonT
 
-__all__ = ['bisect', 'bisect_left', 'bisect_right', 'insort', 'insort_left', 'insort_right']
-
 _T = TypeVar('_T')
 
 @overload

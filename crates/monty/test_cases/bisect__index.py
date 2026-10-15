@@ -20,8 +20,10 @@ class Bad:
 
 
 for f in [bisect.bisect_left, bisect.bisect_right]:
-    assert f([1, 2, 3], 2, Index(0), Index(3)) in [1, 2]
-    assert f([1, 2, 3], 2, hi=Index(-1)) in [1, 2]
+    # Each bound changes the result, so ignoring __index__ cannot pass.
+    assert f([1, 2, 3], 2, Index(3), Index(3)) == 3
+    assert f([1, 2, 3], 4, hi=Index(1)) == 1
+    assert f([1, 2, 3], 4, hi=Index(-1)) == 3
     for kwargs, error, message in [
         ({'lo': Boom()}, ValueError, 'index failed'),
         ({'hi': Boom()}, ValueError, 'index failed'),
@@ -36,3 +38,12 @@ for f in [bisect.bisect_left, bisect.bisect_right]:
             assert False, 'expected failure'
         except error as exc:
             assert str(exc) == message
+
+
+for f in [bisect.insort_left, bisect.insort_right]:
+    items = [1, 2, 3]
+    f(items, 0, Index(2), Index(3))
+    assert items == [1, 2, 0, 3]
+    items = [1, 2, 3]
+    f(items, 4, hi=Index(1))
+    assert items == [1, 4, 2, 3]

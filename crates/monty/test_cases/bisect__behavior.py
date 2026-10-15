@@ -124,3 +124,14 @@ assert bisect_left(Counter(), 3) == 0
 counter = Counter({0: 1, 1: 3, 2: 5})
 assert bisect_left(counter, 3) == 1
 assert bisect_right(counter, 3) == 2
+
+# Function representations retain the canonical name, including through aliases.
+for function, name in [
+    (bisect_left, 'bisect_left'),
+    (bisect_right, 'bisect_right'),
+    (insort_left, 'insort_left'),
+    (insort_right, 'insort_right'),
+    (bisect.bisect, 'bisect_right'),
+    (bisect.insort, 'insort_right'),
+]:
+    assert name in repr(function)

@@ -76,3 +76,36 @@ try:
     assert False, 'expected failure'
 except AttributeError as exc:
     assert str(exc) == "'Counter' object has no attribute 'insert'"
+
+# Interned strings/bytes take a different insertion-error path than heap containers.
+for insert in [bisect.insort_left, bisect.insort_right]:
+    for sequence, value, message in [
+        ('abc', 'b', "'str' object has no attribute 'insert'"),
+        (b'abc', 98, "'bytes' object has no attribute 'insert'"),
+    ]:
+        try:
+            insert(sequence, value)
+            assert False, 'expected failure'
+        except AttributeError as exc:
+            assert str(exc) == message
+
+# Range lengths can exceed the signed index width without allocating the elements.
+try:
+    bisect.bisect_left(range(-(2**62), 2**62), 0)
+    assert False, 'expected failure'
+except OverflowError as exc:
+    assert str(exc) == 'Python int too large to convert to C ssize_t'
+
+
+class EqualityFailure:
+    def __eq__(self, other):
+        raise ValueError('equality failed')
+
+
+# Lexicographic searches must propagate an element's equality exception.
+for search in [bisect.bisect_left, bisect.bisect_right]:
+    try:
+        search([[EqualityFailure()]], [EqualityFailure()])
+        assert False, 'expected failure'
+    except ValueError as exc:
+        assert str(exc) == 'equality failed'
