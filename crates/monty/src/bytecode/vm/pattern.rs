@@ -9,6 +9,8 @@
 //! per `MatchAttr` instruction so a read that has to go to the host can suspend
 //! between them like any other attribute load.
 
+use std::str;
+
 use super::{CallResult, VM, attr::PendingLookupEffect};
 use crate::{
     builtins::{Builtins, isinstance::isinstance_check},
@@ -409,6 +411,10 @@ fn class_match_args(cls: &Value, nargs: usize, vm: &mut VM<'_>) -> RunResult<Mat
 fn either_str_value(name: &EitherStr, heap: &Heap) -> Value {
     match name {
         EitherStr::Interned(id) => Value::InternString(*id),
+        EitherStr::Inline { len, bytes } => {
+            let text = str::from_utf8(&bytes[..len.get()]).expect("inline name is valid UTF-8");
+            allocate_string(text.to_owned(), heap)
+        }
         EitherStr::Heap(text) => allocate_string(text.clone(), heap),
     }
 }

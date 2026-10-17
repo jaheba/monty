@@ -17,7 +17,7 @@ use crate::{
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
     expressions::CmpOperator,
-    hash::{HashValue, hash_f64, hash_named, hash_one, identity_hash},
+    hash::{HashValue, hash_f64, hash_named, hash_one, hash_python_str, identity_hash},
     heap::{ContainsHeap, DropWithContext, Heap, HeapData, HeapId, HeapReadOutput},
     identity::Identity,
     intern::{BytesId, FunctionId, Interns, LongIntId, StaticStrings, StringId},
@@ -114,29 +114,49 @@ pub(crate) enum Value {
 #[derive(Debug, Clone, Copy, serde::Serialize, serde::Deserialize)]
 #[repr(u8)]
 pub(crate) enum InlineLen {
-    #[serde(rename = "0")] L0,
-    #[serde(rename = "1")] L1,
-    #[serde(rename = "2")] L2,
-    #[serde(rename = "3")] L3,
-    #[serde(rename = "4")] L4,
-    #[serde(rename = "5")] L5,
-    #[serde(rename = "6")] L6,
-    #[serde(rename = "7")] L7,
+    #[serde(rename = "0")]
+    L0,
+    #[serde(rename = "1")]
+    L1,
+    #[serde(rename = "2")]
+    L2,
+    #[serde(rename = "3")]
+    L3,
+    #[serde(rename = "4")]
+    L4,
+    #[serde(rename = "5")]
+    L5,
+    #[serde(rename = "6")]
+    L6,
+    #[serde(rename = "7")]
+    L7,
 }
 
 impl InlineLen {
     pub(crate) fn from_len(len: usize) -> Self {
         match len {
-            0 => Self::L0, 1 => Self::L1, 2 => Self::L2, 3 => Self::L3,
-            4 => Self::L4, 5 => Self::L5, 6 => Self::L6, 7 => Self::L7,
+            0 => Self::L0,
+            1 => Self::L1,
+            2 => Self::L2,
+            3 => Self::L3,
+            4 => Self::L4,
+            5 => Self::L5,
+            6 => Self::L6,
+            7 => Self::L7,
             _ => unreachable!("inline string length exceeds capacity"),
         }
     }
 
     pub(crate) fn get(self) -> usize {
         match self {
-            Self::L0 => 0, Self::L1 => 1, Self::L2 => 2, Self::L3 => 3,
-            Self::L4 => 4, Self::L5 => 5, Self::L6 => 6, Self::L7 => 7,
+            Self::L0 => 0,
+            Self::L1 => 1,
+            Self::L2 => 2,
+            Self::L3 => 3,
+            Self::L4 => 4,
+            Self::L5 => 5,
+            Self::L6 => 6,
+            Self::L7 => 7,
         }
     }
 }
@@ -288,6 +308,7 @@ impl<'h> PyTrait<'h> for Value {
             Self::Int(_) | Self::InternLongInt(_) => Type::Int,
             Self::Float(_) => Type::Float,
             Self::InternString(_) => Type::Str,
+            Self::InlineString { .. } => Type::Str,
             Self::InternBytes(_) => Type::Bytes,
             Self::Builtin(c) => c.py_type(),
             Self::ModuleFunction(_) => Type::BuiltinFunction,
@@ -321,6 +342,7 @@ impl<'h> PyTrait<'h> for Value {
                 Self::InternString(o) => Some(id == o),
                 _ => eq_str(vm.interns.get_str(*id), other, vm),
             }),
+            Self::InlineString { .. } => Ok(eq_str(self.inline_str().expect("inline string"), other, vm)),
             Self::InternBytes(id) => Ok(match other {
                 // Fast path for the same interned bytes; otherwise compare content
                 // (interned bytes are not deduplicated, unlike strings).
@@ -454,6 +476,23 @@ impl<'h> PyTrait<'h> for Value {
             (Self::InternString(s1), Self::InternString(s2)) => {
                 Ok(CmpOrder::Ordered(interns.get_str(*s1).cmp(interns.get_str(*s2))))
             }
+            (Self::InlineString { .. }, Self::Ref(id)) if let HeapData::Str(value) = vm.heap.get(*id) => Ok(
+                CmpOrder::Ordered(self.inline_str().expect("inline string").cmp(value.as_str())),
+            ),
+            (Self::Ref(id), Self::InlineString { .. }) if let HeapData::Str(value) = vm.heap.get(*id) => Ok(
+                CmpOrder::Ordered(value.as_str().cmp(other.inline_str().expect("inline string"))),
+            ),
+            (Self::InlineString { .. }, Self::InlineString { .. }) => Ok(CmpOrder::Ordered(
+                self.inline_str()
+                    .expect("inline string")
+                    .cmp(other.inline_str().expect("inline string")),
+            )),
+            (Self::InlineString { .. }, Self::InternString(id)) => Ok(CmpOrder::Ordered(
+                self.inline_str().expect("inline string").cmp(interns.get_str(*id)),
+            )),
+            (Self::InternString(id), Self::InlineString { .. }) => Ok(CmpOrder::Ordered(
+                interns.get_str(*id).cmp(other.inline_str().expect("inline string")),
+            )),
             // Cross-type string comparisons: interned vs heap-allocated
             (Self::InternString(s1), Self::Ref(id2)) if let HeapData::Str(s2) = vm.heap.get(*id2) => {
                 Ok(CmpOrder::Ordered(interns.get_str(*s1).cmp(s2.as_str())))
@@ -524,6 +563,10 @@ impl<'h> PyTrait<'h> for Value {
             // same value back (inc-ref'd for the heap case) instead of cloning
             // the bytes into a fresh allocation.
             Self::InternString(string_id) => Ok(Self::InternString(*string_id)),
+            Self::InlineString { len, bytes } => Ok(Self::InlineString {
+                len: *len,
+                bytes: *bytes,
+            }),
             Self::Ref(id) if matches!(vm.heap.get(*id), HeapData::Str(_)) => Ok(self.clone_with_heap(vm.heap)),
             // Instances dispatch to a user `__str__`/`__repr__` (needs the heap id).
             Self::Ref(id) if matches!(vm.heap.get(*id), HeapData::Instance(_)) => instance_str(*id, vm),
@@ -791,7 +834,7 @@ impl<'h> PyTrait<'h> for Value {
         match self {
             // Interned string and bytes literals iterate without ever reaching
             // the heap, so they answer here rather than in `HeapReadOutput`.
-            Self::InternString(_) | Self::InternBytes(_) => true,
+            Self::InternString(_) | Self::InlineString { .. } | Self::InternBytes(_) => true,
             Self::Ref(id) => vm.heap.read(*id).py_is_iterable(vm),
             _ => false,
         }
@@ -803,6 +846,9 @@ impl<'h> PyTrait<'h> for Value {
         } else {
             match self {
                 Self::InternString(id) => Ok(CallResult::Value(StringIterator::from_intern(*id, vm))),
+                Self::InlineString { len, bytes } => {
+                    Ok(CallResult::Value(StringIterator::from_inline(*len, *bytes, vm)))
+                }
                 Self::InternBytes(id) => Ok(CallResult::Value(BytesIterator::from_intern(*id, vm))),
                 _ => Err(ExcType::type_error_not_iterable(&self.py_type_name(vm))),
             }
@@ -836,6 +882,10 @@ impl Value {
     pub(crate) fn py_value<'h>(&self, vm: &VM<'h>) -> PyValue<'h> {
         match self {
             Self::InternString(id) => PyValue::Str(PyStr::Interned(*id)),
+            Self::InlineString { len, bytes } => PyValue::Str(PyStr::Inline {
+                len: *len,
+                bytes: *bytes,
+            }),
             Self::InternBytes(id) => PyValue::Bytes(PyBytes::Interned(*id)),
             Self::Int(value) => PyValue::Int(PyInt::Small(*value)),
             Self::InternLongInt(id) => PyValue::Int(PyInt::Interned(*id)),
@@ -941,6 +991,7 @@ impl Value {
             Self::Int(_) | Self::InternLongInt(_) => Type::Int,
             Self::Float(_) => Type::Float,
             Self::InternString(_) => Type::Str,
+            Self::InlineString { .. } => Type::Str,
             Self::InternBytes(_) => Type::Bytes,
             Self::Builtin(_) => Type::BuiltinFunction,
             Self::ModuleFunction(_) | Self::DefFunction(_) => Type::Function,
@@ -1111,6 +1162,7 @@ impl Value {
         // cold arms construct a hasher, via `hash_one`.
         match self {
             Self::InternString(string_id) => Ok(Some(vm.interns.str_hash(*string_id))),
+            Self::InlineString { .. } => Ok(Some(hash_python_str(self.inline_str().expect("inline string")))),
             Self::InternBytes(bytes_id) => Ok(Some(vm.interns.bytes_hash(*bytes_id))),
             Self::InternLongInt(long_int_id) => Ok(Some(vm.interns.long_int_hash(*long_int_id))),
             // Bool and int hash directly as their value, and are equivalent
@@ -1709,6 +1761,10 @@ impl Value {
             Self::ModuleFunction(mf) => Self::ModuleFunction(*mf),
             Self::DefFunction(f) => Self::DefFunction(*f),
             Self::InternString(s) => Self::InternString(*s),
+            Self::InlineString { len, bytes } => Self::InlineString {
+                len: *len,
+                bytes: *bytes,
+            },
             Self::InternBytes(b) => Self::InternBytes(*b),
             Self::InternLongInt(bi) => Self::InternLongInt(*bi),
             Self::Marker(m) => Self::Marker(*m),
@@ -1783,10 +1839,14 @@ impl Value {
     pub fn as_either_str(&self, heap: &Heap) -> Option<EitherStr> {
         match self {
             Self::InternString(id) => Some(EitherStr::Interned(*id)),
-            Self::InlineString { len, bytes } => Some(EitherStr::Inline {
-                len: *len,
-                bytes: *bytes,
-            }),
+            Self::InlineString { len, bytes } => {
+                let mut inline = [0; 15];
+                inline[..len.get()].copy_from_slice(&bytes[..len.get()]);
+                Some(EitherStr::Inline {
+                    len: *len,
+                    bytes: inline,
+                })
+            }
             Self::Ref(heap_id) => match heap.get(*heap_id) {
                 HeapData::Str(s) => Some(EitherStr::Heap(s.as_str().to_owned())),
                 _ => None,
@@ -1814,6 +1874,7 @@ impl Value {
     pub(crate) fn to_str_heap<'a>(&'a self, heap: &'a Heap, interns: &'a Interns) -> RunResult<&'a str> {
         match self {
             Self::InternString(string_id) => return Ok(interns.get_str(*string_id)),
+            Self::InlineString { .. } => return Ok(self.inline_str().expect("inline string")),
             Self::Ref(heap_id) => {
                 if let HeapData::Str(s) = heap.get(*heap_id) {
                     return Ok(s.as_str());
@@ -1830,7 +1891,7 @@ impl Value {
     /// check if the value is a string.
     pub fn is_str(&self, heap: &Heap) -> bool {
         match self {
-            Self::InternString(_) => true,
+            Self::InternString(_) | Self::InlineString { .. } => true,
             Self::Ref(heap_id) => matches!(heap.get(*heap_id), HeapData::Str(_)),
             _ => false,
         }
@@ -1907,6 +1968,7 @@ pub(crate) fn eq_bigint(b: &BigInt, other: &Value, vm: &VM<'_>) -> Option<bool> 
 pub(crate) fn eq_str(s: &str, other: &Value, vm: &VM<'_>) -> Option<bool> {
     match other {
         Value::InternString(id) => Some(s == vm.interns.get_str(*id)),
+        Value::InlineString { .. } => Some(s == other.inline_str().expect("inline string")),
         Value::Ref(id) if let HeapData::Str(o) = vm.heap.get(*id) => Some(s == o.as_str()),
         _ => None,
     }
