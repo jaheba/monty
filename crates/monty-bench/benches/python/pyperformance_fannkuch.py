@@ -21,7 +21,7 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-# Replaces the pyperf harness, cached bound methods, and slice assignment.
+# Calls list methods directly because Monty cannot capture these bound builtins.
 """
 The Computer Language Benchmarks Game
 http://benchmarksgame.alioth.debian.org/
@@ -48,9 +48,7 @@ def fannkuch(n):
             flips_count = 0
             k = perm[0]
             while k:
-                flipped = perm[k::-1]
-                for i in range(k + 1):
-                    perm[i] = flipped[i]
+                perm[:k + 1] = perm[k::-1]
                 flips_count += 1
                 k = perm[0]
 
