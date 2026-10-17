@@ -1,4 +1,4 @@
-# Adapted from pyperformance bm_float at ccc0aeb7ad46d65b6dcd4160e0fdda4d885852dd.
+# Adapted from https://github.com/python/pyperformance/blob/ccc0aeb7/pyperformance/data-files/benchmarks/bm_float/run_benchmark.py
 #
 # The MIT License
 #
