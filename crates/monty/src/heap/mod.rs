@@ -1798,6 +1798,17 @@ fn for_each_child_id<F: FnMut(HeapId)>(data: &HeapData, mut on_child: F) {
                 }
             }
         }
+        HeapData::SpecializedList(list) => {
+            // Skip iteration if no refs - major GC optimization for lists of primitives
+            if !list.contains_refs() {
+                return;
+            }
+            for value in list.iter() {
+                if let Value::Ref(id) = &*value {
+                    on_child(*id);
+                }
+            }
+        }
         // MUST report exactly the same ids as `Deque::py_dec_ref_ids` — reporting
         // fewer leaks, reporting more is a use-after-free.
         HeapData::Deque(deque) => {
@@ -2126,6 +2137,7 @@ fn py_dec_ref_ids_for_data(data: &mut HeapData, stack: &mut Vec<HeapId>) {
         HeapData::Str(s) => s.py_dec_ref_ids(stack),
         HeapData::Bytes(b) => b.py_dec_ref_ids(stack),
         HeapData::List(l) => l.py_dec_ref_ids(stack),
+        HeapData::SpecializedList(l) => l.py_dec_ref_ids(stack),
         HeapData::Deque(d) => d.py_dec_ref_ids(stack),
         HeapData::Tuple(t) => t.py_dec_ref_ids(stack),
         HeapData::NamedTuple(nt) => nt.py_dec_ref_ids(stack),

@@ -411,6 +411,12 @@ fn row_items(row: &Value, vm: &mut VM<'_>) -> RunResult<Vec<Value>> {
                     .check_allocation(list.len().saturating_mul(VALUE_SIZE))?;
                 return Ok(list.iter().map(|item| item.clone_with_heap(vm.heap)).collect());
             }
+            HeapData::SpecializedList(list) => {
+                vm.heap
+                    .tracker
+                    .check_allocation(list.len().saturating_mul(VALUE_SIZE))?;
+                return Ok(list.iter().map(|item| item.clone_with_heap(vm.heap)).collect());
+            }
             HeapData::Tuple(tuple) => Some(tuple.as_slice()),
             _ => None,
         },

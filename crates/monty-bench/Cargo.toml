@@ -49,9 +49,5 @@ harness = false
 name = "decode"
 harness = false
 
-[[bench]]
-name = "lists"
-harness = false
-
 [lints]
 workspace = true

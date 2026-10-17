@@ -266,6 +266,14 @@ fn parse_separators_value(value: Value, vm: &mut VM<'_>) -> RunResult<Option<(St
                     json_separator_to_string(&list.get(1).expect("length checked"), "key_separator", vm)?,
                 )
             }
+            HeapReadOutput::SpecializedList(list) => {
+                let list = list.get(vm.heap);
+                check_separators_length(list.len())?;
+                (
+                    json_separator_to_string(&list.get(0).expect("length checked"), "item_separator", vm)?,
+                    json_separator_to_string(&list.get(1).expect("length checked"), "key_separator", vm)?,
+                )
+            }
             _ => {
                 return Err(ExcType::type_error(format!(
                     "cannot unpack non-iterable {} object",
@@ -415,6 +423,18 @@ impl<'h> Encoder<'_, 'h> {
                     Ok(())
                 }
                 HeapReadOutput::List(list) => self.with_entered_container(*heap_id, |enc| {
+                    let iter = list.iter(enc.vm)?;
+                    defer_drop_mut!(iter, enc);
+                    enc.serialize_array(depth, |enc, depth| {
+                        if let Some(item) = iter.next(enc.vm)? {
+                            enc.serialize_value(item, depth)?;
+                            Ok(true)
+                        } else {
+                            Ok(false)
+                        }
+                    })
+                }),
+                HeapReadOutput::SpecializedList(list) => self.with_entered_container(*heap_id, |enc| {
                     let iter = list.iter(enc.vm)?;
                     defer_drop_mut!(iter, enc);
                     enc.serialize_array(depth, |enc, depth| {

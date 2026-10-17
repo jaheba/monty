@@ -18,7 +18,7 @@ use crate::types::str::allocate_string;
 
 /// Must not compile: allocating on the heap while holding a reference derived from `HeapRead::get`.
 ///
-/// `a.get(heap)` borrows `heap` immutably, and the resulting slice keeps that borrow alive.
+/// The iterator borrows the list returned by `a.get(heap)`, keeping the immutable heap borrow alive.
 /// `heap.heap_mut().allocate(...)` requires mutable access to `heap`, which
 /// conflicts with the live immutable borrow.
 ///
