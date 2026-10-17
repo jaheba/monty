@@ -33,7 +33,7 @@ cargo bench -p monty-bench --bench main -- pyperformance --sample-size 100 --war
 | unpack_sequence | 400 tuple unpackings and 400 list unpackings    |
 | json_dumps      | All four upstream cases and their repeat counts |
 | json_loads      | All three upstream fixtures, 20 parses each     |
-| gc_traversal    | 500 levels, two collection calls                |
+| meteor_contest  | 60 solutions on a 5 × 10 board                  |
 
 The `pyperf` runner, command-line functions and internal timers are removed.
 Criterion performs repetition, so each invocation of a loop-based workload runs one outer iteration.
@@ -43,7 +43,7 @@ This includes setup that upstream pyperformance excludes from its timed region; 
 with upstream pyperformance timings.
 
 Numeric workloads check their computed values with tolerances.
-Sequence unpacking checks a checksum, and JSON loads checks the decoded fixtures.
+Sequence unpacking checks a checksum, JSON loads checks the decoded fixtures, and meteor contest checks all 60 solutions.
 The float workload changes `class Point(object)` to `class Point` because Monty rejects explicit base classes.
 Fannkuch replaces cached bound methods with direct calls and slice assignment with indexed writes.
 The heavier workloads use reduced input sizes to target less than 100 ms of simulated execution in CodSpeed.
