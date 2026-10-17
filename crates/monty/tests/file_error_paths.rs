@@ -580,6 +580,8 @@ fn csv_reader_load_rejects_future_reply() {
     .unwrap_err();
     assert_eq!(err.exc_type(), ExcType::RuntimeError);
     assert_eq!(err.message().unwrap(), "file loading cannot be answered with a future");
+}
+
 #[test]
 fn inline_read_buffer_translates_newlines_and_survives_slicing() {
     let result = run_with_open_then_io(
