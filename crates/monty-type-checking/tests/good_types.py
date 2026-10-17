@@ -1,4 +1,5 @@
 import asyncio
+import bisect
 import datetime
 import functools
 import hashlib
@@ -11,7 +12,7 @@ import sys
 from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, assert_type
+from typing import Any, LiteralString, assert_type
 
 # === Type checking helper functions ===
 
@@ -444,6 +445,29 @@ assert_type(y, str | int)
 x2 = os.environ.get('foobar')
 assert_type(x2, str | None)
 
+joined = os.path.join('a', 'b')
+assert_type(joined, LiteralString)
+assert_type(os.path.join(str(1), 'b'), str)
+assert_type(os.path.join(Path('a'), 'b'), str)
+assert_type(os.path.join(b'a', b'b'), bytes)
+assert_type(os.path.splitext(str(1)), tuple[str, str])
+assert_type(os.path.split(Path('a/b')), tuple[str, str])
+assert_type(os.path.exists('a'), bool)
+assert_type(os.path.exists(3), bool)
+assert_type(os.path.getsize(Path('a')), int)
+assert_type(os.path.getmtime('a'), float)
+assert_type(os.path.realpath('a'), str)
+assert_type(os.path.relpath('/a/b', '/a'), LiteralString)
+assert_type(os.path.relpath(Path('/a/b'), '/a'), str)
+assert_type(os.path.commonpath(['/a/b', '/a/c']), LiteralString)
+assert_type(os.path.commonpath([Path('/a/b'), '/a/c']), str)
+assert_type(os.path.commonprefix(['ab', 'ac']), LiteralString)
+assert_type(os.path.commonprefix([Path('ab'), 'ac']), str)
+assert_type(os.path.normpath(b'a//b'), bytes)
+assert_type(os.path.samestat(os.stat('a'), os.stat('b')), bool)
+assert_type(os.path.sep + str(1), str)
+assert_type(os.pathsep, str)
+
 
 # === re module ===
 
@@ -675,3 +699,14 @@ assert_type(random.choices('abc', k=2), list[str])
 assert_type(random.Random(42).uniform(1, 2), float)
 assert_type(random.Random().getrandbits(8), int)
 assert_type(os.urandom(4), bytes)
+
+
+# === bisect ===
+
+assert_type(bisect.bisect_left([1, 2, 3], 2), int)
+assert_type(bisect.bisect_right((1, 2), 2, hi=None), int)
+assert_type(bisect.bisect([1, 2], 2, lo=False), int)
+assert_type(bisect.bisect_left([(1, 'a')], 1, key=lambda row: row[0]), int)
+assert_type(bisect.insort_left([1, 2], 2), None)
+assert_type(bisect.insort_right([(1, 'a')], (2, 'b'), key=lambda row: row[0]), None)
+assert_type(bisect.insort([1, 2], 3), None)

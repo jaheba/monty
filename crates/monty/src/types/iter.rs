@@ -24,7 +24,7 @@ pub(crate) fn init(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
     let IterArgs { object, sentinel } = IterArgs::from_args(args, vm)?;
 
     if let Some(sentinel) = sentinel {
-        if object.is_callable(vm.heap) {
+        if object.is_callable(vm) {
             let iter = CallableIterator::new(object, sentinel);
             Ok(Value::Ref(vm.heap.allocate(HeapData::CallableIterator(iter))))
         } else {
@@ -143,7 +143,7 @@ where
 }
 
 /// Drains an owned Python iterator with incremental allocation checks.
-fn collect_python_iterator<'h, T>(iterator: Value, vm: &mut VM<'h>) -> RunResult<T>
+pub(crate) fn collect_python_iterator<'h, T>(iterator: Value, vm: &mut VM<'h>) -> RunResult<T>
 where
     T: Default + Extend<Value> + DropWithContext<VM<'h>>,
 {

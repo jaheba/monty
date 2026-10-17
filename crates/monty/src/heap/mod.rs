@@ -17,7 +17,7 @@ use std::{
     sync::Arc,
 };
 
-use monty_types::{MontyUuid, ResourceTracker};
+use monty_types::{DEFAULT_GC_INTERVAL, MontyUuid, ResourceTracker};
 use serde::{de::Error as _, ser::SerializeStruct};
 
 #[cfg(feature = "ref-count-return")]
@@ -1067,8 +1067,7 @@ impl WeakIndexes {
     }
 }
 
-/// Default GC interval — run cycle collection every 100 000 GC-tracked
-/// allocations unless the configured resource tracker overrides it.
+/// GC interval when the resource tracker sets none: [`DEFAULT_GC_INTERVAL`].
 ///
 /// The trial-deletion collector additionally short-circuits the trace when
 /// `purple_count == 0`, so programs that produce no cycle candidates pay no
@@ -1076,10 +1075,10 @@ impl WeakIndexes {
 ///
 /// When the `memory-model-checks` feature is enabled, this is reduced to 1 to
 /// stress-test GC behavior on every allocation.
-const DEFAULT_GC_INTERVAL: usize = if cfg!(feature = "memory-model-checks") {
+const GC_INTERVAL: usize = if cfg!(feature = "memory-model-checks") {
     1
 } else {
-    100_000
+    DEFAULT_GC_INTERVAL
 };
 
 impl Heap {
@@ -1448,7 +1447,7 @@ impl Heap {
         if self.purple_count == 0 {
             return false;
         }
-        let interval = self.tracker.gc_interval().unwrap_or(DEFAULT_GC_INTERVAL);
+        let interval = self.tracker.gc_interval().unwrap_or(GC_INTERVAL);
         (self.allocations_since_gc.get() as usize) >= interval
     }
 
@@ -1987,13 +1986,11 @@ fn for_each_child_id<F: FnMut(HeapId)>(data: &HeapData, mut on_child: F) {
             }
         }
         HeapData::DataclassField(field) => {
-            // A captured default can reach back to the class the field belongs
-            // to (`x: object = SomeInstanceOfIt`), closing a cycle.
-            if let Value::Ref(id) = field.annotation() {
-                on_child(*id);
-            }
-            if let Some(Value::Ref(id)) = field.default() {
-                on_child(*id);
+            // A captured default or factory can reach back to the class the
+            // field belongs to (`x: object = SomeInstanceOfIt`, or a factory
+            // closure capturing the class), closing a cycle.
+            for value in field.ref_children() {
+                on_child(value);
             }
         }
         HeapData::ListIterator(iter) => on_child(iter.list_id()),
@@ -2015,7 +2012,9 @@ fn for_each_child_id<F: FnMut(HeapId)>(data: &HeapData, mut on_child: F) {
         HeapData::DictValueIterator(iter) => on_child(iter.source_id()),
         HeapData::SetIterator(iter) => on_child(iter.source_id()),
         HeapData::CallableIterator(iter) => iter.for_each_child_id(on_child),
+        HeapData::DirScan(scan) => scan.for_each_child_id(on_child),
         HeapData::Itertools(iter) => iter.for_each_child_id(on_child),
+        HeapData::Csv(csv) => csv.for_each_child_id(on_child),
         HeapData::Partial(partial) => partial.for_each_child_id(on_child),
         HeapData::GenericAlias(alias) => alias.for_each_child_id(on_child),
         HeapData::Union(union) => union.for_each_child_id(on_child),
@@ -2172,7 +2171,9 @@ fn py_dec_ref_ids_for_data(data: &mut HeapData, stack: &mut Vec<HeapId>) {
         HeapData::DictValueIterator(iter) => iter.py_dec_ref_ids(stack),
         HeapData::SetIterator(iter) => iter.py_dec_ref_ids(stack),
         HeapData::CallableIterator(iter) => iter.py_dec_ref_ids(stack),
+        HeapData::DirScan(scan) => scan.py_dec_ref_ids(stack),
         HeapData::Itertools(iter) => iter.py_dec_ref_ids(stack),
+        HeapData::Csv(csv) => csv.py_dec_ref_ids(stack),
         HeapData::Partial(partial) => partial.py_dec_ref_ids(stack),
         HeapData::GenericAlias(alias) => alias.py_dec_ref_ids(stack),
         HeapData::Union(union) => union.py_dec_ref_ids(stack),

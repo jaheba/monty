@@ -344,8 +344,18 @@ Calling a loader after a feed or a previous load is rejected before restoration,
 
 ## What restoring does and does not carry
 
-- **The dump carries its own configuration.** `script_name`, resource limits and type-check state come from the dump,
-    not from the `checkout()` that restored it.
+- **The dump carries its own configuration.** `script_name` and type-check state come from the dump, not from the
+    `checkout()` that restored it.
+    The worker caps each restored resource limit at the restoring `checkout()` limit; stricter dump limits remain in
+    effect.
+    Elapsed execution time is restored, not reset, and counts against the capped limits: a dump taken mid-feed that
+    has already used more than the restoring `max_feed_duration` raises `TimeoutError` at its next time check.
+    Module stubs are retained even when type checking is off, so a restored session requests stubs only for modules
+    it never asked about; every `import` still asks the host for the module value.
+    The restoring `checkout()`'s `external_modules` answer those imports and function calls.
+- **Host modules restore as module objects.** Their attributes, including functions named `tools.<attr>`, survive
+    restoration, and a function call resolves through the restoring `checkout()`'s `external_modules`.
+    An `import` after restoration asks the host again.
 - **The instance store does not travel.** Host objects sent before the dump are unknown to the restored session: they
     come back as [`MontyClassProxy`][pydantic_monty.MontyClassProxy] (a host class, `type(x)` included, as [`MontyClassTypeProxy`][pydantic_monty.MontyClassTypeProxy] in Python and as a plain
     `{ __monty_type__: 'Type', ... }` marker in JavaScript), method calls on them

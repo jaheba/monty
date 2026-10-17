@@ -16,6 +16,7 @@ from ._monty import (
     AsyncNameLookupSnapshot,
     CollectStreams,
     CollectString,
+    ExternalModule,
     Frame,
     FunctionSnapshot,
     FutureSnapshot,
@@ -48,6 +49,7 @@ from .os_access import (
     MemoryFile,
     OSAccess,
     OsFunction,
+    ScanEntry,
     StatResult,
 )
 
@@ -81,6 +83,7 @@ __all__ = (
     'AsyncMontyWebsocket',
     'CollectStreams',
     'CollectString',
+    'ExternalModule',
     'Frame',
     'SourceRange',
     'Monty',
@@ -108,6 +111,7 @@ __all__ = (
     'AsyncFutureSnapshot',
     # os_access
     'StatResult',
+    'ScanEntry',
     'OsFunction',
     'NOT_HANDLED',
     'AbstractOS',
@@ -266,6 +270,7 @@ ExcType = Literal[
     'UnicodeDecodeError',
     'UnicodeEncodeError',
     'json.JSONDecodeError',
+    '_csv.Error',
     'ImportError',
     'ModuleNotFoundError',
     'OSError',
@@ -290,8 +295,8 @@ ExcType = Literal[
 Used by `ExternalExceptionData` to identify an exception by name rather than
 passing a concrete Python exception instance. Names match Python's built-in
 exception classes, except for `json.JSONDecodeError`, `re.PatternError`,
-`binascii.Error` and `binascii.Incomplete`, which are dotted to disambiguate
-from their `ValueError` / `Exception` parents.
+`binascii.Error`, `binascii.Incomplete` and `_csv.Error`, which are dotted to
+disambiguate from their `ValueError` / `Exception` parents.
 """
 
 

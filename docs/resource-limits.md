@@ -81,7 +81,8 @@ Size the limit with headroom, and use an OS or cgroup limit to bound the process
 Operations whose result size is predictable from their inputs are **pre-checked before allocating**, above a 100 KB
 threshold, including integer multiplication, division and `divmod`, left shift, integer power, sequence repeat
 (`'x' * n`), `str.replace` / `bytes.replace`, `re.sub`, the padding methods, deque rotation and slicing, materialising
-an iterator into a container, and f-string, `str.format()` or `%` formatting with a dynamic width or precision.
+an iterator into a container, f-string, `str.format()` or `%` formatting with a dynamic width or precision, and the
+`binascii` and `base64` conversions that can outgrow their input.
 So `'x' * 10**12` fails immediately rather than after consuming the machine's memory.
 
 Containers a program grows one element at a time are pre-checked as well, at the point the buffer would reallocate
@@ -215,7 +216,7 @@ caps the dump's, so a worker cannot report a looser one.
     It applies per frame, not to total host memory or subsequent host conversions.
 - **Print collectors.** [`CollectString`][pydantic_monty.CollectString] and [`CollectStreams`][pydantic_monty.CollectStreams] live in the host process, so their 10 MiB default cap is
     separate from `max_memory`.
-- **Mount memory.** Each [mount](filesystem.md) has its own `memory_usage_limit`, defaulting to 100 MB, shared between
+- **Mount memory.** Each [mount](filesystem.md) has its own `memory_usage_limit`, defaulting to [`DEFAULT_MEMORY_USAGE_LIMIT`](api/rust/monty-fs.md#default_memory_usage_limit), shared between
     retained overlay data and transient results.
 - **`json.loads` nesting**, capped at 200 levels independently of the recursion limit.
 - **Host entropy.** Python's `AbstractOS.urandom()` raises `MemoryError` before allocating when a request exceeds

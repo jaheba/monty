@@ -13,6 +13,7 @@ mod context_manager;
 mod exceptions;
 mod format;
 mod namespace;
+mod pattern;
 mod recursion;
 mod scheduler;
 
@@ -32,7 +33,7 @@ use crate::{
     builtins::Builtins,
     bytecode::{
         code::{Code, LocationEntry},
-        op::{Opcode, decode_assert_flags},
+        op::{MATCH_KEYS_REST, Opcode, decode_assert_flags},
     },
     defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
@@ -45,13 +46,14 @@ use crate::{
     name_map::NameMap,
     object_bridge::MontyObjectExt,
     os_dispatch::{
-        PendingEffect, PostConversionEffect, release_pending_effect, resolve_call_paths, urandom_reply_error,
+        PendingEffect, PostConversionEffect, PreConversionEffect, Reshaped, release_pending_effect, resolve_call_paths,
+        urandom_reply_error,
     },
     parse::CodeRange,
     run::{Program, SessionTables, VmEnv},
     types::{
         Dict, LongInt, PyTrait, SessionRandom,
-        file::{apply_buffer_store, apply_open_name, apply_write_position},
+        file::{apply_buffer_load, apply_buffer_store, apply_file_next, apply_open_name, apply_write_position},
         random::SEED_BYTES,
         str::allocate_string,
     },
@@ -138,80 +140,21 @@ macro_rules! handle_load_result {
 
 /// Handles the result of a call operation that returns `CallResult`.
 ///
-/// This macro eliminates the repetitive pattern of matching on `CallResult`
-/// variants that appears in LoadAttr, CallFunction, CallFunctionKw, CallAttr,
-/// CallAttrKw, and CallFunctionExtended opcodes.
-///
-/// Actions taken for each variant:
-/// - `Push(value)`: Push the value onto the stack
-/// - `FramePushed`: Continue with the newly current frame
-/// - `External(ext_id, args)`: Return `FrameExit::ExternalCall` to yield to host
-/// - `OsCall(call)`: Return `FrameExit::OsCall` to yield to host
-/// - `MethodCall { .. }`: Return `FrameExit::MethodCall` to yield to host
-/// - `AttrLookup { .. }`: Return `FrameExit::AttrLookup` to yield to host
-/// - `AwaitValue(value)`: Push value, then implicitly await it via `exec_get_awaitable`
-/// - `Err(err)`: Handle the exception via `catch!`
+/// Used by LoadAttr, the call opcodes, `MatchAttr` and the context-manager
+/// opcodes. `Value` and `FramePushed` are handled inline; every suspending or
+/// awaiting variant goes through the outlined [`VM::suspend_call_result`], so
+/// each expansion adds little to the dispatch loop's stack frame — native
+/// recursion (`__repr__` calling `repr`) re-enters that loop once per level.
 macro_rules! handle_call_result {
     ($self:expr, $result:expr) => {
         match $result {
             Ok(CallResult::Value(result)) => $self.push(result),
             Ok(CallResult::FramePushed) => {}
-            Ok(CallResult::External(name, args)) => {
-                let call_id = $self.allocate_call_id();
-                let name_load_ip = $self.ext_function_load_ip.take();
-                return Ok(FrameExit::ExternalCall {
-                    function_name: name,
-                    args,
-                    call_id,
-                    name_load_ip,
-                });
-            }
-            Ok(CallResult::OsCall(call)) => match $self.prepare_os_call(call, None) {
-                Ok(Some(exit)) => return Ok(exit),
+            Ok(other) => match $self.suspend_call_result(other) {
                 Ok(None) => {}
+                Ok(Some(exit)) => return Ok(exit),
                 Err(err) => catch!($self, err),
             },
-            Ok(CallResult::OsCallWithEffect { call, effect }) => match $self.prepare_os_call(call, Some(effect)) {
-                Ok(Some(exit)) => return Ok(exit),
-                Ok(None) => {}
-                Err(err) => catch!($self, err),
-            },
-            Ok(CallResult::MethodCall { name, args, object_id }) => {
-                let call_id = $self.allocate_call_id();
-                return Ok(FrameExit::MethodCall {
-                    method_name: name,
-                    args,
-                    call_id,
-                    object_id,
-                });
-            }
-            Ok(CallResult::AttrLookup {
-                name,
-                class_name,
-                object_id,
-                type_object,
-                effect,
-            }) => {
-                return Ok(FrameExit::AttrLookup {
-                    name,
-                    class_name,
-                    object_id,
-                    type_object,
-                    effect,
-                });
-            }
-            Ok(CallResult::AwaitValue(value)) => {
-                // Push the value and implicitly await it (used by asyncio.run())
-                $self.push(value);
-                match $self.exec_get_awaitable() {
-                    Ok(AwaitResult::ValueReady(value)) => $self.push(value),
-                    Ok(AwaitResult::FramePushed) => {}
-                    Ok(AwaitResult::Yield(pending_calls)) => {
-                        return Ok(FrameExit::ResolveFutures(pending_calls));
-                    }
-                    Err(e) => catch!($self, e),
-                }
-            }
             Err(err) => catch!($self, err),
         }
     };
@@ -408,6 +351,11 @@ pub struct CallFrame<'code> {
     /// construction. Threaded through serialization (`SerializedFrame`) so a
     /// suspended initializer resumes correctly.
     is_initializer: bool,
+
+    /// Module name for `LoadAttrImport` errors, set by `LoadModule`/`LoadSubmodule`.
+    /// Keeping it on the frame avoids another opcode operand; the compiler emits
+    /// no intervening instructions that change it.
+    import_from_module: Option<StringId>,
 }
 
 /// Narrows a VM stack index to the frame's `u32` field.
@@ -448,6 +396,7 @@ impl<'code> CallFrame<'code> {
             is_parked: false,
             namespace: None,
             is_initializer: false,
+            import_from_module: None,
         }
     }
 
@@ -504,6 +453,7 @@ impl<'code> CallFrame<'code> {
             is_parked: false,
             namespace,
             is_initializer: false,
+            import_from_module: None,
         }
     }
 }
@@ -650,6 +600,10 @@ pub struct SerializedFrame {
     /// `CallFrame.namespace`).
     #[serde(rename = "N")]
     namespace: Option<Box<FrameNamespace>>,
+
+    /// The `from ... import` in progress, if the frame suspended inside one.
+    #[serde(default, rename = "M")]
+    import_from_module: Option<StringId>,
 }
 
 impl CallFrame<'_> {
@@ -670,6 +624,7 @@ impl CallFrame<'_> {
             call_offset: self.call_offset,
             is_initializer: self.is_initializer,
             namespace: mem::take(&mut self.namespace),
+            import_from_module: self.import_from_module,
         }
     }
 }
@@ -886,17 +841,9 @@ pub struct VM<'h> {
     /// `malloc`/`free` per call. Only held transiently within
     /// `call_sync_function`, so one shared buffer is safe under recursion.
     namespace_scratch: Vec<Value>,
-    /// Remaining native Rust call-stack re-entry budget, counted down from
-    /// [`recursion::MAX_RUN_REENTRY_DEPTH`] around the two places the
-    /// interpreter recurses on its own stack instead of switching
-    /// `current_frame`: `evaluate_function`'s nested call into [`Self::run`],
-    /// and `call_heap_callable`'s re-dispatch through a `functools.partial`.
-    ///
-    /// Not serialized, because neither site is still charged at a snapshot
-    /// boundary: a nested `run()` never reaches one (its non-`Return` exits
-    /// become `NotImplementedError` in `evaluate_function`), and a partial
-    /// wrapping an external function releases its level as the suspending
-    /// `CallResult` is returned. `debug_assert!`-checked in [`Self::snapshot`].
+    /// Remaining native stack budget for `evaluate_function`, partials and callable-instance dispatch.
+    /// Not serialized: nested runs cannot suspend, and callable wrappers release their
+    /// charge before returning a suspending `CallResult`. Checked by [`Self::snapshot`].
     run_reentry_depth: u8,
 
     /// Per-run cache of compiled patterns for module-level `re.*` calls. Not
@@ -986,6 +933,7 @@ impl<'h> VM<'h> {
                     is_parked: false,
                     namespace: sf.namespace,
                     is_initializer: sf.is_initializer,
+                    import_from_module: sf.import_from_module,
                 }
             })
             .collect();
@@ -1163,8 +1111,9 @@ impl<'h> VM<'h> {
         self.finish_host_turn(result)
     }
 
-    /// Epilogue for every host-boundary execution window (here and
-    /// `MontyRepl::call_function`): re-checks both resource limits so an
+    /// Epilogue for every host-boundary execution window (here, and the
+    /// uncaught branch of `resume_with_exception`, which ends a turn without
+    /// entering the loop): re-checks both resource limits so an
     /// overshoot that arose after the run loop's last amortized check — or
     /// was swallowed by a truncating caller (repr's `...[timeout]`) — cannot
     /// escape as a successful result. Consumes a discarded success so its
@@ -1199,6 +1148,60 @@ impl<'h> VM<'h> {
                 Err(e.into())
             }
         }
+    }
+
+    /// The rarely taken arms of [`handle_call_result!`]: turns a suspending
+    /// `CallResult` into the `FrameExit` that yields to the host, or awaits an
+    /// `AwaitValue`. `Ok(None)` means execution continues in the current frame.
+    #[inline(never)]
+    fn suspend_call_result(&mut self, result: CallResult) -> Result<Option<FrameExit>, RunError> {
+        let exit = match result {
+            CallResult::Value(value) => {
+                self.push(value);
+                return Ok(None);
+            }
+            CallResult::FramePushed => return Ok(None),
+            CallResult::External(name, args) => FrameExit::ExternalCall {
+                function_name: name,
+                args,
+                call_id: self.allocate_call_id(),
+                name_load_ip: self.ext_function_load_ip.take(),
+            },
+            CallResult::OsCall(call) => return self.prepare_os_call(call, None),
+            CallResult::OsCallWithEffect { call, effect } => return self.prepare_os_call(call, Some(effect)),
+            CallResult::MethodCall { name, args, object_id } => FrameExit::MethodCall {
+                method_name: name,
+                args,
+                call_id: self.allocate_call_id(),
+                object_id,
+            },
+            CallResult::AttrLookup {
+                name,
+                class_name,
+                object_id,
+                type_object,
+                effect,
+            } => FrameExit::AttrLookup {
+                name,
+                class_name,
+                object_id,
+                type_object,
+                effect,
+            },
+            CallResult::AwaitValue(value) => {
+                // Push the value and implicitly await it (used by asyncio.run())
+                self.push(value);
+                return match self.exec_get_awaitable()? {
+                    AwaitResult::ValueReady(value) => {
+                        self.push(value);
+                        Ok(None)
+                    }
+                    AwaitResult::FramePushed => Ok(None),
+                    AwaitResult::Yield(pending_calls) => Ok(Some(FrameExit::ResolveFutures(pending_calls))),
+                };
+            }
+        };
+        Ok(Some(exit))
     }
 
     /// Periodic dispatch-loop work, outlined (`#[inline(never)]`) so the hot
@@ -1368,6 +1371,13 @@ impl<'h> VM<'h> {
                     let len = self.stack.len();
                     let src_idx = len - 1 - n as usize;
                     self.stack[src_idx..].rotate_left(1);
+                }
+                Opcode::SinkTop => {
+                    let n = usize::from(self.current_frame.fetch_u8());
+                    // Move TOS beneath the n items below it: one rotation of the
+                    // affected slice, the mirror image of `LiftToTop`.
+                    let len = self.stack.len();
+                    self.stack[len - 1 - n..].rotate_right(1);
                 }
                 Opcode::RaiseUnboundLocal => {
                     let name_idx = self.current_frame.fetch_u16();
@@ -1607,10 +1617,22 @@ impl<'h> VM<'h> {
                     let name_id = StringId::from_index(name_idx);
                     handle_call_result!(self, self.load_attr(name_id));
                 }
+                Opcode::LoadSubmodule => {
+                    let (name_idx, path_idx) = self.current_frame.fetch_u16_u16();
+                    let path_id = StringId::from_index(path_idx);
+                    // the module a following `LoadAttrImport` names in its `ImportError`
+                    self.current_frame.import_from_module = Some(path_id);
+                    handle_call_result!(self, self.load_submodule(StringId::from_index(name_idx), path_id));
+                }
                 Opcode::LoadAttrImport => {
                     let name_idx = self.current_frame.fetch_u16();
                     let name_id = StringId::from_index(name_idx);
-                    handle_call_result!(self, self.load_attr_import(name_id));
+                    // the compiler emits this only after the statement's `LoadModule`
+                    let module_id = self
+                        .current_frame
+                        .import_from_module
+                        .expect("LoadAttrImport runs after its LoadModule set the frame's module");
+                    handle_call_result!(self, self.load_attr_import(name_id, module_id));
                 }
                 Opcode::StoreAttr => {
                     let name_idx = self.current_frame.fetch_u16();
@@ -1691,6 +1713,18 @@ impl<'h> VM<'h> {
                         return Err(RunError::internal("ForIter: expected iterator ref on stack"));
                     };
                     let mut iter = self.heap.read(heap_id);
+                    // A file nobody has read yet has no buffer to slice: load it from
+                    // the host, then re-dispatch this instruction against the buffer.
+                    if let HeapReadOutput::OpenFile(file) = &iter
+                        && file.needs_buffer_load(self)
+                    {
+                        let effect = PostConversionEffect::BufferLoad { file_id: heap_id };
+                        let call = file.buffer_load_call(self, effect);
+                        drop(iter);
+                        self.current_frame.ip = self.instruction_ip;
+                        handle_call_result!(self, Ok(call));
+                        continue;
+                    }
 
                     match iter.py_next(self) {
                         Ok(Some(value)) => self.push(value),
@@ -2031,6 +2065,27 @@ impl<'h> VM<'h> {
                     let (before, after) = self.current_frame.fetch_u8_u8();
                     try_catch!(self, self.unpack_ex(before as usize, after as usize));
                 }
+                // Pattern matching
+                Opcode::MatchShape => {
+                    let (length, flags) = self.current_frame.fetch_u16_u8();
+                    self.match_shape(length, flags);
+                }
+                Opcode::MatchKeys => {
+                    let mode = self.current_frame.fetch_u8();
+                    if mode == MATCH_KEYS_REST {
+                        try_catch!(self, self.match_keys_rest());
+                    } else {
+                        try_catch!(self, self.match_keys());
+                    }
+                }
+                Opcode::MatchClass => {
+                    let nargs = usize::from(self.current_frame.fetch_u8());
+                    try_catch!(self, self.match_class(nargs));
+                }
+                Opcode::MatchAttr => {
+                    let index = usize::from(self.current_frame.fetch_u8());
+                    handle_call_result!(self, self.match_attr(index));
+                }
                 // Special
                 Opcode::Nop => {
                     // No operation
@@ -2038,7 +2093,9 @@ impl<'h> VM<'h> {
                 // Module Operations
                 Opcode::LoadModule => {
                     let module_id = self.current_frame.fetch_u16();
-                    try_catch!(self, self.load_module(module_id));
+                    // for the `LoadAttrImport`s of a `from ... import`; harmless for a bare `import`
+                    self.current_frame.import_from_module = Some(StringId::from_index(module_id));
+                    handle_call_result!(self, Ok(self.load_module(module_id)));
                 }
                 // Context Managers
                 Opcode::BeforeWith => {
@@ -2054,15 +2111,14 @@ impl<'h> VM<'h> {
         }
     }
 
-    /// Loads a built-in module, raising `ModuleNotFoundError` for unknown names.
-    fn load_module(&mut self, module_id: u16) -> RunResult<()> {
+    /// Loads a top-level built-in or suspends with [`OsFunctionCall::Import`].
+    /// The host's value becomes the module; `NotFound` raises `ModuleNotFoundError`.
+    /// `LoadSubmodule` resolves the remaining dotted components.
+    fn load_module(&mut self, module_id: u16) -> CallResult {
         let name_id = StringId::from_index(module_id);
-        if let Some(module) = self.interns.static_string(name_id).and_then(StandardLib::from_static) {
-            let heap_id = module.create(self);
-            self.push(Value::Ref(heap_id));
-            Ok(())
-        } else {
-            Err(ExcType::module_not_found_error(self.interns.get_str(name_id)))
+        match self.interns.static_string(name_id).and_then(StandardLib::from_static) {
+            Some(module) => CallResult::Value(Value::Ref(module.create(self))),
+            None => CallResult::OsCall(OsFunctionCall::Import(self.interns.get_str(name_id).to_owned())),
         }
     }
 
@@ -2078,9 +2134,20 @@ impl<'h> VM<'h> {
         // effect waits in the slot until the value exists to apply it to.
         let obj = match self.pending_effect.take() {
             Some(PendingEffect::Pre(effect)) => match effect.reshape(obj, self) {
-                Ok(obj) => obj,
+                Ok(Reshaped::Value(obj)) => obj,
+                Ok(Reshaped::Call { call, effect }) => return self.suspend_again(call, effect),
                 Err(err) => return self.resume_with_exception(err),
             },
+            // Builds its result straight from the raw reply, never converting it.
+            Some(PendingEffect::Scan(effect)) => {
+                return match effect.apply(Ok(obj), self) {
+                    Ok(value) => {
+                        self.push(value);
+                        self.run_external()
+                    }
+                    Err(err) => self.resume_with_exception(err),
+                };
+            }
             post => {
                 self.pending_effect = post;
                 obj
@@ -2130,30 +2197,101 @@ impl<'h> VM<'h> {
         };
         let result = match self.pending_effect.take() {
             Some(PendingEffect::Post(PostConversionEffect::BufferStore { file_id })) => {
-                apply_buffer_store(file_id, value, self)
+                apply_buffer_store(file_id, value, self).map(Some)
             }
-            Some(PendingEffect::Post(PostConversionEffect::WritePosition { file_id, .. })) => {
-                apply_write_position(file_id, value, self)
+            // Answers nothing: the `ForIter` that asked for the load re-dispatches.
+            Some(PendingEffect::Post(PostConversionEffect::BufferLoad { file_id })) => {
+                apply_buffer_load(file_id, value, self).map(|()| None)
             }
-            Some(PendingEffect::Post(PostConversionEffect::OpenName { name })) => apply_open_name(name, value, self),
+            Some(PendingEffect::Post(PostConversionEffect::FileNext { file_id, default })) => {
+                apply_file_next(file_id, default, value, self).map(Some)
+            }
+            Some(PendingEffect::Post(PostConversionEffect::WritePosition {
+                file_id,
+                text_length,
+                result_none,
+                ..
+            })) => apply_write_position(file_id, text_length, result_none, value, self).map(Some),
+            Some(PendingEffect::Post(PostConversionEffect::LoadThenCall {
+                file_id,
+                callable,
+                args,
+            })) => return self.resume_load_then_call(file_id, callable, args, value),
+            Some(PendingEffect::Post(PostConversionEffect::OpenName { name, newline })) => {
+                apply_open_name(name, newline, value, self).map(Some)
+            }
             Some(PendingEffect::Post(PostConversionEffect::SeedRandom { target, retry })) => {
-                apply_seed_random(target, retry, value, self)
+                apply_seed_random(target, retry, value, self).map(Some)
             }
             Some(PendingEffect::Post(PostConversionEffect::ClockReading { reading })) => {
-                apply_clock_reading(reading, value, self)
+                apply_clock_reading(reading, value, self).map(Some)
             }
             // The sleeps were answered above; any pre-conversion effect was consumed.
             Some(
                 PendingEffect::Post(PostConversionEffect::DiscardResult | PostConversionEffect::SleepResult { .. })
-                | PendingEffect::Pre(_),
+                | PendingEffect::Pre(_)
+                | PendingEffect::Scan(_),
             )
-            | None => Ok(value),
+            | None => Ok(Some(value)),
         };
         match result {
             Ok(value) => {
+                if let Some(value) = value {
+                    self.push(value);
+                }
+                self.run_external()
+            }
+            Err(err) => self.resume_with_exception(err),
+        }
+    }
+
+    /// `LoadThenCall` resume: installs the host content, then replays the call
+    /// that found its file unread. The call's own outcome decides what happens
+    /// next, since the replay may itself suspend (a second unread file).
+    fn resume_load_then_call(
+        &mut self,
+        file_id: HeapId,
+        callable: Value,
+        args: ArgValues,
+        value: Value,
+    ) -> Result<FrameExit, RunError> {
+        if let Err(err) = apply_buffer_load(file_id, value, self) {
+            callable.drop_with(self);
+            args.drop_with(self);
+            return self.resume_with_exception(err);
+        }
+        // The replay runs Python (a `fieldnames` iterator, a dialect object's attributes)
+        // outside `run_external`, so it needs its own execution-clock window.
+        self.heap.tracker.on_execution_start();
+        let result = self.call_function(&callable, args);
+        self.heap.tracker.on_execution_stop();
+        callable.drop_with(self);
+        match result {
+            Ok(CallResult::Value(value)) => {
                 self.push(value);
                 self.run_external()
             }
+            Ok(CallResult::FramePushed) => self.run_external(),
+            Ok(CallResult::OsCall(call)) => self.suspend_again(call, None),
+            Ok(CallResult::OsCallWithEffect { call, effect }) => self.suspend_again(call, Some(effect)),
+            Ok(other) => {
+                other.drop_with(self);
+                Err(RunError::internal(
+                    "LoadThenCall: replayed call produced an unexpected result",
+                ))
+            }
+            Err(err) => self.resume_with_exception(err),
+        }
+    }
+
+    /// Yields the next call of a multi-step operation from `resume`: the VM is
+    /// still suspended at the same instruction, so the host sees another
+    /// `OsCall` and the eventual value is pushed where the first would have been.
+    /// A call answered locally (a NUL byte in a predicate) resumes Python at once.
+    fn suspend_again(&mut self, call: OsFunctionCall, effect: Option<PendingEffect>) -> Result<FrameExit, RunError> {
+        match self.prepare_os_call(call, effect) {
+            Ok(Some(exit)) => Ok(exit),
+            Ok(None) => self.run_external(),
             Err(err) => self.resume_with_exception(err),
         }
     }
@@ -2177,6 +2315,12 @@ impl<'h> VM<'h> {
     pub fn resume_with_exception(&mut self, error: RunError) -> Result<FrameExit, RunError> {
         if let Some(effect) = self.pending_effect.take() {
             match effect {
+                // Resume on attempting to unlink missing file with unlink(missing_ok=True)
+                PendingEffect::Pre(PreConversionEffect::Unlink { missing_ok: true }) if matches!(&error, RunError::Exc(raise) if raise.exc.exc_type() == ExcType::FileNotFoundError) =>
+                {
+                    self.push(Value::None);
+                    return self.run_external();
+                }
                 PendingEffect::Post(PostConversionEffect::BufferStore { file_id }) => {
                     if let HeapReadOutput::OpenFile(mut file) = self.heap.read(file_id) {
                         file.get_mut(self.heap).clear_pending_read();
@@ -2188,6 +2332,7 @@ impl<'h> VM<'h> {
                     file_id,
                     previous_position,
                     previous_length,
+                    ..
                 }) => {
                     if let HeapReadOutput::OpenFile(mut file) = self.heap.read(file_id) {
                         file.get_mut(self.heap)
@@ -2196,12 +2341,27 @@ impl<'h> VM<'h> {
                     }
                     self.heap.dec_ref(file_id);
                 }
-                // The generator was never seeded, so there is nothing to roll
-                // back: dropping the pin and the stashed retry is the whole undo.
-                PendingEffect::Post(PostConversionEffect::SeedRandom { target, retry }) => {
-                    PostConversionEffect::SeedRandom { target, retry }.release(self.heap);
-                }
+                // Nothing was installed or seeded, so there is nothing to roll
+                // back: dropping the pin and any stashed value is the whole undo.
+                PendingEffect::Post(
+                    effect @ (PostConversionEffect::BufferLoad { .. }
+                    | PostConversionEffect::FileNext { .. }
+                    | PostConversionEffect::LoadThenCall { .. }
+                    | PostConversionEffect::SeedRandom { .. }),
+                ) => effect.release(self.heap),
                 PendingEffect::Post(PostConversionEffect::SleepResult { result }) => result.drop_with(self),
+                // A walk or glob turns an `OSError` into its result, as CPython's
+                // do for a failed `scandir`; anything else still raises.
+                PendingEffect::Scan(effect) if effect.absorbs(&error) => {
+                    return match effect.apply(Err(error), self) {
+                        Ok(value) => {
+                            self.push(value);
+                            self.run_external()
+                        }
+                        Err(err) => self.resume_with_exception(err),
+                    };
+                }
+                PendingEffect::Scan(effect) => effect.release(self.heap),
                 // Hold no state or heap references — nothing to roll back.
                 PendingEffect::Pre(_)
                 | PendingEffect::Post(
@@ -2214,7 +2374,9 @@ impl<'h> VM<'h> {
         // Use the normal exception handling mechanism
         // handle_exception returns None if caught, Some(error) if not caught
         if let Some(uncaught_error) = self.handle_exception(error) {
-            return Err(uncaught_error);
+            // The turn ends here without entering the run loop, so this is its
+            // only chance at the limit re-check every host turn ends with.
+            return self.finish_host_turn(Err(uncaught_error));
         }
         yield_if_parked!(self);
         // Exception was caught, continue execution

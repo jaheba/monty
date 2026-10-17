@@ -181,7 +181,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, HostClass> {
         let name = self.get(vm.heap).name(vm.heap, vm.interns).to_owned();
         let attr_count = self.get(vm.heap).attrs.len();
         write_dataclass_repr(f, &name, attr_count, vm, heap_ids, |i, vm| {
-            let Some((key, _)) = self.get(vm.heap).attrs.item_at(i) else {
+            let Some((key, _)) = self.get(vm.heap).attrs.iter().nth(i) else {
                 return Ok((String::new(), None));
             };
             let key = key.clone_with_heap(vm.heap);
@@ -202,9 +202,20 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, HostClass> {
             let value = self
                 .get(vm.heap)
                 .attrs
-                .item_at(i)
+                .iter()
+                .nth(i)
                 .map(|(_, v)| v.clone_with_heap(vm.heap));
             Ok((key_str, value))
+        })
+    }
+
+    /// Suspends as a `__call__` on the instance's uuid: whether a host object
+    /// is callable, and what calling it does, is the host's decision.
+    fn py_call(&mut self, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
+        Ok(CallResult::MethodCall {
+            name: EitherStr::Heap("__call__".to_owned()),
+            args,
+            object_id: self.get(vm.heap).instance_id(),
         })
     }
 

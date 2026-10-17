@@ -16,8 +16,10 @@ use crate::{
 pub(crate) mod asyncio;
 pub(crate) mod base64;
 pub(crate) mod binascii;
+pub(crate) mod bisect;
 pub(crate) mod collections;
 pub(crate) mod copy;
+pub(crate) mod csv;
 pub(crate) mod dataclasses;
 pub(crate) mod datetime;
 pub(crate) mod functools;
@@ -28,6 +30,7 @@ pub(crate) mod itertools;
 pub(crate) mod json;
 pub(crate) mod math;
 pub(crate) mod os;
+pub(crate) mod os_path;
 pub(crate) mod pathlib;
 pub(crate) mod random;
 pub(crate) mod re;
@@ -47,8 +50,10 @@ pub(crate) enum StandardLib {
     Asyncio,
     /// The `pathlib` module providing object-oriented filesystem paths.
     Pathlib,
-    /// The `os` module providing operating system interface (only `getenv()` implemented).
+    /// The `os` module: environment access, host-mediated filesystem calls and `os.path`.
     Os,
+    /// The `os.path` module (CPython's `posixpath`), also reached as `import posixpath`.
+    OsPath,
     /// The `math` module providing mathematical functions and constants.
     Math,
     /// The `json` module providing JSON parsing and serialization.
@@ -84,6 +89,11 @@ pub(crate) enum StandardLib {
     Time,
     /// The `hashlib` module: the guaranteed algorithms, `new()` and `pbkdf2_hmac()`.
     Hashlib,
+    /// Binary search and sorted insertion.
+    Bisect,
+    /// The `csv` module: readers, writers, `DictReader` / `DictWriter` and the
+    /// built-in dialects.
+    Csv,
     /// The `gc` module exposing a single `collect()` for tests. Only present
     /// under the `test-hooks` feature so production sandboxes never see it.
     ///
@@ -100,6 +110,7 @@ impl StandardLib {
             StaticStrings::Asyncio => Some(Self::Asyncio),
             StaticStrings::Pathlib => Some(Self::Pathlib),
             StaticStrings::Os => Some(Self::Os),
+            StaticStrings::OsPath | StaticStrings::Posixpath => Some(Self::OsPath),
             StaticStrings::Math => Some(Self::Math),
             StaticStrings::Json => Some(Self::Json),
             StaticStrings::Re => Some(Self::Re),
@@ -115,14 +126,23 @@ impl StandardLib {
             StaticStrings::Copy => Some(Self::Copy),
             StaticStrings::Time => Some(Self::Time),
             StaticStrings::Hashlib => Some(Self::Hashlib),
+            StaticStrings::Bisect => Some(Self::Bisect),
+            StaticStrings::Csv => Some(Self::Csv),
             #[cfg(feature = "test-hooks")]
             StaticStrings::Gc => Some(Self::Gc),
             _ => None,
         }
     }
 
+    /// The import names of every built-in module (`os.path` included), so a
+    /// host can keep its own module names clear of them.
+    pub fn names() -> impl Iterator<Item = &'static str> {
+        (0..)
+            .map_while(StaticStrings::from_repr)
+            .filter_map(|name| Self::from_static(name).map(|_| <&'static str>::from(name)))
+    }
+
     /// Creates a new instance of this module on the heap.
-    ///
     pub fn create(self, vm: &mut VM<'_>) -> HeapId {
         match self {
             Self::Sys => sys::create_module(vm),
@@ -130,6 +150,7 @@ impl StandardLib {
             Self::Asyncio => asyncio::create_module(vm),
             Self::Pathlib => pathlib::create_module(vm),
             Self::Os => os::create_module(vm),
+            Self::OsPath => os_path::create_module(vm),
             Self::Math => math::create_module(vm),
             Self::Json => json::create_module(vm),
             Self::Re => re::create_module(vm),
@@ -145,6 +166,8 @@ impl StandardLib {
             Self::Copy => copy::create_module(vm),
             Self::Time => time::create_module(vm),
             Self::Hashlib => hashlib::create_module(vm),
+            Self::Bisect => bisect::create_module(vm),
+            Self::Csv => csv::create_module(vm),
             #[cfg(feature = "test-hooks")]
             Self::Gc => gc::create_module(vm),
         }
@@ -162,6 +185,7 @@ pub(crate) enum ModuleFunctions {
     Json(json::JsonFunctions),
     Math(math::MathFunctions),
     Os(os::OsFunctions),
+    OsPath(os_path::OsPathFunctions),
     Re(re::ReFunctions),
     Unicodedata(unicodedata::UnicodedataFunctions),
     Itertools(itertools::ItertoolsFunctions),
@@ -173,6 +197,8 @@ pub(crate) enum ModuleFunctions {
     Copy(copy::CopyFunctions),
     Time(time::TimeFunctions),
     Hashlib(hashlib::HashlibFunctions),
+    Bisect(bisect::BisectFunctions),
+    Csv(csv::CsvFunctions),
     /// `gc` module functions — only present under the `test-hooks` feature.
     /// See [`gc`] for why it is gated; as in [`StandardLib`], the gated block
     /// goes last and new variants are appended ahead of it.
@@ -194,6 +220,7 @@ impl fmt::Display for ModuleFunctions {
             Self::Json(func) => write!(f, "{func}"),
             Self::Math(func) => write!(f, "{func}"),
             Self::Os(func) => write!(f, "{func}"),
+            Self::OsPath(func) => write!(f, "{func}"),
             Self::Re(func) => write!(f, "{func}"),
             Self::Unicodedata(func) => write!(f, "{func}"),
             Self::Itertools(func) => write!(f, "{func}"),
@@ -205,6 +232,8 @@ impl fmt::Display for ModuleFunctions {
             Self::Copy(func) => write!(f, "{func}"),
             Self::Time(func) => write!(f, "{func}"),
             Self::Hashlib(func) => write!(f, "{func}"),
+            Self::Bisect(func) => write!(f, "{func}"),
+            Self::Csv(func) => write!(f, "{func}"),
             #[cfg(feature = "test-hooks")]
             Self::Gc(func) => write!(f, "{func}"),
             #[cfg(feature = "test-hooks")]
@@ -225,6 +254,7 @@ impl ModuleFunctions {
             Self::Json(functions) => json::call(vm, functions, args).map(CallResult::Value),
             Self::Math(functions) => math::call(vm, functions, args).map(CallResult::Value),
             Self::Os(functions) => os::call(vm, functions, args),
+            Self::OsPath(functions) => os_path::call(vm, functions, args),
             Self::Re(functions) => re::call(vm, functions, args),
             Self::Unicodedata(functions) => unicodedata::call(vm, functions, args).map(CallResult::Value),
             Self::Itertools(functions) => itertools::call(vm, functions, args).map(CallResult::Value),
@@ -236,6 +266,8 @@ impl ModuleFunctions {
             Self::Copy(functions) => copy::call(vm, functions, args).map(CallResult::Value),
             Self::Time(functions) => time::call(vm, functions, args),
             Self::Hashlib(functions) => hashlib::call(vm, functions, args).map(CallResult::Value),
+            Self::Bisect(functions) => bisect::call(vm, functions, args).map(CallResult::Value),
+            Self::Csv(functions) => csv::call(vm, functions, args),
             #[cfg(feature = "test-hooks")]
             Self::Gc(functions) => gc::call(vm, functions, args).map(CallResult::Value),
             #[cfg(feature = "test-hooks")]
