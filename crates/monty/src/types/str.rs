@@ -1103,7 +1103,7 @@ impl<'h> PyAttrs<'h> for PyStr<'h> {
             let capacity = s.len().saturating_add(total_pad.saturating_mul(fillchar.len_utf8()));
             let mut builder = StringBuilder::with_capacity(capacity, &vm.heap.tracker)?;
             // CPython puts the odd fill unit on the left only when `width` is also odd.
-        let left_pad = total_pad / 2 + (total_pad & width & 1);
+            let left_pad = total_pad / 2 + (total_pad & width & 1);
             let right_pad = total_pad - left_pad;
             for _ in 0..left_pad {
                 builder.push(fillchar)?;

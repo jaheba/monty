@@ -834,7 +834,7 @@ impl<'heap> PyAttrs<'heap> for PyRePatternImpl {
     type Receiver = HeapRead<'heap, RePattern>;
 
     #[pymethod]
-    fn search<'h>(value: &mut HeapRead<'h, RePattern>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+    fn search<'h>(value: &HeapRead<'h, RePattern>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
         let arg = args.get_one_arg("Pattern.search", vm.heap)?;
         defer_drop!(arg, vm);
         let text = arg.to_str(vm)?;
@@ -842,7 +842,7 @@ impl<'heap> PyAttrs<'heap> for PyRePatternImpl {
     }
 
     #[pymethod]
-    fn r#match<'h>(value: &mut HeapRead<'h, RePattern>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+    fn r#match<'h>(value: &HeapRead<'h, RePattern>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
         let arg = args.get_one_arg("Pattern.match", vm.heap)?;
         defer_drop!(arg, vm);
         let text = arg.to_str(vm)?;
@@ -850,7 +850,7 @@ impl<'heap> PyAttrs<'heap> for PyRePatternImpl {
     }
 
     #[pymethod]
-    fn fullmatch<'h>(value: &mut HeapRead<'h, RePattern>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+    fn fullmatch<'h>(value: &HeapRead<'h, RePattern>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
         let arg = args.get_one_arg("Pattern.fullmatch", vm.heap)?;
         defer_drop!(arg, vm);
         let text = arg.to_str(vm)?;
@@ -858,7 +858,7 @@ impl<'heap> PyAttrs<'heap> for PyRePatternImpl {
     }
 
     #[pymethod]
-    fn findall<'h>(value: &mut HeapRead<'h, RePattern>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+    fn findall<'h>(value: &HeapRead<'h, RePattern>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
         let arg = args.get_one_arg("Pattern.findall", vm.heap)?;
         defer_drop!(arg, vm);
         let text = arg.to_str(vm)?;
@@ -923,7 +923,7 @@ impl<'heap> PyAttrs<'heap> for PyRePatternImpl {
     }
 
     #[pymethod]
-    fn finditer<'h>(value: &mut HeapRead<'h, RePattern>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+    fn finditer<'h>(value: &HeapRead<'h, RePattern>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
         let arg = args.get_one_arg("Pattern.finditer", vm.heap)?;
         defer_drop!(arg, vm);
         let text = arg.to_str(vm)?;
