@@ -1397,7 +1397,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
                 self.compile_lambda(func_def)?;
             }
 
-            Expr::LambdaRaw { .. } => {
+            Expr::LambdaRaw { .. } | Expr::FunctionRaw { .. } => {
                 // LambdaRaw should be converted to Lambda during prepare phase
                 unreachable!("Expr::LambdaRaw should not exist after prepare phase")
             }
@@ -4027,6 +4027,7 @@ impl CompileError {
 /// Maps a binary `Operator` to its corresponding `Opcode`.
 fn operator_to_opcode(op: &Operator) -> Opcode {
     match op {
+        Operator::JsStrictEq => Opcode::JsStrictEq,
         Operator::Add => Opcode::BinaryAdd,
         Operator::Sub => Opcode::BinarySub,
         Operator::Mult => Opcode::BinaryMul,
@@ -4070,7 +4071,7 @@ fn operator_to_inplace_opcode(op: &Operator) -> Option<Opcode> {
         Operator::BitXor => Some(Opcode::InplaceXor),
         Operator::LShift => Some(Opcode::InplaceLShift),
         Operator::RShift => Some(Opcode::InplaceRShift),
-        Operator::MatMult => None,
+        Operator::MatMult | Operator::JsStrictEq => None,
         Operator::And | Operator::Or => {
             unreachable!("And/Or operators cannot be used in augmented assignment")
         }

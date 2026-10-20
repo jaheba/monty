@@ -1428,6 +1428,7 @@ impl<'h> VM<'h> {
                     self.delete_cell(slot);
                 }
                 // Binary Operations - route through exception handling for tracebacks
+                Opcode::JsStrictEq => try_catch!(self, self.js_strict_eq()),
                 Opcode::BinaryAdd => try_catch!(self, self.binary_add()),
                 Opcode::BinarySub => try_catch!(self, self.binary_sub()),
                 Opcode::BinaryMul => try_catch!(self, self.binary_mult()),

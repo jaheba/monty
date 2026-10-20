@@ -5,7 +5,7 @@ use crate::{
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
     heap::DropGuard,
-    types::PyTrait,
+    types::{PyTrait, Type},
     value::Value,
 };
 
@@ -24,6 +24,21 @@ impl VM<'_> {
     /// Bitwise inversion (`~x`).
     pub(super) fn unary_invert(&mut self) -> Result<(), RunError> {
         self.unary_op(PyTrait::py_invert_impl, "~")
+    }
+
+    pub(super) fn js_strict_eq(&mut self) -> Result<(), RunError> {
+        self.binary_op(|lhs, rhs, vm| {
+            let left = lhs.py_type(vm);
+            let right = rhs.py_type(vm);
+            // Python bools are numeric for equality; JS bools are a distinct category.
+            let numeric = matches!(left, Type::Int | Type::Float) && matches!(right, Type::Int | Type::Float);
+            let equal = if numeric || (left == Type::Str && right == Type::Str) {
+                lhs.py_eq_operator(rhs, vm)?
+            } else {
+                lhs.is(rhs)
+            };
+            Ok(Value::Bool(equal))
+        })
     }
 
     /// Binary addition.

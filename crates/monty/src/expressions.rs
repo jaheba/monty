@@ -7,7 +7,7 @@ use crate::{
     fstring::FStringPart,
     intern::{BytesId, LongIntId, StringId},
     namespace::NamespaceId,
-    parse::{CodeRange, ParsedSignature, Try},
+    parse::{CodeRange, ParsedSignature, RawFunctionDef, Try},
     value::{EitherStr, Marker},
 };
 
@@ -365,6 +365,13 @@ pub enum Expr {
         signature: ParsedSignature,
         /// The lambda body expression (not yet prepared).
         body: Box<ExprLoc>,
+    },
+    /// A function expression with a statement body, prepared like a lambda.
+    FunctionRaw {
+        name_id: StringId,
+        signature: ParsedSignature,
+        body: Vec<Node<RawFunctionDef>>,
+        is_async: bool,
     },
     /// Lambda expression: `lambda args: body` (prepared form).
     ///
@@ -985,6 +992,8 @@ pub type PreparedNode = Node<PreparedFunctionDef>;
 /// The comment on each variant shows the source-level symbol.
 #[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum Operator {
+    /// JS strict equality: numeric/string values compare by value, objects by identity.
+    JsStrictEq,
     // `+`
     Add,
     // `-`

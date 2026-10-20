@@ -20,6 +20,8 @@ use monty_types::{
 use ruff_python_ast::token::TokenKind;
 use ruff_python_parser::{InterpolatedStringErrorType, LexicalErrorType, ParseErrorType, parse_module};
 
+#[cfg(feature = "javascript")]
+use crate::javascript;
 use crate::{
     args::{ArgValues, KwargsValues},
     bytecode::{FrameExit, VM, VMSnapshot},
@@ -30,7 +32,7 @@ use crate::{
     name_map::NameMap,
     object_bridge::{MontyGraphExt, MontyObjectExt},
     parse::source_nesting_exception,
-    run::{CompileOptions, DEFAULT_CWD, Executor, Program, ReplSession, SessionTables},
+    run::{CompileOptions, DEFAULT_CWD, Executor, Frontend, Program, ReplSession, SessionTables},
     run_progress::{
         ConvertedExit, ExtFunctionResult, LookupAnswer, LookupScope, NameLookupResult, convert_frame_exit,
         resume_lookup, resume_with_result,
@@ -233,7 +235,30 @@ impl MontyRepl {
         inputs: impl Into<NamedValues>,
         print: PrintWriter<'_>,
     ) -> Result<ReplProgress, Box<ReplStartError>> {
-        let code = code.0;
+        self.feed_start_language(code.0, inputs.into(), print, false)
+    }
+
+    #[cfg(feature = "javascript")]
+    /// Starts a JS feed that can suspend on host calls and futures, using the shared snapshot state.
+    pub fn feed_javascript_start(
+        self,
+        code: &str,
+        inputs: impl Into<NamedValues>,
+        print: PrintWriter<'_>,
+    ) -> Result<ReplProgress, Box<ReplStartError>> {
+        if let Err(error) = javascript::check_source(code) {
+            return Err(Box::new(ReplStartError { repl: self, error }));
+        }
+        self.feed_start_language(code, inputs.into(), print, true)
+    }
+
+    fn feed_start_language(
+        self,
+        code: &str,
+        inputs: NamedValues,
+        print: PrintWriter<'_>,
+        javascript: bool,
+    ) -> Result<ReplProgress, Box<ReplStartError>> {
         let mut this = self;
         if code.is_empty() {
             return Ok(ReplProgress::Complete {
@@ -242,18 +267,25 @@ impl MontyRepl {
             });
         }
 
-        let (input_values, names) = unstable::into_named_values_parts(inputs.into());
+        let (input_values, names) = unstable::into_named_values_parts(inputs);
         let (input_names, input_ids): (Vec<_>, Vec<_>) = names.into_iter().unzip();
 
         let input_script_name = this.next_input_script_name();
         // Preserve this snippet's source (see `feed_run` for rationale).
         let code: Arc<str> = Arc::from(code);
+        #[cfg(feature = "javascript")]
+        if javascript {
+            this.sources
+                .entry(javascript::STDLIB_FILENAME.to_owned())
+                .or_insert_with(|| Arc::from(javascript::STDLIB));
+        }
         this.sources.insert(input_script_name.clone(), Arc::clone(&code));
         let session = ReplSession {
             script_name: &this.script_name,
             cwd: &this.cwd,
             os_policy: &this.os_policy,
         };
+        let frontend = this.frontend(javascript);
         let mut executor = match Executor::new_repl_snippet(
             code,
             &input_script_name,
@@ -262,6 +294,7 @@ impl MontyRepl {
             &input_names,
             this.options,
             session,
+            frontend,
         ) {
             Ok(exec) => exec,
             Err(error) => return Err(Box::new(ReplStartError { repl: this, error })),
@@ -329,12 +362,54 @@ impl MontyRepl {
         inputs: impl Into<NamedValues>,
         print: PrintWriter<'_>,
     ) -> Result<MontyObject, MontyException> {
+        self.feed_language(code, inputs.into(), print, false)
+    }
+
+    #[cfg(feature = "javascript")]
+    /// Compiles JavaScript into the same bytecode and runs it in this session.
+    pub fn feed_javascript(
+        &mut self,
+        code: &str,
+        inputs: impl Into<NamedValues>,
+        print: PrintWriter<'_>,
+    ) -> Result<MontyObject, MontyException> {
+        self.feed_language(code, inputs.into(), print, true)
+    }
+
+    fn frontend(&self, javascript: bool) -> Frontend {
+        #[cfg(feature = "javascript")]
+        if javascript {
+            let ready = self
+                .interns
+                .get_string_id_by_name("_js_ready")
+                .and_then(|name| self.global_names.get(name))
+                .and_then(|slot| self.globals.get(slot.index()))
+                .is_some_and(|value| matches!(value, Value::Bool(true)));
+            return Frontend::JavaScript { install_stdlib: !ready };
+        }
+        #[cfg(not(feature = "javascript"))]
+        let _ = javascript;
+        Frontend::Python
+    }
+
+    fn feed_language(
+        &mut self,
+        code: &str,
+        inputs: NamedValues,
+        print: PrintWriter<'_>,
+        javascript: bool,
+    ) -> Result<MontyObject, MontyException> {
         if code.is_empty() {
             return Ok(MontyObject::none());
         }
-        source_nesting_exception(code, &self.script_name, self.options.source_scan_threshold)?;
+        if javascript {
+            #[cfg(feature = "javascript")]
+            javascript::check_source(code)?;
+        } else {
+            source_nesting_exception(code, &self.script_name, self.options.source_scan_threshold)?;
+        }
 
-        let (input_values, names) = unstable::into_named_values_parts(inputs.into());
+        let (input_values, names) = unstable::into_named_values_parts(inputs);
         let (input_names, input_ids): (Vec<_>, Vec<_>) = names.into_iter().unzip();
 
         let input_script_name = self.next_input_script_name();
@@ -343,12 +418,19 @@ impl MontyRepl {
         // column/preview information — `Executor.code` only survives until
         // the next feed. The one copy of the text is shared with the executor.
         let code: Arc<str> = Arc::from(code);
+        #[cfg(feature = "javascript")]
+        if javascript {
+            self.sources
+                .entry(javascript::STDLIB_FILENAME.to_owned())
+                .or_insert_with(|| Arc::from(javascript::STDLIB));
+        }
         self.sources.insert(input_script_name.clone(), Arc::clone(&code));
         let session = ReplSession {
             script_name: &self.script_name,
             cwd: &self.cwd,
             os_policy: &self.os_policy,
         };
+        let frontend = self.frontend(javascript);
         let mut executor = Executor::new_repl_snippet(
             code,
             &input_script_name,
@@ -357,6 +439,7 @@ impl MontyRepl {
             &input_names,
             self.options,
             session,
+            frontend,
         )?;
 
         self.ensure_globals_size(executor.namespace_size());

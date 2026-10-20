@@ -134,21 +134,21 @@ The worker requests module type stubs through `OsFunctionCall::ImportStubs`; the
 - `monty-fs` crate — mount real host directories into the sandbox at virtual paths (read-write, read-only, or copy-on-write in-memory overlay), with path resolution hardened against escapes.
 - `RunProgress::OsCall` — filesystem and other `os`-level operations the host can intercept or delegate.
 - `FunctionCall::object_id` and `NameLookup::object_id` identify the host receiver for routed calls and lookups,
-  including class construction via `__call__`.
-  Plain calls and lookups carry `None`.
+    including class construction via `__call__`.
+    Plain calls and lookups carry `None`.
 - Every suspension carries a `SourceRange` (`FunctionCall::position`, `OsCall::position`, `NameLookup::position`,
-  `ResolveFutures::position()`) locating the suspending expression: the call, the name, or the `await` the main task is
-  blocked on.
+    `ResolveFutures::position()`) locating the suspending expression: the call, the name, or the `await` the main task is
+    blocked on.
 - `MontyRun::with_os_policy` / `MontyRepl::with_os_policy` configure clocks, sleeps and initial random state on every
-  execution path.
-  `DateTimeSource` selects the system clock, a fixed instant or the host; `SandboxTimeZone` independently selects UTC, a
-  fixed offset and name, or an IANA zone (`SandboxTimeZone::named`, resolved from the tz database that `monty-types`'
-  `tzdb` or `tzdb-bundled` feature provides).
-  `SleepMode` selects capped system sleeps, a host handler or no wait; `RandomStart` selects OS entropy, a seed with
-  `random.seed()` semantics or host entropy.
-  Defaults use the system clock, UTC and OS entropy, with sleeps capped at ten seconds.
-  System sleeps suspend for the host to wait without its `os` handler; standard execution waits inline.
-  `CallHost` delegates to the host through `RunProgress::OsCall`.
+    execution path.
+    `DateTimeSource` selects the system clock, a fixed instant or the host; `SandboxTimeZone` independently selects UTC, a
+    fixed offset and name, or an IANA zone (`SandboxTimeZone::named`, resolved from the tz database that `monty-types`'
+    `tzdb` or `tzdb-bundled` feature provides).
+    `SleepMode` selects capped system sleeps, a host handler or no wait; `RandomStart` selects OS entropy, a seed with
+    `random.seed()` semantics or host entropy.
+    Defaults use the system clock, UTC and OS entropy, with sleeps capped at ten seconds.
+    System sleeps suspend for the host to wait without its `os` handler; standard execution waits inline.
+    `CallHost` delegates to the host through `RunProgress::OsCall`.
 
 ## Monty crates
 
@@ -161,6 +161,29 @@ The worker requests module type stubs through `OsFunctionCall::ImportStubs`; the
 - [`monty-type-checking`](https://crates.io/crates/monty-type-checking) — type checking of sandboxed code, powered by [ty](https://docs.astral.sh/ty/).
 - [`monty-typeshed`](https://crates.io/crates/monty-typeshed) — the trimmed typeshed stubs describing the stdlib subset Monty implements.
 - [`monty-macros`](https://crates.io/crates/monty-macros) — the proc macros behind `monty`'s argument parsing.
+
+## Experimental shared-VM JavaScript frontend
+
+The Rust `javascript` feature adds `MontyRepl::feed_javascript` and `feed_javascript_start`.
+Python and JS share globals, heap objects, closures, execution frames, resource limits and snapshots.
+OXC lowers JS directly to Monty's internal AST, reusing name resolution and bytecode compilation.
+The compatibility library in `src/javascript/stdlib.py` is handwritten Python, compiled once per session
+and executed by the same VM. Agent JS is never translated to Python source.
+This proof has no worker or binding integration.
+
+Supported data-processing code includes objects, arrays, destructuring, spread, templates, ordinary and async
+functions, block arrows, captured writes, `for`/`for...of`, conditionals, optional access, nullish coalescing,
+exceptions, common array/string methods, `Object`, `JSON`, `Math`, `Set`, `Map` and `Promise.all`.
+`feed_javascript_start` suspends and resumes host calls and futures through the existing Python machinery,
+including calls inside array callbacks and snapshots of pending work.
+
+```sh
+cargo test -p monty --features javascript,memory-model-checks --test javascript_frontend --test javascript_agent_cases
+```
+
+The corpus covers 27 representative data-processing programs. It is a curated regression suite, not a
+measurement that 90% of real agent output works. See [the limitations](../../docs/limitations/javascript-shared-vm.md)
+for the supported subset and intentional divergences.
 
 ## License
 

@@ -1214,7 +1214,21 @@ impl<'i, 'g> Prepare<'i, 'g> {
                 body,
             } => {
                 // Convert the raw lambda into a prepared lambda expression
-                return self.prepare_lambda(name_id, &signature, &body, position);
+                return self.prepare_function_expression(
+                    name_id,
+                    &signature,
+                    vec![Node::Return(Some(*body))],
+                    false,
+                    position,
+                );
+            }
+            Expr::FunctionRaw {
+                name_id,
+                signature,
+                body,
+                is_async,
+            } => {
+                return self.prepare_function_expression(name_id, &signature, body, is_async, position);
             }
             Expr::Lambda { .. } => {
                 // Lambda should only be created during prepare, never during parsing
@@ -2011,19 +2025,13 @@ impl<'i, 'g> Prepare<'i, 'g> {
         })
     }
 
-    /// Prepares a lambda expression, converting it into a prepared function definition.
-    ///
-    /// Lambdas are essentially anonymous functions with an implicit return of their body
-    /// expression. This method follows the same preparation logic as `prepare_function_def`
-    /// but:
-    /// - Uses `<lambda>` as the function name (not registered in scope)
-    /// - Wraps the body expression as `Node::Return(body)`
-    /// - Returns `ExprLoc` with `Expr::Lambda` instead of `PreparedNode`
-    fn prepare_lambda(
+    /// Prepares an anonymous function without binding its synthetic name in the enclosing scope.
+    fn prepare_function_expression(
         &mut self,
         lambda_name_id: StringId,
         parsed_sig: &ParsedSignature,
-        body: &ExprLoc,
+        body_nodes: Vec<ParseNode>,
+        is_async: bool,
         position: CodeRange,
     ) -> Result<ExprLoc, ParseError> {
         // Create a synthetic <lambda> name identifier (not registered in scope)
@@ -2036,15 +2044,10 @@ impl<'i, 'g> Prepare<'i, 'g> {
             NameScope::Local,
         );
 
-        // Wrap the body expression as a return statement for scope analysis
-        let body_as_node: ParseNode = Node::Return(Some(body.clone()));
-        let body_nodes = vec![body_as_node];
-
         // Extract param names from the parsed signature for scope analysis
         let param_names: Vec<StringId> = parsed_sig.param_names().collect();
 
         // Pass 1: Collect scope information from the lambda body
-        // (Lambdas can't have global/nonlocal declarations, but can have nested functions)
         let scope_info = collect_function_scope_info(&body_nodes, &param_names, self.interner);
 
         // Build enclosing_locals: names that are local to this scope or
@@ -2148,7 +2151,7 @@ impl<'i, 'g> Prepare<'i, 'g> {
             }
         }
 
-        // Create the prepared function definition (lambdas are never async)
+        // Function expressions share the same closure layout as named functions.
         let func_def = PreparedFunctionDef {
             name: lambda_name,
             signature,
@@ -2163,7 +2166,7 @@ impl<'i, 'g> Prepare<'i, 'g> {
             cell_var_slots,
             cell_param_indices,
             default_exprs,
-            is_async: false,
+            is_async,
         };
 
         Ok(ExprLoc::new(
@@ -2842,7 +2845,7 @@ fn collect_assigned_names_from_expr(
             }
         }
         // Lambda bodies have their own scope - walrus inside them doesn't affect us
-        Expr::LambdaRaw { .. } | Expr::Lambda { .. } => {}
+        Expr::LambdaRaw { .. } | Expr::FunctionRaw { .. } | Expr::Lambda { .. } => {}
         // Leaf expressions don't contain walrus operators
         Expr::Literal(_) | Expr::Builtin(_) | Expr::Name(_) => {}
     }
@@ -3224,6 +3227,9 @@ fn collect_cell_vars_from_expr(
 ) {
     use crate::expressions::Expr;
     match &expr.expr {
+        Expr::FunctionRaw { signature, body, .. } => {
+            collect_cell_vars_from_function(signature, body, our_locals, cell_vars, interner);
+        }
         Expr::LambdaRaw { signature, body, .. } => {
             // This lambda's *default* expressions are evaluated in OUR scope at
             // definition time, not inside the lambda — so any name they
@@ -3730,6 +3736,12 @@ fn collect_referenced_names_from_expr(
             key, value, generators, ..
         } => {
             collect_referenced_names_from_comprehension(generators, None, Some((key, value)), referenced, interner);
+        }
+        Expr::FunctionRaw { signature, body, .. } => {
+            collect_nested_function_references(signature, body, referenced, interner);
+            for default in signature.default_exprs() {
+                collect_referenced_names_from_expr(default, referenced, interner);
+            }
         }
         Expr::LambdaRaw { signature, body, .. } => {
             // Build set of parameter names (these are local to the lambda, not free variables)

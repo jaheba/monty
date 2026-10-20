@@ -56,6 +56,10 @@ debug = true
 strip = false
 
 [workspace.dependencies]
+oxc_allocator = "0.155.0"
+oxc_ast = "0.155.0"
+oxc_parser = "0.155.0"
+oxc_span = "0.155.0"
 # Internal crates. The `path` is used for local/workspace builds; the `version`
 # is required so the crates can be published to crates.io (`cargo publish`
 # rejects path-only dependencies). These versions MUST be kept in lockstep with

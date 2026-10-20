@@ -17,6 +17,10 @@ name = "monty"
 path = "src/lib.rs"
 
 [dependencies]
+oxc_allocator = { workspace = true, optional = true }
+oxc_ast = { workspace = true, optional = true }
+oxc_parser = { workspace = true, optional = true }
+oxc_span = { workspace = true, optional = true }
 monty-macros = { workspace = true }
 monty-types = { workspace = true }
 ruff_python_parser = { workspace = true }
@@ -58,6 +62,7 @@ itertools = "0.14.0"
 jiter = { version = "0.17.0", features = ["num-bigint"] }
 
 [features]
+javascript = ["dep:oxc_allocator", "dep:oxc_ast", "dep:oxc_parser", "dep:oxc_span"]
 # ref-count-return changes behavior to return information on reference counts to check they're correct
 # should be used for testing only
 ref-count-return = ["test-hooks"]

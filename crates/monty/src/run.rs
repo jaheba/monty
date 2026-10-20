@@ -12,6 +12,8 @@ use monty_types::{
 pub use monty_types::{CompileOptions, OsPolicy};
 use ruff_python_stdlib::identifiers::is_identifier;
 
+#[cfg(feature = "javascript")]
+use crate::javascript;
 use crate::{
     bytecode::{Code, CodeBuilder, Compiler, FrameExit, Opcode, VM},
     exception_private::{ExcTypeExt, RunError, RunResult},
@@ -30,6 +32,15 @@ use crate::{
     value::Value,
     virtual_path::{canonical_cwd, posix_join},
 };
+
+#[derive(Clone, Copy)]
+pub(crate) enum Frontend {
+    Python,
+    #[cfg(feature = "javascript")]
+    JavaScript {
+        install_stdlib: bool,
+    },
+}
 
 /// Primary interface for running Monty code.
 ///
@@ -374,6 +385,7 @@ impl Executor {
             CompileInterns::direct(&mut interns),
             input_names,
             options,
+            Frontend::Python,
         )?;
         let namespace_size = globals.len();
 
@@ -406,6 +418,7 @@ impl Executor {
     /// On success the tables move into the executor; on failure they remain unchanged.
     /// `script_name` identifies this feed's source; `session` supplies the user-facing
     /// filename and working directory.
+    #[expect(clippy::too_many_arguments)]
     pub(crate) fn new_repl_snippet(
         code: Arc<str>,
         script_name: &str,
@@ -414,6 +427,7 @@ impl Executor {
         input_names: &[String],
         options: CompileOptions,
         session: ReplSession<'_>,
+        frontend: Frontend,
     ) -> Result<Self, MontyException> {
         check_identifier(input_names)?;
 
@@ -426,6 +440,7 @@ impl Executor {
             CompileInterns::new(interns),
             input_names,
             options,
+            frontend,
         );
         if compiled.is_err() {
             globals.truncate(globals_len);
@@ -859,6 +874,7 @@ fn compile_module_source(
     mut interns: CompileInterns<'_>,
     input_names: impl IntoIterator<Item = impl AsRef<str>>,
     options: CompileOptions,
+    frontend: Frontend,
 ) -> Result<(Code, Vec<NamespaceId>), MontyException> {
     let input_names = input_names.into_iter();
     let mut input_slots = Vec::with_capacity(input_names.size_hint().0);
@@ -869,8 +885,13 @@ fn compile_module_source(
             .map_err(|e| e.into_python_exc(script_name, code))?;
         input_slots.push(slot);
     }
-    let nodes =
-        parse_with_interner(code, script_name, &mut interns).map_err(|e| e.into_python_exc(script_name, code))?;
+    let nodes = match frontend {
+        Frontend::Python => {
+            parse_with_interner(code, script_name, &mut interns).map_err(|e| e.into_python_exc(script_name, code))?
+        }
+        #[cfg(feature = "javascript")]
+        Frontend::JavaScript { install_stdlib } => javascript::parse(code, script_name, &mut interns, install_stdlib)?,
+    };
     let nodes =
         prepare_with_existing_names(nodes, &interns, globals).map_err(|e| e.into_python_exc(script_name, code))?;
     let module_code = Compiler::compile_module(&nodes, &mut interns, globals, options)

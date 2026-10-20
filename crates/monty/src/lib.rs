@@ -19,6 +19,8 @@ mod hash;
 mod heap_data;
 mod identity;
 mod intern;
+#[cfg(feature = "javascript")]
+mod javascript;
 mod modules;
 mod name_map;
 mod namespace;

@@ -598,6 +598,8 @@ pub enum Opcode {
     /// becomes `[v, a, b, c]`. Operand: u8 n. The inverse of `LiftToTop`; the
     /// pattern compiler uses it to park a capture under the pattern's temporaries.
     SinkTop = 129,
+    /// Numbers and strings compare by value; containers and callables by identity.
+    JsStrictEq = 130,
 }
 
 /// `LoadName` flag: the load is in call position, so an unresolved name under
@@ -649,6 +651,7 @@ impl Opcode {
             | Self::LoadLocal1
             | Self::LoadLocal2
             | Self::LoadLocal3
+            | Self::JsStrictEq
             | Self::BinaryAdd
             | Self::BinarySub
             | Self::BinaryMul
@@ -940,8 +943,8 @@ impl Opcode {
             (LoadNone | LoadTrue | LoadFalse | BuildCell, Operand::None) => 1,
             (LoadLocal0 | LoadLocal1 | LoadLocal2 | LoadLocal3, Operand::None) => 1,
             (
-                BinaryAdd | BinarySub | BinaryMul | BinaryDiv | BinaryFloorDiv | BinaryMod | BinaryPow | BinaryAnd
-                | BinaryOr | BinaryXor | BinaryLShift | BinaryRShift | BinaryMatMul,
+                JsStrictEq | BinaryAdd | BinarySub | BinaryMul | BinaryDiv | BinaryFloorDiv | BinaryMod | BinaryPow
+                | BinaryAnd | BinaryOr | BinaryXor | BinaryLShift | BinaryRShift | BinaryMatMul,
                 Operand::None,
             ) => -1,
             (

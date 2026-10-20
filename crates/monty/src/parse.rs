@@ -138,7 +138,7 @@ impl ParsedSignature {
 /// Contains the function name, signature, and body as parsed AST nodes.
 /// During the prepare phase, this is transformed into `PreparedFunctionDef`
 /// with resolved names and scope information.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct RawFunctionDef {
     /// The function name identifier (not yet resolved to a namespace index).
     pub name: Identifier,
