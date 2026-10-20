@@ -467,11 +467,7 @@ impl CallFrame<'_> {
     /// Fetches `N` operand bytes with a single bounds check and advances the frame IP.
     #[inline]
     fn fetch_array<const N: usize>(&mut self) -> [u8; N] {
-        let Some(bytes) = self.bytecode.get(self.ip..).and_then(<[u8]>::first_chunk::<N>) else {
-            unreachable!("instruction IP is out of bounds of the bytecode")
-        };
-        self.ip += N;
-        *bytes
+        monty_execution::fetch(self.bytecode, &mut self.ip)
     }
 
     /// Fetches a `u8` operand at the current IP.
@@ -2486,9 +2482,9 @@ impl<'h> VM<'h> {
         // Clean up frame's stack region (locals + operand stack, which now
         // includes any in-flight comprehension variables — the operand-stack
         // drain naturally covers them).
-        self.stack
-            .drain(frame.stack_base()..)
-            .for_each(|value| value.drop_with(&mut *self.heap));
+        monty_execution::release_stack::<_, false>(&mut self.stack, frame.stack_base(), |value| {
+            value.drop_with(&mut *self.heap);
+        });
         // Almost every frame has no namespace; skip the release call for those.
         if let Some(namespace) = frame.namespace {
             namespace.drop_with(self.heap);

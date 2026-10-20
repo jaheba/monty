@@ -17,6 +17,7 @@ name = "monty"
 path = "src/lib.rs"
 
 [dependencies]
+monty-execution = { workspace = true }
 monty-macros = { workspace = true }
 monty-heap = { workspace = true }
 monty-types = { workspace = true }

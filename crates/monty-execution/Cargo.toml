@@ -1,0 +1,10 @@
+[package]
+name = "monty-execution"
+version = { workspace = true }
+license = { workspace = true }
+rust-version = { workspace = true }
+edition = { workspace = true }
+description = "Execution mechanisms shared by Monty interpreters"
+
+[lints]
+workspace = true

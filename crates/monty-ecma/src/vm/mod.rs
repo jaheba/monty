@@ -1371,29 +1371,25 @@ impl<'p> Vm<'p> {
         &self.frames.last().expect("frame").function.code
     }
 
-    fn operand_u8(&mut self) -> u8 {
+    fn operand<const N: usize>(&mut self) -> [u8; N] {
         let frame = self.frames.last_mut().expect("frame");
-        let byte = frame.function.code.bytecode[frame.ip];
-        frame.ip += 1;
-        byte
+        monty_execution::fetch(&frame.function.code.bytecode, &mut frame.ip)
+    }
+
+    fn operand_u8(&mut self) -> u8 {
+        self.operand::<1>()[0]
     }
 
     fn operand_i8(&mut self) -> i8 {
-        i8::from_le_bytes([self.operand_u8()])
+        i8::from_le_bytes(self.operand())
     }
 
     fn operand_u16(&mut self) -> u16 {
-        let frame = self.frames.last_mut().expect("frame");
-        let bytes = &frame.function.code.bytecode[frame.ip..frame.ip + 2];
-        frame.ip += 2;
-        u16::from_le_bytes([bytes[0], bytes[1]])
+        u16::from_le_bytes(self.operand())
     }
 
     fn operand_i16(&mut self) -> i16 {
-        let frame = self.frames.last_mut().expect("frame");
-        let bytes = &frame.function.code.bytecode[frame.ip..frame.ip + 2];
-        frame.ip += 2;
-        i16::from_le_bytes([bytes[0], bytes[1]])
+        i16::from_le_bytes(self.operand())
     }
 
     fn jump(&mut self, offset: i16) {
@@ -1432,10 +1428,9 @@ impl<'p> Vm<'p> {
 
     /// Drops every stack value from `len` up.
     fn clear_stack(&mut self, len: usize) {
-        while self.stack.len() > len {
-            let value = self.stack.pop().expect("stack");
+        monty_execution::release_stack::<_, true>(&mut self.stack, len, |value| {
             value.drop_with(&mut self.session.heap);
-        }
+        });
     }
 
     // === Errors ===

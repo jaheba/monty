@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "crates/monty",
+    "crates/monty-execution",
     "crates/monty-heap",
     "crates/monty-types",
     "crates/monty-alloc",
@@ -67,6 +68,7 @@ strip = false
 # `workspace.package.version` above and bumped together on each release — see
 # RELEASING.md.
 monty = { path = "crates/monty", version = "1.2.0" }
+monty-execution = { path = "crates/monty-execution", version = "1.2.0" }
 monty-types = { path = "crates/monty-types", version = "1.2.0" }
 monty-heap = { path = "crates/monty-heap", version = "1.2.0" }
 monty-regexp = { path = "crates/monty-regexp", version = "1.2.0" }

@@ -13,6 +13,7 @@ repository = { workspace = true }
 readme = "README.md"
 
 [dependencies]
+monty-execution = { workspace = true }
 monty-heap = { workspace = true }
 monty-regexp = { workspace = true }
 monty-types = { workspace = true }

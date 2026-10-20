@@ -307,9 +307,9 @@ impl VM<'_> {
                 let pushes_exception = entry.pushes_exception();
 
                 // Unwind stack to target depth (drop excess values)
-                for value in this.stack.drain(target_stack_depth..).rev() {
+                monty_execution::release_stack::<_, true>(&mut this.stack, target_stack_depth, |value| {
                     value.drop_with(this.heap);
-                }
+                });
 
                 // Drop exceptions from bypassed handlers so a later bare
                 // `raise` cannot revive them.
