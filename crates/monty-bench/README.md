@@ -4,9 +4,9 @@ The CodSpeed workflow measures wall time and memory allocations.
 Normal pull requests run the six Rust-defined interpreter benchmarks: end-to-end execution, parsing, module cloning,
 REPL feeds after many snippets, session dumps and session loads.
 Scripts with `[bench] always = true` also run in the PR suite; unmarked scripts run only in the full suite.
-Eight scripts are marked, covering general execution, calls, attribute access, list allocation, dict comprehensions,
-JSON parsing and serialization, and cycle collection.
-Together with the Rust-defined benchmarks, the PR suite runs 14 benchmarks.
+Nine scripts are marked, covering general execution, calls, attribute access, list allocation, dict comprehensions,
+JSON parsing and serialization, cycle collection, and order-data aggregation.
+Together with the Rust-defined benchmarks, the PR suite runs 15 benchmarks.
 
 ```python
 # /// monty
