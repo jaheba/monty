@@ -4,7 +4,8 @@ use std::time::Duration;
 
 use monty::{Dump, MontyRepl, ReplProgress, Session, SessionRef, dump};
 use monty_types::{
-    CompileOptions, ExtFunctionResult, MontyObject, NamedValues, PrintWriter, ResourceLimits, ResourceTracker,
+    CompileOptions, ExcType, ExtFunctionResult, MontyException, MontyObject, NamedValues, PrintWriter, ResourceLimits,
+    ResourceTracker,
 };
 
 fn session() -> MontyRepl {
@@ -426,4 +427,128 @@ fn library_collections_restore_identity_keys() {
         javascript(&mut repl, "console.error('diagnostic'); console.warn('warning'); 42"),
         MontyObject::int(42)
     );
+}
+
+fn restore_progress(progress: ReplProgress) -> ReplProgress {
+    let bytes = dump("mixed.py", None, &[], SessionRef::Suspended(&progress)).unwrap();
+    drop(progress.into_repl());
+    let Session::Suspended(restored) = Dump::load(&bytes).unwrap().state else {
+        panic!("suspended session")
+    };
+    *restored
+}
+
+#[test]
+fn restored_host_error_unwinds_mixed_frames_and_finally_once() {
+    let mut repl = session();
+    python(&mut repl, "def bridge():\n    return remote()");
+    let progress = repl.feed_javascript_start(
+        "const events = []; function inner() { try { events.push('before'); return bridge(); } finally { events.push('inner'); } } function outer() { try { return inner(); } finally { events.push('outer'); } } try { outer(); } catch (error) { events.push('caught'); } events.join(',')",
+        NamedValues::new(), PrintWriter::Disabled,
+    ).unwrap();
+    let ReplProgress::FunctionCall(call) = restore_progress(progress) else {
+        panic!("host call")
+    };
+    let progress = call
+        .resume(
+            ExtFunctionResult::Error(MontyException::new(ExcType::ValueError, Some("host failed".to_owned()))),
+            PrintWriter::Disabled,
+        )
+        .unwrap();
+    let (mut repl, value) = progress.into_complete().expect("caught host error");
+    assert_eq!(value, MontyObject::string("before,inner,outer,caught"));
+    assert_eq!(javascript(&mut repl, "events.join(',')"), value);
+}
+
+#[test]
+fn restored_return_runs_suspending_finally_once() {
+    let repl = session();
+    let progress = repl.feed_javascript_start(
+        "const events = []; function run() { try { return 42; } finally { events.push('before'); remote(); events.push('after'); } } run()",
+        NamedValues::new(), PrintWriter::Disabled,
+    ).unwrap();
+    let ReplProgress::FunctionCall(call) = restore_progress(progress) else {
+        panic!("host call")
+    };
+    let progress = call.resume(MontyObject::none(), PrintWriter::Disabled).unwrap();
+    let (mut repl, value) = progress.into_complete().expect("return after finally");
+    assert_eq!(value, MontyObject::int(42));
+    assert_eq!(
+        javascript(&mut repl, "events.join(',')"),
+        MontyObject::string("before,after")
+    );
+}
+
+#[test]
+fn restored_forced_abort_skips_javascript_handlers_and_finally() {
+    let repl = session();
+    let progress = repl.feed_javascript_start(
+        "const events = []; try { events.push('before'); remote(); } catch (error) { events.push('caught'); } finally { events.push('finally'); } events.push('after');",
+        NamedValues::new(), PrintWriter::Disabled,
+    ).unwrap();
+    let ReplProgress::FunctionCall(call) = restore_progress(progress) else {
+        panic!("host call")
+    };
+    let error = call
+        .abort(
+            MontyException::new(ExcType::RuntimeError, Some("host aborted".to_owned())),
+            PrintWriter::Disabled,
+        )
+        .unwrap_err();
+    assert_eq!(error.error.exc_type(), ExcType::RuntimeError);
+    let mut repl = error.repl;
+    assert_eq!(javascript(&mut repl, "events.join(',')"), MontyObject::string("before"));
+    assert_eq!(python(&mut repl, "40 + 2"), MontyObject::int(42));
+}
+
+#[test]
+fn scalar_strings_agree_across_operations_and_host_snapshot_boundaries() {
+    let mut repl = session();
+    repl.feed_javascript(
+        "const text = input;",
+        vec![("input".to_owned(), MontyObject::string("a😀é"))],
+        PrintWriter::Disabled,
+    )
+    .unwrap();
+    let bytes = dump("mixed.py", None, &[], SessionRef::Idle(&repl)).unwrap();
+    let Session::Idle(mut repl) = Dump::load(&bytes).unwrap().state else {
+        panic!("idle session")
+    };
+    for (code, expected) in [
+        ("text.length", MontyObject::int(3)),
+        ("text[1]", MontyObject::string("😀")),
+        ("text.slice(1, 2)", MontyObject::string("😀")),
+        ("text.at(-2)", MontyObject::string("😀")),
+        ("text.indexOf('é')", MontyObject::int(2)),
+        ("text.split('').join('|')", MontyObject::string("a|😀|é")),
+        ("[...text].join('|')", MontyObject::string("a|😀|é")),
+        (
+            "JSON.parse(JSON.stringify({[text]: text}))[text]",
+            MontyObject::string("a😀é"),
+        ),
+        (r"'\uD83D\uDE00'", MontyObject::string("😀")),
+        ("'e\u{301}'.length", MontyObject::int(2)),
+    ] {
+        assert_eq!(javascript(&mut repl, code), expected, "{code}");
+    }
+}
+
+#[test]
+fn lone_surrogates_are_rejected_at_every_supported_string_entry() {
+    let mut repl = session();
+    for code in [
+        r"'\uD800'",
+        r"'\uDC00'",
+        r"`\uD800`",
+        r"({'\uD800': 1})",
+        r#"JSON.parse('"\\uD800"')"#,
+        r#"JSON.parse('{"\\uD800": 1}')"#,
+    ] {
+        assert!(
+            repl.feed_javascript(code, NamedValues::new(), PrintWriter::Disabled)
+                .is_err(),
+            "{code}"
+        );
+    }
+    assert_eq!(javascript(&mut repl, "40 + 2"), MontyObject::int(42));
 }
