@@ -50,3 +50,71 @@ signed_zero(2, -0.0)
     let mut runner = MontyRun::new(code.to_owned(), "test.py", vec![], CompileOptions::default()).unwrap();
     runner.run_no_limits(vec![]).unwrap();
 }
+
+#[test]
+fn numeric_division_fast_paths_and_fallbacks() {
+    let code = r#"
+import math
+
+def check(a, b, quotient, floor, remainder):
+    assert a / b == quotient
+    assert a // b == floor
+    assert a % b == remainder
+    assert type(a / b) == type(quotient)
+    assert type(a // b) == type(floor)
+    assert type(a % b) == type(remainder)
+
+for a, b, floor, remainder in [(7, 2, 3, 1), (-7, 2, -4, 1), (7, -2, -4, -1), (-7, -2, 3, -1)]:
+    check(a, b, float(a) / float(b), floor, remainder)
+    check(float(a), b, float(a) / float(b), float(floor), float(remainder))
+    check(a, float(b), float(a) / float(b), float(floor), float(remainder))
+    check(float(a), float(b), float(a) / float(b), float(floor), float(remainder))
+
+check(1.0, 0.1, 10.0, 9.0, 0.09999999999999995)
+check(-9223372036854775808, -1, 9223372036854775808.0, 9223372036854775808, 0)
+check(1 << 100, 2, float(1 << 99), 1 << 99, 0)
+check(True, 2, 0.5, 0, 1)
+
+# Converting either operand to float first gives a different rounded quotient.
+a = 9007199254740993
+b = 3
+assert a / b == 3002399751580331.0
+
+def check_zero(a, b):
+    for op in ['/', '//', '%']:
+        try:
+            if op == '/':
+                a / b
+            elif op == '//':
+                a // b
+            else:
+                a % b
+        except ZeroDivisionError:
+            pass
+        else:
+            assert False
+    assert 7 + 2 == 9
+
+for a in [7, 7.0, 1 << 100]:
+    for b in [0, 0.0, -0.0]:
+        check_zero(a, b)
+
+for a, b in [(-0.0, 2), (0, -2.0), (0.0, -2)]:
+    assert math.copysign(1.0, a / b) == -1.0
+    assert math.copysign(1.0, a // b) == -1.0
+for a, b in [(0, -2.0), (0.0, -2), (4.0, -2.0)]:
+    assert math.copysign(1.0, a % b) == -1.0
+
+for a, b in [(float('nan'), 2.0), (float('inf'), 2), (float('-inf'), 2.0)]:
+    assert math.isnan(a // b)
+    assert math.isnan(a % b)
+assert math.isinf(float('inf') / 2)
+check(2, float('inf'), 0.0, 0.0, 2.0)
+
+def format_mod(a, b):
+    return a % b
+assert format_mod('%s', 'value') == 'value'
+"#;
+    let mut runner = MontyRun::new(code.to_owned(), "test.py", vec![], CompileOptions::default()).unwrap();
+    runner.run_no_limits(vec![]).unwrap();
+}

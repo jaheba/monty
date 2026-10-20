@@ -6,7 +6,7 @@ use crate::{
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
     heap::DropGuard,
     types::{PyTrait, long_int::wide_i128_into_value},
-    value::Value,
+    value::{Value, floor_divmod, py_float_divmod, py_float_mod},
 };
 
 impl VM<'_> {
@@ -55,16 +55,42 @@ impl VM<'_> {
 
     /// Binary division.
     pub(super) fn binary_div(&mut self) -> Result<(), RunError> {
+        if self.binary_numeric_division(
+            |lhs, rhs| {
+                // Larger integers need exact division before rounding to a float.
+                (lhs.unsigned_abs() <= 1 << f64::MANTISSA_DIGITS && rhs.unsigned_abs() <= 1 << f64::MANTISSA_DIGITS)
+                    .then(|| Value::Float(lhs as f64 / rhs as f64))
+            },
+            |lhs, rhs| lhs / rhs,
+        ) {
+            return Ok(());
+        }
+
         self.binary_op(|lhs, rhs, vm| lhs.py_truediv(rhs, vm))
     }
 
     /// Binary floor division.
     pub(super) fn binary_floordiv(&mut self) -> Result<(), RunError> {
+        if self.binary_numeric_division(
+            |lhs, rhs| floor_divmod(lhs, rhs).map(|(quotient, _)| Value::Int(quotient)),
+            |lhs, rhs| py_float_divmod(lhs, rhs).0,
+        ) {
+            return Ok(());
+        }
+
         self.binary_op(|lhs, rhs, vm| lhs.py_floordiv(rhs, vm))
     }
 
     /// Binary modulo.
     pub(super) fn binary_mod(&mut self) -> Result<(), RunError> {
+        if self.binary_numeric_division(
+            // MIN % -1 is zero even though the quotient overflows i64.
+            |lhs, rhs| Some(Value::Int(floor_divmod(lhs, rhs).map_or(0, |(_, remainder)| remainder))),
+            py_float_mod,
+        ) {
+            return Ok(());
+        }
+
         self.binary_op(|lhs, rhs, vm| lhs.py_mod(rhs, vm))
     }
 
@@ -179,6 +205,32 @@ impl VM<'_> {
             (Value::Float(lhs), Value::Float(rhs)) => Some(Value::Float(float_op(*lhs, *rhs))),
             (Value::Int(lhs), Value::Float(rhs)) => Some(Value::Float(float_op(*lhs as f64, *rhs))),
             (Value::Float(lhs), Value::Int(rhs)) => Some(Value::Float(float_op(*lhs, *rhs as f64))),
+            _ => None,
+        };
+
+        if let Some(result) = result {
+            // Both operands are immediate values, so neither needs heap cleanup.
+            self.stack[len - 2] = result;
+            self.stack.truncate(len - 1);
+            true
+        } else {
+            false
+        }
+    }
+
+    /// Handles immediate numeric division; zero divisors retain the ordinary error path.
+    #[inline]
+    fn binary_numeric_division(
+        &mut self,
+        int_op: impl FnOnce(i64, i64) -> Option<Value>,
+        float_op: impl FnOnce(f64, f64) -> f64,
+    ) -> bool {
+        let len = self.stack.len();
+        let result = match (&self.stack[len - 2], &self.stack[len - 1]) {
+            (Value::Int(lhs), Value::Int(rhs)) if *rhs != 0 => int_op(*lhs, *rhs),
+            (Value::Float(lhs), Value::Float(rhs)) if *rhs != 0.0 => Some(Value::Float(float_op(*lhs, *rhs))),
+            (Value::Int(lhs), Value::Float(rhs)) if *rhs != 0.0 => Some(Value::Float(float_op(*lhs as f64, *rhs))),
+            (Value::Float(lhs), Value::Int(rhs)) if *rhs != 0 => Some(Value::Float(float_op(*lhs, *rhs as f64))),
             _ => None,
         };
 
