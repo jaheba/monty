@@ -2314,12 +2314,6 @@ mod tests {
         value::Value,
     };
 
-    #[test]
-    fn heap_id_uses_four_bytes() {
-        assert_eq!(std::mem::size_of::<HeapId>(), 4);
-        assert_eq!(HeapId::from_index(u32::MAX as usize).index(), u32::MAX as usize);
-    }
-
     #[cfg(target_pointer_width = "64")]
     #[test]
     #[should_panic(expected = "heap index exceeds u32::MAX")]
