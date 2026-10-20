@@ -5,7 +5,7 @@ use crate::{
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
     heap::DropGuard,
-    types::PyTrait,
+    types::{PyTrait, long_int::wide_i128_into_value},
     value::Value,
 };
 
@@ -28,16 +28,28 @@ impl VM<'_> {
 
     /// Binary addition.
     pub(super) fn binary_add(&mut self) -> Result<(), RunError> {
+        if self.binary_numeric(i64::checked_add, |lhs, rhs| lhs + rhs, |lhs, rhs| lhs + rhs) {
+            return Ok(());
+        }
+
         self.binary_op(|lhs, rhs, vm| lhs.py_add(rhs, vm))
     }
 
     /// Binary subtraction.
     pub(super) fn binary_sub(&mut self) -> Result<(), RunError> {
+        if self.binary_numeric(i64::checked_sub, |lhs, rhs| lhs - rhs, |lhs, rhs| lhs - rhs) {
+            return Ok(());
+        }
+
         self.binary_op(|lhs, rhs, vm| lhs.py_sub(rhs, vm))
     }
 
     /// Binary multiplication.
     pub(super) fn binary_mult(&mut self) -> Result<(), RunError> {
+        if self.binary_numeric(i64::checked_mul, |lhs, rhs| lhs * rhs, |lhs, rhs| lhs * rhs) {
+            return Ok(());
+        }
+
         self.binary_op(|lhs, rhs, vm| lhs.py_mul(rhs, vm))
     }
 
@@ -146,6 +158,37 @@ impl VM<'_> {
             Ok(())
         } else {
             Err(ExcType::unary_type_error(symbol, &value.py_type_name(this)))
+        }
+    }
+
+    /// Handles immediate int/float pairs without reference-count guards or type dispatch.
+    #[inline]
+    fn binary_numeric(
+        &mut self,
+        int_op: impl FnOnce(i64, i64) -> Option<i64>,
+        wide_op: impl FnOnce(i128, i128) -> i128,
+        float_op: impl FnOnce(f64, f64) -> f64,
+    ) -> bool {
+        let len = self.stack.len();
+        let result = match (&self.stack[len - 2], &self.stack[len - 1]) {
+            (Value::Int(lhs), Value::Int(rhs)) => Some(match int_op(*lhs, *rhs) {
+                Some(result) => Value::Int(result),
+                // Sums, differences and products of two i64 operands fit in i128.
+                None => wide_i128_into_value(wide_op(i128::from(*lhs), i128::from(*rhs)), self.heap),
+            }),
+            (Value::Float(lhs), Value::Float(rhs)) => Some(Value::Float(float_op(*lhs, *rhs))),
+            (Value::Int(lhs), Value::Float(rhs)) => Some(Value::Float(float_op(*lhs as f64, *rhs))),
+            (Value::Float(lhs), Value::Int(rhs)) => Some(Value::Float(float_op(*lhs, *rhs as f64))),
+            _ => None,
+        };
+
+        if let Some(result) = result {
+            // Both operands are immediate values, so neither needs heap cleanup.
+            self.stack[len - 2] = result;
+            self.stack.truncate(len - 1);
+            true
+        } else {
+            false
         }
     }
 
