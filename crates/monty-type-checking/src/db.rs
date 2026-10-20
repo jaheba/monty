@@ -74,7 +74,7 @@ impl Default for MemoryDb {
     /// constructor is the only sanctioned way to build a `MemoryDb`.
     fn default() -> Self {
         let src_root = SystemPathBuf::from(SRC_ROOT);
-        // These statics outlive every session; the database and its caches do not.
+        // Typeshed and the lint registry outlive every session; the database and its caches do not.
         let vendored = allocate_into_baseline(monty_typeshed::file_system).clone();
         let lint_registry = allocate_into_baseline(default_lint_registry);
 
