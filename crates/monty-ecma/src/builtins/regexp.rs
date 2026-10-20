@@ -9,7 +9,7 @@
 use std::{mem, ops::Range, sync::Arc};
 
 use monty_regexp::{
-    CompileError, CompileErrorSource, CompiledRegExp, ExecError, GroupName, RegExpFlags, RegExpMatch,
+    CompileError, CompileErrorSource, CompiledRegExp, ExecError, GroupName, RegExpFlags,
     javascript_compile_error_message,
 };
 
@@ -30,6 +30,20 @@ use crate::{
         number::{to_uint32, to_usize},
     },
 };
+
+/// Capture ranges in scalar offsets, converted from the executor's UTF-16 offsets.
+struct RegExpMatch {
+    captures: Vec<Option<Range<usize>>>,
+}
+
+impl RegExpMatch {
+    fn captures(&self) -> &[Option<Range<usize>>] {
+        &self.captures
+    }
+    fn capture(&self, index: usize) -> Option<&Range<usize>> {
+        self.captures.get(index).and_then(Option::as_ref)
+    }
+}
 
 /// `ToLength`'s upper bound, 2⁵³ − 1.
 const MAX_SAFE_INTEGER: f64 = 9_007_199_254_740_991.0;
@@ -114,12 +128,15 @@ pub(super) fn constructor(vm: &mut Vm<'_>, _: &JsValue, args: &[JsValue], constr
 /// `SyntaxError` for an invalid pattern.
 pub(crate) fn create(vm: &mut Vm<'_>, source: JsString, flags: &JsString) -> RunResult<JsValue> {
     let program = compile(vm, &source, flags)?;
-    Ok(allocate(vm, source, program))
+    let mut bits = program.flags().bits();
+    if !flags.as_str().contains('u') {
+        bits &= !RegExpFlags::UNICODE.bits();
+    }
+    Ok(allocate(vm, source, program, bits))
 }
 
 /// Allocates the object for an already compiled pattern, `lastIndex` at 0.
-fn allocate(vm: &mut Vm<'_>, source: JsString, program: Arc<CompiledRegExp>) -> JsValue {
-    let flags = program.flags().bits();
+fn allocate(vm: &mut Vm<'_>, source: JsString, program: Arc<CompiledRegExp>, flags: u16) -> JsValue {
     let proto = vm.session.realm.regexp_prototype;
     let data = RegExpData {
         source,
@@ -136,7 +153,11 @@ fn allocate(vm: &mut Vm<'_>, source: JsString, program: Arc<CompiledRegExp>) -> 
 fn compile(vm: &mut Vm<'_>, source: &JsString, flags: &JsString) -> RunResult<Arc<CompiledRegExp>> {
     // the program is roughly linear in the pattern; the hard limit covers the rest
     vm.tracker().check_allocation(source.len().saturating_mul(64))?;
-    match monty_regexp::compile(&source.to_units(), &flags.to_units()) {
+    let mut effective_flags = flags.to_utf16();
+    if !flags.as_str().contains(['u', 'v']) {
+        effective_flags.push(u16::from(b'u'));
+    }
+    match monty_regexp::compile(&source.to_utf16(), &effective_flags) {
         Ok(program) => Ok(Arc::new(program)),
         Err(error) => {
             let message = regexp_error_message(&source.to_string_lossy(), &flags.to_string_lossy(), &error);
@@ -177,25 +198,25 @@ fn escape_source(source: &JsString) -> JsString {
         if escaped {
             escaped = false;
             out.push(unit);
-        } else if unit == u16::from(b'\\') {
+        } else if unit == u32::from(b'\\') {
             escaped = true;
             out.push(unit);
-        } else if unit == u16::from(b'[') {
+        } else if unit == u32::from(b'[') {
             in_class = true;
             out.push(unit);
-        } else if unit == u16::from(b']') {
+        } else if unit == u32::from(b']') {
             in_class = false;
             out.push(unit);
-        } else if unit == u16::from(b'/') && !in_class {
-            out.extend("\\/".encode_utf16());
-        } else if unit == u16::from(b'\n') {
-            out.extend("\\n".encode_utf16());
-        } else if unit == u16::from(b'\r') {
-            out.extend("\\r".encode_utf16());
+        } else if unit == u32::from(b'/') && !in_class {
+            out.extend("\\/".chars().map(u32::from));
+        } else if unit == u32::from(b'\n') {
+            out.extend("\\n".chars().map(u32::from));
+        } else if unit == u32::from(b'\r') {
+            out.extend("\\r".chars().map(u32::from));
         } else if unit == 0x2028 {
-            out.extend("\\u2028".encode_utf16());
+            out.extend("\\u2028".chars().map(u32::from));
         } else if unit == 0x2029 {
-            out.extend("\\u2029".encode_utf16());
+            out.extend("\\u2029".chars().map(u32::from));
         } else {
             out.push(unit);
         }
@@ -266,13 +287,35 @@ fn execute(
     let outcome = {
         let tracker = vm.tracker();
         let interrupted = || tracker.check_time().is_err();
-        match input {
-            JsString::Latin1(bytes) => monty_regexp::execute_latin1_with_interrupt(program, bytes, start, interrupted),
-            JsString::Utf16(units) => monty_regexp::execute_with_interrupt(program, units, start, interrupted),
-        }
+        let units = input.to_utf16();
+        let start_units: usize = input.as_str().chars().take(start).map(char::len_utf16).sum();
+        monty_regexp::execute_with_interrupt(program, &units, start_units, interrupted)
     };
     match outcome {
-        Ok(found) => Ok(found),
+        Ok(found) => Ok(found.map(|found| {
+            let scalar_offset = |offset: usize| {
+                let mut consumed = 0;
+                input
+                    .as_str()
+                    .chars()
+                    .take_while(|c| {
+                        consumed += c.len_utf16();
+                        consumed <= offset
+                    })
+                    .count()
+            };
+            RegExpMatch {
+                captures: found
+                    .captures()
+                    .iter()
+                    .map(|capture| {
+                        capture
+                            .as_ref()
+                            .map(|range| scalar_offset(range.start)..scalar_offset(range.end))
+                    })
+                    .collect(),
+            }
+        })),
         Err(ExecError::Interrupted) => {
             vm.tracker().check_time()?;
             Err(vm.internal_error("regular expression interrupted"))
@@ -387,7 +430,10 @@ fn groups_object(
                 return Err(err);
             }
         };
-        let atom = vm.session.interns.intern_untracked(JsString::from_units(name));
+        let atom = vm
+            .session
+            .interns
+            .intern_untracked(JsString::from_utf16(name).expect("valid regexp group name"));
         vm.define_data(object_id, PropertyKey::Atom(atom), value);
     }
     Ok(object)
@@ -398,14 +444,9 @@ fn define(vm: &mut Vm<'_>, id: HeapId, name: &str, value: JsValue) {
     vm.define_data(id, key, value);
 }
 
-/// `AdvanceStringIndex`: one code point in unicode mode, one code unit otherwise.
-fn advance_index(input: &JsString, index: usize, unicode: bool) -> usize {
-    let is_pair = unicode
-        && matches!(
-            (input.unit_at(index), input.unit_at(index + 1)),
-            (Some(high), Some(low)) if (0xD800..0xDC00).contains(&high) && (0xDC00..0xE000).contains(&low)
-        );
-    if is_pair { index + 2 } else { index + 1 }
+/// MontyScript advances by one scalar even when no Unicode flag was requested.
+fn advance_index(_input: &JsString, index: usize, _unicode: bool) -> usize {
+    index + 1
 }
 
 /// Whether a match consumed nothing, so the next search must move past it.
@@ -609,7 +650,7 @@ pub(super) fn symbol_replace(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], 
     }
     let program = program(vm, id)?;
     let units = input.to_units();
-    let mut out: Vec<u16> = Vec::with_capacity(units.len());
+    let mut out: Vec<u32> = Vec::with_capacity(units.len());
     let mut next_source_position = 0;
     for found in &results {
         let whole = found.capture(0).cloned().unwrap_or(0..0);
@@ -645,7 +686,7 @@ pub(super) fn symbol_replace(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], 
             out.extend(replacement);
             next_source_position = whole.end;
         }
-        vm.tracker().check_growth(out.len(), out.capacity(), 2)?;
+        vm.tracker().check_growth(out.len(), out.capacity(), 4)?;
     }
     if next_source_position < units.len() {
         out.extend_from_slice(&units[next_source_position..]);
@@ -661,7 +702,7 @@ fn call_replacer(
     whole: &Range<usize>,
     captures: &[Option<JsString>],
     groups: Option<&JsValue>,
-) -> RunResult<Vec<u16>> {
+) -> RunResult<Vec<u32>> {
     let mut call_args = Vec::with_capacity(captures.len() + 4);
     call_args.push(vm.alloc_string(input.slice(whole.start, whole.end))?);
     for capture in captures {
@@ -753,7 +794,8 @@ pub(super) fn symbol_match_all(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue]
     let input = vm.coerce_string(arg(args, 0))?;
     let program = program(vm, id)?;
     let source = data(vm, id).source.clone();
-    let matcher = allocate(vm, source, program);
+    let flags = data(vm, id).flags().bits();
+    let matcher = allocate(vm, source, program, flags);
     let matcher_id = matcher.heap_id().expect("object");
     let start = last_index(vm, id)?;
     set_last_index(vm, matcher_id, start)?;

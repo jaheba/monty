@@ -6,6 +6,7 @@
 // file maps JavaScript values to and from that arena; all protobuf encoding,
 // decoding, validation, and protocol dispatch stays in Rust.
 
+import { assertScalarNode } from '../unicode.js'
 import { MontyFileHandle, canonicalFileMode, validateFilePosition } from '../types.js'
 import type { Arena, NodePair, ValueNode } from './component/monty.component.js'
 
@@ -227,6 +228,7 @@ export class ArenaEncoder {
 
   /** Appends a leaf node. */
   private leaf(node: ValueNode): number {
+    assertScalarNode(node)
     const index = this.nodes.length
     this.nodes.push(node)
     return index

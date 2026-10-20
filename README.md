@@ -98,3 +98,6 @@ The Pydantic Stack is everything you need to ship production-grade AI agents:
     full-stack observability
 - [Logfire AI Gateway](https://pydantic.dev/ai-gateway?utm_source=github&utm_medium=readme&utm_campaign=monty) - Unified
     LLM proxy
+
+Python and MontyScript share operand fetching and stack cleanup through `monty-execution`, alongside the shared heap.
+See the [MontyScript subset and differences](docs/limitations/javascript.md).

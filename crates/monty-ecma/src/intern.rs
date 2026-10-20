@@ -263,7 +263,7 @@ impl Interns {
             return Ok(*id);
         }
         // the string is stored twice (table and lookup map) plus the map entry
-        tracker.check_allocation(2 * text.len() * 2 + 64)?;
+        tracker.check_allocation(2 * text.as_str().len() + 64)?;
         Ok(self.intern_untracked(text))
     }
 

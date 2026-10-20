@@ -144,3 +144,5 @@ The pages are the `limitations/` directory of the [repository](https://github.co
 verbatim.
 If you hit something that is neither in the subset nor on these pages, [open an
 issue](https://github.com/pydantic/monty/issues).
+
+The [MontyScript sandbox](javascript.md) has its own language subset and string contract.

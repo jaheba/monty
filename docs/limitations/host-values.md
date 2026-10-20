@@ -5,6 +5,14 @@ These restrictions apply to inputs, host-function arguments and results, and a s
 See the [Python](../quickstart/python.md#which-values-cross-the-boundary) and
 [JavaScript](../quickstart/javascript.md#value-conversion) conversion tables for supported types.
 
+## Text
+
+Host strings must be valid Unicode scalar text.
+JavaScript inputs, callback results and exception messages containing lone UTF-16 surrogates are rejected before
+UTF-8 conversion; they are not silently replaced with U+FFFD.
+Valid surrogate pairs decode to one scalar, and combining marks remain separate.
+See the [MontyScript string contract](javascript.md#strings) for script-side indexing and escapes.
+
 ## Copies and identity
 
 Containers cross as copies; mutating a received list or dict does not mutate the sender's object.

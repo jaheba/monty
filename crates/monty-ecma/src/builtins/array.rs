@@ -372,7 +372,7 @@ pub(super) fn join(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], _: bool) -
 /// `join`'s body, shared with `toString`; nullish elements are empty.
 fn join_elements(vm: &mut Vm<'_>, array: HeapId, separator: &JsString) -> RunResult<JsString> {
     let length = len(vm, array);
-    let mut units: Vec<u16> = Vec::new();
+    let mut units: Vec<u32> = Vec::new();
     for index in 0..length {
         if index > 0 {
             units.extend(separator.units());
@@ -384,7 +384,7 @@ fn join_elements(vm: &mut Vm<'_>, array: HeapId, separator: &JsString) -> RunRes
             let text = vm.coerce_string(&item);
             item.drop_with(&mut vm.session.heap);
             let text = text?;
-            vm.tracker().check_growth(units.len(), units.capacity(), 2)?;
+            vm.tracker().check_growth(units.len(), units.capacity(), 4)?;
             units.extend(text.units());
         }
         vm.tracker().check_memory_time_every(index)?;

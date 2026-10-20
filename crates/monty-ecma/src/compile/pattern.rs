@@ -55,7 +55,11 @@ impl<'c> Compiler<'c> {
             }
             BindingPattern::ObjectPattern(object) => {
                 if top {
-                    let first = object.properties.first().map(|p| self.key_name(&p.key, p.computed));
+                    let first = object
+                        .properties
+                        .first()
+                        .map(|p| self.key_name(&p.key, p.computed))
+                        .transpose()?;
                     self.emit_require_coercible(first)?;
                 }
                 for property in &object.properties {
@@ -115,14 +119,18 @@ impl<'c> Compiler<'c> {
                 self.builder().emit(Opcode::Pop)
             }
             AssignmentTarget::ObjectAssignmentTarget(object) => {
-                let first = object.properties.first().map(|p| match p {
-                    AssignmentTargetProperty::AssignmentTargetPropertyIdentifier(ident) => {
-                        self.intern_str(ident.binding.name.as_str())
-                    }
-                    AssignmentTargetProperty::AssignmentTargetPropertyProperty(prop) => {
-                        self.key_name(&prop.name, prop.computed)
-                    }
-                });
+                let first = object
+                    .properties
+                    .first()
+                    .map(|p| match p {
+                        AssignmentTargetProperty::AssignmentTargetPropertyIdentifier(ident) => {
+                            Ok(self.intern_str(ident.binding.name.as_str()))
+                        }
+                        AssignmentTargetProperty::AssignmentTargetPropertyProperty(prop) => {
+                            self.key_name(&prop.name, prop.computed)
+                        }
+                    })
+                    .transpose()?;
                 self.emit_require_coercible(first)?;
                 let mut excluded = Vec::new();
                 for property in &object.properties {
@@ -140,7 +148,7 @@ impl<'c> Compiler<'c> {
                         }
                         AssignmentTargetProperty::AssignmentTargetPropertyProperty(prop) => {
                             if !prop.computed {
-                                excluded.push(self.key_name(&prop.name, false));
+                                excluded.push(self.key_name(&prop.name, false)?);
                             }
                             self.emit_key_read(&prop.name, prop.computed)?;
                             self.bind_maybe_default(&prop.binding)?;
@@ -210,7 +218,7 @@ impl<'c> Compiler<'c> {
             self.compile_expression(key.to_expression())?;
             return self.builder().emit(Opcode::GetElem);
         }
-        let atom = self.key_name(key, false);
+        let atom = self.key_name(key, false)?;
         if let Some(index) = self.interns.atom(atom).as_array_index() {
             self.emit_number(f64::from(index))?;
             return self.builder().emit(Opcode::GetElem);
@@ -219,19 +227,19 @@ impl<'c> Compiler<'c> {
     }
 
     /// The atom of a non-computed pattern key (an identifier or literal).
-    fn key_name(&mut self, key: &'c PropertyKey<'c>, computed: bool) -> AtomId {
+    fn key_name(&mut self, key: &'c PropertyKey<'c>, computed: bool) -> Result<AtomId, CompileError> {
         if computed {
-            return StaticAtom::Empty.id();
+            return Ok(StaticAtom::Empty.id());
         }
-        match key {
+        Ok(match key {
             PropertyKey::StaticIdentifier(ident) => self.intern_str(ident.name.as_str()),
-            PropertyKey::StringLiteral(lit) => self.intern_units(lit.value.encode_utf16()),
+            PropertyKey::StringLiteral(lit) => self.intern_units(lit.value.encode_utf16())?,
             PropertyKey::NumericLiteral(lit) => {
                 let text = number_to_string(lit.value);
                 self.intern_str(&text)
             }
             _ => StaticAtom::Empty.id(),
-        }
+        })
     }
 
     /// The names a rest pattern leaves out; a computed key is not supported there.
@@ -246,7 +254,7 @@ impl<'c> Compiler<'c> {
                     Self::span_of(key),
                 ))
             } else {
-                Ok(self.key_name(key, false))
+                self.key_name(key, false)
             }
         })
         .collect()

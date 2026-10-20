@@ -45,14 +45,14 @@ use napi::{
         Unknown,
     },
     threadsafe_function::UnknownReturnValue,
-    Env, Error, Result,
+    Env, Error, JsString, Result,
 };
 use napi_derive::napi;
 use opentelemetry::{trace::TraceContextExt, Context};
 use tokio::sync::{watch, Mutex as AsyncMutex};
 
 use crate::{
-    convert::{js_to_monty, monty_to_js, DecodedArena, GraphEncoder},
+    convert::{js_to_monty, monty_to_js, strict_string, DecodedArena, GraphEncoder},
     limits::{extract_limits, JsResourceLimits},
     os_policy::extract_os_policy,
     telemetry::{configured_adapter, configured_tracing_adapter},
@@ -448,12 +448,13 @@ impl NativeSession {
     pub fn feed<'env>(
         &self,
         env: &'env Env,
-        code: String,
+        code: JsString<'env>,
         inputs: Option<Object<'env>>,
         mounts: Vec<ClassInstance<'env, NativeMountDir>>,
         options: NativeFeedOptions,
         on_print: PrintCallback<'env>,
     ) -> Result<PromiseRaw<'env, Object<'env>>> {
+        let code = strict_string(code)?;
         let inputs = convert_inputs(env, inputs)?;
         let mounts = mount_specs(&mounts)?;
         let NativeFeedOptions { cwd, skip_type_check } = options;
@@ -496,10 +497,10 @@ impl NativeSession {
         &self,
         env: &'env Env,
         exc_type: String,
-        message: String,
+        message: JsString<'env>,
         on_print: PrintCallback<'env>,
     ) -> Result<PromiseRaw<'env, Object<'env>>> {
-        let exc = exception_from_parts(&exc_type, message);
+        let exc = exception_from_parts(&exc_type, strict_string(message)?);
         self.run_turn(
             env,
             on_print,
@@ -637,10 +638,10 @@ impl NativeSession {
         &self,
         env: &'env Env,
         exc_type: String,
-        message: String,
+        message: JsString<'env>,
         on_print: PrintCallback<'env>,
     ) -> Result<PromiseRaw<'env, Object<'env>>> {
-        let exc = exception_from_parts(&exc_type, message);
+        let exc = exception_from_parts(&exc_type, strict_string(message)?);
         self.run_turn(
             env,
             on_print,
@@ -671,7 +672,7 @@ impl NativeSession {
                     }
                 } else {
                     let exc_type: String = require(&result, "excType")?;
-                    let message: String = require(&result, "message")?;
+                    let message = strict_string(require(&result, "message")?)?;
                     ResumeValue::Error(exception_from_parts(&exc_type, message))
                 };
                 Ok((call_id, value))
@@ -1116,15 +1117,16 @@ fn convert_inputs<'env>(env: &'env Env, inputs: Option<Object<'env>>) -> Result<
         return Ok(NamedValues::new());
     };
     let mut encoder = GraphEncoder::new(env)?;
-    let names = Object::keys(&inputs)?
-        .into_iter()
-        .map(|name| {
-            // `get_named_property` (not `get`) so an `undefined` input still
-            // converts (to `None`) instead of collapsing to absent
-            let value: Unknown = inputs.get_named_property(&name)?;
-            Ok((name, encoder.push(value)?))
-        })
-        .collect::<Result<Vec<_>>>()?;
+    let keys = inputs.get_property_names()?;
+    let length: u32 = keys.get_named_property("length")?;
+    let mut names = Vec::with_capacity(length as usize);
+    for index in 0..length {
+        let key: JsString = keys.get_element(index)?;
+        let name = strict_string(key)?;
+        // Named access preserves an explicit undefined input instead of treating it as missing.
+        let value: Unknown = inputs.get_named_property(&name)?;
+        names.push((name, encoder.push(value)?));
+    }
     Ok(unstable::named_values_from_parts(encoder.finish(), names).expect("encoded roots are valid"))
 }
 

@@ -824,8 +824,10 @@ impl<'c> Compiler<'c> {
         self.interns.intern_str(text)
     }
 
-    fn intern_units(&mut self, units: impl Iterator<Item = u16>) -> AtomId {
-        self.interns.intern_untracked(JsString::from_unit_iter(units))
+    fn intern_units(&mut self, units: impl Iterator<Item = u16>) -> Result<AtomId, CompileError> {
+        let text = JsString::from_unit_iter(units)
+            .map_err(|_| CompileError::syntax("Lone surrogates are unsupported in MontyScript strings", (0, 0)))?;
+        Ok(self.interns.intern_untracked(text))
     }
 
     fn intern_symbol_name(&mut self, symbol: SymbolId) -> AtomId {

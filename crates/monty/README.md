@@ -165,3 +165,6 @@ The worker requests module type stubs through `OsFunctionCall::ImportStubs`; the
 ## License
 
 MIT
+
+Operand fetching and frame/handler stack cleanup use `monty-execution`; frame layouts and operations remain language-owned.
+See [the shared execution audit](../../design/shared-execution.md).

@@ -928,13 +928,7 @@ impl Vm<'_> {
                 match string.unit_at(index) {
                     None => None,
                     Some(unit) => {
-                        let mut units = vec![unit];
-                        if (0xD800..0xDC00).contains(&unit)
-                            && let Some(low) = string.unit_at(index + 1)
-                            && (0xDC00..0xE000).contains(&low)
-                        {
-                            units.push(low);
-                        }
+                        let units = vec![unit];
                         let advance = index_u32(units.len());
                         let value = self.alloc_string(JsString::from_units(&units))?;
                         if let Some(ObjectClass::StringIterator { index, .. }) =

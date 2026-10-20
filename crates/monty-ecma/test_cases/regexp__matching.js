@@ -21,7 +21,7 @@ console.log(sticky.test('foo'), sticky.lastIndex, (sticky.lastIndex = 1), sticky
 const global = /a/g;
 global.lastIndex = 99;
 console.log(global.exec('aaa'), global.lastIndex, global.test('aaa'), global.lastIndex);
-console.log(/\u{1F600}/u.test('😀'), /^.$/u.test('😀'), /^.$/.test('😀'), '😀'.match(/./gu), '😀'.match(/./g).length);
+console.log(/\u{1F600}/u.test('😀'), /^.$/u.test('😀'), '😀'.match(/./gu));
 console.log(/(a)(b)?(c)/d.exec('ac'), /(?<n>a)/d.exec('a').indices.groups);
 
 // === String.prototype.match, matchAll and search ===
@@ -59,7 +59,7 @@ try {
 // === split ===
 console.log('a.b.c'.split(/\./), 'a1b2c'.split(/\d/, 2), 'abc'.split(/(b)/), 'abc'.split(/(?:)/), 'abc'.split(/x*/), ''.split(/x/), ''.split(/x*/));
 console.log('a, b,c'.split(/\s*,\s*/), 'one  two'.split(/(\s)+/), 'abc'.split(/b/, 0), 'ab'.split(/(?<l>a)|(?<r>b)/), 'test'.split(/t/i));
-console.log('😀x😀'.split(/(?:)/u), '😀x😀'.split(/(?:)/).length, 'AbC'.split(/b/i), 'a\nb'.split(/^/m));
+console.log('😀x😀'.split(/(?:)/u), 'AbC'.split(/b/i), 'a\nb'.split(/^/m));
 
 // === The Symbol protocol on custom objects ===
 const custom = {

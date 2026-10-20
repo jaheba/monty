@@ -517,7 +517,8 @@ impl Parser<'_> {
             match byte {
                 b'"' => {
                     self.pos += 1;
-                    return Ok(JsString::from_units(&units));
+                    return JsString::from_utf16(&units)
+                        .map_err(|_| self.at(vm, "Lone surrogates are unsupported in MontyScript strings"));
                 }
                 b'\\' => {
                     self.pos += 1;

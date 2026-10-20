@@ -19,3 +19,5 @@ console.log(await session.feedRun('x * 2', { inputs: { x: 21 } })) // 42
 - [Security and isolation guarantees](https://pydantic.dev/docs/monty/concepts/security/)
 - [Supported Python subset](https://pydantic.dev/docs/monty/limitations/)
 - [Source and contributing](https://github.com/pydantic/monty)
+
+Host strings must be valid Unicode scalar text; see [host-value restrictions](../../docs/limitations/host-values.md#text).

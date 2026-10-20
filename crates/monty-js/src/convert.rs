@@ -39,7 +39,7 @@ use monty_types::{
     BuiltinsFunctions, ExcType, FileMode, MontyComplex, MontyDate, MontyDateTime, MontyFileHandle, MontyObject,
     MontyTime, MontyTimeDelta, MontyTimeZone, MontyType, MontyUuid,
 };
-use napi::{bindgen_prelude::*, sys::Status};
+use napi::{bindgen_prelude::*, sys::Status, JsString};
 use num_bigint::BigInt as NumBigInt;
 
 /// JavaScript safe integer range: -(2^53) to 2^53.
@@ -667,7 +667,7 @@ impl<'e> GraphEncoder<'e> {
                 })
             }
             ValueType::String => {
-                let s: String = value.coerce_to_string()?.into_utf8()?.into_owned()?;
+                let s: String = strict_string(value.coerce_to_string()?)?;
                 Ok(self.leaf(MontyNode::String(s)))
             }
             ValueType::Object => {
@@ -694,9 +694,7 @@ impl<'e> GraphEncoder<'e> {
                 // JS functions become `Function` nodes (keyed by `name`) for
                 // external function resolution.
                 let func_obj: Object = value.coerce_to_object()?;
-                let name: String = func_obj
-                    .get_named_property::<String>("name")
-                    .unwrap_or_else(|_| "<anonymous>".to_string());
+                let name = get_string_property(&func_obj, "name")?.unwrap_or_else(|| "<anonymous>".to_string());
                 Ok(self.leaf(MontyNode::Function { name, docstring: None }))
             }
             ValueType::Symbol | ValueType::External => {
@@ -716,8 +714,8 @@ impl<'e> GraphEncoder<'e> {
             "Ellipsis" => MontyNode::Ellipsis,
             "NotImplemented" => MontyNode::NotImplemented,
             "Exception" => {
-                let exc_type_str: String = obj.get_named_property("excType")?;
-                let message: String = obj.get_named_property("message")?;
+                let exc_type_str = get_required_string_property(&obj, "excType", "Exception")?;
+                let message = get_required_string_property(&obj, "message", "Exception")?;
                 let exc_type: ExcType = exc_type_str
                     .parse()
                     .map_err(|_| Error::from_reason(format!("Unknown exception type: {exc_type_str}")))?;
@@ -738,7 +736,7 @@ impl<'e> GraphEncoder<'e> {
                 second: obj.get_named_property::<u8>("second")?,
                 microsecond: obj.get_named_property::<u32>("microsecond")?,
                 offset_seconds: obj.get_named_property::<Option<i32>>("offsetSeconds")?,
-                timezone_name: obj.get_named_property::<Option<String>>("timezoneName")?,
+                timezone_name: get_string_property(&obj, "timezoneName")?,
             }),
             "Time" => MontyNode::Time(MontyTime {
                 hour: obj.get_named_property::<u8>("hour")?,
@@ -746,7 +744,7 @@ impl<'e> GraphEncoder<'e> {
                 second: obj.get_named_property::<u8>("second")?,
                 microsecond: obj.get_named_property::<u32>("microsecond")?,
                 offset_seconds: obj.get_named_property::<Option<i32>>("offsetSeconds")?,
-                timezone_name: obj.get_named_property::<Option<String>>("timezoneName")?,
+                timezone_name: get_string_property(&obj, "timezoneName")?,
                 fold: obj.get_named_property::<Option<u8>>("fold")?.unwrap_or(0),
             }),
             "Complex" => MontyNode::Complex(MontyComplex {
@@ -760,7 +758,7 @@ impl<'e> GraphEncoder<'e> {
             }),
             "TimeZone" => MontyNode::TimeZone(MontyTimeZone {
                 offset_seconds: obj.get_named_property::<i32>("offsetSeconds")?,
-                name: obj.get_named_property::<Option<String>>("name")?,
+                name: get_string_property(&obj, "name")?,
             }),
             "Type" => {
                 // A class type (ClassType wrapper, or a round-tripped host class)
@@ -770,7 +768,7 @@ impl<'e> GraphEncoder<'e> {
                     let class_type: Object = obj.get_named_property("classType")?;
                     self.enter_class_type(class_type)
                 } else {
-                    let value: String = obj.get_named_property("value")?;
+                    let value = get_required_string_property(&obj, "value", monty_type)?;
                     let t = MontyType::from_type_name(&value)
                         .ok_or_else(|| Error::from_reason(format!("unknown type name {value:?}")))?;
                     Ok(self.leaf(MontyNode::Type(t)))
@@ -779,7 +777,7 @@ impl<'e> GraphEncoder<'e> {
             // like a builtin type marker, carries only the name, resolved the
             // same way the wasm worker path does
             "BuiltinFunction" => {
-                let value: String = obj.get_named_property("value")?;
+                let value = get_required_string_property(&obj, "value", monty_type)?;
                 let function = value
                     .parse::<BuiltinsFunctions>()
                     .map_err(|_| Error::from_reason(format!("unknown builtin function {value:?}")))?;
@@ -1117,7 +1115,7 @@ fn js_object_entries<'e>(obj: &Object<'e>, env: &'e Env) -> Result<Vec<Child<'e>
     let mut children = Vec::with_capacity(2 * length as usize);
     for i in 0..length {
         let key: Unknown = keys.get_element(i)?;
-        let key_str: String = key.coerce_to_string()?.into_utf8()?.into_owned()?;
+        let key_str: String = strict_string(key.coerce_to_string()?)?;
         let value: Unknown = obj.get_named_property(&key_str)?;
         children.push(Child::Value(env.create_string(&key_str)?.into_unknown(env)?));
         children.push(Child::Value(value));
@@ -1150,7 +1148,7 @@ fn js_attr_pairs<'e>(attrs_arr: Array<'e>, type_name: &str) -> Result<Vec<Child<
 
 /// Reads a canonical uuid string property (instance/type ids).
 fn get_uuid_string_property(obj: &Object, key: &str, type_name: &str) -> Result<MontyUuid> {
-    let value: String = obj.get_named_property(key)?;
+    let value = get_required_string_property(obj, key, type_name)?;
     MontyUuid::parse(&value).ok_or_else(|| {
         Error::from_reason(format!(
             "{type_name} {key} must be a canonical uuid string, got {value:?}"
@@ -1196,7 +1194,7 @@ fn get_required_string_property(obj: &Object, name: &str, marker: &str) -> Resul
     }
     let value: Unknown = obj.get_named_property(name)?;
     if value.get_type()? == ValueType::String {
-        value.coerce_to_string()?.into_utf8()?.into_owned()
+        strict_string(value.coerce_to_string()?)
     } else {
         Err(Error::from_reason(format!("{marker} {name} must be a string")))
     }
@@ -1211,9 +1209,17 @@ fn get_string_property(obj: &Object, name: &str) -> Result<Option<String>> {
 
     let value: Unknown = obj.get_named_property(name)?;
     if value.get_type()? == ValueType::String {
-        let s: String = value.coerce_to_string()?.into_utf8()?.into_owned()?;
+        let s: String = strict_string(value.coerce_to_string()?)?;
         Ok(Some(s))
     } else {
         Ok(None)
     }
+}
+
+/// UTF-8 conversion through napi would silently replace unpaired surrogates.
+pub(crate) fn strict_string(value: JsString<'_>) -> Result<String> {
+    let units = value.into_utf16()?;
+    units
+        .as_str()
+        .map_err(|_| Error::from_reason("Lone surrogates are unsupported in Monty strings"))
 }

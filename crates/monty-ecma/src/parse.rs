@@ -19,7 +19,8 @@
 use std::{borrow::Cow, path::Path};
 
 use oxc_allocator::Allocator;
-use oxc_ast::ast::Program;
+use oxc_ast::ast::{Program, StringLiteral};
+use oxc_ast_visit::Visit;
 use oxc_parser::Parser;
 use oxc_semantic::{Scoping, SemanticBuilder};
 use oxc_transformer::{JsxOptions, JsxRuntime, TransformOptions, Transformer};
@@ -59,6 +60,14 @@ pub(crate) fn parse<'a>(
         return Err(diagnostic_error(error));
     }
     let mut program = parsed.program;
+    let mut strings = ScalarStrings { invalid: None };
+    strings.visit_program(&program);
+    if let Some(span) = strings.invalid {
+        return Err(CompileError::syntax(
+            "Lone surrogates are unsupported in MontyScript strings",
+            span,
+        ));
+    }
     let scoping = {
         let semantic = SemanticBuilder::new().with_check_syntax_error(true).build(&program);
         if let Some(error) = semantic.diagnostics.errors().next() {
@@ -113,4 +122,17 @@ fn diagnostic_error(error: &oxc_diagnostics::OxcDiagnostic) -> CompileError {
         .or_else(|| error.labels.first())
         .map_or((0, 0), |label| (label.offset(), label.offset() + label.len()));
     CompileError::syntax(error.message.to_string(), span)
+}
+
+/// Directives are not compiled as expressions, so validate them with all literals.
+struct ScalarStrings {
+    invalid: Option<(u32, u32)>,
+}
+
+impl<'a> Visit<'a> for ScalarStrings {
+    fn visit_string_literal(&mut self, literal: &StringLiteral<'a>) {
+        if self.invalid.is_none() && char::decode_utf16(literal.value.encode_utf16()).any(|c| c.is_err()) {
+            self.invalid = Some((literal.span.start, literal.span.end));
+        }
+    }
 }

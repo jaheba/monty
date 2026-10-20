@@ -1,6 +1,6 @@
 // The JavaScript sandbox through the same pool API: `Monty.create({ language: 'javascript' })`.
 
-import { afterAll, beforeAll, test } from 'vitest'
+import { afterAll, beforeAll, expect, test } from 'vitest'
 import { t } from './assertions.js'
 
 import { type CheckoutOptions, type FeedOptions, Monty } from '@pydantic/monty'
@@ -126,4 +126,12 @@ const tree = await <Card title="Users"><Users /></Card>;
     ),
   )
   t.is(html, '<section class="card"><h2>Users</h2><ul><li>ada</li><li>lin</li></ul></section>')
+})
+
+test('MontyScript host strings preserve scalars and reject lone surrogates', async () => {
+  await expect(run('text.length', {}, { inputs: { text: 'a😀é' } })).resolves.toBe(3)
+  await expect(run('text', {}, { inputs: { text: 'a\0b' } })).resolves.toBe('a\0b')
+  await expect(run('text', {}, { inputs: { text: '\ud800' } })).rejects.toThrow(/surrogate/)
+  await expect(run('payload', {}, { inputs: { payload: { ['\ud800']: 1 } } })).rejects.toThrow(/surrogate/)
+  await expect(run('\ud800')).rejects.toThrow(/surrogate/)
 })

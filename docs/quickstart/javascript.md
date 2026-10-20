@@ -412,3 +412,5 @@ The package includes declarations with option and method documentation, maintain
 [OS policies](https://github.com/pydantic/monty/blob/main/crates/monty-js/ts/options.ts) and
 [value markers](https://github.com/pydantic/monty/blob/main/crates/monty-js/ts/types.ts).
 Worker pools, channels and transports are internal; the WASM-specific public functions are `loadModule` and `createWorkerPool`.
+
+See [host-value restrictions](../limitations/host-values.md) for text and conversion limits.

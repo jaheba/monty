@@ -1,4 +1,4 @@
-//! `String` and `String.prototype`, over UTF-16 code units.
+//! `String` and `String.prototype`, over Unicode scalar values.
 
 use std::{cmp::Ordering, slice};
 
@@ -94,7 +94,9 @@ pub(super) fn from_char_code(vm: &mut Vm<'_>, _: &JsValue, args: &[JsValue], _: 
         #[expect(clippy::cast_possible_truncation, reason = "fromCharCode keeps the low 16 bits")]
         units.push(to_uint32(n) as u16);
     }
-    vm.alloc_string(JsString::from_units(&units))
+    let text = JsString::from_utf16(&units)
+        .map_err(|_| vm.range_error("Lone surrogates are unsupported in MontyScript strings"))?;
+    vm.alloc_string(text)
 }
 
 /// The string a method was called on (`RequireObjectCoercible` + `ToString`).
@@ -138,18 +140,12 @@ pub(super) fn code_point_at(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], _
     let index = to_usize(index);
     Ok(match string.unit_at(index) {
         None => JsValue::Undefined,
-        Some(high) if (0xD800..0xDC00).contains(&high) => match string.unit_at(index + 1) {
-            Some(low) if (0xDC00..0xE000).contains(&low) => JsValue::Number(f64::from(
-                0x10000 + ((u32::from(high) - 0xD800) << 10) + (u32::from(low) - 0xDC00),
-            )),
-            _ => JsValue::Number(f64::from(high)),
-        },
         Some(unit) => JsValue::Number(f64::from(unit)),
     })
 }
 
 /// The first index at or after `from` where `needle` occurs.
-fn find_units(haystack: &[u16], needle: &[u16], from: usize) -> Option<usize> {
+fn find_units(haystack: &[u32], needle: &[u32], from: usize) -> Option<usize> {
     if needle.is_empty() {
         return (from <= haystack.len()).then_some(from);
     }
@@ -160,7 +156,7 @@ fn find_units(haystack: &[u16], needle: &[u16], from: usize) -> Option<usize> {
 }
 
 /// The last index at or before `from` where `needle` occurs.
-fn rfind_units(haystack: &[u16], needle: &[u16], from: usize) -> Option<usize> {
+fn rfind_units(haystack: &[u32], needle: &[u32], from: usize) -> Option<usize> {
     if needle.len() > haystack.len() {
         return None;
     }
@@ -249,7 +245,7 @@ pub(super) fn to_lower_case(vm: &mut Vm<'_>, this: &JsValue, _: &[JsValue], _: b
 /// Trims JavaScript whitespace from the chosen ends.
 fn trim_units(string: &JsString, start: bool, end: bool) -> JsString {
     let units = string.to_units();
-    let is_space = |unit: &u16| char::from_u32(u32::from(*unit)).is_some_and(is_js_whitespace);
+    let is_space = |unit: &u32| char::from_u32(*unit).is_some_and(is_js_whitespace);
     let mut from = 0;
     let mut to = units.len();
     if start {
@@ -336,7 +332,7 @@ pub(super) fn repeat(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], _: bool)
     }
     let count = to_usize(count);
     vm.tracker()
-        .check_allocation(string.len().saturating_mul(count).saturating_mul(2))?;
+        .check_allocation(string.len().saturating_mul(count).saturating_mul(4))?;
     let units = string.to_units();
     let mut out = Vec::with_capacity(units.len() * count);
     for _ in 0..count {
@@ -350,15 +346,15 @@ fn pad(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], at_start: bool) -> Run
     let string = this_string(vm, this, if at_start { "padStart" } else { "padEnd" })?;
     let target = to_usize(integer_arg(vm, args, 0, 0.0)?);
     let filler = match arg(args, 1) {
-        JsValue::Undefined => vec![u16::from(b' ')],
+        JsValue::Undefined => vec![u32::from(b' ')],
         other => vm.coerce_string(other)?.to_units(),
     };
     if target <= string.len() || filler.is_empty() {
         return string_result(vm, string);
     }
-    vm.tracker().check_allocation(target * 2)?;
+    vm.tracker().check_allocation(target * 4)?;
     let missing = target - string.len();
-    let padding: Vec<u16> = filler.iter().copied().cycle().take(missing).collect();
+    let padding: Vec<u32> = filler.iter().copied().cycle().take(missing).collect();
     let units = string.to_units();
     let mut out = Vec::with_capacity(target);
     if at_start {
@@ -402,7 +398,7 @@ fn replace_impl(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], all: bool) ->
         Some(vm.coerce_string(replacement)?.to_units())
     };
     let units = string.to_units();
-    let mut out: Vec<u16> = Vec::with_capacity(units.len());
+    let mut out: Vec<u32> = Vec::with_capacity(units.len());
     let mut start = 0;
     let mut last_end = 0;
     while let Some(found) = find_units(&units, &pattern, start) {
@@ -430,7 +426,7 @@ fn replace_impl(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], all: bool) ->
         }
         last_end = found + pattern.len();
         start = if pattern.is_empty() { found + 1 } else { last_end };
-        vm.tracker().check_growth(out.len(), out.capacity(), 2)?;
+        vm.tracker().check_growth(out.len(), out.capacity(), 4)?;
         if !all || start > units.len() {
             break;
         }
@@ -443,10 +439,10 @@ fn replace_impl(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], all: bool) ->
 
 /// The pieces `GetSubstitution` expands a replacement template against.
 pub(super) struct MatchContext<'a> {
-    pub subject: &'a [u16],
+    pub subject: &'a [u32],
     /// Where the match starts in `subject`.
     pub position: usize,
-    pub matched: &'a [u16],
+    pub matched: &'a [u32],
     /// Captures 1..n; `None` for a group that did not participate.
     pub captures: &'a [Option<JsString>],
     /// The named-groups object, when the pattern has named groups.
@@ -457,15 +453,15 @@ pub(super) struct MatchContext<'a> {
 /// `$<name>` in `template` into `out`; anything else stays literal.
 pub(super) fn get_substitution(
     vm: &mut Vm<'_>,
-    template: &[u16],
+    template: &[u32],
     context: &MatchContext<'_>,
-    out: &mut Vec<u16>,
+    out: &mut Vec<u32>,
 ) -> RunResult<()> {
-    let dollar = u16::from(b'$');
-    let digit = |unit: u16| {
-        (u16::from(b'0')..=u16::from(b'9'))
+    let dollar = u32::from(b'$');
+    let digit = |unit: u32| {
+        (u32::from(b'0')..=u32::from(b'9'))
             .contains(&unit)
-            .then(|| usize::from(unit - u16::from(b'0')))
+            .then(|| (unit - u32::from(b'0')) as usize)
     };
     let group_count = context.captures.len();
     let mut i = 0;
@@ -478,17 +474,17 @@ pub(super) fn get_substitution(
         }
         let next = template[i + 1];
         i += 2;
-        let literal = |out: &mut Vec<u16>| {
+        let literal = |out: &mut Vec<u32>| {
             out.push(dollar);
             out.push(next);
         };
         if next == dollar {
             out.push(dollar);
-        } else if next == u16::from(b'&') {
+        } else if next == u32::from(b'&') {
             out.extend_from_slice(context.matched);
-        } else if next == u16::from(b'`') {
+        } else if next == u32::from(b'`') {
             out.extend_from_slice(&context.subject[..context.position]);
-        } else if next == u16::from(b'\'') {
+        } else if next == u32::from(b'\'') {
             let after = (context.position + context.matched.len()).min(context.subject.len());
             out.extend_from_slice(&context.subject[after..]);
         } else if let Some(first) = digit(next) {
@@ -506,10 +502,10 @@ pub(super) fn get_substitution(
             } else {
                 literal(out);
             }
-        } else if next == u16::from(b'<') {
+        } else if next == u32::from(b'<') {
             let close = context
                 .groups
-                .and_then(|_| template[i..].iter().position(|unit| *unit == u16::from(b'>')));
+                .and_then(|_| template[i..].iter().position(|unit| *unit == u32::from(b'>')));
             match (context.groups, close) {
                 (Some(groups), Some(close)) => {
                     let name = JsString::from_units(&template[i..i + close]);
@@ -533,7 +529,7 @@ pub(super) fn get_substitution(
 }
 
 /// Appends capture `n` (1-based) when it participated.
-fn push_capture(context: &MatchContext<'_>, n: usize, out: &mut Vec<u16>) {
+fn push_capture(context: &MatchContext<'_>, n: usize, out: &mut Vec<u32>) {
     if let Some(Some(capture)) = context.captures.get(n - 1) {
         out.extend(capture.units());
     }
@@ -610,7 +606,7 @@ fn flags_include(vm: &mut Vm<'_>, regexp: &JsValue, flag: u8, method: &str) -> R
     }
     let text = vm.coerce_string(&flags);
     flags.drop_with(&mut vm.session.heap);
-    Ok(text?.units().any(|unit| unit == u16::from(flag)))
+    Ok(text?.units().any(|unit| unit == u32::from(flag)))
 }
 
 pub(super) fn match_(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], _: bool) -> RunResult<JsValue> {
@@ -714,12 +710,13 @@ pub(super) fn normalize(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], _: bo
     };
     // a decomposition can grow the string several times over
     vm.tracker().check_allocation(string.len().saturating_mul(8))?;
-    let normalized = match &string {
-        JsString::Latin1(bytes) => unicode::normalize::normalize(&**bytes, form),
-        JsString::Utf16(units) => unicode::normalize::normalize(&**units, form),
-    };
+    let units = string.to_utf16();
+    let normalized = unicode::normalize::normalize(&*units, form);
     match normalized {
-        Ok(buffer) => string_result(vm, JsString::from_units(&buffer.to_utf16())),
+        Ok(buffer) => string_result(
+            vm,
+            JsString::from_utf16(&buffer.to_utf16()).expect("normalization preserves scalar validity"),
+        ),
         Err(_) => Err(vm.range_error("Invalid string length")),
     }
 }
@@ -757,7 +754,7 @@ pub(super) fn to_string(vm: &mut Vm<'_>, this: &JsValue, _: &[JsValue], _: bool)
     }
 }
 
-/// `localeCompare` without locales: code-unit order.
+/// `localeCompare` without locales: Unicode scalar order.
 pub(super) fn locale_compare(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], _: bool) -> RunResult<JsValue> {
     let string = this_string(vm, this, "localeCompare")?;
     let other = vm.coerce_string(arg(args, 0))?;

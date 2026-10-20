@@ -42,7 +42,7 @@ fn write(vm: &mut Vm<'_>, stream: PrintStream, args: &[JsValue]) -> RunResult<Js
             if first.is_string()
                 && vm
                     .string_of(first)
-                    .is_some_and(|s| s.units().any(|u| u == u16::from(b'%'))) =>
+                    .is_some_and(|s| s.units().any(|u| u == u32::from(b'%'))) =>
         {
             format_directives(vm, args)?
         }

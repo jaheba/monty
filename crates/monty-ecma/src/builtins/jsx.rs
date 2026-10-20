@@ -380,9 +380,9 @@ fn render_later(vm: &mut Vm<'_>, tree: &JsValue) -> RunResult<JsValue> {
     Ok(JsValue::Ref(result))
 }
 
-/// The HTML being built, as UTF-16 code units like every other string.
+/// The HTML being built, as Unicode scalar values.
 struct Renderer {
-    out: Vec<u16>,
+    out: Vec<u32>,
     /// Values rendered so far, for the periodic resource poll.
     visited: usize,
 }
@@ -533,25 +533,25 @@ impl Renderer {
     }
 
     fn push_str(&mut self, vm: &mut Vm<'_>, text: &str) -> RunResult<()> {
-        self.push_units(vm, text.encode_utf16())
+        self.push_units(vm, text.chars().map(u32::from))
     }
 
-    fn push_units(&mut self, vm: &mut Vm<'_>, units: impl Iterator<Item = u16>) -> RunResult<()> {
-        vm.tracker().check_growth(self.out.len(), self.out.capacity(), 2)?;
+    fn push_units(&mut self, vm: &mut Vm<'_>, units: impl Iterator<Item = u32>) -> RunResult<()> {
+        vm.tracker().check_growth(self.out.len(), self.out.capacity(), 4)?;
         self.out.extend(units);
         Ok(())
     }
 
     /// Text or attribute content with `&`, `<`, `>`, `"` and `'` escaped.
     fn push_escaped(&mut self, vm: &mut Vm<'_>, text: &JsString) -> RunResult<()> {
-        vm.tracker().check_growth(self.out.len(), self.out.capacity(), 2)?;
+        vm.tracker().check_growth(self.out.len(), self.out.capacity(), 4)?;
         for unit in text.units() {
             match unit {
-                0x26 => self.out.extend("&amp;".encode_utf16()),
-                0x3C => self.out.extend("&lt;".encode_utf16()),
-                0x3E => self.out.extend("&gt;".encode_utf16()),
-                0x22 => self.out.extend("&quot;".encode_utf16()),
-                0x27 => self.out.extend("&#x27;".encode_utf16()),
+                0x26 => self.out.extend("&amp;".chars().map(u32::from)),
+                0x3C => self.out.extend("&lt;".chars().map(u32::from)),
+                0x3E => self.out.extend("&gt;".chars().map(u32::from)),
+                0x22 => self.out.extend("&quot;".chars().map(u32::from)),
+                0x27 => self.out.extend("&#x27;".chars().map(u32::from)),
                 other => self.out.push(other),
             }
         }
@@ -578,7 +578,7 @@ fn inner_html_of(vm: &mut Vm<'_>, value: &JsValue) -> RunResult<Option<JsString>
 /// custom properties (`--x`) stay, nullish and boolean values are skipped.
 fn style_text(vm: &mut Vm<'_>, object: HeapId) -> RunResult<JsString> {
     let style = JsValue::Ref(object);
-    let mut units: Vec<u16> = Vec::new();
+    let mut units: Vec<u32> = Vec::new();
     for prop in vm.own_keys(object, true) {
         let name = match prop {
             PropertyKey::Atom(atom) => vm.session.interns.atom(atom).to_string_lossy(),
@@ -604,11 +604,11 @@ fn style_text(vm: &mut Vm<'_>, object: HeapId) -> RunResult<JsString> {
         value.drop_with(&mut vm.session.heap);
         let Some(text) = text else { continue };
         if !units.is_empty() {
-            units.push(u16::from(b';'));
+            units.push(u32::from(b';'));
         }
-        vm.tracker().check_growth(units.len(), units.capacity(), 2)?;
-        units.extend(css_property_name(&name).encode_utf16());
-        units.push(u16::from(b':'));
+        vm.tracker().check_growth(units.len(), units.capacity(), 4)?;
+        units.extend(css_property_name(&name).chars().map(u32::from));
+        units.push(u32::from(b':'));
         units.extend(text.units());
     }
     Ok(JsString::from_units(&units))

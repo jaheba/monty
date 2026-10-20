@@ -51,7 +51,7 @@ impl<'c> Compiler<'c> {
             Expression::NullLiteral(_) => self.builder().emit(Opcode::LoadNull),
             Expression::NumericLiteral(lit) => self.emit_number(lit.value),
             Expression::StringLiteral(lit) => {
-                let atom = self.intern_units(lit.value.encode_utf16());
+                let atom = self.intern_units(lit.value.encode_utf16())?;
                 self.emit_atom(atom)
             }
             Expression::TemplateLiteral(template) => self.compile_template(template),
@@ -862,7 +862,7 @@ impl<'c> Compiler<'c> {
                 CompileError::syntax("invalid escape sequence in template literal", Self::span_of(quasi))
             })?;
             if cooked.len_utf16() > 0 {
-                let atom = self.intern_units(cooked.encode_utf16());
+                let atom = self.intern_units(cooked.encode_utf16())?;
                 self.emit_atom(atom)?;
                 pending = self.bump_template(pending)?;
                 pushed_any = true;
@@ -915,7 +915,7 @@ impl<'c> Compiler<'c> {
             let message = regexp_error_message(pattern, &flags, &error);
             return Err(CompileError::syntax(message, (lit.span.start, lit.span.end)));
         }
-        let pattern = atom_operand(self.intern_units(pattern_units.into_iter()))?;
+        let pattern = atom_operand(self.intern_units(pattern_units.into_iter())?)?;
         let flags = atom_operand(self.intern_str(&flags))?;
         self.builder().emit_u16_u16(Opcode::MakeRegExp, pattern, flags)
     }
@@ -1051,7 +1051,7 @@ impl<'c> Compiler<'c> {
         }
         let atom = match key {
             PropertyKey::StaticIdentifier(ident) => self.intern_str(ident.name.as_str()),
-            PropertyKey::StringLiteral(lit) => self.intern_units(lit.value.encode_utf16()),
+            PropertyKey::StringLiteral(lit) => self.intern_units(lit.value.encode_utf16())?,
             PropertyKey::NumericLiteral(lit) => {
                 let text = number_to_string(lit.value);
                 self.intern_str(&text)

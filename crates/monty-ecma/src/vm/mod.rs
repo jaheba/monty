@@ -1516,7 +1516,7 @@ impl<'p> Vm<'p> {
 
     /// Allocates a string value, charging the tracker for its storage.
     pub fn alloc_string(&mut self, string: JsString) -> RunResult<JsValue> {
-        self.tracker().check_allocation(string.len() * 2 + 32)?;
+        self.tracker().check_allocation(string.as_str().len() + 32)?;
         Ok(JsValue::Str(self.session.heap.allocate(JsHeapData::String(string))))
     }
 

@@ -1,7 +1,7 @@
 // === Basics ===
 const s = 'Hello, World';
 console.log(s.length, s[0], s[100], s.charAt(4), s.charAt(100), s.charCodeAt(0), s.charCodeAt(100), s.codePointAt(0));
-console.log(s.at(-1), s.at(0), s.at(100), 'é'.length, '😀'.length, '😀'.codePointAt(0), '😀'.charCodeAt(1), [...'a😀b'].length);
+console.log(s.at(-1), s.at(0), s.at(100), 'é'.length, '😀'.codePointAt(0), [...'a😀b'].length);
 
 // === Searching ===
 console.log(s.indexOf('o'), s.indexOf('o', 5), s.indexOf('z'), s.lastIndexOf('o'), s.lastIndexOf('o', 5), s.indexOf(''));

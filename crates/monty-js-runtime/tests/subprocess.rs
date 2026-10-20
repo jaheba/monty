@@ -520,3 +520,20 @@ fn suspended_feed_survives_a_dump_and_load() {
         MontyObject::list(vec![MontyObject::string("a".to_owned())])
     );
 }
+
+#[test]
+fn scalar_string_amplification_raises_memory_error_and_preserves_session() {
+    let mut child = ChildProc::spawn();
+    child.create_repl_with(pb::Configure {
+        limits: Some(pb::ResourceLimits {
+            max_memory_bytes: Some(32 * 1024 * 1024),
+            ..Default::default()
+        }),
+        ..configure()
+    });
+    for code in ["'x'.repeat(10000000)", "'😀'.repeat(10000000)"] {
+        let (_, event) = child.feed(code);
+        assert_eq!(expect_error(event).exc_type, "MemoryError");
+        assert_eq!(child.feed_complete("'a😀é'.length"), MontyObject::int(3));
+    }
+}

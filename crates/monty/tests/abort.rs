@@ -265,3 +265,22 @@ fn repl_abort_keeps_the_session_usable() {
         MontyObject::int(42)
     );
 }
+
+#[test]
+fn host_exception_runs_finally_but_forced_abort_does_not_execute_guest_code() {
+    let code = "try:\n    fetch()\nfinally:\n    print('cleanup')\n";
+    let call = start(code).into_function_call().expect("external call");
+    let mut output = String::new();
+    let result = call.resume(
+        ExtFunctionResult::Error(limit_exceeded()),
+        PrintWriter::collect_string(&mut output),
+    );
+    assert!(result.is_err());
+    assert_eq!(output, "cleanup\n");
+
+    let call = start(code).into_function_call().expect("external call");
+    output.clear();
+    let result = call.abort(limit_exceeded(), PrintWriter::collect_string(&mut output));
+    assert!(result.is_err());
+    assert_eq!(output, "");
+}

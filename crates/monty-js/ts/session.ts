@@ -9,6 +9,7 @@
 // external future so other sandbox tasks keep executing, and results are
 // delivered when the worker reports everything is blocked (`resolveFutures`).
 
+import { assertScalarString } from './unicode.js'
 import { context as ContextAPI, type Context } from '@opentelemetry/api'
 
 import type { NativeSession } from '../native-addon.js'
@@ -1483,6 +1484,7 @@ function prepareInputs(
   const memo: WalkMemo = new Map()
   let changed = false
   for (const [name, value] of Object.entries(inputs)) {
+    assertScalarString(name)
     prepared[name] = prepare(value, store, memo)
     changed ||= prepared[name] !== value
   }

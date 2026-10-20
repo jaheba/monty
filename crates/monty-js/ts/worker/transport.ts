@@ -5,6 +5,7 @@
 // converts only between public JavaScript values and the component's flat value
 // arena; protobuf is now entirely internal to Rust.
 
+import { assertScalarString } from '../unicode.js'
 import { MontyCrashedError } from '../errors.js'
 import type { CrashedTurn, NativeFutureResult, NativeTurn, NotMountedTurn } from '../native.js'
 import {
@@ -150,6 +151,8 @@ export class WorkerTransport {
     options: { cwd?: string; skipTypeCheck: boolean },
     onPrint: OnPrint,
   ): Promise<NativeTurn> {
+    assertScalarString(code)
+    for (const name of Object.keys(inputs ?? {})) assertScalarString(name)
     if (mounts.length > 0) {
       throw new Error('the wasm worker does not support filesystem mounts (browser has no host filesystem)')
     }
@@ -703,6 +706,7 @@ function rustDebugString(value: string): string {
 
 /** Creates a traceback-free host exception result. */
 function errorResult(excType: string, message: string): CallResult {
+  assertScalarString(message)
   return { tag: 'error', val: { excType, message } }
 }
 

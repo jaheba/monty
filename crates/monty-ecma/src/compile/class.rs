@@ -297,7 +297,7 @@ impl<'c> Compiler<'c> {
         }
         let atom = match key {
             PropertyKey::StaticIdentifier(ident) => self.intern_str(ident.name.as_str()),
-            PropertyKey::StringLiteral(lit) => self.intern_units(lit.value.encode_utf16()),
+            PropertyKey::StringLiteral(lit) => self.intern_units(lit.value.encode_utf16())?,
             PropertyKey::NumericLiteral(lit) => {
                 let text = number_to_string(lit.value);
                 self.intern_str(&text)

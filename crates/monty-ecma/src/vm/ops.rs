@@ -192,7 +192,7 @@ impl Vm<'_> {
         }
     }
 
-    /// Code-unit equality of two string values.
+    /// Unicode scalar equality of two string values.
     pub fn strings_equal(&self, a: &JsValue, b: &JsValue) -> bool {
         match (a, b) {
             (JsValue::Atom(x), JsValue::Atom(y)) => x == y,
@@ -326,8 +326,8 @@ impl Vm<'_> {
         if let Some(err) = failure {
             return Err(err);
         }
-        self.tracker().check_allocation(total * 2)?;
-        let mut units: Vec<u16> = Vec::with_capacity(total);
+        self.tracker().check_allocation(total * 4)?;
+        let mut units: Vec<u32> = Vec::with_capacity(total);
         for string in &strings {
             units.extend(string.units());
         }

@@ -1,10 +1,29 @@
-# JavaScript sandbox
+# MontyScript sandbox
 
-The `monty-js` worker runs JavaScript on Monty's own engine (`monty-ecma`), behind the same protocol as the Python
-worker.
-Its reference is Node 25 running the same code as an ES module; this page records where the engine behaves
-differently.
+The `monty-js` worker runs MontyScript, a restricted TypeScript-like language, on `monty-ecma`.
+It uses the same protocol as the Python worker.
+Common JavaScript behavior is compared with Node 25 running ES modules.
+Full ECMAScript compatibility is not a goal; this page records the supported subset and deliberate differences.
 The engine is at an early stage, so most entries are features that are not implemented at all.
+
+## Strings
+
+Strings use UTF-8 storage and Unicode code-point indexing.
+Length, numeric properties, `at`, `charAt`, `charCodeAt`, `codePointAt`, slicing, searching, splitting and regex
+positions count Unicode scalar values, including astral characters as one position.
+`'a😀é'.length` is 3, `'a😀é'[1]` is `'😀'`, and `/é/.exec('😀é').index` is 1.
+Combining marks remain separate: `'e\u0301'.length` is 2; grapheme clusters are not the indexing unit.
+String ordering and `localeCompare` without locales use scalar order.
+
+Unpaired surrogate escapes in source literals or template strings raise `SyntaxError`.
+`JSON.parse` rejects unpaired surrogate escapes with `SyntaxError`, and `String.fromCharCode` rejects a lone
+surrogate with `RangeError`; valid UTF-16 surrogate pairs at these entry points decode to one scalar.
+Host text and snapshot text must be valid UTF-8; strings never replace a surrogate silently.
+
+Regex matching always uses Unicode mode internally, including patterns without an explicit `u` or `v` flag.
+The flags exposed by the object still describe the flags requested by the script.
+Legacy non-Unicode identity escapes can therefore raise `SyntaxError`.
+Match indices, capture indices, replacement callback offsets and `lastIndex` use the same scalar positions as strings.
 
 ## Execution model
 
@@ -54,6 +73,11 @@ arrows and methods, `await`, top-level `await`) work as in Node, with these diff
 - `setTimeout`, `setInterval` and `setImmediate` run on a virtual clock: timers fire in due order once the microtask
     queue is empty, without waiting, and the feed ends when both queues are empty. They return a numeric id rather
     than Node's `Timeout`/`Immediate` object, and `clearTimeout` accepts only that id.
+- Promise reactions and `queueMicrotask` callbacks enter one FIFO queue.
+    The current script or callback runs until it returns, throws or suspends before the next queued job starts.
+    Jobs added by a running job append to the queue; all jobs drain before timers or a pending-host-future request.
+    A host answer continues parked execution before the remaining jobs drain.
+    `Promise.all` keeps input order in its result, regardless of settlement order.
 - A promise rejection that still has no handler when the feed's queues drain fails the feed with the rejection
     reason as the uncaught error (Node prints it and exits with code 1); a rejection handled later in the same feed is
     not reported, so there is no `unhandledrejection` event.
@@ -123,7 +147,7 @@ relatives, `Intl`, `Atomics`, `globalThis.process` and every Node module.
 Differences within the available builtins:
 
 - `Array.prototype` lacks `group` and the locale methods; `String.prototype` lacks `localeCompare` with locales
-    (it compares code units), `substr`, `anchor` and the other HTML methods. `String.prototype.normalize` uses the
+    (it compares Unicode scalar values), `substr`, `anchor` and the other HTML methods. `String.prototype.normalize` uses the
     Unicode 17 tables vendored with the regexp engine rather than the host's ICU.
 - When coercing an index argument runs code that shrinks the array (`a.splice({ valueOf() { a.length = 1; return 0; } }, 5)`),
     `splice` and `copyWithin` work on the shrunk array, where Node keeps the length it read first and leaves holes;
@@ -190,7 +214,7 @@ both directions:
 | `undefined`, `null`                       | `None`                                                              |
 | integral number in the safe range, `-0`   | `int` (`-0` becomes `0`)                                            |
 | other numbers                             | `float`                                                             |
-| string                                    | `str` (a lone surrogate becomes U+FFFD)                             |
+| string                                    | `str` (UTF-8, no lone surrogates)                                   |
 | array, `arguments`                        | `list`                                                              |
 | plain object                              | `dict` with `str` keys, own enumerable properties, insertion order  |
 | `Error`                                   | exception of the nearest builtin class with its `message`           |
