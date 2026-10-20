@@ -101,9 +101,14 @@ fn previous_string_representation_dump_is_rejected() {
     let repl = JsRepl::new("contract.js", ResourceLimits::default()).unwrap();
     let mut bytes = dump(JsSessionRef::Idle(&repl)).unwrap();
     let version_offset = b"MONTYJS\0".len();
-    bytes[version_offset..version_offset + 2].copy_from_slice(&1u16.to_le_bytes());
-    let Err(error) = JsDump::load(&bytes) else {
-        panic!("old dump must be rejected");
-    };
-    assert!(error.contains("version 1 is not supported"), "{error}");
+    for version in [1u16, 2] {
+        bytes[version_offset..version_offset + 2].copy_from_slice(&version.to_le_bytes());
+        let Err(error) = JsDump::load(&bytes) else {
+            panic!("old dump must be rejected");
+        };
+        assert!(
+            error.contains(&format!("version {version} is not supported")),
+            "{error}"
+        );
+    }
 }

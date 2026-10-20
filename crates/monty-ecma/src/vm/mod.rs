@@ -30,11 +30,11 @@ use self::{
     promise::{Job, Timer},
 };
 use crate::{
-    builtins::{jsx, regexp},
+    builtins::{array, jsx, regexp},
     bytecode::{Code, Opcode},
     dialect::Dialect,
     error::{RunResult, Throw, stack_frame},
-    function::Function,
+    function::{Function, FunctionKind},
     heap::{GeneratorState, Heap, HeapId, JsHeapData, JsObject, MapKey, PropFlags, PropertyKey, Settled, Target},
     intern::{AtomId, FunctionId, Interns, StaticAtom},
     realm::{ErrorKind, Intrinsic, Realm, ScriptScope},
@@ -569,6 +569,9 @@ impl<'p> Vm<'p> {
     fn record_frame(&mut self) {
         let frame = self.frames.last().expect("frame");
         let function = &frame.function;
+        if function.kind == FunctionKind::Builtin {
+            return;
+        }
         let (start, end) = function
             .code
             .location(frame.op_start)
@@ -1104,6 +1107,15 @@ impl<'p> Vm<'p> {
                 let items: Vec<JsValue> = self.stack.drain(start..).collect();
                 let array = self.new_array(items)?;
                 self.stack.push(array);
+            }
+            Opcode::ArrayMap => {
+                let mode = self.operand_u8();
+                let rhs = self.pop();
+                let lhs = self.pop();
+                let result = array::map_step(self, mode, &lhs, &rhs);
+                lhs.drop_with(&mut self.session.heap);
+                rhs.drop_with(&mut self.session.heap);
+                self.stack.push(result?);
             }
             Opcode::ArrayPush => {
                 let value = self.pop();

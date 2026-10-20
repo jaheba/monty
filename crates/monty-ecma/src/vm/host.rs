@@ -23,6 +23,7 @@ use super::{
 use crate::{
     builtins::date,
     error::{RunResult, Throw},
+    function::FunctionKind,
     heap::{FunctionObject, HeapId, PropertyKey},
     intern::{AtomId, FunctionId},
     object_bridge::Importer,
@@ -351,7 +352,9 @@ impl Vm<'_> {
     fn current_position(&self) -> SourceRange {
         let (start, end) = self
             .frames
-            .last()
+            .iter()
+            .rev()
+            .find(|frame| frame.function.kind != FunctionKind::Builtin)
             .and_then(|frame| frame.function.code.location(frame.op_start))
             .unwrap_or((0, 0));
         SourceRange {

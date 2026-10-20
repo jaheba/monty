@@ -281,6 +281,8 @@ pub(crate) enum Opcode {
     /// yield `result` as is), or `value mode` with a jump once the inner
     /// iterator is done.
     DelegateStep = 153,
+    /// Array.map leaf operations: prepare output, test presence, read element.
+    ArrayMap = 154,
 }
 
 /// How many operand bytes follow an opcode.
@@ -370,7 +372,7 @@ impl Opcode {
             | Self::Nop => OperandShape::None,
             Self::LoadInt | Self::IncDec => OperandShape::I8,
             Self::DefineAccessor | Self::TemplateConcat | Self::Call | Self::New | Self::Yield => OperandShape::U8,
-            Self::LoadIntrinsic | Self::JsxElement => OperandShape::U8,
+            Self::LoadIntrinsic | Self::JsxElement | Self::ArrayMap => OperandShape::U8,
             Self::SuperCall => OperandShape::U8,
             Self::LoadConst
             | Self::LoadLocal

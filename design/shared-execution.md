@@ -14,7 +14,7 @@ Starting point: PR #1088, `f7ddd917acbd5893b9cabdbd5025ab14fdc4fc02`.
 | Suspension         | VM snapshot plus Python scheduler state                                        | `vm/host.rs`: `ParkedVm`, serializable frame completions and queued jobs            |
 | Limits             | Dispatch countdown and builtin checks                                          | Persistent dispatch ticks, `checkpoint`, native/reentrancy depth and builtin checks |
 | Heap               | Python payloads over `monty-heap`                                              | `JsHeapData` over `monty-heap`                                                      |
-| Dumps              | `MONTY` header, version 13                                                     | `MONTYJS` header, version 2; idle and suspended variants                            |
+| Dumps              | `MONTY` header, version 13                                                     | `MONTYJS` header, version 3; idle and suspended variants                            |
 
 Python's countdown currently checks every 256 dispatch iterations and restarts at `run` entry.
 JavaScript checks every 255 steps and parks its tick count across host suspension.
@@ -73,6 +73,22 @@ Classes, generators, timers, object descriptors and TSX were present in the PR a
 TypeScript syntax is erased through oxc; this does not provide type checking.
 TSX rendering remains a builtin facility separate from execution components.
 The supported subset and promise scheduling contract are in `docs/limitations/javascript.md`.
+
+## Bytecode-backed Array.map
+
+`builtins/array.rs::map_code` emits the map loop once per realm.
+Its ordinary closure frame owns the receiver, callback, initial length, index and partial output.
+`ArrayMap` provides three leaf operations: validate and allocate the output, test a raw element and read it.
+The callback uses `Call`, so host suspension, exception unwinding, cancellation and dumps use existing frame machinery.
+Bound bytecode calls unwrap their targets iteratively before dispatch.
+The output is allocated at the initial array length before invoking callbacks, with an allocation preflight.
+The builtin frame counts toward the recursion limit.
+Internal builtin frames are omitted from source tracebacks; `map` retains its native function string and length.
+
+Dump version 3 rejects versions 1 and 2 because the builtin representation and opcode set changed.
+The existing raw-element behavior is preserved: only actual arrays are accepted, holes are skipped and inherited
+numeric properties are ignored.
+Other callback builtins and native `Function.prototype.call`/`apply` wrappers retain their suspension restriction.
 
 ## Remaining boundary
 

@@ -3,6 +3,7 @@
 use super::{NativeFn, arg, install_constructor, install_function, require_callable};
 use crate::{
     error::RunResult,
+    function::FunctionKind,
     heap::{FunctionObject, HeapId, ObjectClass, PropFlags, PropertyKey},
     intern::StaticAtom,
     realm::ErrorKind,
@@ -123,6 +124,13 @@ pub(super) fn proto_to_string(vm: &mut Vm<'_>, this: &JsValue, _: &[JsValue], _:
     let text = match vm.object(*id).map(|o| &o.class) {
         Some(ObjectClass::Function(FunctionObject::Closure { func, .. })) => {
             let function = vm.session.interns.function(*func);
+            if function.kind == FunctionKind::Builtin {
+                let text = format!(
+                    "function {}() {{ [native code] }}",
+                    vm.session.interns.atom(function.name)
+                );
+                return vm.alloc_string(JsString::from(text.as_str()));
+            }
             let span = function.span;
             vm.session.interns.source(span.feed as usize).map_or_else(
                 || "function () { [native code] }".to_owned(),

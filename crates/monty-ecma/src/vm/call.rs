@@ -55,48 +55,66 @@ pub(super) enum Callable {
 impl Vm<'_> {
     /// `Call n` from bytecode: a compiled callee gets a frame and the loop
     /// continues into it; a native runs now and its result is pushed.
-    pub(super) fn call_from_bytecode(&mut self, callee: JsValue, this: JsValue, args: Vec<JsValue>) -> RunResult<Step> {
-        match self.callable(&callee) {
-            Some(Callable::Closure { function, .. }) if function.kind.is_class_constructor() => {
-                self.drop_all(this, args);
-                callee.drop_with(&mut self.session.heap);
-                Err(self.class_without_new(&function))
-            }
-            Some(Callable::Closure { function, cells }) => {
-                let is_async = function.kind.is_async();
-                self.push_closure_frame(function, &cells, callee, args, Invocation::call(this))?;
-                if is_async {
-                    self.start_coroutine();
+    pub(super) fn call_from_bytecode(
+        &mut self,
+        mut callee: JsValue,
+        mut this: JsValue,
+        mut args: Vec<JsValue>,
+    ) -> RunResult<Step> {
+        let mut bindings = 0;
+        loop {
+            return match self.callable(&callee) {
+                Some(Callable::Closure { function, .. }) if function.kind.is_class_constructor() => {
+                    self.drop_all(this, args);
+                    callee.drop_with(&mut self.session.heap);
+                    Err(self.class_without_new(&function))
                 }
-                Ok(Step::Continue)
-            }
-            Some(Callable::External(name)) => {
-                this.drop_with(&mut self.session.heap);
-                callee.drop_with(&mut self.session.heap);
-                self.external_call(name, args)
-            }
-            Some(Callable::Native(native)) => {
-                callee.drop_with(&mut self.session.heap);
-                let result = self.call_native(native, this, args, false);
-                self.native_step(result)
-            }
-            None => {
-                self.drop_all(this, args);
-                callee.drop_with(&mut self.session.heap);
-                let text = self.callee_text();
-                Err(self.type_error(&format!("{text} is not a function")))
-            }
-            Some(Callable::Bound {
-                this: bound_this,
-                args: bound_args,
-                ..
-            }) => {
-                // `call` re-reads the binding itself; release this probe's clones
-                self.drop_all(bound_this, bound_args);
-                let result = self.call(callee, this, args)?;
-                self.stack.push(result);
-                Ok(Step::Continue)
-            }
+                Some(Callable::Closure { function, cells }) => {
+                    let is_async = function.kind.is_async();
+                    self.push_closure_frame(function, &cells, callee, args, Invocation::call(this))?;
+                    if is_async {
+                        self.start_coroutine();
+                    }
+                    Ok(Step::Continue)
+                }
+                Some(Callable::External(name)) => {
+                    this.drop_with(&mut self.session.heap);
+                    callee.drop_with(&mut self.session.heap);
+                    self.external_call(name, args)
+                }
+                Some(Callable::Native(native)) => {
+                    callee.drop_with(&mut self.session.heap);
+                    let result = self.call_native(native, this, args, false);
+                    self.native_step(result)
+                }
+                None => {
+                    self.drop_all(this, args);
+                    callee.drop_with(&mut self.session.heap);
+                    let text = self.callee_text();
+                    Err(self.type_error(&format!("{text} is not a function")))
+                }
+                Some(Callable::Bound {
+                    target,
+                    this: bound_this,
+                    args: mut bound_args,
+                }) => {
+                    // Unwrap bindings without a Rust continuation so the target may suspend.
+                    self.session.heap.inc_ref(target);
+                    callee.drop_with(&mut self.session.heap);
+                    this.drop_with(&mut self.session.heap);
+                    bound_args.append(&mut args);
+                    callee = JsValue::Ref(target);
+                    this = bound_this;
+                    args = bound_args;
+                    bindings += 1;
+                    if bindings >= MAX_REENTRANCY {
+                        self.drop_all(this, args);
+                        callee.drop_with(&mut self.session.heap);
+                        return Err(self.range_error("Maximum call stack size exceeded"));
+                    }
+                    continue;
+                }
+            };
         }
     }
 
@@ -587,7 +605,14 @@ impl Vm<'_> {
             new_target,
             construct,
         } = invocation;
-        if let Err(err) = self.tracker().check_recursion_depth(self.frames.len() + 1) {
+        if let Err(err) = self
+            .tracker()
+            .check_recursion_depth(self.frames.len() + 1)
+            .and_then(|()| {
+                self.tracker()
+                    .check_allocation((usize::from(function.locals) + usize::from(function.code.max_stack)) * 16)
+            })
+        {
             self.drop_all(this, args);
             new_target.drop_with(&mut self.session.heap);
             if let Construct::Base(this) = construct {
@@ -600,8 +625,6 @@ impl Vm<'_> {
         }
         let base = self.stack.len();
         let locals = usize::from(function.locals);
-        self.tracker()
-            .check_allocation((locals + usize::from(function.code.max_stack)) * 16)?;
         self.stack.resize_with(base + locals, || JsValue::Undefined);
         // parameters
         let formals = usize::from(function.formal_count);

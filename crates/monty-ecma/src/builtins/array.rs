@@ -7,9 +7,11 @@ use super::{
     relative_index, require_callable,
 };
 use crate::{
-    error::RunResult,
-    heap::{HeapId, IterKind, ObjectClass, PropFlags, PropertyKey},
-    intern::WellKnownSymbol,
+    bytecode::{Code, CodeBuilder, Opcode},
+    error::{CompileError, RunResult},
+    function::{Function, FunctionKind, SourceSpan},
+    heap::{FunctionObject, HeapId, IterKind, ObjectClass, PropFlags, PropertyKey},
+    intern::{FunctionId, StaticAtom, WellKnownSymbol},
     string::JsString,
     value::JsValue,
     vm::{
@@ -35,7 +37,6 @@ pub(super) fn install(vm: &mut Vm<'_>, global: HeapId) {
         NativeFn::ArrayProtoLastIndexOf,
         NativeFn::ArrayProtoIncludes,
         NativeFn::ArrayProtoJoin,
-        NativeFn::ArrayProtoMap,
         NativeFn::ArrayProtoFilter,
         NativeFn::ArrayProtoForEach,
         NativeFn::ArrayProtoReduce,
@@ -64,6 +65,7 @@ pub(super) fn install(vm: &mut Vm<'_>, global: HeapId) {
     ] {
         install_function(vm, prototype, native);
     }
+    install_map(vm, prototype);
     let values = install_function(vm, prototype, NativeFn::ArrayProtoValues);
     vm.session.realm.array_values = values;
     vm.session.heap.inc_ref(values);
@@ -398,29 +400,122 @@ pub(super) fn to_string(vm: &mut Vm<'_>, this: &JsValue, _: &[JsValue], _: bool)
     vm.alloc_string(text)
 }
 
-pub(super) fn map(vm: &mut Vm<'_>, this: &JsValue, args: &[JsValue], _: bool) -> RunResult<JsValue> {
-    let array = this_array(vm, this, "map")?;
-    let callback = arg(args, 0);
-    require_callable(vm, callback)?;
-    let this_arg = arg(args, 1);
-    let length = len(vm, array);
-    let mut results = Vec::with_capacity(length);
-    for index in 0..length {
-        if raw_element_is_hole(vm, array, index) {
-            results.push(JsValue::Hole);
-            continue;
+// Only these leaf operations run in Rust; the callback and loop state belong to a VM frame.
+pub(crate) fn map_step(vm: &mut Vm<'_>, mode: u8, lhs: &JsValue, rhs: &JsValue) -> RunResult<JsValue> {
+    let array = this_array(vm, lhs, "map")?;
+    match mode {
+        0 => {
+            require_callable(vm, rhs)?;
+            let length = len(vm, array);
+            vm.tracker().check_allocation(length * mem::size_of::<JsValue>())?;
+            vm.new_array((0..length).map(|_| JsValue::Hole).collect())
         }
-        match call_back(vm, callback, this_arg, array, index) {
-            Ok(value) => results.push(value),
-            Err(err) => {
-                for value in results {
-                    value.drop_with(&mut vm.session.heap);
-                }
-                return Err(err);
-            }
-        }
+        1 => Ok(JsValue::Bool(!raw_element_is_hole(
+            vm,
+            array,
+            match rhs {
+                JsValue::Number(n) => to_usize(*n),
+                _ => unreachable!("map index"),
+            },
+        ))),
+        2 => Ok(element(
+            vm,
+            array,
+            match rhs {
+                JsValue::Number(n) => to_usize(*n),
+                _ => unreachable!("map index"),
+            },
+        )),
+        _ => unreachable!("ArrayMap mode"),
     }
-    vm.new_array(results)
+}
+
+fn install_map(vm: &mut Vm<'_>, prototype: HeapId) {
+    let name = vm.session.interns.intern_str("map");
+    let code = map_code().expect("valid builtin map bytecode");
+    let func = vm.session.interns.add_function(Function {
+        id: FunctionId::from_u16(0),
+        name,
+        code,
+        param_count: 1,
+        formal_count: 2,
+        has_rest: false,
+        locals: 6,
+        kind: FunctionKind::Builtin,
+        this_slot: Some(2),
+        new_target_slot: None,
+        arguments_slot: None,
+        self_slot: None,
+        entry_cells: Vec::new(),
+        captures: Vec::new(),
+        free_slots: Vec::new(),
+        span: SourceSpan {
+            feed: u32::MAX,
+            start: 0,
+            end: 0,
+        },
+    });
+    let object = vm.new_function_object(
+        FunctionObject::Closure {
+            func,
+            cells: Box::new([]),
+            home_object: None,
+            fields: None,
+        },
+        name,
+        1,
+    );
+    vm.define_with_flags(
+        prototype,
+        PropertyKey::Atom(name),
+        JsValue::Ref(object),
+        PropFlags::HIDDEN,
+    );
+}
+
+fn map_code() -> Result<Code, CompileError> {
+    let mut b = CodeBuilder::new();
+    // Locals: callback, thisArg, receiver, result, initial length, current index.
+    b.emit_u16(Opcode::LoadLocal, 2)?;
+    b.emit_u16(Opcode::LoadLocal, 0)?;
+    b.emit_u8(Opcode::ArrayMap, 0)?;
+    b.emit_u16(Opcode::StoreLocal, 3)?;
+    b.emit_u16(Opcode::LoadLocal, 3)?;
+    b.emit_u16(Opcode::GetProp, StaticAtom::Length.id().as_u16().expect("static atom"))?;
+    b.emit_u16(Opcode::StoreLocal, 4)?;
+    b.emit_i8(Opcode::LoadInt, 0)?;
+    b.emit_u16(Opcode::StoreLocal, 5)?;
+    let start = b.target()?;
+    b.emit_u16(Opcode::LoadLocal, 5)?;
+    b.emit_u16(Opcode::LoadLocal, 4)?;
+    b.emit(Opcode::Lt)?;
+    let end = b.emit_jump(Opcode::JumpIfFalse)?;
+    b.emit_u16(Opcode::LoadLocal, 2)?;
+    b.emit_u16(Opcode::LoadLocal, 5)?;
+    b.emit_u8(Opcode::ArrayMap, 1)?;
+    let advance = b.emit_jump(Opcode::JumpIfFalse)?;
+    b.emit_u16(Opcode::LoadLocal, 3)?;
+    b.emit_u16(Opcode::LoadLocal, 5)?;
+    b.emit_u16(Opcode::LoadLocal, 0)?;
+    b.emit_u16(Opcode::LoadLocal, 1)?;
+    b.emit_u16(Opcode::LoadLocal, 2)?;
+    b.emit_u16(Opcode::LoadLocal, 5)?;
+    b.emit_u8(Opcode::ArrayMap, 2)?;
+    b.emit_u16(Opcode::LoadLocal, 5)?;
+    b.emit_u16(Opcode::LoadLocal, 2)?;
+    b.emit_u8(Opcode::Call, 3)?;
+    // Own definition avoids invoking an inherited numeric setter on the private output.
+    b.emit(Opcode::DefineOwnElem)?;
+    b.emit(Opcode::Pop)?;
+    b.patch_jump(advance)?;
+    b.emit_u16(Opcode::LoadLocal, 5)?;
+    b.emit_i8(Opcode::IncDec, 1)?;
+    b.emit_u16(Opcode::StoreLocal, 5)?;
+    b.emit_jump_to(Opcode::Jump, start)?;
+    b.patch_jump(end)?;
+    b.emit_u16(Opcode::LoadLocal, 3)?;
+    b.emit(Opcode::Return)?;
+    Ok(b.build())
 }
 
 fn raw_element_is_hole(vm: &Vm<'_>, array: HeapId, index: usize) -> bool {

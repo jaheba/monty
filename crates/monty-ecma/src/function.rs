@@ -80,6 +80,8 @@ pub(crate) struct EntryCell {
 pub(crate) enum FunctionKind {
     /// `function f() {}`: callable and constructible.
     Normal,
+    /// A builtin whose callbacks run in ordinary interpreter frames.
+    Builtin,
     /// `() => {}`: no own `this`, not constructible.
     Arrow,
     /// An object or class method, getter or setter: not constructible.

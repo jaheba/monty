@@ -100,4 +100,5 @@ The Pydantic Stack is everything you need to ship production-grade AI agents:
     LLM proxy
 
 Python and MontyScript share operand fetching and stack cleanup through `monty-execution`, alongside the shared heap.
+`Array.map` callbacks run in resumable MontyScript frames, including across host-call snapshots.
 See the [MontyScript subset and differences](docs/limitations/javascript.md).

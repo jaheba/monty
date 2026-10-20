@@ -164,3 +164,145 @@ fn host_call_inside_a_promise_reaction_restores_its_completion() {
     assert_eq!(value.py_repr(), "['before', 7, 'finally']");
     assert_no_leaks(&mut repl);
 }
+
+#[test]
+fn array_map_callbacks_suspend_and_restore_each_iteration() {
+    let repl = JsRepl::new("map.js", ResourceLimits::default()).unwrap();
+    let mut progress = repl.feed(
+        "let events = []; let input = [1, , 3]; let output = input.map(function(x, i, source) { try { events.push(i); if (i === 0) source.push(9); return host(x) + this.offset; } finally { events.push('finally'); } }, {offset: 10}); [output, events.join(','), input.length, 1 in output];",
+        &NamedValues::new(), PrintWriter::Disabled,
+    );
+    for result in [2, 6] {
+        let JsProgress::Suspended(suspension) = progress else {
+            panic!("expected callback suspension");
+        };
+        progress = restore(&suspension).resume_call(
+            ExtFunctionResult::Return(MontyObject::int(result)),
+            PrintWriter::Disabled,
+        );
+    }
+    let JsProgress::Complete { mut repl, value } = progress else {
+        panic!("expected completion");
+    };
+    assert_eq!(value.py_repr(), "[[12, None, 16], '0,finally,2,finally', 4, False]");
+    assert_no_leaks(&mut repl);
+}
+
+#[test]
+fn array_map_callback_error_unwinds_partial_output() {
+    let repl = JsRepl::new("map.js", ResourceLimits::default()).unwrap();
+    let progress = repl.feed(
+        "let events = []; try { [1, 2].map(x => { try { return host(x); } finally { events.push(x); } }); } catch (e) { events.push('caught'); } events.join(',');",
+        &NamedValues::new(), PrintWriter::Disabled,
+    );
+    let JsProgress::Suspended(suspension) = progress else {
+        panic!("expected host call");
+    };
+    let progress =
+        restore(&suspension).resume_call(ExtFunctionResult::Return(MontyObject::int(1)), PrintWriter::Disabled);
+    let JsProgress::Suspended(suspension) = progress else {
+        panic!("expected second host call");
+    };
+    let error = MontyException::new(ExcType::ValueError, Some("failed".into()));
+    let progress = restore(&suspension).resume_call(ExtFunctionResult::Error(error), PrintWriter::Disabled);
+    let JsProgress::Complete { mut repl, value } = progress else {
+        panic!("expected caught error");
+    };
+    assert_eq!(value.py_repr(), "'1,2,caught'");
+    assert_no_leaks(&mut repl);
+}
+
+#[test]
+fn array_map_bound_callback_can_suspend() {
+    let repl = JsRepl::new("map.js", ResourceLimits::default()).unwrap();
+    let progress = repl.feed(
+        "[2].map(function(prefix, x) { return host(prefix + x); }.bind(null, 10));",
+        &NamedValues::new(),
+        PrintWriter::Disabled,
+    );
+    let JsProgress::Suspended(suspension) = progress else {
+        panic!("expected bound callback suspension");
+    };
+    let progress =
+        restore(&suspension).resume_call(ExtFunctionResult::Return(MontyObject::int(12)), PrintWriter::Disabled);
+    let JsProgress::Complete { mut repl, value } = progress else {
+        panic!("expected completion");
+    };
+    assert_eq!(value.py_repr(), "[12]");
+    assert_no_leaks(&mut repl);
+}
+
+#[test]
+fn array_map_abort_runs_finally_and_releases_partial_output() {
+    let repl = JsRepl::new("map.js", ResourceLimits::default()).unwrap();
+    let mut output = String::new();
+    let progress = repl.feed(
+        "[1, 2].map(x => { try { return host(x); } finally { console.log('cleanup'); } });",
+        &NamedValues::new(),
+        PrintWriter::collect_string(&mut output),
+    );
+    let JsProgress::Suspended(suspension) = progress else {
+        panic!("expected callback suspension");
+    };
+    let error = MontyException::new(ExcType::RuntimeError, Some("cancelled".into()));
+    let progress = restore(&suspension).abort(&error, PrintWriter::collect_string(&mut output));
+    let JsProgress::Failed { mut repl, .. } = progress else {
+        panic!("expected cancellation error");
+    };
+    assert_eq!(output, "cleanup\n");
+    assert_no_leaks(&mut repl);
+}
+
+#[test]
+fn array_map_async_callbacks_keep_pending_futures_across_dump() {
+    let repl = JsRepl::new("map.js", ResourceLimits::default()).unwrap();
+    let mut progress = repl.feed("let result; Promise.all([1, 2].map(async x => { try { return await host(x); } finally { console.log(x); } })).then(values => result = values);", &NamedValues::new(), PrintWriter::Disabled);
+    let mut calls = Vec::new();
+    for _ in 0..2 {
+        let JsProgress::Suspended(suspension) = progress else {
+            panic!("expected host call");
+        };
+        let mut suspension = restore(&suspension);
+        let JsSuspensionKind::FunctionCall { call_id, .. } = suspension.kind() else {
+            panic!("expected call");
+        };
+        calls.push(call_id);
+        progress = suspension.resume_call(ExtFunctionResult::Future(call_id), PrintWriter::Disabled);
+    }
+    let JsProgress::Suspended(suspension) = progress else {
+        panic!("expected pending futures");
+    };
+    let progress = restore(&suspension).resume_futures(
+        calls
+            .into_iter()
+            .enumerate()
+            .map(|(i, id)| {
+                (
+                    id,
+                    ExtFunctionResult::Return(MontyObject::int(i64::try_from(i + 10).unwrap())),
+                )
+            })
+            .collect(),
+        PrintWriter::Disabled,
+    );
+    let JsProgress::Complete { repl, .. } = progress else {
+        panic!("expected completion");
+    };
+    let JsProgress::Complete { mut repl, value } = repl.feed("result", &NamedValues::new(), PrintWriter::Disabled)
+    else {
+        panic!("expected results");
+    };
+    assert_eq!(value.py_repr(), "[10, 11]");
+    assert_no_leaks(&mut repl);
+}
+
+#[test]
+fn array_map_frame_limit_releases_callback_arguments() {
+    let repl = JsRepl::new("map.js", ResourceLimits::default().max_recursion_depth(2)).unwrap();
+    let progress = repl.feed("[{value: 1}].map(x => x);", &NamedValues::new(), PrintWriter::Disabled);
+    let JsProgress::Failed { mut repl, error } = progress else {
+        panic!("expected frame limit");
+    };
+    assert!(error.summary().contains("Maximum call stack"), "{}", error.summary());
+    assert_no_leaks(&mut repl);
+}

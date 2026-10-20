@@ -7,7 +7,7 @@
 //! constructor; `create_realm` calls the installs in dependency order.
 #![expect(clippy::unnecessary_wraps, reason = "every native shares the `NativeImpl` signature")]
 
-mod array;
+pub(crate) mod array;
 mod collections;
 mod console;
 pub(crate) mod date;
@@ -131,7 +131,6 @@ natives! {
     ArrayProtoLastIndexOf => ("lastIndexOf", 1, false, array::last_index_of),
     ArrayProtoIncludes => ("includes", 1, false, array::includes),
     ArrayProtoJoin => ("join", 1, false, array::join),
-    ArrayProtoMap => ("map", 1, false, array::map),
     ArrayProtoFilter => ("filter", 1, false, array::filter),
     ArrayProtoForEach => ("forEach", 1, false, array::for_each),
     ArrayProtoReduce => ("reduce", 1, false, array::reduce),

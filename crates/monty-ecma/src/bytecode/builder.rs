@@ -333,7 +333,7 @@ impl Opcode {
     /// (argument count, array length) where it does.
     pub fn stack_effect(self, operand: i32) -> i32 {
         match self {
-            Self::Pop => -1,
+            Self::Pop | Self::ArrayMap => -1,
             Self::Dup => 1,
             Self::Dup2 => 2,
             Self::Swap | Self::Rot3 | Self::Rot4 | Self::Nop => 0,

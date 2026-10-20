@@ -14,7 +14,7 @@ use crate::repl::{JsRepl, JsSuspension};
 pub const MAGIC: &[u8] = b"MONTYJS\0";
 /// Bumped when the meaning of stored data changes (opcodes, native ids, the
 /// constant layout), since serde's naming covers field additions and removals.
-pub const DUMP_VERSION: u16 = 2;
+pub const DUMP_VERSION: u16 = 3;
 
 const HEADER_LEN: usize = MAGIC.len() + size_of::<u16>();
 

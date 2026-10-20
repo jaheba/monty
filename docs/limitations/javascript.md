@@ -184,7 +184,7 @@ Differences within the available builtins:
     reproducible sequence that is not CPython's or V8's.
 - `Date` reads its clock from `OsPolicy.datetime` (`System`, a `Fixed` instant, or `CallHost`, which suspends with
     an `OsCall` the host answers as `time.time()`, so `Date.now()` and `new Date()` under `CallHost` work only when
-    called from the dispatch loop, not from a builtin's callback) and its local zone from `OsPolicy.timezone`
+    called from the dispatch loop, including `map` callbacks, rather than a Rust callback loop) and its local zone from `OsPolicy.timezone`
     (UTC by default). `Date.parse` and the string constructor accept the ISO format and the `toString` /
     `toUTCString` shapes only, not V8's legacy forms (`new Date('5')`, `'2020/01/02'`); `toLocaleString`,
     `toLocaleDateString` and `toLocaleTimeString` take no arguments and use fixed en-US shapes (`10/19/2026`,
@@ -238,10 +238,15 @@ that settles when the host resolves it (`ResolveFutures` is raised once nothing 
 An undeclared name that is read (`answer + 1`, `typeof answer`) suspends with a `NameLookup`; a found value is also
 stored on `globalThis`, so the same name is not asked again in that session, and an unknown name is a
 `ReferenceError` (or `"undefined"` under `typeof`).
+`Array.map` runs its loop in interpreter frames, so direct calls such as `[1, 2].map(x => host(x))` can suspend.
+The frame retains the initial length, current index and partial result across snapshot/restore.
+Bound callbacks also use this path.
+Calling `map` through native `Function.prototype.call` or `apply`, or from another native callback builtin,
+still has the native-stack restriction below.
+
 Differences from the Python worker:
 
-- A host function called from a callback that a builtin is running (`[1, 2].map((x) => host(x))`,
-    `arr.sort((a, b) => host(a, b))`, a generator driven by `for…of`) throws a `TypeError`
+- A host function called from a callback that a builtin is running (`arr.sort((a, b) => host(a, b))`, a generator driven by `for…of`) throws a `TypeError`
     (`Host function 'host' cannot be called from a callback run by a builtin`), because the interpreter cannot
     suspend while the builtin is on the native stack. Promise reactions, `await` continuations and timer callbacks
     run from the dispatch loop and can suspend. Prefer `await` on host functions that return futures.

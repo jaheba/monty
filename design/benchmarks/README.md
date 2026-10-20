@@ -46,3 +46,23 @@ cargo run --release --manifest-path /tmp/shared-execution-bench/Cargo.toml
 ```
 
 For the baseline, change the three dependency paths to a checkout of `f7ddd917`, retaining the harness, profile and lockfile.
+
+## Bytecode-backed map
+
+Measured against `2e8619e0` with `map_frames.rs`, the release profile above, and the same five samples of
+100 complete feeds per sample.
+These runs include compilation and realm creation.
+
+| Workload                  | Before (µs) | After (µs) |  Change |
+| ------------------------- | ----------: | ---------: | ------: |
+| 20 maps over 1,000 values |     2634.09 |    7006.86 | +166.0% |
+| 500 ordinary calls        |      211.97 |     202.38 |   -4.5% |
+
+The map loop now dispatches bytecode for element checks, loop control and result writes, where the previous loop
+ran directly in Rust.
+Callbacks retain ordinary interpreter frames in both versions; the new outer frame makes the loop resumable.
+The map workload is 2.66 times slower in this local measurement.
+The ordinary-call result does not establish a performance gain.
+
+To reproduce, substitute `map_frames.rs` for `shared_execution.rs` in the harness instructions above and compare
+against `2e8619e0` using the same dependency paths, lockfile and release profile.

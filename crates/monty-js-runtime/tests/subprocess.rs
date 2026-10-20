@@ -389,7 +389,7 @@ fn host_future_settles_a_promise() {
 fn host_call_inside_a_builtin_callback_is_an_error() {
     let mut child = ChildProc::spawn();
     child.create_repl();
-    let (_, event) = child.feed("[1, 2].map((x) => host(x))");
+    let (_, event) = child.feed("[1, 2].filter((x) => host(x))");
     let error = expect_error(event);
     assert_eq!(error.exc_type, "TypeError");
     assert_eq!(
@@ -441,8 +441,14 @@ fn host_clock_suspends_with_an_os_call() {
     assert!(matches!(call.call, Some(pb::os_call::Call::Time(_))), "{call:?}");
     let (_, event) = child.resume_call(call.call_id, ExtFunctionResult::Return(MontyObject::float(1.5)));
     assert_eq!(expect_complete(event), MontyObject::int(1501));
-    // inside a builtin's callback the clock cannot suspend
     let (_, event) = child.feed("[1].map(() => Date.now())");
+    let pb::child_event::Kind::OsCall(call) = event else {
+        panic!("expected map callback OsCall, got {event:?}");
+    };
+    let (_, event) = child.resume_call(call.call_id, ExtFunctionResult::Return(MontyObject::float(2.0)));
+    assert_eq!(expect_complete(event), MontyObject::list(vec![MontyObject::int(2000)]));
+    // Rust callback loops still cannot suspend.
+    let (_, event) = child.feed("[1].filter(() => Date.now())");
     let error = expect_error(event);
     assert_eq!(error.exc_type, "TypeError");
     assert_eq!(
@@ -536,4 +542,27 @@ fn scalar_string_amplification_raises_memory_error_and_preserves_session() {
         assert_eq!(expect_error(event).exc_type, "MemoryError");
         assert_eq!(child.feed_complete("'a😀é'.length"), MontyObject::int(3));
     }
+}
+
+#[test]
+fn map_callbacks_suspend_across_worker_dump_restore() {
+    let mut child = ChildProc::spawn();
+    child.create_repl();
+    let (_, mut event) = child.feed("[1, 2].map(x => host(x));");
+    for expected in [1, 2] {
+        let call = expect_function_call(event);
+        assert_eq!(call_args(&call), vec![MontyObject::int(expected)]);
+        let state = dump(&mut child);
+        drop(child);
+        child = ChildProc::spawn();
+        child.send(pb::parent_request::Kind::Load(pb::Load { state }));
+        let (_, restored) = child.recv_turn();
+        let restored = expect_function_call(restored);
+        assert_eq!(restored.call_id, call.call_id);
+        (_, event) = child.resume_call(call.call_id, ExtFunctionResult::Return(MontyObject::int(expected * 10)));
+    }
+    assert_eq!(
+        expect_complete(event),
+        MontyObject::list(vec![MontyObject::int(10), MontyObject::int(20)])
+    );
 }

@@ -52,3 +52,8 @@ The engine is the second user of `monty-heap` and depends on `monty-types`, neve
 
 Operand fetching and frame/handler stack cleanup use `monty-execution`; frame layouts and operations remain language-owned.
 See [the shared execution audit](../../design/shared-execution.md).
+
+`Array.map` uses a bytecode loop with ordinary frames, allowing direct callbacks and bound callbacks to suspend
+for host calls and survive snapshot/restore at each iteration.
+Other native callback builtins, including calls through native `call`/`apply` wrappers, retain their suspension restriction.
+JavaScript dump version 3 includes this builtin representation and rejects earlier versions.
