@@ -77,7 +77,6 @@ jobs:
           (needs.build-worker.result == 'success' || needs.build-worker.result == 'skipped') }}
     env:
       FULL_BENCHMARKS: ${{ needs.select-suite.outputs.full }}
-      PR_BENCHMARK_FILTER: '^(end_to_end|parse_1k_assigns|clone_module|repl_feed_after_2k_snippets|session_dump|session_load)__monty$'
     strategy:
       fail-fast: false
       matrix:
@@ -171,9 +170,9 @@ jobs:
           mode: ${{ matrix.mode }}
           run: |
             if [ "$FULL_BENCHMARKS" = true ]; then
-              setarch "$(uname -m)" -R cargo codspeed run -p monty-bench
+              MONTY_BENCH_SUITE=full setarch "$(uname -m)" -R cargo codspeed run -p monty-bench
             else
-              setarch "$(uname -m)" -R cargo codspeed run -p monty-bench --bench main "$PR_BENCHMARK_FILTER"
+              MONTY_BENCH_SUITE=default setarch "$(uname -m)" -R cargo codspeed run -p monty-bench --bench main
             fi
         env:
           MONTY_TEST_BIN: ${{ github.workspace }}/worker/bin/monty
