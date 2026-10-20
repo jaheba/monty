@@ -2520,6 +2520,46 @@ fn type_check_format_selects_the_rendering() {
     child.shutdown();
 }
 
+#[test]
+fn reset_releases_type_checker_memory() {
+    let mut child = ChildProc::spawn();
+    let program = format!("def f(a: int, b: int) -> None:\n    pass\n{}", "f(1, 2)\n".repeat(900));
+
+    for _ in 0..3 {
+        child.create_repl_with(configure_with_max_memory(4_000_000));
+        assert_eq!(child.feed_complete("x = 1"), MontyObject::none());
+
+        child.send(pb::parent_request::Kind::Reset(pb::Reset {}));
+        assert!(matches!(child.recv(), pb::child_event::Kind::Ok(_)));
+
+        child.create_repl_with(pb::Configure {
+            type_check: true,
+            ..configure()
+        });
+        assert_eq!(child.feed_complete(&program), MontyObject::none());
+
+        child.send(pb::parent_request::Kind::Reset(pb::Reset {}));
+        assert!(matches!(child.recv(), pb::child_event::Kind::Ok(_)));
+
+        child.create_repl_with(configure_with_max_memory(4_000_000));
+        assert_eq!(child.feed_complete("x = 1"), MontyObject::none());
+
+        child.send(pb::parent_request::Kind::Reset(pb::Reset {}));
+        assert!(matches!(child.recv(), pb::child_event::Kind::Ok(_)));
+
+        // A small allocation budget must still reject Python allocations after each reset.
+        child.create_repl_with(configure_with_max_memory(1_000_000));
+        assert_eq!(child.feed_complete("x = 1"), MontyObject::none());
+        let (_, event) = child.feed("'x' * 2_000_000");
+        assert_eq!(expect_error(event).exc_type, "MemoryError");
+
+        child.send(pb::parent_request::Kind::Reset(pb::Reset {}));
+        assert!(matches!(child.recv(), pb::child_event::Kind::Ok(_)));
+    }
+
+    child.shutdown();
+}
+
 /// Security-critical: `Reset` must scrub every file a session wrote into the
 /// type checker — its script (wherever `script_name` placed it, including
 /// nested directories and `..`/absolute forms) and its stubs — so the next

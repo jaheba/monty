@@ -1,5 +1,6 @@
 use std::{fmt, sync::Arc};
 
+use monty_types::allocate_into_baseline;
 use ruff_db::{
     Db as SourceDb,
     diagnostic::Diagnostic,
@@ -73,14 +74,17 @@ impl Default for MemoryDb {
     /// constructor is the only sanctioned way to build a `MemoryDb`.
     fn default() -> Self {
         let src_root = SystemPathBuf::from(SRC_ROOT);
-        let vendored = monty_typeshed::file_system().clone();
+        // These statics outlive every session; the database and its caches do not.
+        let vendored = allocate_into_baseline(monty_typeshed::file_system).clone();
+        let lint_registry = allocate_into_baseline(default_lint_registry);
+
         let mut db = Self {
             storage: salsa::Storage::new(None),
             system: TestSystem::default(),
             program_settings: ProgramSettings::empty(&vendored),
             vendored,
             files: Files::default(),
-            rule_selection: Arc::new(RuleSelection::from_registry(default_lint_registry())),
+            rule_selection: Arc::new(RuleSelection::from_registry(lint_registry)),
             analysis_settings: AnalysisSettings::default().into(),
         };
 
