@@ -9,7 +9,7 @@
 //! - `mount = true`: bind `DATA` to the root of the mounted [`scan_tree`]
 //! - `overlay = true`: with `mount`, also register `<name>_overlay__monty` over an overlay mount
 //! - `limits = true`: also register `<name>_limits__monty` with resource limits armed
-//! - `always = true`: include the script in the default suite as well as full runs
+//! - `always = true`: include the script in the PR suite as well as full runs
 
 use std::{
     env, fs, mem,
@@ -52,14 +52,14 @@ const ADD_TWO: &str = include_str!("python/add_two.py");
 
 /// Registers selected scripts and all Rust-API benchmarks.
 fn criterion_benchmark(c: &mut Criterion) {
-    let default_only = match env::var("MONTY_BENCH_SUITE").as_deref() {
-        Ok("default") => true,
+    let pr_only = match env::var("MONTY_BENCH_SUITE").as_deref() {
+        Ok("pr") => true,
         Ok("full") | Err(env::VarError::NotPresent) => false,
-        _ => panic!("MONTY_BENCH_SUITE must be 'default' or 'full'"),
+        _ => panic!("MONTY_BENCH_SUITE must be 'pr' or 'full'"),
     };
     let tree = scan_tree();
     for script in Script::load_all() {
-        if !default_only || script.always {
+        if !pr_only || script.always {
             script.register(c, tree.path());
         }
     }
@@ -86,7 +86,7 @@ struct Script {
     limits: bool,
     /// Also benchmark over an overlay mount; requires [`Input::Mount`].
     overlay: bool,
-    /// Include the script in default runs.
+    /// Include the script in PR runs.
     always: bool,
 }
 

@@ -89,7 +89,7 @@ pub struct Bench {
     pub overlay: bool,
     /// Also benchmark with resource limits armed.
     pub limits: bool,
-    /// Include this script in default runs as well as the full suite.
+    /// Include this script in PR runs as well as the full suite.
     pub always: bool,
 }
 

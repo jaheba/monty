@@ -172,7 +172,7 @@ jobs:
             if [ "$FULL_BENCHMARKS" = true ]; then
               MONTY_BENCH_SUITE=full setarch "$(uname -m)" -R cargo codspeed run -p monty-bench
             else
-              MONTY_BENCH_SUITE=default setarch "$(uname -m)" -R cargo codspeed run -p monty-bench --bench main
+              MONTY_BENCH_SUITE=pr setarch "$(uname -m)" -R cargo codspeed run -p monty-bench --bench main
             fi
         env:
           MONTY_TEST_BIN: ${{ github.workspace }}/worker/bin/monty

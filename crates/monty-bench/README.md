@@ -3,8 +3,10 @@
 The CodSpeed workflow measures wall time and memory allocations.
 Normal pull requests run the six Rust-defined interpreter benchmarks: end-to-end execution, parsing, module cloning,
 REPL feeds after many snippets, session dumps and session loads.
-Scripts with `[bench] always = true` also run in the default suite; unmarked scripts run only in the full suite.
-No scripts are currently marked, so default runs contain only the Rust-defined benchmarks.
+Scripts with `[bench] always = true` also run in the PR suite; unmarked scripts run only in the full suite.
+Eight scripts are marked, covering general execution, calls, attribute access, list allocation, dict comprehensions,
+JSON parsing and serialization, and cycle collection.
+Together with the Rust-defined benchmarks, the PR suite runs 14 benchmarks.
 
 ```python
 # /// monty
@@ -26,10 +28,10 @@ To run the reduced suite locally:
 
 ```bash
 cargo codspeed build -p monty-bench --profile codspeed --features codspeed --bench main
-MONTY_BENCH_SUITE=default cargo codspeed run -p monty-bench --bench main
+MONTY_BENCH_SUITE=pr cargo codspeed run -p monty-bench --bench main
 ```
 
 CI selects the measurement mode with `cargo codspeed build -m walltime` or `-m memory`.
 
-`MONTY_BENCH_SUITE` accepts `default` or `full`; leaving it unset runs the full suite.
+`MONTY_BENCH_SUITE` accepts `pr` or `full`; leaving it unset runs the full suite.
 The workflow selects the suite without changing benchmark names.
