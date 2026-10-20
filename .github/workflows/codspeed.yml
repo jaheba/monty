@@ -77,7 +77,7 @@ jobs:
           (needs.build-worker.result == 'success' || needs.build-worker.result == 'skipped') }}
     env:
       FULL_BENCHMARKS: ${{ needs.select-suite.outputs.full }}
-      PR_BENCHMARK_FILTER: '^(end_to_end|kitchen_sink|func_call_kwargs|attr_dispatch_minimal|list_append_str|dict_comp|json_loads|json_dumps|str_parse|gc_collect|session_dump|session_load)__monty$'
+      PR_BENCHMARK_FILTER: '^(end_to_end|parse_1k_assigns|clone_module|repl_feed_after_2k_snippets|session_dump|session_load)__monty$'
     strategy:
       fail-fast: false
       matrix:
