@@ -132,6 +132,10 @@ impl VM<'_> {
     /// the update; immutable ones fall back to ordinary addition. Uses lazy type
     /// capture: only calls `py_type()` in error paths.
     pub(super) fn inplace_add(&mut self) -> Result<(), RunError> {
+        if self.binary_numeric(i64::checked_add, |lhs, rhs| lhs + rhs, |lhs, rhs| lhs + rhs) {
+            return Ok(());
+        }
+
         self.inplace_op(PyTrait::py_iadd_impl, |lhs, rhs, vm| {
             if let Some(value) = lhs.py_add_result(rhs, vm)? {
                 Ok(value)
@@ -149,6 +153,10 @@ impl VM<'_> {
 
     /// `-=` — an in-place mutation (a `Counter` subtracts counts), or binary `-`.
     pub(super) fn inplace_sub(&mut self) -> Result<(), RunError> {
+        if self.binary_numeric(i64::checked_sub, |lhs, rhs| lhs - rhs, |lhs, rhs| lhs - rhs) {
+            return Ok(());
+        }
+
         self.inplace_op(PyTrait::py_isub_impl, |lhs, rhs, vm| lhs.py_sub(rhs, vm))
     }
 
