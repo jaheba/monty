@@ -2947,7 +2947,7 @@ mod tests {
 
     #[test]
     fn value_fits_in_sixteen_bytes() {
-        assert!(VALUE_SIZE <= 16, "Value occupies {VALUE_SIZE} bytes");
+        const { assert!(VALUE_SIZE <= 16, "Value must fit in 16 bytes") };
     }
 
     /// Creates a heap and directly allocates a LongInt with the given BigInt value.
