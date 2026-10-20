@@ -2297,8 +2297,7 @@ mod tests {
     use crate::{
         heap::HeapReader,
         run::{Program, SessionTables},
-        types::LongInt,
-        types::str::allocate_string_no_interning,
+        types::{LongInt, str::allocate_string_no_interning},
     };
 
     #[test]

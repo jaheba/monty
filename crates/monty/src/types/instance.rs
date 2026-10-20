@@ -994,11 +994,7 @@ fn class_member(class_id: HeapId, name: &str, vm: &VM<'_>) -> Option<Value> {
 /// programmer-error tripwire.
 pub(crate) fn class_name<'i>(class_id: HeapId, heap: &Heap, interns: &'i Interns) -> Cow<'i, str> {
     match heap.get(class_id) {
-        HeapData::Class(class) => match class.name() {
-            EitherStr::Interned(id) => Cow::Borrowed(interns.get_str(*id)),
-            EitherStr::Inline { .. } => Cow::Owned(class.name().as_str(interns).to_owned()),
-            EitherStr::Heap(s) => Cow::Owned(s.clone()),
-        },
+        HeapData::Class(class) => class.name().to_cow(interns),
         _ => unreachable!("class_name called with a non-class heap id"),
     }
 }
