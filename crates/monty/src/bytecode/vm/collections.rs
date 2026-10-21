@@ -249,12 +249,14 @@ impl VM<'_> {
             defer_drop_mut!(copied_items, this);
             for (key, value) in copied_items {
                 // Borrow string keys uniformly across their storage forms.
-                if !key.is_str(this.heap) {
-                    key.drop_with(this);
-                    value.drop_with(this);
-                    return Err(ExcType::type_error_kwargs_nonstring_key());
-                }
-                let key_str = key.to_str(this).expect("is_str checked above").to_owned();
+                let key_str = match key.to_str(this) {
+                    Ok(key_str) => key_str.to_owned(),
+                    Err(_) => {
+                        key.drop_with(this);
+                        value.drop_with(this);
+                        return Err(ExcType::type_error_kwargs_nonstring_key());
+                    }
+                };
 
                 let HeapReadOutput::Dict(dict) = this.heap.read(dict_id) else {
                     unreachable!("DictMerge: entry is not a Dict")

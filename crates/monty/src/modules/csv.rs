@@ -246,11 +246,7 @@ fn call_writer(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
 fn call_get_dialect(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
     let GetDialectArgs { name } = GetDialectArgs::from_args(args, vm)?;
     defer_drop!(name, vm);
-    let dialect = if name.is_str(vm.heap) {
-        Dialect::by_name(name.to_str(vm)?)
-    } else {
-        None
-    };
+    let dialect = name.to_str(vm).ok().and_then(Dialect::by_name);
     dialect
         .map(|dialect| CsvObject::Dialect(dialect).allocate(vm))
         .ok_or_else(ExcType::csv_unknown_dialect)
