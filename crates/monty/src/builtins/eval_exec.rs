@@ -201,8 +201,8 @@ fn compile_and_push(
 
 /// The snippet's text: a `str`, or `bytes` decoded as UTF-8.
 fn snippet_source(name: &str, source: &Value, vm: &mut VM<'_>) -> RunResult<Arc<str>> {
-    if source.is_str(vm.heap) {
-        return Ok(Arc::from(source.to_str(vm).expect("is_str checked above")));
+    if let Ok(text) = source.to_str(vm) {
+        return Ok(Arc::from(text));
     }
 
     let bytes: &[u8] = match source {

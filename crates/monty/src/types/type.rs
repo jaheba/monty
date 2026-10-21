@@ -8,7 +8,7 @@ use crate::{
     bytecode::{CallResult, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
-    heap::{DropWithContext, Heap, HeapData, HeapId},
+    heap::{DropWithContext, Heap, HeapId},
     intern::{Interns, StaticStrings, StringId},
     modules::{
         ModuleFunctions, collections, csv,
@@ -104,7 +104,7 @@ pub enum Type {
     DictValues,
     Set,
     FrozenSet,
-    /// The type of a host-backed class instance ([`HeapData::HostClass`]),
+    /// The type of a host-backed class instance ([`crate::heap::HeapData::HostClass`]),
     /// for internal dispatch only: `type(x)` materializes a `HostClassType`
     /// instead, so it never reaches Python code or the host boundary.
     ///
@@ -850,12 +850,11 @@ impl Type {
                 defer_drop!(v, vm);
                 if let Some(value) = v.py_float(vm)? {
                     Ok(Value::Float(value))
-                } else if v.is_str(vm.heap) {
-                    Ok(Value::Float(parse_f64_from_str(
-                        v.to_str(vm).expect("is_str checked above"),
-                    )?))
                 } else {
-                    Err(ExcType::type_error_float_conversion(&v.py_type_name(vm)))
+                    match v.py_value(vm) {
+                        PyValue::Str(value) => Ok(Value::Float(parse_f64_from_str(value.as_str(vm))?)),
+                        _ => Err(ExcType::type_error_float_conversion(&v.py_type_name(vm))),
+                    }
                 }
             }
             Self::Bool => {
@@ -973,18 +972,10 @@ fn int_init(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
         None => int_convert(x, vm),
         Some(base) => {
             let base = int_base(base, vm)?;
-            let interns = vm.interns;
-            if x.is_str(vm.heap) {
-                parse_int_from_str(x.to_str(vm)?, base, vm.heap)
-            } else {
-                match x {
-                    Value::InternBytes(bytes_id) => parse_int_from_bytes(interns.get_bytes(*bytes_id), base, vm.heap),
-                    Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
-                        HeapData::Bytes(b) => parse_int_from_bytes(b.as_slice(), base, vm.heap),
-                        _ => Err(ExcType::type_error_int_non_string_with_base()),
-                    },
-                    _ => Err(ExcType::type_error_int_non_string_with_base()),
-                }
+            match x.py_value(vm) {
+                PyValue::Str(value) => parse_int_from_str(value.as_str(vm), base, vm.heap),
+                PyValue::Bytes(value) => parse_int_from_bytes(value.as_slice(vm), base, vm.heap),
+                _ => Err(ExcType::type_error_int_non_string_with_base()),
             }
         }
     }
