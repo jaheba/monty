@@ -338,21 +338,16 @@ fn set_char_or_none(
 /// The character of a one-character `str`, with CPython's two wordings for a wrong
 /// type and a wrong length.
 fn single_char(name: &str, value: &Value, expected: &str, vm: &VM<'_>) -> RunResult<char> {
-    if value.is_str(vm.heap) {
-        let text = value.to_str(vm)?;
-        let mut chars = text.chars();
-        match (chars.next(), chars.next()) {
-            (Some(c), None) => Ok(c),
-            _ => Err(ExcType::type_error(format!(
-                "\"{name}\" must be {expected}, not a string of length {}",
-                text.chars().count()
-            ))),
-        }
-    } else {
-        Err(ExcType::type_error(format!(
-            "\"{name}\" must be {expected}, not {}",
-            value.py_type_name(vm)
-        )))
+    let text = value
+        .to_str(vm)
+        .map_err(|_| ExcType::type_error(format!("\"{name}\" must be {expected}, not {}", value.py_type_name(vm))))?;
+    let mut chars = text.chars();
+    match (chars.next(), chars.next()) {
+        (Some(c), None) => Ok(c),
+        _ => Err(ExcType::type_error(format!(
+            "\"{name}\" must be {expected}, not a string of length {}",
+            text.chars().count()
+        ))),
     }
 }
 
@@ -371,14 +366,10 @@ fn set_str(name: &str, value: Option<Value>, default: &str, vm: &mut VM<'_>) -> 
     let Some(value) = value else {
         return Ok(default.to_owned());
     };
-    let result = if value.is_str(vm.heap) {
-        value.to_str(vm).map(str::to_owned)
-    } else {
-        Err(ExcType::type_error(format!(
-            "\"{name}\" must be a string, not {}",
-            value.py_type_name(vm)
-        )))
-    };
+    let result = value
+        .to_str(vm)
+        .map(str::to_owned)
+        .map_err(|_| ExcType::type_error(format!("\"{name}\" must be a string, not {}", value.py_type_name(vm))));
     value.drop_with(vm);
     result
 }
