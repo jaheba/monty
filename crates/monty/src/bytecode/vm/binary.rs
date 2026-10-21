@@ -253,6 +253,8 @@ impl VM<'_> {
     }
 
     /// Applies a binary operation while owning stack-value cleanup.
+    /// Kept out of line so cleanup and generic dispatch stay outside numeric fast paths.
+    #[inline(never)]
     fn binary_op(
         &mut self,
         operation: impl FnOnce(&Value, &Value, &mut Self) -> RunResult<Value>,
@@ -275,6 +277,7 @@ impl VM<'_> {
     /// A hook reporting `true` has mutated the left operand, which is pushed
     /// back so it keeps its identity; `false` means the type has no in-place
     /// form and the ordinary binary operator produces a fresh value.
+    #[inline(never)]
     fn inplace_op(
         &mut self,
         inplace: impl FnOnce(&mut Value, &Value, &mut Self) -> RunResult<bool>,

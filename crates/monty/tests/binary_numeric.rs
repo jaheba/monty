@@ -64,7 +64,7 @@ signed_zero(2, -0.0)
 
 #[test]
 fn numeric_division_fast_paths_and_fallbacks() {
-    let code = r#"
+    let code = r"
 import math
 
 def check(a, b, quotient, floor, remainder):
@@ -145,7 +145,7 @@ check(2, float('inf'), 0.0, 0.0, 2.0)
 def format_mod(a, b):
     return a % b
 assert format_mod('%s', 'value') == 'value'
-"#;
+";
     run_checked(code);
 }
 
