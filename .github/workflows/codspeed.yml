@@ -54,7 +54,7 @@ jobs:
       - name: Build native release worker
         if: matrix.target == 'x86_64'
         run: |
-          cargo build --release --locked -p monty-runtime
+          cargo build --release --locked --no-default-features -p monty-runtime
           mkdir -p crates/monty-runtime/dist
           cp target/release/monty crates/monty-runtime/dist/monty
 
