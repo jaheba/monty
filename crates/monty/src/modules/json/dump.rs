@@ -422,7 +422,6 @@ fn json_separator_to_string(value: &Value, role: &str, vm: &VM<'_>) -> RunResult
             "make_encoder() argument {arg_num} must be str, not {}",
             value.py_type_name(vm)
         ))
-        .into()
     })
 }
 
