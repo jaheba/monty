@@ -142,7 +142,7 @@ impl ReMatch {
             let (start, end) = if self.all_ascii {
                 (self.start, self.end)
             } else {
-                let text = self.subject.to_str(vm).expect("subject is always a str");
+                let text = self.subject.try_to_str(vm).expect("subject is always a str");
                 let start = byte_to_char_offset(text, self.start);
                 // Count only the matched slice for `end` instead of rescanning from zero.
                 (start, start + text[self.start..self.end].chars().count())
@@ -160,7 +160,7 @@ impl ReMatch {
         let char_offset = if self.all_ascii {
             byte_offset
         } else {
-            let text = self.subject.to_str(vm).expect("subject is always a str");
+            let text = self.subject.try_to_str(vm).expect("subject is always a str");
             byte_to_char_offset(text, byte_offset)
         };
         position_i64(char_offset)
@@ -383,10 +383,10 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, ReMatch> {
         match key {
             Value::Int(n) => self.get(vm.heap).get_group(*n, vm.heap),
             Value::Bool(b) => self.get(vm.heap).get_group(i64::from(*b), vm.heap),
-            _ if key.is_str(vm.heap) => self
-                .get(vm.heap)
-                .get_group_by_name(key.to_str(vm).expect("is_str checked above"), vm.heap),
-            _ => Err(ExcType::re_match_group_index_error()),
+            _ => match key.as_str(vm) {
+                Some(name) => self.get(vm.heap).get_group_by_name(name, vm.heap),
+                None => Err(ExcType::re_match_group_index_error()),
+            },
         }
     }
 }
@@ -436,8 +436,10 @@ fn resolve_group_arg(m: &ReMatch, val: &Value, vm: &VM<'_>) -> RunResult<Value> 
     match val {
         Value::Int(n) => m.get_group(*n, vm.heap),
         Value::Bool(b) => m.get_group(i64::from(*b), vm.heap),
-        _ if val.is_str(vm.heap) => m.get_group_by_name(val.to_str(vm).expect("is_str checked above"), vm.heap),
-        _ => Err(ExcType::re_match_group_index_error()),
+        _ => match val.as_str(vm) {
+            Some(name) => m.get_group_by_name(name, vm.heap),
+            None => Err(ExcType::re_match_group_index_error()),
+        },
     }
 }
 

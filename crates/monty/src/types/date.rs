@@ -191,7 +191,7 @@ pub(crate) fn allocate_ymd(year: i32, month: i32, day: i32, heap: &Heap) -> Valu
 pub(crate) fn extract_str_arg(value: &Value, method_name: &str, heap: &Heap, interns: &Interns) -> RunResult<String> {
     if value.is_str(heap) {
         Ok(value
-            .to_str_heap(heap, interns)
+            .try_to_str_heap(heap, interns)
             .expect("is_str checked above")
             .to_owned())
     } else {

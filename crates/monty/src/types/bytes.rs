@@ -187,7 +187,7 @@ impl Bytes {
             let Some(v) = source_str else {
                 return Err(ExcType::type_error_encoding_without_string());
             };
-            let s = v.to_str(vm)?;
+            let s = v.try_to_str(vm)?;
             let errors = errors.as_ref().map_or("strict", |e| e.as_str(vm));
             let encoding = encoding.as_str(vm);
             let codec = Codec::find(encoding).ok_or_else(|| ExcType::lookup_error_unknown_encoding(encoding))?;

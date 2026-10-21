@@ -261,7 +261,7 @@ struct OpensslNewArgs {
 /// OpenSSL alias such as `'blake2b512'` takes the plain path, as in CPython.
 fn call_new(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
     let HashNewArgs { name, args, kwargs } = HashNewArgs::from_args(args, vm)?;
-    let blake2 = name.to_str(vm).ok().and_then(Blake2Kind::from_name);
+    let blake2 = name.as_str(vm).and_then(Blake2Kind::from_name);
     if let Some(kind) = blake2 {
         name.drop_with(vm);
         return blake2_init(kind, vm, ArgValues::from_parts(args, kwargs));

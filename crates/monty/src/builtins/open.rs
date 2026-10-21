@@ -210,10 +210,10 @@ fn validate_ignored_open_kwarg(name: &str, value: &Value, vm: &VM<'_>) -> Result
             if matches!(value, Value::None) {
                 true
             } else {
-                match value.to_str(vm) {
-                    Ok(s) => s.eq_ignore_ascii_case("utf-8") || s.eq_ignore_ascii_case("utf8"),
-                    Err(_) => return Err(kwarg_type_error(name, value, vm)),
-                }
+                let Some(s) = value.as_str(vm) else {
+                    return Err(kwarg_type_error(name, value, vm));
+                };
+                s.eq_ignore_ascii_case("utf-8") || s.eq_ignore_ascii_case("utf8")
             }
         }
         // `errors` accepts str or None in CPython; only the default (None)

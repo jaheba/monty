@@ -407,7 +407,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Instance> {
             dataclasses::dataclass_repr_fmt(self_id, &field_names, f, vm, heap_ids)
         } else if let Some(s) = instance_call_str_dunder(self_id, "__repr__", vm)? {
             defer_drop!(s, vm);
-            Ok(f.write_str(s.to_str(vm)?)?)
+            Ok(f.write_str(s.try_to_str(vm)?)?)
         } else {
             self.py_default_repr_fmt(f, vm)
         }
