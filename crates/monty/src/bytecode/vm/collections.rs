@@ -248,15 +248,15 @@ impl VM<'_> {
             let copied_items = copied_items.into_iter();
             defer_drop_mut!(copied_items, this);
             for (key, value) in copied_items {
+                let mut pair_guard = DropGuard::new((key, value), this);
+                let (pair, this) = pair_guard.as_parts();
                 // Borrow string keys uniformly across their storage forms.
-                let key_str = match key.to_str(this) {
-                    Ok(key_str) => key_str.to_owned(),
-                    Err(_) => {
-                        key.drop_with(this);
-                        value.drop_with(this);
-                        return Err(ExcType::type_error_kwargs_nonstring_key());
-                    }
-                };
+                let key_str = pair
+                    .0
+                    .to_str(this)
+                    .map_err(|_| ExcType::type_error_kwargs_nonstring_key())?
+                    .to_owned();
+                let ((key, value), this) = pair_guard.into_parts();
 
                 let HeapReadOutput::Dict(dict) = this.heap.read(dict_id) else {
                     unreachable!("DictMerge: entry is not a Dict")

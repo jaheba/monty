@@ -293,13 +293,12 @@ fn single_char(value: &Value, fn_name: &str, arg_num: Option<u32>, vm: &VM<'_>) 
         Some(n) => format!("argument {n}"),
         None => "argument".to_string(),
     };
-    if !value.is_str(vm.heap) {
-        return Err(ExcType::type_error(format!(
+    let s = value.to_str(vm).map_err(|_| {
+        ExcType::type_error(format!(
             "{fn_name}() {arg_word} must be a unicode character, not {}",
             value.py_type_name(vm)
-        )));
-    }
-    let s = value.to_str(vm)?;
+        ))
+    })?;
     let mut chars = s.chars();
     match (chars.next(), chars.next()) {
         (Some(c), None) => Ok(c),
