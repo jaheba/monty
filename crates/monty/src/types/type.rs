@@ -856,6 +856,9 @@ impl Type {
                         Value::InternString(string_id) => {
                             Ok(Value::Float(parse_f64_from_str(interns.get_str(*string_id))?))
                         }
+                        Value::InlineString { .. } => Ok(Value::Float(parse_f64_from_str(
+                            v.inline_str().expect("inline string"),
+                        )?)),
                         Value::Ref(heap_id) if let HeapData::Str(s) = vm.heap.get(*heap_id) => {
                             Ok(Value::Float(parse_f64_from_str(s.as_str())?))
                         }
@@ -981,6 +984,7 @@ fn int_init(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
             let interns = vm.interns;
             match x {
                 Value::InternString(string_id) => parse_int_from_str(interns.get_str(*string_id), base, vm.heap),
+                Value::InlineString { .. } => parse_int_from_str(x.inline_str().expect("inline string"), base, vm.heap),
                 Value::InternBytes(bytes_id) => parse_int_from_bytes(interns.get_bytes(*bytes_id), base, vm.heap),
                 Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
                     HeapData::Str(s) => parse_int_from_str(s.as_str(), base, vm.heap),

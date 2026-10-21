@@ -729,6 +729,9 @@ fn str_join<'h>(separator: &impl HeapView<'h, str>, iterable: Value, vm: &mut VM
             Value::InternString(id) => {
                 result.push_str(vm.interns.get_str(*id));
             }
+            Value::InlineString { .. } => {
+                result.push_str(item.inline_str().expect("inline string"));
+            }
             Value::Ref(heap_id) => {
                 if let HeapData::Str(s) = vm.heap.get(*heap_id) {
                     result.push_str(s.as_str());
@@ -1089,12 +1092,14 @@ fn affix_matches(
     let check = |a: &str| matcher(slice, a);
     match affix {
         Value::InternString(id) => Ok(check(vm.interns.get_str(*id))),
+        Value::InlineString { .. } => Ok(check(affix.inline_str().expect("inline string"))),
         Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
             HeapData::Str(a) => Ok(check(a.as_str())),
             HeapData::Tuple(tuple) => {
                 for item in tuple.as_slice() {
                     let matched = match item {
                         Value::InternString(id) => check(vm.interns.get_str(*id)),
+                        Value::InlineString { .. } => check(item.inline_str().expect("inline string")),
                         Value::Ref(hid) if let HeapData::Str(a) = vm.heap.get(*hid) => check(a.as_str()),
                         _ => {
                             return Err(ExcType::type_error_affix_tuple_item(
@@ -1160,6 +1165,7 @@ fn parse_search_args(
 fn extract_string_arg(value: &Value, vm: &mut VM<'_>) -> RunResult<String> {
     match value {
         Value::InternString(id) => Ok(vm.interns.get_str(*id).to_owned()),
+        Value::InlineString { .. } => Ok(value.inline_str().expect("inline string").to_owned()),
         Value::Ref(heap_id) => {
             if let HeapData::Str(s) = vm.heap.get(*heap_id) {
                 Ok(s.as_str().to_owned())
@@ -2133,6 +2139,7 @@ pub(crate) fn str_contains(container_str: &str, item: &Value, heap: &Heap, inter
             let item_str = interns.get_str(*item_id);
             Ok(container_str.contains(item_str))
         }
+        Value::InlineString { .. } => Ok(container_str.contains(item.inline_str().expect("inline string"))),
         Value::Ref(item_heap_id) => {
             if let HeapData::Str(item_str) = heap.get(*item_heap_id) {
                 Ok(container_str.contains(item_str.as_str()))

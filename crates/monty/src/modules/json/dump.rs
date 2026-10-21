@@ -423,6 +423,7 @@ fn json_separator_to_string(value: &Value, role: &str, vm: &VM<'_>) -> RunResult
     let arg_num = if role == "item_separator" { 6 } else { 5 };
     match value {
         Value::InternString(string_id) => Ok(vm.interns.get_str(*string_id).to_owned()),
+        Value::InlineString { .. } => Ok(value.inline_str().expect("inline string").to_owned()),
         Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
             HeapData::Str(string) => Ok(string.as_str().to_owned()),
             _ => Err(ExcType::type_error(format!(
