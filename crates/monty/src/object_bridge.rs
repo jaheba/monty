@@ -1148,7 +1148,7 @@ fn repr_node(value: &Value, vm: &mut VM<'_>) -> MontyNode {
         Ok(s) => {
             // `py_repr` yields a heap `str` `Value`; extract its text and drop it.
             defer_drop!(s, vm);
-            MontyNode::Repr(s.to_str(vm).map(str::to_owned).unwrap_or_default())
+            MontyNode::Repr(s.try_to_str(vm).map(str::to_owned).unwrap_or_default())
         }
         Err(e) => {
             let ty = value.py_type_name(vm);

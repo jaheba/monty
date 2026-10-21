@@ -201,7 +201,7 @@ fn compile_and_push(
 
 /// The snippet's text: a `str`, or `bytes` decoded as UTF-8.
 fn snippet_source(name: &str, source: &Value, vm: &mut VM<'_>) -> RunResult<Arc<str>> {
-    if let Ok(text) = source.to_str(vm) {
+    if let Some(text) = source.as_str(vm) {
         return Ok(Arc::from(text));
     }
 

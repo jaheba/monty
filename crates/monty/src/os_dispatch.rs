@@ -697,7 +697,7 @@ fn extract_str_data(
 ) -> RunResult<PathStringDataArgs> {
     let data = arg_or_missing_data(method, args, heap)?;
     // Only `str`: a path-like is not text, so CPython refuses `Path` and `DirEntry` here.
-    let data_str = data.to_str_heap(heap, interns).ok().map(str::to_owned);
+    let data_str = data.try_to_str_heap(heap, interns).ok().map(str::to_owned);
 
     // CPython names the type by its `__name__`: no module (`DirEntry`, not
     // `posix.DirEntry`), but a class's own name (`Point` for a named tuple).
@@ -870,7 +870,7 @@ pub(crate) fn value_to_owned_string(value: &Value, heap: &Heap, interns: &Intern
 /// what [`value_to_owned_string`] copies, for sizing the copy first.
 pub(crate) fn value_as_path_str<'a>(value: &'a Value, heap: &'a Heap, interns: &'a Interns) -> Option<&'a str> {
     if value.is_str(heap) {
-        return Some(value.to_str_heap(heap, interns).expect("is_str checked above"));
+        return Some(value.try_to_str_heap(heap, interns).expect("is_str checked above"));
     }
 
     match value {
