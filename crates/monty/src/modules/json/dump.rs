@@ -417,20 +417,13 @@ fn check_separators_length(len: usize) -> RunResult<()> {
 /// 5 for `key_separator`) so the error message matches CPython exactly.
 fn json_separator_to_string(value: &Value, role: &str, vm: &VM<'_>) -> RunResult<String> {
     let arg_num = if role == "item_separator" { 6 } else { 5 };
-    match value {
-        Value::InternString(string_id) => Ok(vm.interns.get_str(*string_id).to_owned()),
-        Value::InlineString { .. } => Ok(value.inline_str().expect("inline string").to_owned()),
-        Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
-            HeapData::Str(string) => Ok(string.as_str().to_owned()),
-            _ => Err(ExcType::type_error(format!(
-                "make_encoder() argument {arg_num} must be str, not {}",
-                value.py_type_name(vm)
-            ))),
-        },
-        _ => Err(ExcType::type_error(format!(
+    if value.is_str(vm.heap) {
+        Ok(value.to_str(vm).expect("is_str checked above").to_owned())
+    } else {
+        Err(ExcType::type_error(format!(
             "make_encoder() argument {arg_num} must be str, not {}",
             value.py_type_name(vm)
-        ))),
+        )))
     }
 }
 

@@ -133,8 +133,6 @@ struct OpenArgs {
 /// listed above.
 fn extract_path_string<'a>(value: &'a Value, vm: &'a VM<'_>) -> RunResult<&'a str> {
     let opt = match value {
-        Value::InternString(string_id) => Some(vm.interns.get_str(*string_id)),
-        Value::InlineString { .. } => Some(value.inline_str().unwrap()),
         Value::InternBytes(bytes_id) => decode_utf8_path(vm.interns.get_bytes(*bytes_id))?,
         Value::Ref(id) if let HeapData::Bytes(b) = vm.heap.get(*id) => decode_utf8_path(b.as_slice())?,
         _ => value_as_path_str(value, vm.heap, vm.interns),
@@ -212,15 +210,7 @@ fn validate_ignored_open_kwarg(name: &str, value: &Value, vm: &VM<'_>) -> Result
             if matches!(value, Value::None) {
                 true
             } else if value.is_str(vm.heap) {
-                let s = match value {
-                    Value::InternString(id) => vm.interns.get_str(*id),
-                    Value::InlineString { .. } => value.inline_str().unwrap(),
-                    Value::Ref(id) => match vm.heap.get(*id) {
-                        HeapData::Str(s) => s.as_str(),
-                        _ => "",
-                    },
-                    _ => "",
-                };
+                let s = value.to_str(vm).expect("is_str checked above");
                 s.eq_ignore_ascii_case("utf-8") || s.eq_ignore_ascii_case("utf8")
             } else {
                 return Err(kwarg_type_error(name, value, vm));

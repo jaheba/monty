@@ -580,14 +580,16 @@ fn xof_length(length: u64, bytes_per_output: usize, vm: &VM<'_>) -> RunResult<us
 /// Borrows the bytes a hash accepts, with the two messages `_hashlib` uses:
 /// `str` is told to encode first, anything else is not a buffer.
 pub(crate) fn hash_input<'a>(value: &'a Value, vm: &'a VM<'_>) -> RunResult<&'a [u8]> {
+    if value.is_str(vm.heap) {
+        return Err(ExcType::type_error("Strings must be encoded before hashing"));
+    }
+
     match value {
         Value::InternBytes(id) => Ok(vm.interns.get_bytes(*id)),
         Value::Ref(id) => match vm.heap.get(*id) {
             HeapData::Bytes(bytes) => Ok(bytes.as_slice()),
-            HeapData::Str(_) => Err(ExcType::type_error("Strings must be encoded before hashing")),
             _ => Err(ExcType::type_error("object supporting the buffer API required")),
         },
-        Value::InternString(_) => Err(ExcType::type_error("Strings must be encoded before hashing")),
         _ => Err(ExcType::type_error("object supporting the buffer API required")),
     }
 }

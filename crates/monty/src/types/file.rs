@@ -1724,15 +1724,8 @@ fn validate_write_data(data: &Value, binary: bool, vm: &VM<'_>) -> RunResult<()>
 /// `None` for any other type. `write()` unwraps it after `validate_write_data`,
 /// `open()`'s `newline` argument uses `None` to raise its `TypeError`.
 pub(crate) fn extract_str_payload(data: &Value, vm: &VM<'_>) -> Option<String> {
-    match data {
-        Value::InternString(id) => Some(vm.interns.get_str(*id).to_owned()),
-        Value::InlineString { .. } => Some(data.inline_str().unwrap().to_owned()),
-        Value::Ref(id) => match vm.heap.get(*id) {
-            HeapData::Str(s) => Some(s.as_str().to_owned()),
-            _ => None,
-        },
-        _ => None,
-    }
+    data.is_str(vm.heap)
+        .then(|| data.to_str(vm).expect("is_str checked above").to_owned())
 }
 
 /// Owned `Vec<u8>` from a value pre-validated as Python `bytes` — binary
