@@ -18,7 +18,7 @@ jobs:
     name: Build release worker (${{ matrix.target }})
     strategy:
       matrix:
-        target: [x86_64, aarch64]
+        target: ${{ fromJSON(github.event_name == 'push' && github.ref == 'refs/heads/main' && '["x86_64", "aarch64"]' || '["x86_64"]') }}
     runs-on: ${{ matrix.target == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -50,7 +50,7 @@ jobs:
           rust-toolchain: stable
           working-directory: crates/monty-runtime
 
-      # Simulation uses the same Ubuntu image for building and running the worker.
+      # Simulation and memory share a native worker built on the same Ubuntu image.
       - name: Build native release worker
         if: matrix.target == 'x86_64'
         run: |
@@ -73,7 +73,7 @@ jobs:
       matrix:
         mode: ${{ fromJSON(github.event_name == 'push' && github.ref == 'refs/heads/main' && '["simulation", "memory", "walltime"]' || '["simulation", "memory"]') }}
     # Keep the walltime baseline on the same bare-metal Graviton hardware.
-    runs-on: ${{ matrix.mode == 'walltime' && 'codspeed-macro-arm64-graviton-ubuntu-22-04' || matrix.mode == 'memory' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
+    runs-on: ${{ matrix.mode == 'walltime' && 'codspeed-macro-arm64-graviton-ubuntu-22-04' || 'ubuntu-24.04' }}
     permissions:
       contents: read
       id-token: write
@@ -97,7 +97,7 @@ jobs:
           save-if: ${{ env.SAVE_CI_CACHE }}
 
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        if: matrix.mode != 'simulation'
+        if: matrix.mode == 'walltime'
         with:
           python-version: '3.14'
 
@@ -111,19 +111,19 @@ jobs:
 
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          name: codspeed-worker-${{ matrix.mode == 'simulation' && 'x86_64' || 'aarch64' }}
+          name: codspeed-worker-${{ matrix.mode == 'walltime' && 'aarch64' || 'x86_64' }}
           path: worker-artifacts
 
       # MONTY_TEST_BIN prevents the pool benchmarks from building a worker mid-run.
       # Each mode uses an optimized worker built for its architecture.
       - name: Install the release worker wheel
-        if: matrix.mode != 'simulation'
+        if: matrix.mode == 'walltime'
         run: |
           python -m venv worker
           worker/bin/python -m pip install --no-deps worker-artifacts/*.whl
 
       - name: Install the native release worker
-        if: matrix.mode == 'simulation'
+        if: matrix.mode != 'walltime'
         run: |
           mkdir -p worker/bin
           install -m 755 worker-artifacts/monty worker/bin/monty
