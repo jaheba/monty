@@ -299,7 +299,7 @@ fn str_ctor_arg_check(arg: Option<&Value>, name: &str, vm: &VM<'_>) -> RunResult
 fn ctor_str_arg<'a>(arg: Option<&'a Value>, default: &'a str, vm: &'a VM<'_>) -> RunResult<&'a str> {
     match arg {
         None => Ok(default),
-        Some(v) => v.to_str(vm),
+        Some(v) => v.try_to_str(vm),
     }
 }
 
@@ -726,8 +726,8 @@ fn str_join<'h>(separator: &impl HeapView<'h, str>, iterable: Value, vm: &mut VM
         }
 
         // `to_str` borrows all string representations without copying.
-        if item.is_str(vm.heap) {
-            result.push_str(item.to_str(vm).expect("is_str checked above"));
+        if let Some(text) = item.as_str(vm) {
+            result.push_str(text);
         } else {
             let t = item.py_type_name(vm);
             return Err(ExcType::type_error_join_item(index, &t));
@@ -1077,22 +1077,21 @@ fn affix_matches(
     // CPython error messages use the bare method name, not "str.startswith".
     let short_method = method.strip_prefix("str.").unwrap_or(method);
     let check = |a: &str| matcher(slice, a);
-    if affix.is_str(vm.heap) {
-        return Ok(check(affix.to_str(vm).expect("is_str checked above")));
+    if let Some(text) = affix.as_str(vm) {
+        return Ok(check(text));
     }
 
     if let Value::Ref(heap_id) = affix
         && let HeapData::Tuple(tuple) = vm.heap.get(*heap_id)
     {
         for item in tuple.as_slice() {
-            if !item.is_str(vm.heap) {
+            let Some(text) = item.as_str(vm) else {
                 return Err(ExcType::type_error_affix_tuple_item(
                     short_method,
                     "str",
                     &item.py_type_name(vm),
                 ));
-            }
-            let text = item.to_str(vm).expect("is_str checked above");
+            };
             if check(text) {
                 return Ok(true);
             }
@@ -1142,9 +1141,9 @@ fn parse_search_args(
 /// Extracts a string from a Value, returning an error if not a string.
 fn extract_string_arg(value: &Value, vm: &mut VM<'_>) -> RunResult<String> {
     value
-        .to_str(vm)
+        .as_str(vm)
         .map(str::to_owned)
-        .map_err(|_| ExcType::type_error("expected str"))
+        .ok_or_else(|| ExcType::type_error("expected str"))
 }
 
 /// Extracts an integer from a Value, returning an error if not an integer.
@@ -2105,7 +2104,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, StringIterator> {
 /// A non-str probe reports its own type, as CPython does.
 pub(crate) fn str_contains(container_str: &str, item: &Value, heap: &Heap, interns: &Interns) -> RunResult<bool> {
     if item.is_str(heap) {
-        Ok(container_str.contains(item.to_str_heap(heap, interns).expect("is_str checked above")))
+        Ok(container_str.contains(item.try_to_str_heap(heap, interns).expect("is_str checked above")))
     } else {
         Err(ExcType::type_error(format!(
             "'in <string>' requires string as left operand, not {}",

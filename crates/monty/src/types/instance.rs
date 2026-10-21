@@ -410,7 +410,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Instance> {
         let self_id = self.id();
         if let Some(s) = instance_call_str_dunder(self_id, "__repr__", vm)? {
             defer_drop!(s, vm);
-            Ok(f.write_str(s.to_str(vm)?)?)
+            Ok(f.write_str(s.try_to_str(vm)?)?)
         } else {
             let class_id = instance_class(self_id, vm);
             match dataclasses::dataclass_fields(class_id, vm) {
