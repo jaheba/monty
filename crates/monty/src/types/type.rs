@@ -1015,16 +1015,17 @@ fn int_init(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
         Some(base) => {
             let base = int_base(base, vm)?;
             let interns = vm.interns;
-            match x {
-                Value::InternString(string_id) => parse_int_from_str(interns.get_str(*string_id), base, vm.heap),
-                Value::InlineString { .. } => parse_int_from_str(x.inline_str().expect("inline string"), base, vm.heap),
-                Value::InternBytes(bytes_id) => parse_int_from_bytes(interns.get_bytes(*bytes_id), base, vm.heap),
-                Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
-                    HeapData::Str(s) => parse_int_from_str(s.as_str(), base, vm.heap),
-                    HeapData::Bytes(b) => parse_int_from_bytes(b.as_slice(), base, vm.heap),
+            if x.is_str(vm.heap) {
+                parse_int_from_str(x.to_str(vm)?, base, vm.heap)
+            } else {
+                match x {
+                    Value::InternBytes(bytes_id) => parse_int_from_bytes(interns.get_bytes(*bytes_id), base, vm.heap),
+                    Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
+                        HeapData::Bytes(b) => parse_int_from_bytes(b.as_slice(), base, vm.heap),
+                        _ => Err(ExcType::type_error_int_non_string_with_base()),
+                    },
                     _ => Err(ExcType::type_error_int_non_string_with_base()),
-                },
-                _ => Err(ExcType::type_error_int_non_string_with_base()),
+                }
             }
         }
     }

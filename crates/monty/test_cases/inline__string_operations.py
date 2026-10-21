@@ -1,4 +1,6 @@
 # Slicing creates runtime strings rather than interned literals.
+import hashlib
+
 s = 'abc!'[:-1]
 u = 'é!'[:-1]
 assert str(s) == 'abc'
@@ -73,6 +75,16 @@ assert int('ff!'[:-1], 16) == 255
 assert float('1.25!'[:-1]) == 1.25
 assert isinstance(id(s), int)
 assert str(ValueError(s)) == 'abc'
+try:
+    hashlib.sha256(s)
+    assert False
+except TypeError as exc:
+    assert 'Strings must be encoded before hashing' in str(exc)
+try:
+    str(s, 'utf-8')
+    assert False
+except TypeError as exc:
+    assert 'decoding str is not supported' in str(exc)
 try:
     b'ab'.hex('é!'[:-1])
     assert False

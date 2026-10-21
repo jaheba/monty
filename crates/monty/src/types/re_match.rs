@@ -383,18 +383,9 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, ReMatch> {
         match key {
             Value::Int(n) => self.get(vm.heap).get_group(*n, vm.heap),
             Value::Bool(b) => self.get(vm.heap).get_group(i64::from(*b), vm.heap),
-            Value::InternString(id) => {
-                let name = vm.interns.get_str(*id);
-                self.get(vm.heap).get_group_by_name(name, vm.heap)
-            }
-            Value::InlineString { .. } => self.get(vm.heap).get_group_by_name(key.inline_str().unwrap(), vm.heap),
-            Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
-                HeapData::Str(s) => {
-                    let name = s.as_str().to_owned();
-                    self.get(vm.heap).get_group_by_name(&name, vm.heap)
-                }
-                _ => Err(ExcType::re_match_group_index_error()),
-            },
+            _ if key.is_str(vm.heap) => self
+                .get(vm.heap)
+                .get_group_by_name(key.to_str(vm).expect("is_str checked above"), vm.heap),
             _ => Err(ExcType::re_match_group_index_error()),
         }
     }
@@ -445,18 +436,7 @@ fn resolve_group_arg(m: &ReMatch, val: &Value, vm: &VM<'_>) -> RunResult<Value> 
     match val {
         Value::Int(n) => m.get_group(*n, vm.heap),
         Value::Bool(b) => m.get_group(i64::from(*b), vm.heap),
-        Value::InternString(id) => {
-            let name = vm.interns.get_str(*id);
-            m.get_group_by_name(name, vm.heap)
-        }
-        Value::InlineString { .. } => m.get_group_by_name(val.inline_str().unwrap(), vm.heap),
-        Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
-            HeapData::Str(s) => {
-                let name = s.as_str().to_owned();
-                m.get_group_by_name(&name, vm.heap)
-            }
-            _ => Err(ExcType::re_match_group_index_error()),
-        },
+        _ if val.is_str(vm.heap) => m.get_group_by_name(val.to_str(vm).expect("is_str checked above"), vm.heap),
         _ => Err(ExcType::re_match_group_index_error()),
     }
 }

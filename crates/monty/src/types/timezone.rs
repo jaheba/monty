@@ -264,14 +264,15 @@ pub(crate) fn format_offset_timedelta_repr(offset_seconds: i32) -> String {
 }
 
 fn extract_name(name_arg: &Value, heap: &Heap, interns: &Interns) -> RunResult<Option<String>> {
-    match name_arg {
-        Value::InternString(id) => Ok(Some(interns.get_str(*id).to_owned())),
-        Value::InlineString { .. } => Ok(Some(name_arg.inline_str().unwrap().to_owned())),
-        Value::Ref(id) => match heap.get(*id) {
-            HeapData::Str(s) => Ok(Some(s.as_str().to_owned())),
-            _ => Err(bad_name_arg(name_arg, heap, interns)),
-        },
-        _ => Err(bad_name_arg(name_arg, heap, interns)),
+    if name_arg.is_str(heap) {
+        Ok(Some(
+            name_arg
+                .to_str_heap(heap, interns)
+                .expect("is_str checked above")
+                .to_owned(),
+        ))
+    } else {
+        Err(bad_name_arg(name_arg, heap, interns))
     }
 }
 

@@ -2259,16 +2259,20 @@ fn parse_bytes_hex_args(args: ArgValues, vm: &mut VM<'_>) -> RunResult<(Option<c
         return Ok((None, 1));
     };
 
-    let sep_bytes = match sep_value {
-        Value::InternString(id) => vm.interns.get_str(*id).as_bytes(),
-        Value::InlineString { .. } => sep_value.inline_str().unwrap().as_bytes(),
-        Value::InternBytes(id) => vm.interns.get_bytes(*id),
-        Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
-            HeapData::Str(s) => s.as_bytes(),
-            HeapData::Bytes(b) => b.as_slice(),
+    let sep_bytes = if sep_value.is_str(vm.heap) {
+        sep_value
+            .to_str_heap(vm.heap, vm.interns)
+            .expect("is_str checked above")
+            .as_bytes()
+    } else {
+        match sep_value {
+            Value::InternBytes(id) => vm.interns.get_bytes(*id),
+            Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
+                HeapData::Bytes(b) => b.as_slice(),
+                _ => return Err(ExcType::type_error("sep must be str or bytes")),
+            },
             _ => return Err(ExcType::type_error("sep must be str or bytes")),
-        },
-        _ => return Err(ExcType::type_error("sep must be str or bytes")),
+        }
     };
 
     let sep_char = match sep_bytes {
@@ -2322,19 +2326,22 @@ pub fn bytes_fromhex(args: ArgValues, vm: &mut VM<'_>) -> RunResult<Value> {
     let hex_value = args.get_one_arg("bytes.fromhex", vm.heap)?;
     defer_drop!(hex_value, vm);
 
-    let hex_str = match hex_value {
-        Value::InternString(id) => vm.interns.get_str(*id),
-        Value::InlineString { .. } => hex_value.inline_str().unwrap(),
-        Value::Ref(heap_id) => {
-            if let HeapData::Str(s) = vm.heap.get(*heap_id) {
-                s.as_str()
-            } else {
+    let hex_str = if hex_value.is_str(vm.heap) {
+        hex_value
+            .to_str_heap(vm.heap, vm.interns)
+            .expect("is_str checked above")
+    } else {
+        match hex_value {
+            Value::InternBytes(_) => {
                 return Err(ExcType::type_error("fromhex() argument must be str, not bytes"));
             }
-        }
-        _ => {
-            let t = hex_value.py_type_name(vm);
-            return Err(ExcType::type_error(format!("fromhex() argument must be str, not {t}")));
+            Value::Ref(id) if matches!(vm.heap.get(*id), HeapData::Bytes(_)) => {
+                return Err(ExcType::type_error("fromhex() argument must be str, not bytes"));
+            }
+            _ => {
+                let t = hex_value.py_type_name(vm);
+                return Err(ExcType::type_error(format!("fromhex() argument must be str, not {t}")));
+            }
         }
     };
 
