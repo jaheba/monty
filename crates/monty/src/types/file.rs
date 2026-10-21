@@ -96,6 +96,7 @@ use crate::{
     heap::{DropGuard, DropWithContext, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadMut, HeapReadOutput},
     intern::StaticStrings,
     os_dispatch::PostConversionEffect,
+    py_value::PyValue,
     types::str::StringRepr,
     value::{EitherStr, Value},
     virtual_path::posix_join,
@@ -1724,19 +1725,17 @@ fn validate_write_data(data: &Value, binary: bool, vm: &VM<'_>) -> RunResult<()>
 /// `None` for any other type. `write()` unwraps it after `validate_write_data`,
 /// `open()`'s `newline` argument uses `None` to raise its `TypeError`.
 pub(crate) fn extract_str_payload(data: &Value, vm: &VM<'_>) -> Option<String> {
-    data.is_str(vm.heap)
-        .then(|| data.to_str(vm).expect("is_str checked above").to_owned())
+    match data.py_value(vm) {
+        PyValue::Str(text) => Some(text.as_str(vm).to_owned()),
+        _ => None,
+    }
 }
 
 /// Owned `Vec<u8>` from a value pre-validated as Python `bytes` — binary
 /// companion to [`extract_str_payload`].
 fn extract_bytes_payload(data: &Value, vm: &VM<'_>) -> Option<Vec<u8>> {
-    match data {
-        Value::InternBytes(id) => Some(vm.interns.get_bytes(*id).to_owned()),
-        Value::Ref(id) => match vm.heap.get(*id) {
-            HeapData::Bytes(b) => Some(b.as_slice().to_owned()),
-            _ => None,
-        },
+    match data.py_value(vm) {
+        PyValue::Bytes(bytes) => Some(bytes.as_slice(vm).to_owned()),
         _ => None,
     }
 }

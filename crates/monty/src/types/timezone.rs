@@ -264,16 +264,10 @@ pub(crate) fn format_offset_timedelta_repr(offset_seconds: i32) -> String {
 }
 
 fn extract_name(name_arg: &Value, heap: &Heap, interns: &Interns) -> RunResult<Option<String>> {
-    if name_arg.is_str(heap) {
-        Ok(Some(
-            name_arg
-                .to_str_heap(heap, interns)
-                .expect("is_str checked above")
-                .to_owned(),
-        ))
-    } else {
-        Err(bad_name_arg(name_arg, heap, interns))
-    }
+    name_arg
+        .to_str_heap(heap, interns)
+        .map(|name| Some(name.to_owned()))
+        .map_err(|_| bad_name_arg(name_arg, heap, interns))
 }
 
 /// Builds the `timezone() argument 2 must be str, not <type>` error CPython
