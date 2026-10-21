@@ -770,7 +770,7 @@ fn str_join<'h>(separator: &impl HeapView<'h, str>, iterable: Value, vm: &mut VM
             result.push_str(separator.get(vm.heap));
         }
 
-        // `to_str` borrows all string representations without copying.
+        // `as_str` borrows interned, inline, and heap-backed strings without copying.
         if let Some(text) = item.as_str(vm) {
             result.push_str(text);
         } else {
