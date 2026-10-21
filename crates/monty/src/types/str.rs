@@ -1186,11 +1186,10 @@ fn parse_search_args(
 
 /// Extracts a string from a Value, returning an error if not a string.
 fn extract_string_arg(value: &Value, vm: &mut VM<'_>) -> RunResult<String> {
-    if value.is_str(vm.heap) {
-        Ok(value.to_str(vm).expect("is_str checked above").to_owned())
-    } else {
-        Err(ExcType::type_error("expected str"))
-    }
+    value
+        .to_str(vm)
+        .map(str::to_owned)
+        .map_err(|_| ExcType::type_error("expected str"))
 }
 
 /// Extracts an integer from a Value, returning an error if not an integer.

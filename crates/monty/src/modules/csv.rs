@@ -476,10 +476,9 @@ fn materialize_fieldnames(fieldnames: &mut Value, vm: &mut VM<'_>) -> RunResult<
 
 /// `extrasaction.lower()`, which must be `'raise'` or `'ignore'` and is what gets stored.
 fn check_extrasaction(extrasaction: &Value, vm: &VM<'_>) -> RunResult<Value> {
-    if !extrasaction.is_str(vm.heap) {
-        return Err(ExcType::attribute_error(extrasaction.py_type_name(vm), "lower"));
-    }
-    let text = extrasaction.to_str(vm)?;
+    let text = extrasaction
+        .to_str(vm)
+        .map_err(|_| ExcType::attribute_error(extrasaction.py_type_name(vm), "lower"))?;
     let lowered = text.to_lowercase();
     if lowered == "raise" || lowered == "ignore" {
         Ok(allocate_string(lowered, vm.heap))
