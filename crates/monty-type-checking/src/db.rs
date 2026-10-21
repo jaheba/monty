@@ -28,8 +28,8 @@ use ty_python_semantic::{
 ///
 /// ## Lifetime invariant
 ///
-/// Each `MemoryDb` owns a unique Salsa storage. The pool must never clone a pooled
-/// instance or hand out parallel live handles because Salsa setters require
+/// Each `MemoryDb` owns a unique Salsa storage. It must never be cloned or shared
+/// with another live handle because Salsa setters require
 /// exclusive access to the underlying `Arc<Zalsa>`. `MemoryDb` therefore deliberately
 /// does not implement `Clone`; the only `Db::dyn_clone` requirement is satisfied by a
 /// panicking implementation, since that hook is reached only by ty's autofix pipeline
@@ -61,8 +61,7 @@ impl fmt::Debug for MemoryDb {
 /// Virtual source root used for all in-memory type-checking files.
 ///
 /// Every public `SourceFile.path` is mapped under `/`, including nested paths such
-/// as `pkg/main.py`. Pool cleanup is responsible for removing any intermediate
-/// directories before a reused db is returned to the next caller.
+/// as `pkg/main.py`. The files and directories are released with the database.
 pub(crate) const SRC_ROOT: &str = "/";
 
 impl Default for MemoryDb {

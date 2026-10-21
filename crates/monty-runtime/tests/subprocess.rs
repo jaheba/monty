@@ -2560,14 +2560,11 @@ fn reset_releases_type_checker_memory() {
     child.shutdown();
 }
 
-/// Security-critical: `Reset` must scrub every file a session wrote into the
-/// type checker — its script (wherever `script_name` placed it, including
-/// nested directories and `..`/absolute forms) and its stubs — so the next
-/// session served by the SAME process cannot resolve any of them. This runs
-/// against one child by construction, so unlike a pool test it cannot pass
-/// vacuously on a fresh worker.
+/// Security-critical: after `Reset`, the next session must not resolve the previous
+/// session's script or stubs, including nested and normalized script paths.
+/// Both sessions use the same child so a fresh worker cannot hide retained state.
 #[test]
-fn reset_scrubs_type_check_state_from_the_next_session() {
+fn reset_isolates_type_check_state_from_the_next_session() {
     // (script_name of session A, module path session B tries to import)
     let cases = [
         ("a.py", "a"),
@@ -2623,7 +2620,7 @@ fn reset_scrubs_type_check_state_from_the_next_session() {
             probe("from repl_type_stubs import STUB_SECRET".to_owned()),
             "b.py:1:6: error[unresolved-import] Cannot resolve imported module `repl_type_stubs`\n",
         );
-        // the scrub keeps SRC_ROOT itself intact — fresh checks still work
+        // The new session can still check and execute valid code.
         assert_eq!(child.feed_complete("x: int = 1\nx"), MontyObject::int(1));
 
         // back to unconfigured for the next case
