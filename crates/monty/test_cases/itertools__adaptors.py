@@ -250,6 +250,10 @@ assert list(itertools.chain.from_iterable([[], [1], []])) == [1]
 # It can be bound and called later, not only called in place.
 bound_from_iterable = itertools.chain.from_iterable
 assert list(bound_from_iterable([[1], [2]])) == [1, 2]
+assert bound_from_iterable == itertools.chain.from_iterable
+from_iterable_keys = {bound_from_iterable: 42}
+assert from_iterable_keys[itertools.chain.from_iterable] == 42
+assert itertools.chain.from_iterable in {bound_from_iterable}
 # The result is an ordinary chain.
 assert str(type(itertools.chain.from_iterable([]))) == "<class 'itertools.chain'>"
 from_iterable_iter = itertools.chain.from_iterable([[1]])

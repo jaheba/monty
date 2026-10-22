@@ -2,6 +2,7 @@
 
 use super::VM;
 use crate::{
+    builtins::Builtins,
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
     heap::{DropGuard, DropWithContext, Heap, HeapData, HeapReadOutput},
@@ -207,6 +208,25 @@ impl VM<'_> {
             let method = self.interns.get_str(StringId::from_index(func_name_id)).to_string();
             let recv_type = self.stack[self.stack.len() - 4].py_type_name(self);
             format!("{recv_type}.{method}")
+        };
+        self.dict_merge_inner(&func_name)
+    }
+
+    /// Uses the prepared callable and receiver to qualify duplicate-keyword errors.
+    pub(super) fn prepared_method_dict_merge(&mut self, func_name_id: u16) -> Result<(), RunError> {
+        let func_name = if func_name_id == 0xFFFF {
+            "<unknown>".to_string()
+        } else {
+            let method = self.interns.get_str(StringId::from_index(func_name_id)).to_string();
+            let callable = &self.stack[self.stack.len() - 5];
+            let receiver = &self.stack[self.stack.len() - 4];
+            if let Value::Builtin(Builtins::Method(owner, _)) = callable {
+                format!("{}.{method}", owner.dunder_name(self.heap, self.interns))
+            } else if matches!(receiver, Value::Undefined) {
+                method
+            } else {
+                format!("{}.{method}", receiver.py_type_name(self))
+            }
         };
         self.dict_merge_inner(&func_name)
     }

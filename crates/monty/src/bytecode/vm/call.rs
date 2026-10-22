@@ -12,7 +12,7 @@ use super::{CallFrame, VM, attr::PendingLookupEffect, function_namespace, recurs
 use crate::{
     args::{ArgValues, KwargsValues},
     asyncio::Coroutine,
-    builtins::{BuiltinsFunctions, BuiltinsFunctionsExt},
+    builtins::{Builtins, BuiltinsFunctions, BuiltinsFunctionsExt},
     bytecode::FrameExit,
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
@@ -24,7 +24,7 @@ use crate::{
     modules::dataclasses,
     os_dispatch::{PendingEffect, release_pending_effect},
     resource_checks::check_estimated_size,
-    types::{Dict, Instance, PyTrait, Type, instance::class_name},
+    types::{Dict, Instance, PyTrait, Type, instance::class_name, method_descriptor},
     value::{EitherStr, VALUE_SIZE, Value},
 };
 
@@ -242,36 +242,10 @@ impl<'h> VM<'h> {
     /// pops the keyword values, positional args, and callable from the stack,
     /// builds the appropriate `ArgValues`, and calls the function.
     pub(super) fn exec_call_function_kw(&mut self, pos_count: usize, kw_count: usize) -> Result<CallResult, RunError> {
-        // Pop keyword values (TOS is last kwarg value)
-        let kw_values = self.pop_n(kw_count);
-
-        // Pop positional arguments
-        let pos_args = self.pop_n(pos_count);
-
-        // Pop the callable
+        let args = self.pop_keyword_args(pos_count, kw_count);
         let callable = self.pop();
         let this = self;
         defer_drop!(callable, this);
-
-        // Build kwargs directly as Vec<(StringId, Value)>
-        let mut kwargs_inline = Vec::with_capacity(kw_count);
-        for value in kw_values {
-            let name_id = StringId::from_index(this.current_frame.fetch_u16());
-            kwargs_inline.push((name_id, value));
-        }
-
-        // Build ArgValues with both positional and keyword args
-        let args = if pos_args.is_empty() && kwargs_inline.is_empty() {
-            ArgValues::Empty
-        } else if pos_args.is_empty() {
-            ArgValues::Kwargs(KwargsValues::Inline(kwargs_inline))
-        } else {
-            ArgValues::ArgsKargs {
-                args: pos_args,
-                kwargs: KwargsValues::Inline(kwargs_inline),
-            }
-        };
-
         this.call_function(callable, args)
     }
 
@@ -297,35 +271,29 @@ impl<'h> VM<'h> {
         pos_count: usize,
         kw_count: usize,
     ) -> Result<CallResult, RunError> {
-        // Pop keyword values (TOS is last kwarg value)
-        let kw_values = self.pop_n(kw_count);
-
-        // Pop positional arguments
-        let pos_args = self.pop_n(pos_count);
-
-        // Pop the object
+        let args = self.pop_keyword_args(pos_count, kw_count);
         let obj = self.pop();
-
-        // Build kwargs directly as Vec<(StringId, Value)>
-        let mut kwargs_inline = Vec::with_capacity(kw_count);
-        for value in kw_values {
-            let kw_name_id = StringId::from_index(self.current_frame.fetch_u16());
-            kwargs_inline.push((kw_name_id, value));
-        }
-
-        // Build ArgValues with both positional and keyword args
-        let args = if pos_args.is_empty() && kwargs_inline.is_empty() {
-            ArgValues::Empty
-        } else if pos_args.is_empty() {
-            ArgValues::Kwargs(KwargsValues::Inline(kwargs_inline))
-        } else {
-            ArgValues::ArgsKargs {
-                args: pos_args,
-                kwargs: KwargsValues::Inline(kwargs_inline),
-            }
-        };
-
         self.call_attr(obj, name_id, args)
+    }
+
+    /// Executes `MethodCall` opcode.
+    ///
+    /// Consumes the prepared callable, receiver, and positional arguments.
+    pub(super) fn exec_method_call(&mut self, arg_count: usize) -> Result<CallResult, RunError> {
+        let args = self.pop_n_args(arg_count);
+        let obj = self.pop();
+        self.call_prepared_method(obj, args)
+    }
+
+    /// Executes `MethodCallKw` opcode.
+    ///
+    /// Reads `kw_count` keyword name operands from the instruction stream,
+    /// consumes the prepared callable and receiver with positional and keyword values.
+    /// Returns a `CallResult` which may indicate an OS or external call.
+    pub(super) fn exec_method_call_kw(&mut self, pos_count: usize, kw_count: usize) -> Result<CallResult, RunError> {
+        let args = self.pop_keyword_args(pos_count, kw_count);
+        let receiver = self.pop();
+        self.call_prepared_method(receiver, args)
     }
 
     /// Executes `CallFunctionExtended` opcode.
@@ -366,9 +334,72 @@ impl<'h> VM<'h> {
         self.call_attr_extended(obj, name_id, args_tuple, kwargs)
     }
 
+    /// Executes `MethodCallExtended` opcode.
+    ///
+    /// Handles method calls with `*args` and/or `**kwargs` unpacking.
+    pub(super) fn exec_method_call_extended(&mut self, has_kwargs: bool) -> Result<CallResult, RunError> {
+        // Pop kwargs dict if present
+        let kwargs = if has_kwargs { Some(self.pop()) } else { None };
+
+        // Pop args tuple
+        let args_tuple = self.pop();
+
+        // Pop the receiver object
+        let obj = self.pop();
+
+        // Unpack and call
+        self.call_method_extended(obj, args_tuple, kwargs)
+    }
+
+    /// Calls a resolved value, adding the receiver only when binding requested it.
+    fn call_prepared_method(&mut self, receiver: Value, args: ArgValues) -> RunResult<CallResult> {
+        let callable = self.pop();
+        let this = self;
+        defer_drop!(callable, this);
+        if let Value::Builtin(Builtins::Method(owner, name)) = callable
+            && !matches!(receiver, Value::Undefined)
+        {
+            return method_descriptor::call_bound(*owner, *name, receiver, args, this);
+        }
+        let args = if matches!(receiver, Value::Undefined) {
+            args
+        } else {
+            args.prepend(receiver)
+        };
+        this.call_function(callable, args)
+    }
+
     // ========================================================================
     // Internal Call Helpers
     // ========================================================================
+
+    /// Reads keyword operands while collecting the argument values above a callable.
+    fn pop_keyword_args(&mut self, pos_count: usize, kw_count: usize) -> ArgValues {
+        // Pop keyword values (TOS is last kwarg value)
+        let kw_values = self.pop_n(kw_count);
+
+        // Pop positional arguments
+        let pos_args = self.pop_n(pos_count);
+
+        // Build kwargs directly as Vec<(StringId, Value)>
+        let mut kwargs_inline = Vec::with_capacity(kw_count);
+        for value in kw_values {
+            let kw_name_id = StringId::from_index(self.current_frame.fetch_u16());
+            kwargs_inline.push((kw_name_id, value));
+        }
+
+        // Build ArgValues with both positional and keyword args
+        if pos_args.is_empty() && kwargs_inline.is_empty() {
+            ArgValues::Empty
+        } else if pos_args.is_empty() {
+            ArgValues::Kwargs(KwargsValues::Inline(kwargs_inline))
+        } else {
+            ArgValues::ArgsKargs {
+                args: pos_args,
+                kwargs: KwargsValues::Inline(kwargs_inline),
+            }
+        }
+    }
 
     /// Pops n arguments from the stack and wraps them in `ArgValues`.
     fn pop_n_args(&mut self, n: usize) -> ArgValues {
@@ -618,11 +649,11 @@ impl<'h> VM<'h> {
         let (pending_values, this) = pending.as_parts_mut();
 
         // Extract positional args from tuple
-        let copied_args = this.extract_args_tuple_for_attr(args_tuple)?;
+        let copied_args = this.extract_args_tuple(args_tuple)?;
 
         // Build ArgValues from positional args and optional kwargs
         let args = if let Some(kwargs_ref) = pending_values.1.take() {
-            this.build_args_with_kwargs_for_attr(copied_args, kwargs_ref)?
+            this.build_args_with_kwargs(copied_args, kwargs_ref)?
         } else {
             Self::build_args_positional_only(copied_args)
         };
@@ -630,6 +661,38 @@ impl<'h> VM<'h> {
         // Call the method (args_tuple guard drops at scope exit)
         let ((obj, _), this) = pending.into_parts();
         this.call_attr(obj, name_id, args)
+    }
+
+    /// Calls a method with unpacked args tuple and optional kwargs dict.
+    ///
+    /// Used for `obj.method(*args)` and `obj.method(**kwargs)` style calls.
+    fn call_method_extended(
+        &mut self,
+        obj: Value,
+        args_tuple: Value,
+        kwargs: Option<Value>,
+    ) -> Result<CallResult, RunError> {
+        let this = self;
+        defer_drop!(args_tuple, this);
+        // Building the argument pack is fallible (a refused `*args` clone, a kwargs
+        // dict that cannot grow) and the receiver and kwargs are handed on only once
+        // it succeeds, so the guard releases them on the error paths in between.
+        let mut pending = DropGuard::new((obj, kwargs), this);
+        let (pending_values, this) = pending.as_parts_mut();
+
+        // Extract positional args from tuple
+        let copied_args = this.extract_args_tuple(args_tuple)?;
+
+        // Build ArgValues from positional args and optional kwargs
+        let args = if let Some(kwargs_ref) = pending_values.1.take() {
+            this.build_args_with_kwargs(copied_args, kwargs_ref)?
+        } else {
+            Self::build_args_positional_only(copied_args)
+        };
+
+        // Call the method (args_tuple guard drops at scope exit)
+        let ((obj, _), this) = pending.into_parts();
+        this.call_prepared_method(obj, args)
     }
 
     /// Extracts arguments from a tuple for `CallFunctionExtended`.
@@ -697,61 +760,6 @@ impl<'h> VM<'h> {
                 kwargs: KwargsValues::Empty,
             },
         }
-    }
-
-    /// Extracts arguments from a tuple for `CallAttrExtended`.
-    ///
-    /// # Panics
-    /// Panics if `args_tuple` is not a tuple. This indicates a compiler bug since
-    /// the compiler always emits `ListToTuple` before `CallAttrExtended`.
-    fn extract_args_tuple_for_attr(&mut self, args_tuple: &Value) -> RunResult<Vec<Value>> {
-        let Value::Ref(id) = args_tuple else {
-            unreachable!("CallAttrExtended: args_tuple must be a Ref")
-        };
-        let HeapData::Tuple(tuple) = self.heap.get(*id) else {
-            unreachable!("CallAttrExtended: args_tuple must be a Tuple")
-        };
-        clone_args_from_tuple(tuple.as_slice(), self)
-    }
-
-    /// Builds `ArgValues` with kwargs for `CallAttrExtended`.
-    ///
-    /// # Panics
-    /// Panics if `kwargs_ref` is not a dict. This indicates a compiler bug since
-    /// the compiler always emits `BuildDict` before `CallAttrExtended` with kwargs.
-    fn build_args_with_kwargs_for_attr(
-        &mut self,
-        copied_args: Vec<Value>,
-        kwargs_ref: Value,
-    ) -> Result<ArgValues, RunError> {
-        let this = self;
-        defer_drop!(kwargs_ref, this);
-
-        // Extract kwargs dict items
-        let Value::Ref(id) = kwargs_ref else {
-            unreachable!("CallAttrExtended: kwargs must be a Ref")
-        };
-        let HeapData::Dict(dict) = this.heap.get(*id) else {
-            unreachable!("CallAttrExtended: kwargs must be a Dict")
-        };
-        let copied_kwargs: Vec<(Value, Value)> = dict
-            .iter()
-            .map(|(k, v)| (k.clone_with_heap(this), v.clone_with_heap(this)))
-            .collect();
-
-        // `copied_args` travels unguarded through this `?`, which is sound only
-        // because `from_pairs` cannot fail here: it sizes both dict buffers to the
-        // pair count up front so the growth preflight is a no-op, and keys taken out
-        // of a dict are already known hashable. Size that dict lazily and this leaks
-        // the args.
-        let kwargs_values = if copied_kwargs.is_empty() {
-            KwargsValues::Empty
-        } else {
-            let kwargs_dict = Dict::from_pairs(copied_kwargs, this)?;
-            KwargsValues::Dict(kwargs_dict)
-        };
-
-        Ok(ArgValues::from_parts(copied_args, kwargs_values))
     }
 
     // ========================================================================

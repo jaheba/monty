@@ -54,9 +54,7 @@ These names are absent from the module namespace rather than stubbed, so they ar
 - Cached functions have no `__dict__` and do not copy the wrapped function's metadata
     (`__name__`, `__qualname__`, `__module__`, `__doc__`, or annotations).
     `__wrapped__` is readable but not writable.
-- `cache_info()`, `cache_clear()`, and `cache_parameters()` work as calls, but retrieving those methods as values
-    raises `AttributeError`, as with other [native methods](language.md).
-    Explicit `__call__` and `__get__` attribute access is also unsupported.
+- Explicit `__call__` and `__get__` attribute access is unsupported.
 - `lru_cache(maxsize=...)` returns a configured wrapper rather than CPython's decorating closure, so its type and
     `repr()` differ.
     The module does not expose CPython's private `_lru_cache_wrapper` constructor or `_CacheInfo` class.

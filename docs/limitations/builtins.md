@@ -38,13 +38,9 @@ These raise `NameError`:
 - **No `__class__` on builtin values** — `[].__class__`, `list.__class__` and
     `list[int].__class__` raise `AttributeError`; only instances of Monty classes
     carry it (see [classes.md](classes.md)). Use `type(x)`.
-- **Builtin methods are call-only** — reading one without calling it raises
-    `AttributeError`, so `[1].append`, `'a'.upper`, `{}.get`, `dict.fromkeys`
-    and `list.__class_getitem__` cannot be assigned, passed as a callback or
-    reached through `getattr`.
-    Direct calls with an explicit first positional receiver, such as `str.upper('foo')` and `list.append(items, value)`,
-    are supported for `str`, `list`, `tuple`, `complex`, `datetime.date`, `datetime.time`, `datetime.timedelta`,
-    `datetime.timezone`, `re.Pattern`, and `re.Match`.
+- **Native method introspection** — `__get__`, `__self__`, `__func__`, and method metadata such as `__name__`
+    are not exposed.
+    Unbound native methods report `builtin_function_or_method` as their type; saved bound methods report `function`.
 - **Large integer literal identity** — separate occurrences of the same literal outside the `i64` range are not
     deduplicated, so `a = 18446744073709551616; b = 18446744073709551616; a is b` is `False` where CPython may reuse a
     single constant and return `True`.

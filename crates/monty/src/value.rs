@@ -27,10 +27,13 @@ use crate::{
         BytesIterator, CmpOrder, Complex, LazyHeapSet, Property, PyTrait, StringIterator, Type,
         bytes::PyBytes,
         host_class_type,
-        instance::{class_defines, instance_dataclass_eq, instance_getattr, instance_str, instance_user_eq},
+        instance::{
+            BoundMethod, class_defines, instance_dataclass_eq, instance_getattr, instance_str, instance_user_eq,
+        },
         long_int::{
             PyInt, bigint_cmp_f64, bigint_cmp_i64, bigint_divmod_tuple, bigint_eq_f64, bigint_eq_i64, i64_cmp_f64,
         },
+        method_descriptor,
         namedtuple::cmp_item_seqs,
         str::{PyStr, allocate_string},
         tuple::allocate_tuple,
@@ -1088,6 +1091,10 @@ impl Value {
             Self::Ellipsis => Ok(Some(hash_named("singleton", "Ellipsis"))),
             Self::NotImplemented => Ok(Some(hash_named("singleton", "NotImplemented"))),
             Self::None => Ok(Some(hash_named("singleton", "None"))),
+            Self::Builtin(Builtins::Method(owner, name)) => Ok(Some(hash_named(
+                "method",
+                &format!("{}.{}", owner.name(vm.heap, vm.interns), vm.interns.get_str(*name)),
+            ))),
             Self::Builtin(Builtins::Function(function)) => Ok(Some(hash_named("builtin", (*function).into()))),
             Self::Builtin(Builtins::ExcType(exc_type)) => Ok(Some(hash_named("type", (*exc_type).into()))),
             // an instance's class is a heap object, hashed by identity like its instances
@@ -1147,6 +1154,12 @@ impl Value {
     ///
     /// Returns `AttributeError` for other types or unknown attributes.
     pub fn py_getattr(&self, attr: &EitherStr, vm: &mut VM<'_>) -> RunResult<CallResult> {
+        if let Self::Ref(id) = self
+            && matches!(vm.heap.get(*id), HeapData::NamedTuple(_) | HeapData::NamedTupleClass(_))
+            && let Some((callable, receiver)) = method_descriptor::resolve(self, attr, vm)
+        {
+            return Ok(CallResult::Value(bind_native_method(callable, receiver, vm)));
+        }
         match self {
             // Instances resolve attributes (instance dict → class methods/vars,
             // binding methods) in a dedicated path that has the heap id needed to
@@ -1170,12 +1183,18 @@ impl Value {
             // `__name__`, class constants and the members handed out as values
             // all live with the type, including the `AttributeError`.
             Self::Builtin(Builtins::Type(t)) => {
+                if let Some((callable, receiver)) = method_descriptor::resolve(self, attr, vm) {
+                    return Ok(CallResult::Value(bind_native_method(callable, receiver, vm)));
+                }
                 return match t.class_getattr(attr, vm) {
                     Some(value) => Ok(CallResult::Value(value)),
                     None => Err(t.attribute_error(attr, vm)),
                 };
             }
             _ => {}
+        }
+        if let Some((callable, receiver)) = method_descriptor::resolve(self, attr, vm) {
+            return Ok(CallResult::Value(bind_native_method(callable, receiver, vm)));
         }
         let type_name = self.py_type_name(vm);
         Err(ExcType::attribute_error(type_name, attr.as_str(vm.interns)))
@@ -2170,6 +2189,17 @@ pub(crate) fn py_float_mod(a: f64, b: f64) -> f64 {
         r + b
     } else {
         r
+    }
+}
+
+fn bind_native_method(callable: Value, receiver: Value, vm: &VM<'_>) -> Value {
+    if matches!(receiver, Value::Undefined) {
+        callable
+    } else {
+        Value::Ref(vm.heap.allocate(HeapData::BoundMethod(BoundMethod {
+            instance: receiver,
+            func: callable,
+        })))
     }
 }
 

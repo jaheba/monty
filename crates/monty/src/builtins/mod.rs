@@ -47,8 +47,9 @@ use crate::{
     args::ArgValues,
     bytecode::{CallResult, VM},
     exception_private::{ExcType, ExcTypeExt, RunResult},
+    intern::{Interns, StringId},
     modules::csv,
-    types::Type,
+    types::{Type, method_descriptor},
     value::Value,
 };
 
@@ -64,6 +65,8 @@ pub(crate) enum Builtins {
     ExcType(ExcType),
     /// A type constructor like `list`, `dict`, `int`, etc.
     Type(Type),
+    /// Native descriptor identified by its owning type and interned name.
+    Method(Type, StringId),
 }
 
 impl Builtins {
@@ -84,6 +87,7 @@ impl Builtins {
     /// and `next()` on an unread file yields the read that loads its buffer.
     pub fn call(self, vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult> {
         match self {
+            Self::Method(owner, name) => method_descriptor::call(owner, name, args, vm),
             Self::Function(b) => b.call(vm, args),
             Self::ExcType(exc) => exc.call(vm, args).map(CallResult::Value),
             // `DictReader(f)` on an unread file yields the read that loads it.
@@ -93,8 +97,9 @@ impl Builtins {
     }
 
     /// Writes the Python repr() string for this callable to a formatter.
-    pub fn py_repr_fmt<W: Write>(self, f: &mut W) -> fmt::Result {
+    pub fn py_repr_fmt<W: Write>(self, f: &mut W, interns: &Interns) -> fmt::Result {
         match self {
+            Self::Method(owner, name) => write!(f, "<method '{}' of '{owner}' objects>", interns.get_str(name)),
             Self::Function(b) => write!(f, "<built-in function {b}>"),
             Self::ExcType(e) => write!(f, "<class '{e}'>"),
             Self::Type(t) => write!(f, "<class '{t}'>"),
@@ -104,7 +109,7 @@ impl Builtins {
     /// Returns the type of this builtin.
     pub fn py_type(self) -> Type {
         match self {
-            Self::Function(_) => Type::BuiltinFunction,
+            Self::Function(_) | Self::Method(..) => Type::BuiltinFunction,
             Self::ExcType(_) => Type::Type,
             Self::Type(_) => Type::Type,
         }

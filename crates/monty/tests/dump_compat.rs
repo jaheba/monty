@@ -1,15 +1,13 @@
 //! Dump compatibility across builds.
 //!
 //! The dump codec names every field and variant, so a data-layout change made
-//! after a dump was written must still load it. Two tests pin that property:
-//! a checked-in dump written by an earlier build of the current
-//! `DUMP_VERSION`, and a synthetic old/new type pair round-tripped through the
-//! codec itself.
+//! after a dump was written must still load it. Fixtures cover the current
+//! version and supported older versions, including suspended legacy calls.
 
 use std::{env, fs, path::PathBuf};
 
 use insta::assert_snapshot;
-use monty::{DUMP_VERSION, Dump, MontyRepl, ReplProgress, Session, SessionRef, dump};
+use monty::{DUMP_VERSION, Dump, DumpError, MontyRepl, ReplProgress, Session, SessionRef, dump};
 use monty_types::{CompileOptions, MontyObject, NameLookupResult, PrintWriter, ResourceTracker};
 use serde::{Deserialize, Serialize};
 
@@ -204,8 +202,17 @@ assert add5(2) == 7
 /// regenerate with `UPDATE_DUMP_FIXTURE=1 cargo test -p monty --test dump_compat`.
 #[test]
 fn fixture_dump_loads_and_resumes() {
-    let path = fixture_path();
-    if env::var_os(UPDATE_FIXTURE).is_some() {
+    check_fixture(DUMP_VERSION, true);
+}
+
+#[test]
+fn version_13_fixture_loads_and_resumes() {
+    check_fixture(13, false);
+}
+
+fn check_fixture(version: u16, allow_update: bool) {
+    let path = fixture_path(version);
+    if allow_update && env::var_os(UPDATE_FIXTURE).is_some() {
         let mut repl = MontyRepl::new("fixture.py", ResourceTracker::default(), CompileOptions::default());
         repl.feed_run(FIXTURE_STATE, vec![], PrintWriter::Stdout).unwrap();
         let mut progress = repl.feed_start(FIXTURE_CALL, vec![], PrintWriter::Stdout).unwrap();
@@ -224,6 +231,7 @@ fn fixture_dump_loads_and_resumes() {
         fs::create_dir_all(path.parent().unwrap()).unwrap();
         fs::write(&path, bytes).unwrap();
         eprintln!("updated {}", path.display());
+        drop(progress.into_repl());
         return;
     }
     let bytes = fs::read(&path).unwrap_or_else(|err| {
@@ -232,7 +240,7 @@ fn fixture_dump_loads_and_resumes() {
             path.display()
         )
     });
-    let loaded = Dump::load(&bytes).expect("a fixture at the current DUMP_VERSION loads");
+    let loaded = Dump::load(&bytes).expect("a fixture at a supported dump version loads");
     assert_eq!(loaded.script_name, "fixture.py");
     assert!(loaded.type_check.is_none());
     let Session::Suspended(progress) = loaded.state else {
@@ -273,6 +281,94 @@ fn fixture_dump_loads_and_resumes() {
     );
 }
 
+#[test]
+fn new_opcodes_use_a_new_dump_version() {
+    let mut repl = MontyRepl::new("version.py", ResourceTracker::default(), CompileOptions::default());
+    repl.feed_run("def call(obj):\n    return obj.upper()", vec![], PrintWriter::Disabled)
+        .unwrap();
+    let mut bytes = dump("version.py", None, &[], SessionRef::Idle(&repl)).unwrap();
+    assert_eq!(&bytes[..6], b"MONTY\0");
+    let version = u16::from_le_bytes(bytes[6..8].try_into().unwrap());
+    assert_eq!(version, DUMP_VERSION);
+    assert!(
+        version > 13,
+        "version-13 readers cannot execute prepared method opcodes"
+    );
+
+    bytes[6..8].copy_from_slice(&12_u16.to_le_bytes());
+    assert!(matches!(
+        Dump::load(&bytes),
+        Err(DumpError::VersionTooOld {
+            found: 12,
+            min_supported: 13
+        })
+    ));
+
+    bytes[6..8].copy_from_slice(&(version + 1).to_le_bytes());
+    assert!(matches!(
+        Dump::load(&bytes),
+        Err(DumpError::VersionTooNew { found, max_supported }) if found == version + 1 && max_supported == version
+    ));
+}
+
+#[test]
+fn version_13_call_attr_opcodes_and_method_keys_survive_restore() {
+    // Produced by #1089 (0e393748): CallAttr, CallAttrKw, CallAttrExtended, and MethodDictMerge.
+    // Keep this fixture unchanged so regeneration cannot replace legacy instructions.
+    let bytes = include_bytes!("fixtures/dump_v13_call_attr.bin");
+    assert_eq!(&bytes[6..8], &13_u16.to_le_bytes());
+    let loaded = Dump::load(bytes).unwrap();
+    let Session::Suspended(progress) = loaded.state else {
+        panic!("legacy fixture must suspend inside a method argument");
+    };
+    let mut progress = *progress;
+    let answers = [
+        MontyObject::int(7),
+        MontyObject::bool(true),
+        MontyObject::tuple([MontyObject::list([MontyObject::int(8), MontyObject::int(9)])]),
+        MontyObject::dict([(MontyObject::string("reverse"), MontyObject::bool(false))]),
+    ];
+    for answer in answers {
+        let bytes = dump("review.py", None, &[], SessionRef::Suspended(&progress)).unwrap();
+        drop(progress.into_repl());
+        let loaded = Dump::load(&bytes).unwrap();
+        let Session::Suspended(restored) = loaded.state else {
+            panic!("legacy call must remain suspended across a new dump");
+        };
+        progress = restored
+            .into_function_call()
+            .unwrap()
+            .resume(answer, PrintWriter::Disabled)
+            .unwrap();
+    }
+    let (mut repl, result) = progress.into_complete().unwrap();
+    assert_eq!(
+        result,
+        MontyObject::list([MontyObject::int(7), MontyObject::int(8), MontyObject::int(9)])
+    );
+
+    let result = repl.feed_run("legacy()", vec![], PrintWriter::Disabled).unwrap();
+    assert_eq!(
+        result,
+        MontyObject::list([MontyObject::int(3), MontyObject::int(2), MontyObject::int(1)])
+    );
+    let result = repl
+        .feed_run(
+            "(saved == chain.from_iterable, mapping[chain.from_iterable], list(saved([[1], [2]])))",
+            vec![],
+            PrintWriter::Disabled,
+        )
+        .unwrap();
+    assert_eq!(
+        result,
+        MontyObject::tuple([
+            MontyObject::bool(true),
+            MontyObject::int(42),
+            MontyObject::list([MontyObject::int(1), MontyObject::int(2)]),
+        ])
+    );
+}
+
 /// Dict and set entries persist their hash, so the hash of every kind of key
 /// without a heap identity is part of the dump contract: a change here needs a
 /// `DUMP_VERSION` bump.
@@ -290,12 +386,11 @@ fn persisted_key_hashes_are_stable() {
     assert_snapshot!(hashes.py_repr(), @"(-7376904247260835724, -8418895208483869890, -7578619387304540654, -6751866591645121981, -8097107109803033201, 2456456309100923238, -5014982954702616963, 2858064283329581446)");
 }
 
-/// The fixture for the current `DUMP_VERSION`; the name carries the version so
-/// a bump leaves the old file behind to delete rather than silently reuse.
-fn fixture_path() -> PathBuf {
+/// Versioned names retain older fixtures alongside the current writer's fixture.
+fn fixture_path(version: u16) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("tests/fixtures")
-        .join(format!("dump_v{DUMP_VERSION}.bin"))
+        .join(format!("dump_v{version}.bin"))
 }
 
 /// A record as an older build wrote it.
