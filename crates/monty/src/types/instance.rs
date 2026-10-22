@@ -22,6 +22,7 @@ use crate::{
         copy::{Memo, PyDeepCopy, deep_copy, deep_copy_attrs},
         dataclasses::{self, DataclassHash},
     },
+    types::method_descriptor,
     value::{EitherStr, Value},
 };
 
@@ -82,16 +83,14 @@ impl Instance {
     }
 }
 
-/// A method bound to an instance, produced by `obj.method` (without calling it).
+/// A callable bound to an instance, class, or native value.
 ///
-/// Calling a `BoundMethod` prepends `instance` to the argument list and invokes
-/// `func`. The common `obj.method()` path skips this allocation by binding and
-/// calling directly in [`Instance::py_call_attr`].
+/// Calling prepends `instance` to the arguments; prepared method calls avoid this allocation.
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub(crate) struct BoundMethod {
-    /// The bound `self` (a `Value::Ref` to the instance).
+    /// The bound instance, class, or native value.
     pub instance: Value,
-    /// The underlying function (`DefFunction`/`Closure`/...).
+    /// The underlying callable.
     pub func: Value,
 }
 
@@ -596,6 +595,9 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, BoundMethod> {
         let bound = self.get(vm.heap);
         let instance = bound.instance.clone_with_heap(vm);
         let func = bound.func.clone_with_heap(vm);
+        if let Value::Builtin(Builtins::Method(owner, name)) = func {
+            return method_descriptor::call_bound(owner, name, instance, args, vm);
+        }
         defer_drop!(func, vm);
         vm.call_function(func, args.prepend(instance))
     }
@@ -652,6 +654,29 @@ pub(crate) fn instance_getattr(self_id: HeapId, attr: &EitherStr, vm: &mut VM<'_
     }
 }
 
+/// Resolves instance attributes before class functions, without allocating a bound method.
+pub(crate) fn prepare_method(self_id: HeapId, name: &str, vm: &VM<'_>) -> Option<(Value, Value)> {
+    let HeapData::Instance(instance) = vm.heap.get(self_id) else {
+        return None;
+    };
+    if let Some(value) = instance.attrs.get_by_str(name, vm.heap, vm.interns) {
+        return Some((value.clone_with_heap(vm.heap), Value::Undefined));
+    }
+    let Some(member) = class_member(instance.class, name, vm) else {
+        return (name == "__class__").then(|| {
+            vm.heap.inc_ref(instance.class);
+            (Value::Ref(instance.class), Value::Undefined)
+        });
+    };
+    let receiver = if is_method_value(&member, vm) {
+        vm.heap.inc_ref(self_id);
+        Value::Ref(self_id)
+    } else {
+        Value::Undefined
+    };
+    Some((member, receiver))
+}
+
 /// The lookup half of [`instance_getattr`]: the instance `__dict__`, then the
 /// class namespace, then the `__class__` special case; `None` when nothing binds
 /// `attr`, leaving the `AttributeError` to the caller.
@@ -660,35 +685,13 @@ pub(crate) fn instance_getattr(self_id: HeapId, attr: &EitherStr, vm: &mut VM<'_
 /// exactly as `self.field` does, binding a function-valued class member as a
 /// [`BoundMethod`].
 pub(crate) fn instance_attr(self_id: HeapId, attr: &str, vm: &VM<'_>) -> Option<Value> {
-    if let HeapReadOutput::Instance(inst) = vm.heap.read(self_id)
-        && let Some(value) = inst
-            .get(vm.heap)
-            .attrs
-            .get_by_str(attr, vm.heap, vm.interns)
-            .map(|v| v.clone_with_heap(vm.heap))
-    {
-        return Some(value);
-    }
-    let class_id = instance_class(self_id, vm);
-    match class_member(class_id, attr, vm) {
-        // A class variable is returned as-is; a function binds `self`.
-        Some(member) if is_method_value(&member, vm) => {
-            vm.heap.inc_ref(self_id);
-            let bound = BoundMethod {
-                instance: Value::Ref(self_id),
-                func: member,
-            };
-            Some(Value::Ref(vm.heap.allocate(HeapData::BoundMethod(bound))))
-        }
-        Some(member) => Some(member),
-        // `obj.__class__` returns the class object itself (`obj.__class__ is Foo`).
-        // Last, so an explicit member of the same name wins, mirroring the
-        // `__name__` handling on class objects.
-        None if attr == "__class__" => {
-            vm.heap.inc_ref(class_id);
-            Some(Value::Ref(class_id))
-        }
-        None => None,
+    let (func, instance) = prepare_method(self_id, attr, vm)?;
+    if matches!(instance, Value::Undefined) {
+        Some(func)
+    } else {
+        Some(Value::Ref(
+            vm.heap.allocate(HeapData::BoundMethod(BoundMethod { instance, func })),
+        ))
     }
 }
 

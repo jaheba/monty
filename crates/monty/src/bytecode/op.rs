@@ -598,6 +598,18 @@ pub enum Opcode {
     /// becomes `[v, a, b, c]`. Operand: u8 n. The inverse of `LiftToTop`; the
     /// pattern compiler uses it to park a capture under the pattern's temporaries.
     SinkTop = 129,
+    /// Resolve a method before evaluating arguments. Stack: [qualifier] -> [receiver, callable].
+    PrepareMethodCall = 130,
+    /// Call a prepared method. Operand: u8 arg_count.
+    /// Stack: [callable, receiver, args...] -> [result]. Undefined receivers are omitted.
+    MethodCall = 131,
+    /// Call a prepared method with keywords. Operands: u8 pos_count, u8 kw_count, then u16 keyword names.
+    MethodCallKw = 132,
+    /// Call a prepared method with unpacking. Operand: u8 flags (bit 0: kwargs present).
+    /// Stack: [callable, receiver, args_tuple, kwargs_dict?] -> [result].
+    MethodCallExtended = 133,
+    /// Merge method keywords using the prepared callable/receiver pair. Operand: u16 name_id.
+    PreparedMethodDictMerge = 134,
 }
 
 /// `LoadName` flag: the load is in call position, so an unresolved name under
@@ -723,7 +735,9 @@ impl Opcode {
             | Self::MatchKeys
             | Self::MatchClass
             | Self::MatchAttr
-            | Self::SinkTop => OperandShape::U8,
+            | Self::SinkTop
+            | Self::MethodCall
+            | Self::MethodCallExtended => OperandShape::U8,
             Self::LoadSmallInt => OperandShape::I8,
             Self::LoadModule
             | Self::LoadConst
@@ -740,11 +754,13 @@ impl Opcode {
             | Self::BuildSet
             | Self::BuildFString
             | Self::DictMerge
+            | Self::PrepareMethodCall
             | Self::LoadAttr
             | Self::LoadAttrImport
             | Self::StoreAttr
             | Self::DeleteGlobal
             | Self::RaiseUnboundLocal
+            | Self::PreparedMethodDictMerge
             | Self::MethodDictMerge => OperandShape::U16,
             Self::Jump
             | Self::JumpIfTrue
@@ -759,6 +775,7 @@ impl Opcode {
             Self::LoadName | Self::StoreName | Self::DeleteName => OperandShape::U16U16U8,
             Self::CallFunctionKw => OperandShape::CallKw,
             Self::CallAttrKw => OperandShape::CallAttrKw,
+            Self::MethodCallKw => OperandShape::CallKw,
         }
     }
 }
@@ -806,6 +823,7 @@ pub enum Operand<'a> {
     /// `CallFunctionKw` shape: pos_count (u8), kw_count (u8), kw_count * name_id (u16 each).
     CallKw { pos_count: u8, kwname_ids: &'a [u16] },
     /// `CallAttrKw` shape: attr_name_id (u16), pos_count (u8), kw_count (u8), kw_count * name_id (u16 each).
+    #[expect(dead_code, reason = "retained for assembling legacy CallAttrKw bytecode")]
     CallAttrKw {
         attr_name_id: u16,
         pos_count: u8,
@@ -908,6 +926,8 @@ impl Opcode {
             (MakeFunction, Operand::U16U8(_, defaults)) => 1 - i32::from(defaults),
             // `MatchShape` pushes the test result above the subject it inspects.
             (MatchShape, Operand::U16U8(..)) => 1,
+            (MethodCall, Operand::U8(arg_count)) => -(1 + i32::from(arg_count)),
+            (MethodCallExtended, Operand::U8(flags)) => -(2 + i32::from(flags & 0x01)),
             (CallAttr, Operand::U16U8(_, arg_count)) => -i32::from(arg_count),
             (CallAttrExtended, Operand::U16U8(_, flags)) => -(1 + i32::from(flags & 0x01)),
 
@@ -918,6 +938,10 @@ impl Opcode {
 
             // === Variable-effect: variable-length kw operands ===
             // pops callable + pos_args + kw_args, pushes result → -(pos_count + kw_count).
+            (MethodCallKw, Operand::CallKw { pos_count, kwname_ids }) => {
+                let kw_count = i32::try_from(kwname_ids.len()).expect("keyword count exceeds i32");
+                -(1 + i32::from(pos_count) + kw_count)
+            }
             (CallFunctionKw, Operand::CallKw { pos_count, kwname_ids }) => {
                 let kw_count = i32::try_from(kwname_ids.len()).expect("keyword count exceeds i32");
                 -(i32::from(pos_count) + kw_count)
@@ -1012,12 +1036,13 @@ impl Opcode {
             (StoreLocalW | StoreGlobal | StoreCell, Operand::U16(_)) => -1,
             (DeleteGlobal | DeleteCell, Operand::U16(_)) => 0,
             (LoadAttr | LoadAttrImport, Operand::U16(_)) => 0,
+            (PrepareMethodCall, Operand::U16(_)) => 1,
             (StoreAttr, Operand::U16(_)) => -2,
             // `DictMerge` takes a u16 operand carrying the func_name_id for
             // the duplicate-key TypeError message. `MethodDictMerge` shares
             // the stack effect and additionally peeks the receiver under
             // the popped operands to qualify the error wording.
-            (DictMerge | MethodDictMerge, Operand::U16(_)) => -1,
+            (DictMerge | MethodDictMerge | PreparedMethodDictMerge, Operand::U16(_)) => -1,
             // `RaiseUnboundLocal(name_id)` always raises — fall-through is dead
             // code, but the tracker absorbs the bytes with effect 0 before the
             // following region starts.

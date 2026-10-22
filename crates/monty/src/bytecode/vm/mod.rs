@@ -1533,6 +1533,10 @@ impl<'h> VM<'h> {
                     let func_name_id = self.current_frame.fetch_u16();
                     try_catch!(self, self.dict_merge(func_name_id));
                 }
+                Opcode::PreparedMethodDictMerge => {
+                    let func_name_id = self.current_frame.fetch_u16();
+                    try_catch!(self, self.prepared_method_dict_merge(func_name_id));
+                }
                 Opcode::MethodDictMerge => {
                     let func_name_id = self.current_frame.fetch_u16();
                     try_catch!(self, self.method_dict_merge(func_name_id));
@@ -1739,6 +1743,10 @@ impl<'h> VM<'h> {
 
                     handle_call_result!(self, self.exec_call_function_kw(pos_count, kw_count));
                 }
+                Opcode::PrepareMethodCall => {
+                    let name_id = StringId::from_index(self.current_frame.fetch_u16());
+                    handle_call_result!(self, self.prepare_method_call(name_id));
+                }
                 Opcode::CallAttr => {
                     // CallAttr: u16 name_id, u8 arg_count
                     // Stack: [obj, arg1, arg2, ..., argN] -> [result]
@@ -1757,6 +1765,17 @@ impl<'h> VM<'h> {
 
                     handle_call_result!(self, self.exec_call_attr_kw(name_id, pos_count, kw_count));
                 }
+                Opcode::MethodCall => {
+                    let arg_count = usize::from(self.current_frame.fetch_u8());
+                    handle_call_result!(self, self.exec_method_call(arg_count));
+                }
+                Opcode::MethodCallKw => {
+                    let (pos_count, kw_count) = self.current_frame.fetch_u8_u8();
+                    handle_call_result!(
+                        self,
+                        self.exec_method_call_kw(usize::from(pos_count), usize::from(kw_count))
+                    );
+                }
                 Opcode::CallFunctionExtended => {
                     let flags = self.current_frame.fetch_u8();
                     let has_kwargs = (flags & 0x01) != 0;
@@ -1769,6 +1788,10 @@ impl<'h> VM<'h> {
                     let has_kwargs = (flags & 0x01) != 0;
 
                     handle_call_result!(self, self.exec_call_attr_extended(name_id, has_kwargs));
+                }
+                Opcode::MethodCallExtended => {
+                    let flags = self.current_frame.fetch_u8();
+                    handle_call_result!(self, self.exec_method_call_extended((flags & 0x01) != 0));
                 }
                 // Function Definition
                 Opcode::MakeFunction => {

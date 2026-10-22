@@ -12,16 +12,17 @@ fn direct_calls_support_registered_methods_and_native_subclasses() {
 }
 
 #[test]
-fn direct_calls_do_not_expose_intermediate_callables() {
+fn registered_methods_are_available_as_values() {
     run_assertions(
         r"
-for owner, name in [(str, 'upper'), (list, 'append'), (tuple, 'count')]:
-    try:
-        getattr(owner, name)
-    except AttributeError:
-        pass
-    else:
-        raise AssertionError('method unexpectedly exposed as a value')
+upper = getattr(str, 'upper')
+append = getattr(list, 'append')
+count = getattr(tuple, 'count')
+assert upper('abc') == 'ABC'
+items = []
+append(items, 1)
+assert items == [1]
+assert count((1, 1, 2), 1) == 2
 True
 ",
     );

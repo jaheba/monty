@@ -2,11 +2,13 @@
 
 use super::VM;
 use crate::{
+    builtins::Builtins,
     bytecode::{Opcode, vm::CallResult},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError},
     heap::{ContainsHeap, DropWithContext, Heap, HeapData},
     intern::{Interns, StringId},
+    types::{Type, instance, method_descriptor},
     value::{EitherStr, Value},
 };
 
@@ -70,6 +72,36 @@ impl<C: ContainsHeap> DropWithContext<C> for PendingLookupEffect {
 }
 
 impl VM<'_> {
+    /// Resolves native methods without allocating; other attributes use ordinary lookup.
+    pub(super) fn prepare_method_call(&mut self, name: StringId) -> Result<CallResult, RunError> {
+        let obj = self.pop();
+        let this = self;
+        defer_drop!(obj, this);
+        let attr = EitherStr::Interned(name);
+        if let Some((callable, receiver)) = method_descriptor::resolve(obj, &attr, this) {
+            this.push(receiver);
+            return Ok(CallResult::Value(callable));
+        }
+        if let Value::Ref(id) = obj
+            && let Some((callable, receiver)) = instance::prepare_method(*id, attr.as_str(this.interns), this)
+        {
+            this.push(receiver);
+            return Ok(CallResult::Value(callable));
+        }
+        let result = obj.py_getattr(&attr, this)?;
+        if matches!(result, CallResult::AttrLookup { .. }) {
+            // Host methods use a distinct protocol call, rather than lazy attribute lookup.
+            result.drop_with(this);
+            this.push(obj.clone_with_heap(this.heap));
+            return Ok(CallResult::Value(Value::Builtin(Builtins::Method(
+                Type::HostClass,
+                name,
+            ))));
+        }
+        this.push(Value::Undefined);
+        Ok(result)
+    }
+
     /// Loads an attribute from an object and pushes it onto the stack.
     ///
     /// Returns an AttributeError if the attribute doesn't exist.

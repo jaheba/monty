@@ -266,6 +266,7 @@ value). Divergences from real CPython objects:
     reaches the host. If the name is also in `lazy_attrs`, the read crosses as
     a host function proxy that is resolved by name through `external_lookup`
     when called, not bound to the instance.
+    The host validates method names when the call reaches it, after argument evaluation.
 - **Equality uses the eager attrs only** (same class + equal attrs);
     methods like a custom `__eq__` are not consulted. **Host instances are
     always unhashable** — matching CPython's rule for a class defining

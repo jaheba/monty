@@ -41,7 +41,7 @@ use crate::{
 
 /// Maximum number of arguments allowed in a function call.
 ///
-/// This limit comes from the bytecode format: `CallFunction` and `CallAttr`
+/// This limit comes from the bytecode format: `CallFunction` and `MethodCall`
 /// use a u8 operand for the argument count, so max 255. Python itself has no
 /// such limit but we need one for our bytecode encoding.
 const MAX_CALL_ARGS: usize = 255;
@@ -1350,7 +1350,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
                 // Compile the object (will be on the stack)
                 self.compile_expr(object)?;
 
-                // Compile the attribute call arguments and emit CallAttr
+                // Compile the attribute call arguments and emit MethodCall
                 self.compile_method_call(attr, args, expr_loc.position)?;
             }
 
@@ -2285,6 +2285,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
     /// interned during preparation because builtin names are resolved from source.
     fn get_builtin_name_id(&self, builtin: Builtins) -> Option<u16> {
         let name_id = match builtin {
+            Builtins::Method(_, name) => name,
             Builtins::Function(function) => {
                 let name: &'static str = function.into();
                 self.interns.get_string_id_by_name(name)?
@@ -2301,8 +2302,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
 
     /// Compiles an attribute call on an object.
     ///
-    /// The object should already be on the stack. This compiles the arguments
-    /// and emits a CallAttr opcode with the attribute name and arg count.
+    /// Resolves the qualifier already on the stack before compiling arguments.
     fn compile_method_call(
         &mut self,
         attr: &EitherStr,
@@ -2311,25 +2311,30 @@ impl<'a, 'i> Compiler<'a, 'i> {
     ) -> Result<(), CompileError> {
         // Get the interned attribute name, converted up-front so the limit check
         // happens once per method call rather than at every emit-site below.
-        let name_id = attr.string_id().expect("CallAttr requires interned attr name");
+        let name_id = attr.string_id().expect("MethodCall requires interned attr name");
         let name_idx = check_name_index_u16(name_id, call_pos)?;
+
+        self.code.set_location(call_pos, None);
+        self.code.emit_u16(Opcode::PrepareMethodCall, name_idx)?;
+        // Suspended lookups return the callable above the receiver.
+        self.code.emit(Opcode::Rot2)?;
 
         // Compile arguments based on the argument type
         match args {
             ArgExprs::Empty => {
                 self.code.set_location(call_pos, None);
-                self.code.emit_u16_u8(Opcode::CallAttr, name_idx, 0)?;
+                self.code.emit_u8(Opcode::MethodCall, 0)?;
             }
             ArgExprs::One(arg) => {
                 self.compile_expr(arg)?;
                 self.code.set_location(call_pos, None);
-                self.code.emit_u16_u8(Opcode::CallAttr, name_idx, 1)?;
+                self.code.emit_u8(Opcode::MethodCall, 1)?;
             }
             ArgExprs::Two(arg1, arg2) => {
                 self.compile_expr(arg1)?;
                 self.compile_expr(arg2)?;
                 self.code.set_location(call_pos, None);
-                self.code.emit_u16_u8(Opcode::CallAttr, name_idx, 2)?;
+                self.code.emit_u8(Opcode::MethodCall, 2)?;
             }
             ArgExprs::Args(args) => {
                 // Check argument count limit
@@ -2344,7 +2349,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
                 }
                 let arg_count = u8::try_from(args.len()).expect("argument count exceeds u8");
                 self.code.set_location(call_pos, None);
-                self.code.emit_u16_u8(Opcode::CallAttr, name_idx, arg_count)?;
+                self.code.emit_u8(Opcode::MethodCall, arg_count)?;
             }
             ArgExprs::Kwargs(kwargs) => {
                 // Keyword-only method call
@@ -2361,7 +2366,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
                     kwname_ids.push(check_name_index_u16(kwarg.key.name_id, call_pos)?);
                 }
                 self.code.set_location(call_pos, None);
-                self.code.emit_call_attr_kw(name_idx, 0, &kwname_ids)?;
+                self.code.emit_method_call_kw(0, &kwname_ids)?;
             }
             ArgExprs::ArgsKargs {
                 args,
@@ -2369,7 +2374,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
                 var_args,
                 var_kwargs,
             } => {
-                // Check if there's unpacking - use CallAttrExtended
+                // Check if there's unpacking - use MethodCallExtended
                 if var_args.is_some() || var_kwargs.is_some() {
                     return self.compile_method_call_with_unpacking(
                         name_id,
@@ -2381,7 +2386,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
                     );
                 }
 
-                // No unpacking - use CallAttrKw for efficiency
+                // No unpacking - use MethodCallKw for efficiency
                 let pos_count = args.as_ref().map_or(0, Vec::len);
                 let kw_count = kwargs.as_ref().map_or(0, Vec::len);
 
@@ -2415,8 +2420,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
                 }
 
                 self.code.set_location(call_pos, None);
-                self.code.emit_call_attr_kw(
-                    name_idx,
+                self.code.emit_method_call_kw(
                     u8::try_from(pos_count).expect("positional arg count exceeds u8"),
                     &kwname_ids,
                 )?;
@@ -2424,7 +2428,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
             ArgExprs::GeneralizedCall { args, kwargs } => {
                 // PEP 448: generalized unpacking on a method call.
                 // Receiver is already on the stack; build args tuple and kwargs dict,
-                // then emit CallAttrExtended.
+                // then emit MethodCallExtended.
                 let func_name_id = name_idx;
                 let has_kwargs = !kwargs.is_empty();
 
@@ -2454,20 +2458,20 @@ impl<'a, 'i> Compiler<'a, 'i> {
                                 self.code.emit_u16(Opcode::LoadConst, key_const)?;
                                 self.compile_expr(&kw.value)?;
                                 self.code.emit_u16(Opcode::BuildDict, 1)?;
-                                self.code.emit_u16(Opcode::MethodDictMerge, func_name_id)?;
+                                self.code.emit_u16(Opcode::PreparedMethodDictMerge, func_name_id)?;
                             }
                             CallKwarg::Unpack(e) => {
                                 self.compile_expr(e)?;
-                                self.code.emit_u16(Opcode::MethodDictMerge, func_name_id)?;
+                                self.code.emit_u16(Opcode::PreparedMethodDictMerge, func_name_id)?;
                             }
                         }
                     }
                 }
 
-                // 3. Emit CallAttrExtended
+                // 3. Emit MethodCallExtended
                 self.code.set_location(call_pos, None);
                 let flags = u8::from(has_kwargs);
-                self.code.emit_u16_u8(Opcode::CallAttrExtended, func_name_id, flags)?;
+                self.code.emit_u8(Opcode::MethodCallExtended, flags)?;
             }
         }
         Ok(())
@@ -2476,7 +2480,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
     /// Compiles a method call with `*args` and/or `**kwargs` unpacking.
     ///
     /// The receiver object should already be on the stack. This builds the args tuple
-    /// and optional kwargs dict, then emits `CallAttrExtended`.
+    /// and optional kwargs dict, then emits `MethodCallExtended`.
     fn compile_method_call_with_unpacking(
         &mut self,
         name_id: StringId,
@@ -2486,9 +2490,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
         var_kwargs: Option<&ExprLoc>,
         call_pos: CodeRange,
     ) -> Result<(), CompileError> {
-        // Convert the attribute name id up front so the overflow check happens
-        // once and both `DictMerge` (for error messages) and `CallAttrExtended`
-        // can reuse the converted value.
+        // Duplicate-keyword errors still need the source attribute name.
         let name_idx = check_name_index_u16(name_id, call_pos)?;
         // 1. Build args tuple
         // Push regular positional args and build list
@@ -2530,16 +2532,16 @@ impl<'a, 'i> Compiler<'a, 'i> {
             // Merge **kwargs if present
             if let Some(var_kwargs_expr) = var_kwargs {
                 self.compile_expr(var_kwargs_expr)?;
-                // Method-call form — `MethodDictMerge` qualifies the duplicate-
+                // Method-call form — `PreparedMethodDictMerge` qualifies the duplicate-
                 // kwarg error with the receiver's type (e.g. `list.sort()`).
-                self.code.emit_u16(Opcode::MethodDictMerge, name_idx)?;
+                self.code.emit_u16(Opcode::PreparedMethodDictMerge, name_idx)?;
             }
         }
 
-        // 3. Call the method with CallAttrExtended
+        // 3. Call the method with MethodCallExtended
         self.code.set_location(call_pos, None);
         let flags = u8::from(has_kwargs);
-        self.code.emit_u16_u8(Opcode::CallAttrExtended, name_idx, flags)?;
+        self.code.emit_u8(Opcode::MethodCallExtended, flags)?;
         Ok(())
     }
 

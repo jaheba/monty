@@ -1,7 +1,7 @@
 //! Context-manager opcode helpers (`BeforeWith`, `WithExit`, `WithExceptStart`).
 //!
 //! These three opcodes dispatch directly to `PyTrait::py_enter` / `PyTrait::py_exit`
-//! rather than the generic `CallAttr` machinery — explicit invocation is cheaper
+//! rather than the generic `MethodCall` machinery — explicit invocation is cheaper
 //! (no attribute lookup) and matches CPython's `BEFORE_WITH` / `WITH_EXCEPT_START`
 //! shape. Each helper returns a `CallResult` so the host can suspend during the
 //! call (e.g. `OpenFile.__exit__` issues an `OsCall` to close the file); the

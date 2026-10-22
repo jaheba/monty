@@ -176,7 +176,7 @@ impl<'h> PyValue<'h> {
             Self::Bool(true) => Ok(f.write_str("True")?),
             Self::Bool(false) => Ok(f.write_str("False")?),
             Self::Float(value) => Ok(write!(f, "{}", FormatFloat(*value))?),
-            Self::Builtin(value) => Ok(value.py_repr_fmt(f)?),
+            Self::Builtin(value) => Ok(value.py_repr_fmt(f, vm.interns)?),
             Self::ModuleFunction(function) => {
                 let py_id = self.py_identity().into_value(vm.heap);
                 defer_drop!(py_id, vm);

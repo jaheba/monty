@@ -155,6 +155,7 @@ impl CodeBuilder {
     ///
     /// The kwname_ids slice contains StringId indices for each keyword argument
     /// name, in order matching how the values were pushed to the stack.
+    #[expect(dead_code, reason = "retained for assembling legacy CallAttrKw bytecode")]
     pub fn emit_call_attr_kw(
         &mut self,
         attr_name_id: u16,
@@ -169,6 +170,11 @@ impl CodeBuilder {
                 kwname_ids,
             },
         )
+    }
+
+    /// Emits a prepared method call with inline keyword names.
+    pub fn emit_method_call_kw(&mut self, pos_count: u8, kwname_ids: &[u16]) -> Result<(), CompileError> {
+        self.emit_with_operand(Opcode::MethodCallKw, Operand::CallKw { pos_count, kwname_ids })
     }
 
     /// Emits a forward jump instruction, returning a label to patch later.

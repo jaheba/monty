@@ -48,14 +48,14 @@ const MAGIC: &[u8; 6] = b"MONTY\0";
 /// Frozen code is persisted too: incompatible changes to its Rust entry arguments or
 /// private native helper contracts need compatibility handling or a bump. Compatible
 /// source-body changes do not require one; restored sessions retain their captured code.
-/// Older dumps are then rejected instead of misexecuting.
+/// Incompatible dumps are rejected instead of misexecuting; retained readers can accept older versions.
 ///
 /// Before bumping, check there's already been a bump since the last release - multiple bumps
 /// between releases is unnecessary and can lead to confusion.
-pub const DUMP_VERSION: u16 = 13;
+pub const DUMP_VERSION: u16 = 14;
 
-/// Set to [`DUMP_VERSION`], the current dump version, until this crate can load older dumps.
-pub const MIN_SUPPORTED_DUMP_VERSION: u16 = DUMP_VERSION;
+/// Version 13 remains readable through the legacy `CallAttr` opcodes and unchanged value encodings.
+pub const MIN_SUPPORTED_DUMP_VERSION: u16 = 13;
 
 // The supported range must be non-empty, and must exclude zero
 const _: () = assert!(MIN_SUPPORTED_DUMP_VERSION >= 1);
@@ -138,8 +138,7 @@ impl Dump {
     /// Successful decoding does not authenticate or fully validate a snapshot.
     /// The same contract applies to direct serde deserialization.
     ///
-    /// Accepts [`MIN_SUPPORTED_DUMP_VERSION`]`..=`[`DUMP_VERSION`], which is one
-    /// version wide until a compatibility mechanism lowers the floor.
+    /// Accepts [`MIN_SUPPORTED_DUMP_VERSION`]`..=`[`DUMP_VERSION`].
     ///
     /// # Errors
     /// Returns [`DumpError`] for a dump this build cannot read. The version
@@ -345,7 +344,7 @@ mod tests {
     fn serialized_components_match_dump_version() {
         assert_eq!(
             opcode_fingerprint(),
-            0xa78a_9e6c_3fab_abed,
+            0xdae6_69a3_327c_2268,
             "opcodes changed for dump version {DUMP_VERSION}, actual: {}",
             grouped_hex(opcode_fingerprint())
         );
