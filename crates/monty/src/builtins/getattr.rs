@@ -11,7 +11,7 @@ use crate::{
     frozen::FrozenFunction,
     types::{
         attribute_name_value, descriptor,
-        instance::{AttributeLookup, lookup_attribute_fast},
+        instance::{FastAttributeLookupResult, lookup_attribute_fast},
     },
     value::Value,
 };
@@ -55,17 +55,13 @@ pub fn builtin_getattr(vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult
     };
 
     match lookup_attribute_fast(object, &attr, vm) {
-        AttributeLookup::Found(value) => return Ok(CallResult::Value(value)),
-        AttributeLookup::Absent => {
-            return match default {
-                Some(default) => Ok(CallResult::Value(default.clone_with_heap(vm.heap))),
-                None => Err(ExcType::attribute_error(
-                    object.py_type_name(vm),
-                    attr.as_str(vm.interns),
-                )),
-            };
+        FastAttributeLookupResult::Found(value) => return Ok(CallResult::Value(value)),
+        FastAttributeLookupResult::Missing => {
+            return default
+                .map(|default| CallResult::Value(default.clone_with_heap(vm.heap)))
+                .ok_or_else(|| ExcType::attribute_error(object.py_type_name(vm), attr.as_str(vm.interns)));
         }
-        AttributeLookup::Fallback => {}
+        FastAttributeLookupResult::Inconclusive => {}
     }
 
     if let Some(default) = default
