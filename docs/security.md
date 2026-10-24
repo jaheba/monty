@@ -421,44 +421,45 @@ Untrusted code will try to allocate forever or loop forever.
 See [resource limits](resource-limits.md) for the full picture; the security-relevant parts:
 
 - `max_memory` budgets the bytes a worker requests from its global allocator, not process RSS.
-    Per-allocation overhead, fragmentation, and memory obtained without the allocator sit outside the count.
-    Size the limit with headroom, and keep the worker-level backstop.
+  Per-allocation overhead, fragmentation, and memory obtained without the allocator sit outside the count.
+  Size the limit with headroom, and keep the worker-level backstop.
 - `max_feed_duration_secs` counts **execution time**, not wall clock.
-    The clock is paused while the sandbox waits on a host function, so a slow host function does not consume the budget.
-    `max_turn_duration_secs` bounds the same clock over one host round trip.
-    Neither accumulates across feeds — there is no session-lifetime budget, so bounding what a session costs in total is
-    the host's job.
+  The clock is paused while the sandbox waits on a host function, so a slow host function does not consume the budget.
+  `max_turn_duration_secs` bounds the same clock over one host round trip.
+  Neither accumulates across feeds — there is no session-lifetime budget, so bounding what a session costs in total is
+  the host's job.
 - The in-sandbox time check only runs at interpreter checkpoints.
-    Host-side backstops cover a wedged worker: `request_timeout` (a per-turn deadline; a loop of quick host calls
-    resets it), and one grace per duration limit — `feed_duration_limit_grace` and `turn_duration_limit_grace` — each firing only if the
-    session also set the limit it backs.
-    Set `request_timeout` and at least one duration limit for untrusted code.
-    `max_turn_duration_secs` does not close the gap named above: its clock also restarts at each host answer, so a loop
-    of quick host calls resets it just as it resets `request_timeout`.
-    `max_feed_duration_secs` does bound such a loop, because its clock runs for the whole feed; `max_suspensions` bounds
-    the number of round trips.
-    Across feeds neither applies — every in-sandbox budget restarts at the next feed, so a session fed repeatedly is
-    bounded only by what the host counts and ends itself.
-    Every local pool ([`Monty`][pydantic_monty.Monty], [`AsyncMonty`][pydantic_monty.AsyncMonty], JavaScript `Monty.create()`, [`PoolConfig::subprocess`](api/rust/monty-pool.md#poolconfig)) defaults
-    `request_timeout` to no deadline; only [`AsyncMontyWebsocket`][pydantic_monty.AsyncMontyWebsocket] sets one, at 10 seconds.
+  Host-side backstops cover a wedged worker: `request_timeout` (a per-turn deadline; a loop of quick host calls resets
+  it), and one grace per duration limit — `feed_duration_limit_grace` and `turn_duration_limit_grace` — each firing only
+  if the session also set the limit it backs.
+  Set `request_timeout` and at least one duration limit for untrusted code.
+  `max_turn_duration_secs` does not close the gap named above: its clock also restarts at each host answer, so a loop of
+  quick host calls resets it just as it resets `request_timeout`.
+  `max_feed_duration_secs` does bound such a loop, because its clock runs for the whole feed; `max_suspensions` bounds
+  the number of round trips.
+  Across feeds neither applies — every in-sandbox budget restarts at the next feed, so a session fed repeatedly is
+  bounded only by what the host counts and ends itself.
+  Every local pool ([`Monty`][pydantic_monty.Monty], [`AsyncMonty`][pydantic_monty.AsyncMonty], JavaScript
+  `Monty.create()`, [`PoolConfig::subprocess`](api/rust/monty-pool.md#poolconfig)) defaults `request_timeout` to no
+  deadline; only [`AsyncMontyWebsocket`][pydantic_monty.AsyncMontyWebsocket] sets one, at 10 seconds.
 - **After a memory or time limit fires, no guarantees are made about heap state or reference counts.** Discard the
-    session rather than continuing to run code in it.
-    The pool does not do this for you, and neither limit stops you: the duration budgets restart at the next feed, and
-    after a `max_memory` trip a later feed may quietly succeed against a corrupted heap.
+  session rather than continuing to run code in it.
+  The pool does not do this for you, and neither limit stops you: the duration budgets restart at the next feed, and
+  after a `max_memory` trip a later feed may quietly succeed against a corrupted heap.
 - Compilation of the fed source is not charged against the duration budgets.
-    It has its own structural caps (AST nesting, bytecode operand sizes, comprehension nesting, `finally` expansion), but
-    a host accepting untrusted source should still isolate compilation — as the subprocess and WebAssembly runtimes do.
-    The parser grows its native stack outside the allocator's accounting, so a source longer than
-    `CompileOptions::source_scan_threshold` (4 KiB by default, and fixed at that for Python and JavaScript hosts) is
-    scanned for nesting before it is parsed; a shorter one can add at most a few MiB of stack the memory limit does not
-    see, so a Rust host raising the threshold, or disabling the scan with `usize::MAX`, raises that exposure with it
-    (see [source nesting depth](limitations/language.md#source-nesting-depth)).
-    `eval()` and `exec()` compile inside the VM under the same caps, charged against the budget, and their code runs
-    under the limits and host boundary of the code that called them.
+  It has its own structural caps (AST nesting, bytecode operand sizes, comprehension nesting, `finally` expansion), but
+  a host accepting untrusted source should still isolate compilation — as the subprocess and WebAssembly runtimes do.
+  The parser grows its native stack outside the allocator's accounting, so a source longer than
+  `CompileOptions::source_scan_threshold` (4 KiB by default, and fixed at that for Python and JavaScript hosts) is
+  scanned for nesting by an independent lexer before it is parsed; a shorter one can add at most a few MiB of stack the
+  memory limit does not see, so a Rust host raising the threshold, or disabling the scan with `usize::MAX`, raises that
+  exposure with it (see [source nesting depth](limitations/language.md#source-nesting-depth)).
+  `eval()` and `exec()` compile inside the VM under the same caps, charged against the budget, and their code runs under
+  the limits and host boundary of the code that called them.
 - `max_suspensions` bounds suspension events per checkout.
-    A snippet can otherwise retry a rejected host call while the duration budgets are paused.
-    Each allowed `ClassType(init=True)` construction adds an instance-store entry outside `max_memory`.
-    The pool aborts the first suspension over the limit with an uncatchable `RuntimeError`.
+  A snippet can otherwise retry a rejected host call while the duration budgets are paused.
+  Each allowed `ClassType(init=True)` construction adds an instance-store entry outside `max_memory`.
+  The pool aborts the first suspension over the limit with an uncatchable `RuntimeError`.
 
 ## Where the guarantees weaken
 

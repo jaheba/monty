@@ -67,6 +67,7 @@ monty-fs = { path = "crates/monty-fs", version = "1.0.1" }
 monty-macros = { path = "crates/monty-macros", version = "1.0.1" }
 monty-proto = { path = "crates/monty-proto", version = "1.0.1" }
 monty-pool = { path = "crates/monty-pool", version = "1.0.1" }
+spam = { package = "python-spam", path = "../spam", version = "0.1.0" }
 monty-type-checking = { path = "crates/monty-type-checking", version = "1.0.1" }
 monty-typeshed = { path = "crates/monty-typeshed", version = "1.0.1" }
 # ruff, ty and related crates

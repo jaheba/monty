@@ -19,6 +19,7 @@ path = "src/lib.rs"
 [dependencies]
 monty-macros = { workspace = true }
 monty-types = { workspace = true }
+spam = { workspace = true }
 ruff_python_parser = { workspace = true }
 ruff_python_stdlib = { workspace = true }
 ruff_python_ast = { workspace = true }

@@ -53,31 +53,31 @@ exactly, except for the comprehension target restriction in
 
 ## Source nesting depth
 
-- AST nesting is capped at 200 levels (30 in debug builds); exceeding it raises
-    `SyntaxError: Source is too deeply nested`.
+- AST nesting is capped at 200 levels (30 in debug builds); exceeding it raises `SyntaxError: Source is too deeply
+  nested`.
 - The budget is shared across every nesting-producing construct (parens, calls, subscripts, attribute chains, operators,
-    comprehensions, control-flow blocks, `with`, etc.), including the synthetic nesting from a flat multi-item `with`;
-    see [with.md](with.md).
-- The message differs from CPython, which uses construct-specific wording (`too many nested parentheses`,
-    `too many statically nested blocks`, …).
+  comprehensions, control-flow blocks, `with`, etc.), including the synthetic nesting from a flat multi-item `with`; see
+  [with.md](with.md).
+- The message differs from CPython, which uses construct-specific wording (`too many nested parentheses`, `too many
+  statically nested blocks`, …).
 - Class-body annotations count against the budget even though they are stringized rather than evaluated (see
-    [typing.md](typing.md)), as do class-variable values and method parameter defaults; all three are walked before
-    being parsed. CPython imposes no comparable limit on a stringized annotation.
-- A source longer than `CompileOptions::source_scan_threshold` bytes (4 KiB by default) is first scanned token by
-    token and rejected with the same `SyntaxError` when its estimated parser nesting exceeds the cap.
-    The scan bounds how much native stack the parser grows on a long source, memory the sandbox allocator does not
-    see; a shorter source cannot nest deeper than its length, so it skips the scan.
-- The scan counts open brackets, indented blocks, prefix operators, `**` right operands, lambda bodies, `else`
-    branches, f-string format specs and the `+` and `-` of `case` complex-literal patterns, so one expression holding
-    more than 200 of those open at once, with no comma, newline or lower-precedence operator between them, is rejected
-    even where CPython would accept it.
-    A long literal such as `[-1, -2, ...]` releases the count at every comma.
-    A logical line starting with a variable named `case` counts its binary `+` and `-` the same way.
-- The scan also enters string literals, because the type checker parses a forward-reference annotation such as
-    `x: "list[int]"` from the text between the quotes; a string longer than 200 bytes holding more than 200 unbalanced
-    brackets is rejected the same way even when it is plain data.
-- Only Rust hosts can change the threshold, with `CompileOptions { source_scan_threshold: n, ..CompileOptions::default() }`
-    (`0` scans every source, `usize::MAX` never scans); Python and JavaScript sessions use the default.
+  [typing.md](typing.md)), as do class-variable values and method parameter defaults; all three are walked before being
+  parsed.
+  CPython imposes no comparable limit on a stringized annotation.
+- A source longer than `CompileOptions::source_scan_threshold` bytes (4 KiB by default) is first scanned by Spam's
+  independent lexer and rejected with the same `SyntaxError` when its estimated parser nesting exceeds the cap.
+  The scan bounds how much native stack the parser grows on a long source, memory the sandbox allocator does not see; a
+  shorter source cannot nest deeper than its length, so it skips the scan.
+- The scan counts open brackets, indented blocks, prefix operators, `**` right operands, lambda bodies, `else` branches,
+  f-string format specs and the `+` and `-` of `case` complex-literal patterns, so one expression holding more than 200
+  of those open at once, with no comma, newline or lower-precedence operator between them, is rejected even where
+  CPython would accept it.
+  A long literal such as `[-1, -2, ...]` releases the count at every comma.
+- The scan enters string literals at likely annotation positions because the type checker parses a forward reference
+  such as `x: "list[int]"` from the text between the quotes.
+  Plain strings are not scanned as Python source.
+- Only Rust hosts can change the threshold, with `CompileOptions { source_scan_threshold: n, ..CompileOptions::default()
+  }` (`0` scans every source, `usize::MAX` never scans); Python and JavaScript sessions use the default.
 
 ## Imports
 
