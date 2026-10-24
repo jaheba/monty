@@ -6,7 +6,7 @@
 
 use ruff_python_parser::Mode;
 use ruff_text_size::{TextRange, TextSize};
-use spam::{Limits, MAX_SOURCE_BYTES, MAX_TOKENS, check};
+use spam::{Limits, MAX_SOURCE_BYTES, MAX_TOKENS, MAX_WORK_UNITS, check};
 
 use crate::parse::MAX_NESTING_DEPTH;
 
@@ -24,6 +24,7 @@ pub(crate) fn nesting_bound_exceeded(source: &str, _mode: Mode, limit: u16) -> O
         // Existing bytecode limits report more specific errors for large flat
         // modules, so the parser preflight uses Spam's implementation ceiling.
         max_tokens: MAX_TOKENS,
+        max_work_units: MAX_WORK_UNITS,
         max_nesting_depth: limit,
         max_indentation_depth: limit,
         // Monty's converter applies its own AST-depth budget. This preflight
