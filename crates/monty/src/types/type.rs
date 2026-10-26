@@ -123,7 +123,7 @@ pub enum Type {
     /// reference — `Type` is `Copy`, untracked by refcounting, and has no
     /// `Drop`. A `Type::Instance` is only valid while the value it was derived
     /// from is alive (an instance holds a counted ref to its class, taken in
-    /// `VM::instantiate_class`). It must NEVER be stored long-lived,
+    /// `VM::instantiate_class` or `allocate_empty_like`). It must NEVER be stored long-lived,
     /// serialized into snapshots/const pools, placed in `Builtins::Type` (the
     /// `type()` builtin returns the class object itself for instances), or
     /// converted to `MontyType`, which has no class variant (a sandbox class
@@ -345,8 +345,8 @@ pub enum Type {
 }
 
 /// Writes the canonical static name of every non-[`Instance`](Type::Instance)
-/// variant — the single name table backing [`Type::name`] and `MontyType`'s
-/// `Display`.
+/// variant, using the same name table as [`Type::name`].
+/// `MontyType` has its own strum-derived name table in `monty-types`.
 ///
 /// The names live on the enum via the `IntoStaticStr` derive
 /// (`serialize_all = "lowercase"` plus per-variant `serialize` overrides);
@@ -356,10 +356,9 @@ pub enum Type {
 /// On `Instance`, which has no static name — callers with heap access must
 /// resolve the real class name via [`Type::name`]. Well-formed data never
 /// puts an `Instance` where no heap exists (`Builtins::Type`, `MontyObject`,
-/// the wire protocol), so this is a programmer-error tripwire. A crafted
-/// snapshot payload *can* smuggle one in, but snapshot bytes are not a
-/// panic-free boundary anyway — any bogus `HeapId` in them panics on first
-/// heap access.
+/// the wire protocol), so this is a programmer-error tripwire.
+/// `BuiltinType` rejects `Instance` during snapshot deserialization, including
+/// for `Builtins::Type` and generic alias origins.
 impl fmt::Display for Type {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(match *self {
