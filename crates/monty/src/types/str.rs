@@ -223,6 +223,7 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
     fn py_len(&self, vm: &VM<'h>) -> Option<usize> {
         match self {
             Self::Interned(id) => Some(vm.interns.get_str(*id).chars().count()),
+            Self::Inline { .. } => Some(self.as_str(vm).chars().count()),
             Self::Heap(value) => value.py_len(vm),
         }
     }
