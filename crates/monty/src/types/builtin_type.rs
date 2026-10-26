@@ -200,6 +200,14 @@ pub(crate) enum BuiltinType {
     CsvDictWriter,
     #[strum(serialize = "_csv.Dialect")]
     CsvDialect,
+    #[strum(serialize = "decimal.Decimal")]
+    Decimal,
+    #[strum(serialize = "decimal.Context")]
+    DecimalContext,
+    #[strum(serialize = "SignalDict")]
+    DecimalSignalDict,
+    #[strum(serialize = "decimal.ContextManager")]
+    DecimalContextManager,
 }
 
 impl From<BuiltinType> for Type {
@@ -306,6 +314,10 @@ impl From<BuiltinType> for Type {
             BuiltinType::CsvDictReader => Self::CsvDictReader,
             BuiltinType::CsvDictWriter => Self::CsvDictWriter,
             BuiltinType::CsvDialect => Self::CsvDialect,
+            BuiltinType::Decimal => Self::Decimal,
+            BuiltinType::DecimalContext => Self::DecimalContext,
+            BuiltinType::DecimalSignalDict => Self::DecimalSignalDict,
+            BuiltinType::DecimalContextManager => Self::DecimalContextManager,
         }
     }
 }
@@ -416,6 +428,10 @@ impl TryFrom<Type> for BuiltinType {
             Type::CsvDictReader => Self::CsvDictReader,
             Type::CsvDictWriter => Self::CsvDictWriter,
             Type::CsvDialect => Self::CsvDialect,
+            Type::Decimal => Self::Decimal,
+            Type::DecimalContext => Self::DecimalContext,
+            Type::DecimalSignalDict => Self::DecimalSignalDict,
+            Type::DecimalContextManager => Self::DecimalContextManager,
             Type::Instance(_) => return Err("user-defined classes use heap type objects"),
         })
     }
@@ -435,6 +451,26 @@ mod builtin_type_tests {
 
     use super::{BuiltinType, ExcType, Type};
     use crate::{builtins::Builtins, heap::HeapId, value::Value};
+
+    #[test]
+    fn builtin_type_names_match_runtime_types() {
+        let runtime_names: Vec<_> = Type::VARIANTS
+            .iter()
+            .copied()
+            .filter(|name| *name != "instance")
+            .collect();
+        assert_eq!(BuiltinType::VARIANTS, runtime_names);
+
+        for name in runtime_names.into_iter().filter(|name| *name != "exception") {
+            let builtin: BuiltinType = name.parse().unwrap();
+            let runtime: Type = name.parse().unwrap();
+            assert_eq!(Type::from(builtin), runtime, "{name}");
+
+            let builtin_name: &'static str = builtin.into();
+            let runtime_name: &'static str = runtime.into();
+            assert_eq!(builtin_name, runtime_name, "{name}");
+        }
+    }
 
     #[test]
     fn static_type_conversions_preserve_serialization() {

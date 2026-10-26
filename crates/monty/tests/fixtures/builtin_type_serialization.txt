@@ -98,3 +98,7 @@ CsvWriter 98
 CsvDictReader 99
 CsvDictWriter 100
 CsvDialect 101
+Decimal 102
+DecimalContext 103
+DecimalSignalDict 104
+DecimalContextManager 105
