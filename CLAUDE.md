@@ -258,6 +258,13 @@ a `#[serde(from = "Dumped…")]` shim when one value's stored shape changed (see
 The first upgrade is `modules/dataclasses/legacy.rs` (version 13), tested against the `dataclasses_v13*.bin` fixtures
 the 1.1.0 release wrote, which must never be regenerated.
 
+`BuiltinType` serializes through `Type` to preserve existing dump variant names and payloads.
+Keep the explicit conversions exhaustive; `Type::Instance` has no inline builtin representation.
+Postcard encoding used by builtin `id()` also retains `Type`'s variant indices, including the `Instance` slot.
+The legacy fixture in `crates/monty/tests/fixtures/builtin_type_serialization.txt` pins these names and indices;
+check compatibility before changing its expectations.
+The unit tests in `types/type.rs` cover both conversions and both serialization formats.
+
 ### Compilation overlays and stable intern entries
 
 The VM holds `&Interns`, never `&mut Interns`.

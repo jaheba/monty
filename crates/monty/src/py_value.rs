@@ -541,8 +541,8 @@ impl<'h> PyTrait<'h> for PyValue<'h> {
 
     fn py_getitem(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<Value> {
         forward_py_value!(self, |value| value.py_getitem(key, vm), {
-            Self::Builtin(Builtins::Type(t)) if Type::from(*t).has_class_getitem() => Ok(GenericAlias::subscript((*t).into(), key.clone_with_heap(vm), vm)),
-            Self::Builtin(Builtins::Function(BuiltinsFunctions::Type)) => Ok(GenericAlias::subscript(Type::Type, key.clone_with_heap(vm), vm)),
+            Self::Builtin(Builtins::Type(t)) if Type::from(*t).has_class_getitem() => Ok(GenericAlias::subscript(*t, key.clone_with_heap(vm), vm)),
+            Self::Builtin(Builtins::Function(BuiltinsFunctions::Type)) => Ok(GenericAlias::subscript(BuiltinType::Type, key.clone_with_heap(vm), vm)),
             Self::Builtin(Builtins::Type(BuiltinType::Union)) => Union::subscript(key.clone_with_heap(vm), vm),
             Self::Marker(Marker(StaticStrings::Optional)) => Union::optional(key.clone_with_heap(vm), vm),
             Self::Builtin(Builtins::Type(t)) => Err(ExcType::type_error_type_not_subscriptable(&Type::from(*t).name(vm.heap, vm.interns))),
