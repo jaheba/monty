@@ -34,7 +34,13 @@ use crate::{
     value::{EitherStr, Value},
 };
 
-/// Python types used for runtime dispatch, including borrowed class identities.
+/// Represents the Python type of a value.
+///
+/// This enum is used both for type checking and as a callable constructor.
+/// Some variants are Python builtins accessible by name (e.g., `int`, `list`),
+/// while others are internal types only available through imports or introspection
+/// (e.g., `TextIOWrapper`, `PosixPath`).
+///
 /// Variant names are persisted in dumps; renames require a serde alias.
 /// Variant order is also used by builtin id() through postcard.
 #[derive(
@@ -108,12 +114,21 @@ pub enum Type {
     /// [`HeapData::HostClass`]: crate::heap::HeapData::HostClass
     #[strum(serialize = "HostClass")]
     HostClass,
-    /// A user-defined instance's class, borrowed for runtime type checks and names.
-    /// The class object itself reports `Type::Type`.
+    /// An instance of a user-defined class (`class Foo: ...`), carrying the
+    /// `HeapId` of its class object so the real class name can be resolved
+    /// (via [`Type::name`]) for error messages and reprs. The class
+    /// object itself reports [`Type::Type`] (matching `type(Foo) is type`).
     ///
-    /// The id is non-owning: this `Copy` type does not participate in refcounting.
-    /// It is valid only while the source value keeps its class alive. Never retain it
-    /// in snapshots or constant pools; type objects use `BuiltinType` or a heap class.
+    /// **SAFETY/LIFETIME INVARIANT**: the id is a NON-OWNING, transient
+    /// reference — `Type` is `Copy`, untracked by refcounting, and has no
+    /// `Drop`. A `Type::Instance` is only valid while the value it was derived
+    /// from is alive (an instance holds a counted ref to its class, taken in
+    /// `VM::instantiate_class`). It must NEVER be stored long-lived,
+    /// serialized into snapshots/const pools, placed in `Builtins::Type` (the
+    /// `type()` builtin returns the class object itself for instances), or
+    /// converted to `MontyType`, which has no class variant (a sandbox class
+    /// crosses the boundary as its own `ClassType` arena node).
+    /// `Builtins::Type` now accepts only `BuiltinType`, preventing storage there at compile time.
     #[strum(disabled)]
     Instance(HeapId),
     /// Exception types render/parse via `ExcType`'s own strum name
@@ -329,10 +344,22 @@ pub enum Type {
     DecimalContextManager,
 }
 
-/// Writes static type names, delegating exception names to `ExcType`.
+/// Writes the canonical static name of every non-[`Instance`](Type::Instance)
+/// variant — the single name table backing [`Type::name`] and `MontyType`'s
+/// `Display`.
+///
+/// The names live on the enum via the `IntoStaticStr` derive
+/// (`serialize_all = "lowercase"` plus per-variant `serialize` overrides);
+/// `Exception` delegates to `ExcType`'s own strum name.
 ///
 /// # Panics
-/// `Instance` requires heap access to resolve its class name; use [`Type::name`].
+/// On `Instance`, which has no static name — callers with heap access must
+/// resolve the real class name via [`Type::name`]. Well-formed data never
+/// puts an `Instance` where no heap exists (`Builtins::Type`, `MontyObject`,
+/// the wire protocol), so this is a programmer-error tripwire. A crafted
+/// snapshot payload *can* smuggle one in, but snapshot bytes are not a
+/// panic-free boundary anyway — any bogus `HeapId` in them panics on first
+/// heap access.
 impl fmt::Display for Type {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(match *self {
