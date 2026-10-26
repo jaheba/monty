@@ -263,7 +263,7 @@ Keep the explicit conversions exhaustive; `Type::Instance` has no inline builtin
 Postcard encoding used by builtin `id()` also retains `Type`'s variant indices, including the `Instance` slot.
 The legacy fixture in `crates/monty/tests/fixtures/builtin_type_serialization.txt` pins these names and indices;
 check compatibility before changing its expectations.
-The unit tests in `types/type.rs` cover both conversions and both serialization formats.
+The unit tests in `types/builtin_type.rs` cover both conversions and both serialization formats.
 
 ### Compilation overlays and stable intern entries
 

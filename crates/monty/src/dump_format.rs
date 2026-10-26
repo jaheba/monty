@@ -10,7 +10,7 @@
 //! Inline builtin types serialize through `Type`, preserving the names and payloads
 //! written before `BuiltinType` was split out. Its own enum order is not the wire
 //! order: postcard encoding for builtin `id()` retains `Type::Instance`'s slot.
-//! See `builtin_type_tests` in `types/type.rs` and the legacy serialization fixture.
+//! See `builtin_type_tests` in `types/builtin_type.rs` and the legacy serialization fixture.
 //!
 //! # Naming contract
 //!
