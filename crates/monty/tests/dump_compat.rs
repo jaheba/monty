@@ -273,6 +273,15 @@ fn fixture_dump_loads_and_resumes() {
     );
 }
 
+/// Main's version-14 dump format remains readable after inline strings bump it to 15.
+#[test]
+fn version_14_fixture_loads_after_inline_string_bump() {
+    let bytes = fs::read(fixture_path_for(14)).expect("main's version-14 fixture exists");
+    let loaded = Dump::load(&bytes).expect("version-14 dumps remain supported");
+    assert_eq!(loaded.script_name, "fixture.py");
+    assert!(matches!(loaded.state, Session::Suspended(_)));
+}
+
 /// The class definitions in `dataclasses_v13.bin`, kept for reference: the
 /// fixture was written by the 1.1.0 release, before `@dataclass` generated
 /// methods. It must never be regenerated, since this build writes generated
@@ -537,9 +546,13 @@ fn persisted_key_hashes_are_stable() {
 /// The fixture for the current `DUMP_VERSION`; the name carries the version so
 /// a bump leaves the old file behind to delete rather than silently reuse.
 fn fixture_path() -> PathBuf {
+    fixture_path_for(DUMP_VERSION)
+}
+
+fn fixture_path_for(version: u16) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("tests/fixtures")
-        .join(format!("dump_v{DUMP_VERSION}.bin"))
+        .join(format!("dump_v{version}.bin"))
 }
 
 /// A record as an older build wrote it.
