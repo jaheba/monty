@@ -69,6 +69,22 @@ assert result is True
 result = number is not number
 assert result is False
 
+other_number = 1.0
+result = number == other_number
+assert result is True
+result = number is other_number
+assert result is False
+result = number is not other_number
+assert result is True
+
+for invert in [False, True]:
+    try:
+        result = number not in other_number if invert else number in other_number
+    except TypeError:
+        pass
+    else:
+        assert False
+
 items = [1, 2]
 assert (items is items) is True
 assert (items is not items) is False

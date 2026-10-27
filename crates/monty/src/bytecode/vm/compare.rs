@@ -37,7 +37,7 @@ impl VM<'_> {
 
     /// Executes direct `==`, preserving an arbitrary value returned by `__eq__`.
     pub(super) fn compare_eq(&mut self) -> Result<(), RunError> {
-        if self.compare_numeric(CmpOperator::Eq) {
+        if self.compare_numeric(|ordering| ordering == Some(Ordering::Equal)) {
             return Ok(());
         }
 
@@ -54,7 +54,7 @@ impl VM<'_> {
 
     /// Executes direct `!=`; user `__ne__` dispatch is not yet supported.
     pub(super) fn compare_ne(&mut self) -> Result<(), RunError> {
-        if self.compare_numeric(CmpOperator::NotEq) {
+        if self.compare_numeric(|ordering| ordering != Some(Ordering::Equal)) {
             return Ok(());
         }
 
@@ -115,8 +115,9 @@ impl VM<'_> {
     }
 
     /// Compares immediate int/float pairs without owning heap references.
+    /// The callback receives `None` for NaN operands.
     #[inline]
-    fn compare_numeric(&mut self, op: CmpOperator) -> bool {
+    fn compare_numeric(&mut self, compare: impl FnOnce(Option<Ordering>) -> bool) -> bool {
         let len = self.stack.len();
         let ordering = match (&self.stack[len - 2], &self.stack[len - 1]) {
             (Value::Int(lhs), Value::Int(rhs)) => Some(lhs.cmp(rhs)),
@@ -126,16 +127,7 @@ impl VM<'_> {
             (Value::Float(lhs), Value::Int(rhs)) => i64_cmp_f64(*rhs, *lhs).map(Ordering::reverse),
             _ => return false,
         };
-        // NaNs are unequal to every number, and all their ordering comparisons are false.
-        let result = match op {
-            CmpOperator::Eq => ordering == Some(Ordering::Equal),
-            CmpOperator::NotEq => ordering != Some(Ordering::Equal),
-            CmpOperator::Lt => ordering.is_some_and(Ordering::is_lt),
-            CmpOperator::LtE => ordering.is_some_and(Ordering::is_le),
-            CmpOperator::Gt => ordering.is_some_and(Ordering::is_gt),
-            CmpOperator::GtE => ordering.is_some_and(Ordering::is_ge),
-            _ => return false,
-        };
+        let result = compare(ordering);
 
         self.stack[len - 2] = Value::Bool(result);
         self.stack.truncate(len - 1);
@@ -148,7 +140,14 @@ impl VM<'_> {
         // Rejects a bad `OP` at compile time, which makes the `else` dead.
         const { assert!(CmpOperator::from_repr(OP).is_some(), "invalid CmpOperator operand") };
         let op = CmpOperator::from_repr(OP).expect("invalid CmpOperator operand");
-        if self.compare_numeric(op) {
+        let handled = match op {
+            CmpOperator::Lt => self.compare_numeric(|ordering| ordering.is_some_and(Ordering::is_lt)),
+            CmpOperator::LtE => self.compare_numeric(|ordering| ordering.is_some_and(Ordering::is_le)),
+            CmpOperator::Gt => self.compare_numeric(|ordering| ordering.is_some_and(Ordering::is_gt)),
+            CmpOperator::GtE => self.compare_numeric(|ordering| ordering.is_some_and(Ordering::is_ge)),
+            _ => false,
+        };
+        if handled {
             return Ok(());
         }
 
