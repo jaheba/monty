@@ -14,6 +14,7 @@ use crate::{
     heap::{DropWithContext, HeapData, HeapRead},
     intern::{Interns, StaticStrings, StringId},
     parse::CodeRange,
+    py_value::PyValue,
     source_map::{SourceMap, StackFrameExt},
     types::{
         PyTrait, Type, allocate_tuple,
@@ -1117,18 +1118,6 @@ pub(crate) trait ExcTypeExt: Sized {
         SimpleException::new_msg(ExcType::TypeError, format!("cannot create '{type_}' instances")).into()
     }
 
-    /// Creates a TypeError for repeating a sequence by a non-integer count.
-    ///
-    /// Matches CPython's format: `TypeError: can't multiply sequence by non-int of type '{type}'`
-    #[must_use]
-    fn type_error_multiply_sequence(type_: &str) -> RunError {
-        SimpleException::new_msg(
-            ExcType::TypeError,
-            format!("can't multiply sequence by non-int of type '{type_}'"),
-        )
-        .into()
-    }
-
     /// Creates a TypeError for calling a non-callable object.
     ///
     /// Matches CPython's format: `TypeError: '{type}' object is not callable`
@@ -1489,6 +1478,63 @@ pub(crate) trait ExcTypeExt: Sized {
         Self::csv_error("unknown dialect")
     }
 
+    /// A trapped `decimal` signal: the class plus C `_decimal`'s list of conditions,
+    /// `[<class 'decimal.DivisionByZero'>]`.
+    fn decimal_signal(exc_type: ExcType, message: String) -> RunError {
+        SimpleException::new_msg(exc_type, message).into()
+    }
+
+    /// The `TypeError` for an operand a `decimal` method cannot convert implicitly.
+    fn decimal_conversion(type_name: &str) -> RunError {
+        Self::type_error(format!("conversion from {type_name} to Decimal is not supported"))
+    }
+
+    /// The `TypeError` for a `context` argument that is not a `decimal.Context`.
+    fn decimal_optional_context() -> RunError {
+        Self::type_error("optional argument must be a context")
+    }
+
+    /// The `TypeError` for a rounding mode that is not one of the eight `ROUND_*` strings.
+    fn decimal_invalid_rounding() -> RunError {
+        Self::type_error(
+            "valid values for rounding are:\n  [ROUND_CEILING, ROUND_FLOOR, ROUND_UP, ROUND_DOWN,\n   \
+             ROUND_HALF_UP, ROUND_HALF_DOWN, ROUND_HALF_EVEN,\n   ROUND_05UP]",
+        )
+    }
+
+    /// The `KeyError` for a `flags` / `traps` key that is not one of the nine signals.
+    fn decimal_invalid_signal() -> RunError {
+        SimpleException::new_msg(
+            ExcType::KeyError,
+            "valid values for signals are:\n  [InvalidOperation, FloatOperation, DivisionByZero,\n   \
+             Overflow, Underflow, Subnormal, Inexact, Rounded,\n   Clamped]",
+        )
+        .into()
+    }
+
+    /// The `KeyError` for a dict assigned to `flags` / `traps` without exactly the nine signals.
+    fn decimal_invalid_signal_dict() -> RunError {
+        SimpleException::new_msg(ExcType::KeyError, "invalid signal dict").into()
+    }
+
+    /// Unpacking a sequence of the wrong length: `not enough values to unpack
+    /// (expected 2, got 1)` or `too many values to unpack (expected 2, got 3)`.
+    fn unpack_size_error(expected: usize, actual: usize) -> RunError {
+        let message = if actual < expected {
+            format!("not enough values to unpack (expected {expected}, got {actual})")
+        } else {
+            format!("too many values to unpack (expected {expected}, got {actual})")
+        };
+        SimpleException::new_msg(ExcType::ValueError, message).into()
+    }
+
+    /// C's `PyArg_ParseTuple` arity error for a fixed-arity method: `function takes
+    /// exactly 2 arguments (1 given)`.
+    fn type_error_function_exact(expected: usize, actual: usize) -> RunError {
+        let plural = if expected == 1 { "argument" } else { "arguments" };
+        Self::type_error(format!("function takes exactly {expected} {plural} ({actual} given)"))
+    }
+
     /// Creates an IndexError for list index out of range (getitem).
     ///
     /// Matches CPython's format: `IndexError('list index out of range')`
@@ -1844,6 +1890,12 @@ pub(crate) trait ExcTypeExt: Sized {
             format!("unsupported operand type(s) for {op}: '{lhs_name}' and '{rhs_name}'")
         };
         SimpleException::new_msg(ExcType::TypeError, message).into()
+    }
+
+    /// Reports an invalid repetition count after both multiplication implementations decline.
+    #[must_use]
+    fn type_error_sequence_repeat(type_name: impl Display) -> RunError {
+        Self::type_error(format!("can't multiply sequence by non-int of type '{type_name}'"))
     }
 
     /// Float power slots reject a modulus before coercing the other operands.
@@ -2513,31 +2565,14 @@ pub(crate) trait ExcTypeExt: Sized {
 }
 
 impl ExcTypeExt for ExcType {
-    /// Creates an exception instance from an exception type and arguments.
-    ///
-    /// Handles exception constructors like `ValueError('message')`.
+    /// Allocates an exception for constructors like `ValueError('message')`.
     /// Currently supports zero or one string argument.
-    ///
-    /// The `interns` parameter provides access to interned string content.
-    /// Returns a heap-allocated exception value.
     fn call(self, vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
         defer_drop!(args, vm);
         let exc = match args {
             ArgValues::Empty => Ok(SimpleException::new_none(self)),
-            ArgValues::One(value) => match value {
-                Value::InternString(string_id) => Ok(SimpleException::new_msg(
-                    self,
-                    vm.interns.get_str(*string_id).to_owned(),
-                )),
-                Value::Ref(heap_id) => {
-                    if let HeapData::Str(s) = vm.heap.get(*heap_id) {
-                        Ok(SimpleException::new_msg(self, s.as_str().to_owned()))
-                    } else {
-                        Err(RunError::internal(
-                            "exceptions can only be called with zero or one string argument",
-                        ))
-                    }
-                }
+            ArgValues::One(value) => match value.py_value(vm) {
+                PyValue::Str(string) => Ok(SimpleException::new_msg(self, string.as_str(vm))),
                 _ => Err(RunError::internal(
                     "exceptions can only be called with zero or one string argument",
                 )),

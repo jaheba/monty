@@ -42,6 +42,10 @@ These raise `NameError`:
     `AttributeError`, so `[1].append`, `'a'.upper`, `{}.get`, `dict.fromkeys`
     and `list.__class_getitem__` cannot be assigned, passed as a callback or
     reached through `getattr`. Call them directly (`list.__class_getitem__(int)`).
+- **Large integer literal identity** — separate occurrences of the same literal outside the `i64` range are not
+    deduplicated, so `a = 18446744073709551616; b = 18446744073709551616; a is b` is `False` where CPython may reuse a
+    single constant and return `True`.
+    Repeated loads of one literal share its identity; use `==` to compare numeric values.
 - **`hash(x)`** — Monty hashes `str`, `bytes`, `float`, `complex` and every container with
     its own algorithm, so the values differ from CPython's. Only `bool`,
     small `int`, and a `float` or `complex` equal to one of them agree: an `int` hashes to itself, which is what CPython does
@@ -141,6 +145,8 @@ These raise `NameError`:
 - **`int(x, base=10)`** — string/bytes parsing accepts ASCII digits only;
     CPython also accepts non-ASCII Unicode decimal digits (`int('١٢')` == 12),
     which Monty rejects with `invalid literal for int() with base 10`.
+- **`float(x)`** — string parsing accepts ASCII digits only; CPython also accepts Unicode decimal digits
+    (`float('١.٥')` == 1.5), which Monty rejects with `could not convert string to float`.
 - **`bytes(source)`** — an iterable of ints is not supported: CPython's
     `bytes([65, 66])` == `b'AB'`, Monty raises `TypeError: cannot convert 'list' object to bytes`. The int /
     str-with-encoding / bytes source forms

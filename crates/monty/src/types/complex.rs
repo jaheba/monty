@@ -19,6 +19,7 @@ use crate::{
     hash::{HashValue, hash_f64},
     heap::{Heap, HeapData, HeapId, HeapItem, HeapObjectRead},
     intern::StaticStrings,
+    py_value::PyValue,
     types::{
         LazyHeapSet, PyTrait, Type,
         str::{StringRepr, allocate_string},
@@ -319,15 +320,11 @@ enum Operand {
 /// `OverflowError`); `None` for a non-number so the operation reports
 /// `NotImplemented` and the reflected form gets its turn.
 fn operand(value: &Value, vm: &VM<'_>) -> RunResult<Option<Operand>> {
-    Ok(match value {
-        Value::Float(f) => Some(Operand::Real(*f)),
-        Value::Int(i) => Some(Operand::Real(*i as f64)),
-        Value::Bool(b) => Some(Operand::Real(f64::from(*b))),
-        Value::Ref(id) => match vm.heap.get(*id) {
-            HeapData::Complex(c) => Some(Operand::Complex(*c)),
-            HeapData::LongInt(li) => Some(Operand::Real(li.to_f64_checked()?)),
-            _ => None,
-        },
+    Ok(match value.py_value(vm) {
+        PyValue::Float(value) => Some(Operand::Real(value)),
+        PyValue::Int(integer) => Some(Operand::Real(integer.to_f64_checked(vm)?)),
+        PyValue::Bool(value) => Some(Operand::Real(f64::from(value))),
+        PyValue::Complex(value) => Some(Operand::Complex(*value.get(vm.heap))),
         _ => None,
     })
 }
@@ -383,6 +380,8 @@ fn init_single(value: Value, vm: &mut VM<'_>) -> RunResult<Value> {
     defer_drop!(value, vm);
     let parsed = match value.as_either_str(vm.heap) {
         Some(text) => Some(parse(text.as_str(vm.interns))?),
+        // `Decimal.__complex__`; Decimals take no part in complex arithmetic.
+        None if let PyValue::Decimal(d) = value.py_value(vm) => Some(Complex::new(d.get(vm.heap).to_f64()?, 0.0)),
         None => operand(value, vm)?.map(widen),
     };
     match parsed {
@@ -426,11 +425,16 @@ impl FromValue for Part {
     const EXPECTED_TYPE_NAME: Option<&'static str> = Some("a real number");
 
     fn from_value(value: Value, vm: &mut VM<'_>) -> Result<Self, FromValueFail> {
-        let result = match operand(&value, vm) {
-            Ok(Some(Operand::Real(r))) => Ok(Self::Real(r)),
-            Ok(Some(Operand::Complex(c))) => Ok(Self::Complex(c)),
-            Ok(None) => Err(FromValueFail::WrongType),
-            Err(err) => Err(FromValueFail::Raise(err)),
+        let result = if let PyValue::Decimal(d) = value.py_value(vm) {
+            // `Decimal.__float__`, as for `complex(Decimal)`.
+            d.get(vm.heap).to_f64().map(Self::Real).map_err(FromValueFail::Raise)
+        } else {
+            match operand(&value, vm) {
+                Ok(Some(Operand::Real(r))) => Ok(Self::Real(r)),
+                Ok(Some(Operand::Complex(c))) => Ok(Self::Complex(c)),
+                Ok(None) => Err(FromValueFail::WrongType),
+                Err(err) => Err(FromValueFail::Raise(err)),
+            }
         };
         value.drop_with(vm);
         result

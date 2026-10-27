@@ -58,7 +58,7 @@ use crate::{
     parse::CodeRange,
     run::{Program, SessionTables, VmEnv},
     types::{
-        Dict, LongInt, PyTrait, SessionRandom,
+        Dict, PyTrait, SessionRandom,
         file::{apply_buffer_load, apply_buffer_store, apply_file_next, apply_open_name, apply_write_position},
         random::SEED_BYTES,
         str::allocate_string,
@@ -1274,7 +1274,7 @@ impl<'h> VM<'h> {
                 countdown = c;
             } else {
                 countdown = CHECK_INTERVAL;
-                self.dispatch_checkpoint(check_limits, poll_print)?;
+                try_catch!(self, self.dispatch_checkpoint(check_limits, poll_print));
             }
 
             // Track instruction IP for exception table lookup
@@ -1323,14 +1323,7 @@ impl<'h> VM<'h> {
                 Opcode::LoadConst => {
                     let idx = self.current_frame.fetch_u16();
                     let value = self.current_frame.code.constant(idx);
-                    // Handle InternLongInt specially - convert to heap-allocated LongInt
-                    if let Value::InternLongInt(long_int_id) = value {
-                        let bi = self.interns.get_long_int(*long_int_id).clone();
-                        let long_value = LongInt::new(bi).into_value(self.heap);
-                        self.push(long_value);
-                    } else {
-                        self.push(value.clone_with_heap(self));
-                    }
+                    self.push(value.clone_with_heap(self));
                 }
                 Opcode::LoadNone => self.push(Value::None),
                 Opcode::LoadTrue => self.push(Value::Bool(true)),

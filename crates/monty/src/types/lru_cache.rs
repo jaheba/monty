@@ -399,9 +399,12 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, LruCache> {
         Ok(Some(identity_hash(self.id())))
     }
 
-    /// Fallback repr; `Value::py_repr_fmt` adds the identity through [`lru_cache_repr`].
     fn py_repr_fmt(&self, f: &mut impl Write, _: &mut VM<'h>, _: &mut LazyHeapSet) -> RunResult<()> {
-        Ok(f.write_str("<functools._lru_cache_wrapper object>")?)
+        Ok(write!(
+            f,
+            "<functools._lru_cache_wrapper object at 0x{:x}>",
+            self.id().index()
+        )?)
     }
 
     /// `__wrapped__` — the callable being cached.
@@ -550,15 +553,6 @@ impl<'h> TableSource<'h> for HeapObjectRead<'h, LruCache> {
     fn table<'r>(&'r self, vm: &'r VM<'h>) -> &'r PyHashTable<CacheEntry> {
         &self.get(vm.heap).cache
     }
-}
-
-/// Writes the wrapper's repr using the identity available at the `Value` level.
-pub(crate) fn lru_cache_repr(self_id: HeapId, f: &mut impl Write) -> RunResult<()> {
-    Ok(write!(
-        f,
-        "<functools._lru_cache_wrapper object at 0x{:x}>",
-        self_id.index()
-    )?)
 }
 
 /// A counter as a Python `int`, saturating rather than wrapping negative.
