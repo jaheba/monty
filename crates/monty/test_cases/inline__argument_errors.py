@@ -85,9 +85,15 @@ for operation in [
 import csv
 import unicodedata
 
-match = re.search('(a)', 'a')
+
+def match_group(index):
+    match = re.search('(a)', 'a')
+    assert match is not None
+    return match[index]
+
+
 for invalid in [None, 1.5, b'a', []]:
-    raises(IndexError, lambda: match[invalid])
+    raises(IndexError, lambda: match_group(invalid))
 for invalid in [None, 42, []]:
     raises(TypeError, lambda: unicodedata.lookup(invalid))
 

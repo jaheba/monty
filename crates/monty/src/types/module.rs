@@ -171,6 +171,8 @@ mod tests {
     use monty_types::{PrintWriter, ResourceTracker};
 
     use super::*;
+    #[cfg(feature = "ref-count-return")]
+    use crate::heap::ContainsHeap as _;
     use crate::{
         exception_private::RunError,
         heap::{Heap, HeapReader},
@@ -204,7 +206,6 @@ mod tests {
                 assert!(matches!(error, RunError::Exc(exc) if exc.exc.exc_type() == ExcType::AttributeError));
                 #[cfg(feature = "ref-count-return")]
                 {
-                    use crate::heap::ContainsHeap as _;
                     assert_eq!(vm.heap.heap().get_refcount(argument.ref_id().unwrap()), 1);
                 }
             }
