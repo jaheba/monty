@@ -63,6 +63,12 @@ except TypeError:
 else:
     assert False
 
+number = 1
+result = number is number
+assert result is True
+result = number is not number
+assert result is False
+
 items = [1, 2]
 assert (items is items) is True
 assert (items is not items) is False

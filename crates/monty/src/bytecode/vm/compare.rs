@@ -117,18 +117,6 @@ impl VM<'_> {
     /// Compares immediate int/float pairs without owning heap references.
     #[inline]
     fn compare_numeric(&mut self, op: CmpOperator) -> bool {
-        if !matches!(
-            op,
-            CmpOperator::Eq
-                | CmpOperator::NotEq
-                | CmpOperator::Lt
-                | CmpOperator::LtE
-                | CmpOperator::Gt
-                | CmpOperator::GtE
-        ) {
-            return false;
-        }
-
         let len = self.stack.len();
         let ordering = match (&self.stack[len - 2], &self.stack[len - 1]) {
             (Value::Int(lhs), Value::Int(rhs)) => Some(lhs.cmp(rhs)),
@@ -146,7 +134,7 @@ impl VM<'_> {
             CmpOperator::LtE => ordering.is_some_and(Ordering::is_le),
             CmpOperator::Gt => ordering.is_some_and(Ordering::is_gt),
             CmpOperator::GtE => ordering.is_some_and(Ordering::is_ge),
-            _ => unreachable!("non-numeric comparison operator"),
+            _ => return false,
         };
 
         self.stack[len - 2] = Value::Bool(result);
