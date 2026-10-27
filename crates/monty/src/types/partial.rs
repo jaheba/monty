@@ -255,11 +255,11 @@ fn merge_keywords(bound: &mut Vec<(Value, Value)>, keywords: impl Iterator<Item 
 /// A non-`str` name never matches; the binder rejects it when the merged
 /// arguments reach the wrapped callable.
 fn keyword_index(bound: &[(Value, Value)], name: &Value, vm: &VM<'_>) -> Option<usize> {
-    let name = name.try_to_str_heap(vm.heap, vm.interns).ok()?;
+    let name = name.as_str_heap(vm.heap, vm.interns)?;
     bound.iter().position(|(bound, _)| {
         bound
-            .try_to_str_heap(vm.heap, vm.interns)
-            .is_ok_and(|bound| bound == name)
+            .as_str_heap(vm.heap, vm.interns)
+            .is_some_and(|bound| bound == name)
     })
 }
 
@@ -272,9 +272,7 @@ fn keyword_index_map(bound: &[(Value, Value)], vm: &VM<'_>) -> AHashMap<String, 
     bound
         .iter()
         .enumerate()
-        .filter_map(|(position, (name, _))| {
-            Some((name.try_to_str_heap(vm.heap, vm.interns).ok()?.to_owned(), position))
-        })
+        .filter_map(|(position, (name, _))| Some((name.as_str_heap(vm.heap, vm.interns)?.to_owned(), position)))
         .collect()
 }
 
@@ -566,4 +564,40 @@ fn deep_copy_keywords<'h>(
         dest.get_mut(vm.heap).keywords.push(pair);
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use monty_types::{PrintWriter, ResourceTracker};
+
+    use super::*;
+    use crate::{
+        heap::{Heap, HeapReader},
+        run::{Program, SessionTables},
+        types::str::allocate_string,
+    };
+
+    #[test]
+    fn keyword_indexes_ignore_non_string_names_until_binding() {
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        let mut tables = SessionTables::default();
+        let program = Program::for_tests();
+
+        HeapReader::with(&mut heap, &mut (&program, &mut tables), |reader, (program, tables)| {
+            let vm = &mut VM::new(Vec::new(), tables, program, reader, PrintWriter::Disabled);
+            let bound = vec![
+                (Value::Int(1), Value::Int(10)),
+                (allocate_string("key", vm.heap), Value::Int(20)),
+            ];
+            defer_drop!(bound, vm);
+            let key = allocate_string("key", vm.heap);
+            defer_drop!(key, vm);
+
+            assert_eq!(keyword_index(bound, key, vm), Some(1));
+            assert_eq!(keyword_index(bound, &Value::Int(1), vm), None);
+            let index = keyword_index_map(bound, vm);
+            assert_eq!(index.len(), 1);
+            assert_eq!(index.get("key"), Some(&1));
+        });
+    }
 }

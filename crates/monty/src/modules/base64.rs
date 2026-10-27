@@ -1330,7 +1330,7 @@ fn assert_len_bytes(bytes: &[u8], expected: usize) -> RunResult<()> {
 fn assertion_error(value: &Value, vm: &mut VM<'_>) -> RunResult<RunError> {
     let repr = value.py_repr(vm)?;
     defer_drop!(repr, vm);
-    let message = repr.try_to_str(vm)?.to_owned();
+    let message = repr.as_str(vm).expect("py_repr returns str").to_owned();
     Ok(SimpleException::new_msg(ExcType::AssertionError, message).into())
 }
 

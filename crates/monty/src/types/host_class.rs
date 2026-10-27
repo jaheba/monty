@@ -198,7 +198,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, HostClass> {
             } else {
                 let repr = key.py_repr(vm)?;
                 defer_drop!(repr, vm);
-                repr.try_to_str(vm)?.to_owned()
+                repr.as_str(vm).expect("py_repr returns str").to_owned()
             };
             // The value is cloned only after the fallible key formatting, so a
             // formatting error cannot strand an unguarded clone; re-reading at

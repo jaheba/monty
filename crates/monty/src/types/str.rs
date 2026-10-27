@@ -2176,3 +2176,45 @@ pub(crate) fn str_contains(container_str: &str, item: &Value, heap: &Heap, inter
         )))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use monty_types::PrintWriter;
+
+    use super::*;
+    use crate::run::{Program, SessionTables};
+
+    #[test]
+    fn string_views_preserve_identity_and_content_across_storage_kinds() {
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        let mut tables = SessionTables::default();
+        let program = Program::for_tests();
+
+        HeapReader::with(&mut heap, &mut (&program, &mut tables), |reader, (program, tables)| {
+            let vm = &mut VM::new(Vec::new(), tables, program, reader, PrintWriter::Disabled);
+            let values = vec![
+                Value::InternString(StringId::from_ascii(b'a')),
+                allocate_string("abcdefghijklmno", vm.heap),
+                allocate_string_on_heap("abcdefghijklmno", vm.heap),
+            ];
+            defer_drop!(values, vm);
+
+            for value in values {
+                let view = PyStr::from_value(value, vm).unwrap();
+                assert_eq!(view.py_type(vm), Type::Str);
+                assert!(view.py_identity() == Identity::new(value));
+                assert_eq!(view.py_eq_impl(&Value::Int(7), vm).unwrap(), None);
+
+                let text = view.as_str(vm).to_owned();
+                let equal = allocate_string_on_heap(text.clone(), vm.heap);
+                defer_drop!(equal, vm);
+                assert_eq!(view.py_eq_impl(equal, vm).unwrap(), Some(true));
+
+                let copied = view.py_str(vm).unwrap();
+                defer_drop!(copied, vm);
+                assert_eq!(copied.as_str(vm), Some(text.as_str()));
+                assert!(Identity::new(copied) == Identity::new(value));
+            }
+        });
+    }
+}

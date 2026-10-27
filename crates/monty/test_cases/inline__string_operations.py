@@ -109,3 +109,31 @@ for text in ['abcdefghijklmno', 'ééééééabc']:
     longer = inline + 'x'
     assert len(longer.encode()) == 16
     assert longer[:-1] == inline
+
+# Attribute errors and formatting must also handle computed inline text.
+raises_attribute_error = False
+try:
+    s.method_that_does_not_exist()
+except AttributeError:
+    raises_attribute_error = True
+assert raises_attribute_error
+assert format(s, '>5!'[:-1]) == '  abc'
+assert f'{s:>{2 + 3}}' == '  abc'
+assert f'{s!s:>5}/{s!r}/{s!a}' == "  abc/'abc'/'abc'"
+assert f'{u:>3}' == '  é'
+
+
+# An index conversion can re-enter Python while the inline receiver is retained.
+class Index:
+    def __index__(self):
+        assert s.upper() == 'ABC'
+        return 1
+
+
+assert s[Index()] == 'b'
+assert s[Index() :] == 'bc'
+
+for text in ['abc', 'éabc', 'abcdefghijklmnop', 'ééééééabcdefgh']:
+    iterator = iter((text + '!')[:-1])
+    assert next(iterator) == text[0]
+    assert list(iterator) == list(text[1:])

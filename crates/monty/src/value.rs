@@ -2355,7 +2355,10 @@ mod tests {
     use crate::{
         heap::HeapReader,
         run::{Program, SessionTables},
-        types::{LongInt, str::allocate_string_no_interning},
+        types::{
+            LongInt,
+            str::{allocate_string_no_interning, allocate_string_on_heap},
+        },
     };
 
     #[test]
@@ -2385,6 +2388,28 @@ mod tests {
                 value.drop_with(&mut heap);
             }
         }
+    }
+
+    #[test]
+    fn inline_string_dump_roundtrip_preserves_every_length() {
+        for length in 0..=15 {
+            let mut bytes = [0; 15];
+            bytes[..length].fill(b'a');
+            let value = Value::InlineString {
+                len: InlineLen::from_len(length),
+                bytes,
+            };
+            let dumped = minicbor_serde::to_vec(&value).unwrap();
+            let restored: Value = minicbor_serde::from_slice(&dumped).unwrap();
+            assert_eq!(restored.inline_str(), Some("a".repeat(length).as_str()));
+        }
+        assert_eq!(Value::None.inline_str(), None);
+    }
+
+    #[test]
+    #[should_panic(expected = "inline string length exceeds capacity")]
+    fn inline_length_rejects_values_above_capacity() {
+        InlineLen::from_len(16);
     }
 
     /// Creates a heap and directly allocates a LongInt with the given BigInt value.
@@ -2430,6 +2455,14 @@ mod tests {
         assert_eq!(name.into_string(&interns), "zzq");
         assert!(interns.get_string_id_by_name("zzq").is_none());
         value.drop_with(&mut heap);
+
+        for text in ["start", "a_name_longer_than_inline"] {
+            let value = allocate_string_on_heap(text, &heap);
+            let name = value.as_either_str(&heap).unwrap().resolve_interned(&interns);
+            assert_eq!(name.as_str(&interns), text);
+            assert_eq!(name.string_id(), (text == "start").then_some(start));
+            value.drop_with(&mut heap);
+        }
     }
 
     /// Tests that `as_index()` correctly handles a LongInt containing an i64-fitting value.

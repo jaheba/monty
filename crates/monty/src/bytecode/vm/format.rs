@@ -42,7 +42,9 @@ impl VM<'_> {
 
         let mut total_len = 0_usize;
         for part in parts.as_slice() {
-            let s = part.try_to_str_heap(this.heap, this.interns)?;
+            let s = part
+                .as_str_heap(this.heap, this.interns)
+                .expect("f-string parts are strings");
             total_len = total_len.saturating_add(s.len());
         }
 
@@ -50,7 +52,9 @@ impl VM<'_> {
         let mut result = String::with_capacity(total_len);
 
         for part in parts.as_slice() {
-            let s = part.try_to_str_heap(this.heap, this.interns)?;
+            let s = part
+                .as_str_heap(this.heap, this.interns)
+                .expect("f-string parts are strings");
             result.push_str(s);
         }
 
@@ -163,7 +167,9 @@ impl VM<'_> {
     /// Applies the f-string and `str.format()` conversion flags to a value.
     pub(crate) fn convert_value(&mut self, value: &Value, conversion: u8) -> Result<String, RunError> {
         match conversion {
-            0 | 1 if value.py_type(self) == Type::Str => Ok(value.try_to_str(self)?.to_owned()),
+            0 | 1 if value.py_type(self) == Type::Str => {
+                Ok(value.as_str(self).expect("string type checked above").to_owned())
+            }
             2 => str_value_into_string(value.py_repr(self)?, self),
             3 => {
                 let value = str_value_into_string(value.py_repr(self)?, self)?;
@@ -285,4 +291,39 @@ impl VM<'_> {
 fn str_value_into_string(value: Value, vm: &mut VM<'_>) -> Result<String, RunError> {
     defer_drop!(value, vm);
     Ok(value.try_to_str(vm)?.to_owned())
+}
+
+#[cfg(test)]
+mod tests {
+    use monty_types::{PrintWriter, ResourceTracker};
+
+    use super::*;
+    use crate::{
+        exception_private::ExcType,
+        heap::{Heap, HeapData, HeapReader},
+        run::{Program, SessionTables},
+        types::{Bytes, str::allocate_string_on_heap},
+    };
+
+    #[test]
+    fn string_conversion_releases_owned_values_on_success_and_error() {
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        let mut tables = SessionTables::default();
+        let program = Program::for_tests();
+
+        HeapReader::with(&mut heap, &mut (&program, &mut tables), |reader, (program, tables)| {
+            let vm = &mut VM::new(Vec::new(), tables, program, reader, PrintWriter::Disabled);
+            let text = allocate_string_on_heap("retained string", vm.heap);
+            defer_drop!(text, vm);
+            assert_eq!(
+                str_value_into_string(text.clone_with_heap(vm), vm).unwrap(),
+                "retained string"
+            );
+
+            let bytes = Value::Ref(vm.heap.allocate(HeapData::Bytes(Bytes::new(b"not text".to_vec()))));
+            defer_drop!(bytes, vm);
+            let error = str_value_into_string(bytes.clone_with_heap(vm), vm).unwrap_err();
+            assert!(matches!(error, RunError::Exc(exc) if exc.exc.exc_type() == ExcType::TypeError));
+        });
+    }
 }

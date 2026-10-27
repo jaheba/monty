@@ -42,3 +42,30 @@ random.seed('abc')
 assert random.random() == first
 assert str(Path('abc!'[:-1])) == 'abc'
 assert json.loads('{"abc": 1, "abc": 2}') == {'abc': 2}
+
+
+from functools import partial
+
+
+def collect(**kwargs):
+    return kwargs
+
+
+for count in [2, 12]:
+    bound = {'key' + str(i): i for i in range(count)}
+    call = partial(collect, **bound)
+    overrides = {'key0!'[:-1]: 42, 'extra!'[:-1]: 99}
+    result = call(**overrides)
+    assert result == {**bound, **overrides}
+    assert 'key0=0' in repr(call)
+    assert ('key' + str(count - 1) + '=' + str(count - 1)) in repr(call)
+
+
+class Text:
+    def __str__(self):
+        return 'hello!'[:-1]
+
+
+assert f'{Text()}' == 'hello'
+assert f'{Text()!s:>8}' == '   hello'
+assert '{!s:>8}!'[:-1].format(Text()) == '   hello'

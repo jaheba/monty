@@ -282,7 +282,7 @@ fn parse_field_names(field_names: &Value, vm: &mut VM<'_>) -> RunResult<Vec<Stri
             defer_drop!(item, vm);
             let as_str = item.py_str(vm)?;
             defer_drop!(as_str, vm);
-            names.push(as_str.try_to_str(vm)?.to_owned());
+            names.push(as_str.as_str(vm).expect("py_str returns str").to_owned());
         }
         Ok(names)
     }

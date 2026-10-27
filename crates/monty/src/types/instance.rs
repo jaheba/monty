@@ -407,7 +407,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Instance> {
             dataclasses::dataclass_repr_fmt(self_id, &field_names, f, vm, heap_ids)
         } else if let Some(s) = instance_call_str_dunder(self_id, "__repr__", vm)? {
             defer_drop!(s, vm);
-            Ok(f.write_str(s.try_to_str(vm)?)?)
+            Ok(f.write_str(s.as_str(vm).expect("__repr__ result is validated"))?)
         } else {
             self.py_default_repr_fmt(f, vm)
         }
@@ -1046,5 +1046,55 @@ impl<'h> PyDeepCopy<'h> for HeapRead<'h, BoundMethod> {
         let copied = deep_copy(&instance, memo, vm);
         instance.drop_with(vm);
         Ok(self.allocate_like(copied?, vm))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fmt;
+
+    use monty_types::{CompileOptions, PrintWriter, ResourceTracker};
+
+    use super::*;
+    use crate::{bytecode::FrameExit, heap::HeapReader, run::Executor};
+
+    struct FailingWriter;
+
+    impl Write for FailingWriter {
+        fn write_str(&mut self, _text: &str) -> fmt::Result {
+            Err(fmt::Error)
+        }
+    }
+
+    #[test]
+    fn user_repr_propagates_writer_errors() {
+        let mut executor = Executor::new(
+            "class Example:\n    def __repr__(self):\n        return 'result'\nExample()".to_owned(),
+            "test.py",
+            Vec::new(),
+            CompileOptions::default(),
+        )
+        .unwrap();
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        let globals = executor.empty_globals();
+
+        HeapReader::with(&mut heap, &mut executor, |reader, executor| {
+            let vm = &mut VM::new(
+                globals,
+                &mut executor.tables,
+                &executor.program,
+                reader,
+                PrintWriter::Disabled,
+            );
+            let FrameExit::Return(value) = vm.run_external().unwrap() else {
+                unreachable!("the program returns its instance")
+            };
+            defer_drop!(value, vm);
+            assert!(
+                value
+                    .py_repr_fmt(&mut FailingWriter, vm, &mut LazyHeapSet::default())
+                    .is_err()
+            );
+        });
     }
 }

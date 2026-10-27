@@ -284,12 +284,15 @@ pub(crate) fn repr_type_arg(
 
 #[cfg(test)]
 mod tests {
+    use monty_types::{PrintWriter, ResourceTracker};
     use serde::Serialize;
 
-    use super::GenericAlias;
+    use super::*;
     use crate::{
-        types::{BuiltinType, Type},
-        value::Value,
+        exception_private::RunError,
+        heap::{Heap, HeapReader},
+        run::{Program, SessionTables},
+        types::str::{allocate_string, allocate_string_on_heap},
     };
 
     #[test]
@@ -312,5 +315,32 @@ mod tests {
             assert_eq!(alias.origin, BuiltinType::try_from(origin).unwrap());
             assert_eq!(minicbor_serde::to_vec(&alias).unwrap(), bytes);
         }
+    }
+
+    #[test]
+    fn unknown_runtime_methods_release_their_arguments() {
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        let mut tables = SessionTables::default();
+        let program = Program::for_tests();
+
+        HeapReader::with(&mut heap, &mut (&program, &mut tables), |reader, (program, tables)| {
+            let vm = &mut VM::new(Vec::new(), tables, program, reader, PrintWriter::Disabled);
+            let alias = GenericAlias::subscript(BuiltinType::List, Value::None, vm);
+            defer_drop!(alias, vm);
+            let mut alias = vm.heap.read_as::<GenericAlias>(alias.ref_id().unwrap()).unwrap();
+
+            for name in ["missing_method", "missing_method_longer_than_inline"] {
+                let name_value = allocate_string(name, vm.heap);
+                defer_drop!(name_value, vm);
+                let name = name_value.as_either_str(vm.heap).unwrap();
+                let argument = allocate_string_on_heap("argument retained by the caller", vm.heap);
+                defer_drop!(argument, vm);
+                let args = ArgValues::One(argument.clone_with_heap(vm));
+                let error = alias.py_call_attr(vm, &name, args).err().unwrap();
+                assert!(matches!(error, RunError::Exc(exc) if exc.exc.exc_type() == ExcType::AttributeError));
+                #[cfg(feature = "ref-count-return")]
+                assert_eq!(vm.heap.heap().get_refcount(argument.ref_id().unwrap()), 1);
+            }
+        });
     }
 }

@@ -187,7 +187,7 @@ impl Bytes {
             let Some(v) = source_str else {
                 return Err(ExcType::type_error_encoding_without_string());
             };
-            let s = v.try_to_str(vm)?;
+            let s = v.as_str(vm).expect("string source checked above");
             let errors = errors.as_ref().map_or("strict", |e| e.as_str(vm));
             let encoding = encoding.as_str(vm);
             let codec = Codec::find(encoding).ok_or_else(|| ExcType::lookup_error_unknown_encoding(encoding))?;
@@ -2535,5 +2535,39 @@ pub(crate) fn bytes_contains(container: &[u8], item: &Value, vm: &VM<'_>) -> Run
     match byte.and_then(|b| u8::try_from(b).ok()) {
         Some(b) => Ok(container.contains(&b)),
         None => Err(ExcType::value_error("byte must be in range(0, 256)")),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use monty_types::{PrintWriter, ResourceTracker};
+
+    use super::*;
+    use crate::{
+        exception_private::RunError,
+        heap::HeapReader,
+        run::{Program, SessionTables},
+    };
+
+    #[test]
+    fn fromhex_rejects_bytes_without_retaining_the_argument() {
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        let mut tables = SessionTables::default();
+        let program = Program::for_tests();
+
+        HeapReader::with(&mut heap, &mut (&program, &mut tables), |reader, (program, tables)| {
+            let vm = &mut VM::new(Vec::new(), tables, program, reader, PrintWriter::Disabled);
+            let bytes = Value::Ref(vm.heap.allocate(HeapData::Bytes(Bytes::new(b"61".to_vec()))));
+            defer_drop!(bytes, vm);
+            let args = ArgValues::One(bytes.clone_with_heap(vm));
+            let error = bytes_fromhex(args, vm).unwrap_err();
+            assert!(matches!(error, RunError::Exc(exc) if exc.exc.exc_type() == ExcType::TypeError));
+            #[cfg(feature = "ref-count-return")]
+            {
+                use crate::heap::ContainsHeap as _;
+
+                assert_eq!(vm.heap.heap().get_refcount(bytes.ref_id().unwrap()), 1);
+            }
+        });
     }
 }

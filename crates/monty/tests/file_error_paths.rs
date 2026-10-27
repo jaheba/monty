@@ -771,3 +771,12 @@ fn json_load_dump_taken_while_waiting_for_the_host_still_parses() {
         assert_eq!(result, MontyObject::list([MontyObject::bool(true)]));
     }
 }
+
+#[test]
+fn invalid_utf8_byte_paths_fail_before_an_os_call() {
+    for code in [r"open(b'\xFF')", r"open((b'\xff' * 2)[:1])"] {
+        let mut runner = MontyRun::new(code.to_owned(), "test.py", vec![], CompileOptions::default()).unwrap();
+        let error = runner.run_no_limits(vec![]).unwrap_err();
+        assert_eq!(error.exc_type(), ExcType::UnicodeDecodeError);
+    }
+}
