@@ -96,3 +96,16 @@ for operation in [lambda: b'abc'.startswith(s), lambda: s * 1.5, lambda: 1.5 * s
         assert False
     except TypeError:
         pass
+
+# Exercise the full inline payload and the transition to heap storage.
+for text in ['abcdefghijklmno', 'ééééééabc']:
+    inline = (text + '!')[:-1]
+    assert len(inline.encode()) == 15
+    assert inline == text and hash(inline) == hash(text)
+    assert {inline: 1}[text] == 1
+    assert list(inline) == list(text)
+    assert inline[::-1] == text[::-1]
+    assert inline.upper().strip() == text.upper()
+    longer = inline + 'x'
+    assert len(longer.encode()) == 16
+    assert longer[:-1] == inline

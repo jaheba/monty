@@ -146,7 +146,7 @@ impl Str {
 /// holding a Rust borrow of its text during Python execution.
 pub(crate) enum PyStr<'h> {
     Interned(StringId),
-    Inline { len: InlineLen, bytes: [u8; 7] },
+    Inline { len: InlineLen, bytes: [u8; 15] },
     Heap(HeapObjectRead<'h, Str>),
 }
 
@@ -338,14 +338,14 @@ fn ctor_str_arg<'a>(arg: Option<&'a Value>, default: &'a str, vm: &'a VM<'_>) ->
 }
 
 /// Allocates a string, reusing reserved IDs for empty strings and ASCII characters.
-/// Other strings are heap-allocated without consulting the executor interner.
+/// Strings of 2–15 UTF-8 bytes are stored inline; longer strings use the heap.
 /// Owned buffers move into heap storage; borrowed text is copied only when needed.
 pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Value {
     let bytes = s.as_ref().as_bytes();
     match bytes.len() {
         0 => Value::InternString(StringId::EMPTY),
         1 => Value::InternString(StringId::from_ascii(bytes[0])),
-        2..=7 => inline_string(bytes),
+        2..=15 => inline_string(bytes),
         _ => allocate_string_no_interning(s, heap),
     }
 }
@@ -359,7 +359,7 @@ pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Valu
 /// Accepts `impl Into<Box<str>>` for the same reasons as [`allocate_string`].
 pub fn allocate_string_no_interning(s: impl Into<Box<str>>, heap: &Heap) -> Value {
     let text = s.into();
-    if (2..=7).contains(&text.len()) {
+    if (2..=15).contains(&text.len()) {
         return inline_string(text.as_bytes());
     }
     let heap_id = heap.allocate(HeapData::Str(Str::new(text)));
@@ -372,8 +372,8 @@ pub fn allocate_string_on_heap(s: impl Into<Box<str>>, heap: &Heap) -> Value {
 }
 
 fn inline_string(bytes: &[u8]) -> Value {
-    debug_assert!((2..=7).contains(&bytes.len()));
-    let mut inline = [0; 7];
+    debug_assert!((2..=15).contains(&bytes.len()));
+    let mut inline = [0; 15];
     inline[..bytes.len()].copy_from_slice(bytes);
     Value::InlineString {
         len: InlineLen::from_len(bytes.len()),
@@ -2036,7 +2036,7 @@ fn str_istitle(s: &str) -> bool {
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 enum StringIteratorSource {
     Intern(StringId),
-    Inline { len: InlineLen, bytes: [u8; 7] },
+    Inline { len: InlineLen, bytes: [u8; 15] },
     Heap(HeapId),
 }
 
@@ -2056,7 +2056,7 @@ impl StringIterator {
     }
 
     /// Allocates an iterator over a string stored inside its `Value`.
-    pub(crate) fn from_inline(len: InlineLen, bytes: [u8; 7], vm: &mut VM<'_>) -> Value {
+    pub(crate) fn from_inline(len: InlineLen, bytes: [u8; 15], vm: &mut VM<'_>) -> Value {
         let text = str::from_utf8(&bytes[..len.get()]).expect("inline string is valid UTF-8");
         Self::allocate(StringIteratorSource::Inline { len, bytes }, text.is_ascii(), vm)
     }

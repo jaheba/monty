@@ -1,6 +1,6 @@
 //! Per-run string cache for `json.loads()`.
 //!
-//! This cache deduplicates repeated strings of 8–64 UTF-8 bytes across
+//! This cache deduplicates repeated strings of 16–64 UTF-8 bytes across
 //! `json.loads()` calls within one execution. Shorter strings are interned or
 //! stored inline. Cache hits return a `clone_with_heap` of the existing `Value`.
 //!
@@ -31,9 +31,9 @@ const CAPACITY: usize = 16_384;
 
 /// Minimum string length eligible for caching.
 ///
-/// Strings up to 7 UTF-8 bytes are interned or stored inline, so caching them
+/// Strings up to 15 UTF-8 bytes are interned or stored inline, so caching them
 /// would be redundant.
-const MIN_LEN: usize = 8;
+const MIN_LEN: usize = 16;
 
 /// Maximum string length eligible for caching.
 ///
@@ -52,7 +52,7 @@ type CacheEntry = Option<(u64, Box<str>, Value)>;
 ///
 /// - Created as empty (`None`) when the VM starts.
 /// - Backing storage allocated on the first `get_or_allocate` call with an
-///   eligible string (8–64 bytes).
+///   eligible string (16–64 bytes).
 /// - Persists across multiple `json.loads()` calls within the same run.
 /// - Cleaned up when the VM is dropped via [`drop_all`](Self::drop_all).
 /// - Cached values keep themselves alive via the refcount on each cached
@@ -173,7 +173,7 @@ mod tests {
         let mut heap = Heap::new(16, ResourceTracker::default());
 
         HeapReader::with(&mut heap, &mut (), |reader, ()| {
-            let value = cache.get_or_allocate("1234567".to_owned(), reader);
+            let value = cache.get_or_allocate("123456789012345".to_owned(), reader);
             assert!(matches!(value, Value::InlineString { .. }));
         });
 
@@ -181,13 +181,13 @@ mod tests {
     }
 
     #[test]
-    fn eight_byte_strings_use_the_cache() {
+    fn sixteen_byte_strings_use_the_cache() {
         let mut cache = JsonStringCache::default();
         let mut heap = Heap::new(16, ResourceTracker::default());
 
         HeapReader::with(&mut heap, &mut (), |reader, ()| {
-            let first = cache.get_or_allocate("12345678".to_owned(), reader);
-            let second = cache.get_or_allocate("12345678".to_owned(), reader);
+            let first = cache.get_or_allocate("1234567890123456".to_owned(), reader);
+            let second = cache.get_or_allocate("1234567890123456".to_owned(), reader);
             assert!(matches!((&first, &second), (Value::Ref(a), Value::Ref(b)) if a == b));
             first.drop_with(reader);
             second.drop_with(reader);

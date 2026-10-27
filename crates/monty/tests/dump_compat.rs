@@ -224,6 +224,8 @@ fn fixture_dump_loads_and_resumes() {
         fs::create_dir_all(path.parent().unwrap()).unwrap();
         fs::write(&path, bytes).unwrap();
         eprintln!("updated {}", path.display());
+        let call = progress.into_function_call().expect("suspended on host_call");
+        call.resume(MontyObject::int(41), PrintWriter::Stdout).unwrap();
         return;
     }
     let bytes = fs::read(&path).unwrap_or_else(|err| {
@@ -279,7 +281,13 @@ fn version_14_fixture_loads_after_inline_string_bump() {
     let bytes = fs::read(fixture_path_for(14)).expect("main's version-14 fixture exists");
     let loaded = Dump::load(&bytes).expect("version-14 dumps remain supported");
     assert_eq!(loaded.script_name, "fixture.py");
-    assert!(matches!(loaded.state, Session::Suspended(_)));
+    let Session::Suspended(progress) = loaded.state else {
+        panic!("fixture was dumped suspended on a host call");
+    };
+    let call = progress.into_function_call().expect("suspended on host_call");
+    let progress = call.resume(MontyObject::int(41), PrintWriter::Stdout).unwrap();
+    let (_, value) = progress.into_complete().expect("host_call resumed to completion");
+    assert_eq!(value, MontyObject::int(42));
 }
 
 /// The class definitions in `dataclasses_v13.bin`, kept for reference: the

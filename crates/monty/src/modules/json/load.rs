@@ -268,10 +268,10 @@ fn parse_json_value_from_peek(
     }
 }
 
-/// Caches strings of 8–64 UTF-8 bytes and allocates other strings directly.
+/// Caches strings of 16–64 UTF-8 bytes and allocates other strings directly.
 fn allocate_cached_string(s: String, cache: &mut JsonStringCache, heap: &HeapReader<'_>) -> Value {
-    if s.len() <= 7 {
-        // Empty and single-char strings are interned; 2–7 byte strings are inline.
+    if s.len() <= 15 {
+        // Empty and single-char strings are interned; 2–15 byte strings are inline.
         allocate_string(s, heap.heap())
     } else {
         cache.get_or_allocate(s, heap)

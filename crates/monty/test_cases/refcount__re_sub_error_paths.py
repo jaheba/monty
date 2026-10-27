@@ -49,9 +49,9 @@ assert interned_result == 'hello'
 # Negative count path with a HEAP-allocated input: the short-circuit shares the
 # same heap object back to the caller, so input_str and result alias each other.
 # Concatenation defeats literal interning; the result exceeds inline capacity.
-input_str = 'hello' + ' world'
+input_str = 'hello' + ' world of strings'
 result = re.sub('pattern', 'repl', input_str, -1)
-assert result == 'hello world'
+assert result == 'hello world of strings'
 
 # All lists should still be alive and reachable.
 # repl_list: 1 (variable)

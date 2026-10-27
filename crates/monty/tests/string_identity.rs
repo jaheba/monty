@@ -14,7 +14,7 @@ fn eval(code: &str) -> MontyObject {
 #[test]
 fn separately_created_inline_strings_share_content_identity() {
     assert_eq!(
-        eval("a = bin(4)\nb = bin(4)\n(a is b, id(a) == id(b))"),
+        eval("a = 'abcdefghijklmno!'[:-1]\nb = 'abcdefghijklmno!'[:-1]\n(a is b, id(a) == id(b))"),
         MontyObject::tuple([MontyObject::bool(true), MontyObject::bool(true)]),
     );
 }
@@ -24,5 +24,13 @@ fn separately_created_heap_strings_keep_distinct_identity() {
     assert_eq!(
         eval("a = bin(4_000_000_000)\nb = bin(4_000_000_000)\n(a is b, id(a) != id(b))"),
         MontyObject::tuple([MontyObject::bool(false), MontyObject::bool(true)]),
+    );
+}
+
+#[test]
+fn inline_identity_preserves_the_last_byte_and_length() {
+    assert_eq!(
+        eval("a = ('a' * 14) + '\\0'\nb = ('a' * 14) + '\\x01'\nc = 'a' * 14\n(id(a) != id(b), id(a) != id(c))"),
+        MontyObject::tuple([MontyObject::bool(true), MontyObject::bool(true)]),
     );
 }

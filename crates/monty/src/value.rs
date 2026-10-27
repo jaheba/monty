@@ -39,7 +39,7 @@ use crate::{
 
 /// Primary value type representing Python objects at runtime.
 ///
-/// Small immediate values and strings up to 7 UTF-8 bytes are stored inline;
+/// Small immediate values and strings up to 15 UTF-8 bytes are stored inline;
 /// other heap values are stored in the arena and referenced via `Ref(HeapId)`.
 ///
 /// NOTE: `Clone` is intentionally NOT derived. Use `clone_with_heap()`. Direct cloning via `.clone()` would
@@ -69,7 +69,7 @@ pub(crate) enum Value {
     InternString(StringId),
     /// A short UTF-8 string stored directly in the value slot.
     #[serde(rename = "S")]
-    InlineString { len: InlineLen, bytes: [u8; 7] },
+    InlineString { len: InlineLen, bytes: [u8; 15] },
     /// An interned bytes literal. The BytesId references the bytes in the Interns table.
     /// To get the actual bytes content, use `interns.get_bytes(bytes_id)`.
     #[serde(rename = "R")]
@@ -130,6 +130,22 @@ pub(crate) enum InlineLen {
     L6,
     #[serde(rename = "7")]
     L7,
+    #[serde(rename = "8")]
+    L8,
+    #[serde(rename = "9")]
+    L9,
+    #[serde(rename = "10")]
+    L10,
+    #[serde(rename = "11")]
+    L11,
+    #[serde(rename = "12")]
+    L12,
+    #[serde(rename = "13")]
+    L13,
+    #[serde(rename = "14")]
+    L14,
+    #[serde(rename = "15")]
+    L15,
 }
 
 impl InlineLen {
@@ -143,6 +159,14 @@ impl InlineLen {
             5 => Self::L5,
             6 => Self::L6,
             7 => Self::L7,
+            8 => Self::L8,
+            9 => Self::L9,
+            10 => Self::L10,
+            11 => Self::L11,
+            12 => Self::L12,
+            13 => Self::L13,
+            14 => Self::L14,
+            15 => Self::L15,
             _ => unreachable!("inline string length exceeds capacity"),
         }
     }
@@ -157,6 +181,14 @@ impl InlineLen {
             Self::L5 => 5,
             Self::L6 => 6,
             Self::L7 => 7,
+            Self::L8 => 8,
+            Self::L9 => 9,
+            Self::L10 => 10,
+            Self::L11 => 11,
+            Self::L12 => 12,
+            Self::L13 => 13,
+            Self::L14 => 14,
+            Self::L15 => 15,
         }
     }
 }
@@ -1861,14 +1893,10 @@ impl Value {
     pub fn as_either_str(&self, heap: &Heap) -> Option<EitherStr> {
         match self {
             Self::InternString(id) => Some(EitherStr::Interned(*id)),
-            Self::InlineString { len, bytes } => {
-                let mut inline = [0; 15];
-                inline[..len.get()].copy_from_slice(&bytes[..len.get()]);
-                Some(EitherStr::Inline {
-                    len: *len,
-                    bytes: inline,
-                })
-            }
+            Self::InlineString { len, bytes } => Some(EitherStr::Inline {
+                len: *len,
+                bytes: *bytes,
+            }),
             Self::Ref(heap_id) => match heap.get(*heap_id) {
                 HeapData::Str(s) => Some(EitherStr::Heap(s.as_str().to_owned())),
                 _ => None,
@@ -2336,9 +2364,9 @@ mod tests {
     }
 
     #[test]
-    fn inline_string_capacity_is_seven_utf8_bytes() {
+    fn inline_string_capacity_is_fifteen_utf8_bytes() {
         let mut heap = Heap::new(16, ResourceTracker::default());
-        for text in ["1234567", "ééabc"] {
+        for text in ["123456789012345", "ééééééabc"] {
             for value in [
                 allocate_string(text.to_owned(), &heap),
                 allocate_string_no_interning(text.to_owned(), &heap),
@@ -2348,7 +2376,7 @@ mod tests {
                 value.drop_with(&mut heap);
             }
         }
-        for text in ["12345678", "ééabcd"] {
+        for text in ["1234567890123456", "ééééééabcd"] {
             for value in [
                 allocate_string(text.to_owned(), &heap),
                 allocate_string_no_interning(text.to_owned(), &heap),
@@ -2373,11 +2401,11 @@ mod tests {
     #[test]
     fn as_either_str_keeps_inline_text_inline() {
         let heap = Heap::new(16, ResourceTracker::default());
-        let value = allocate_string("short".to_owned(), &heap);
+        let value = allocate_string("abcdefghijklmno".to_owned(), &heap);
 
         let name = value.as_either_str(&heap).unwrap();
         assert!(matches!(name, EitherStr::Inline { .. }));
-        assert_eq!(name.as_str(&Interns::default()), "short");
+        assert_eq!(name.as_str(&Interns::default()), "abcdefghijklmno");
     }
 
     #[test]
