@@ -925,7 +925,9 @@ fn small_memory_limit_leaves_normal_work_alone() {
 fn exceeding_the_soft_memory_limit_preserves_the_worker() {
     let mut child = ChildProc::spawn();
     child.create_repl_with(configure_with_max_memory(8 * 1024 * 1024));
-    let (_, event) = child.feed("[str(i) + 'abcdefgh' for i in range(131_072)]");
+    // Strings exceed inline capacity so execution reaches the soft limit.
+    // Returning only the length avoids testing the separate export hard limit.
+    let (_, event) = child.feed("len([str(i) + 'abcdefghijklmnop' for i in range(131_072)])");
     assert_eq!(expect_error(event).exc_type, "MemoryError");
     assert_eq!(child.feed_complete("1 + 1"), MontyObject::int(2));
     child.shutdown();
