@@ -174,7 +174,7 @@ mod tests {
 
         HeapReader::with(&mut heap, &mut (), |reader, ()| {
             let value = cache.get_or_allocate("123456789012345".to_owned(), reader);
-            assert!(matches!(value, Value::InlineString { .. }));
+            assert!(matches!(value, Value::InlineString(_)));
         });
 
         assert!(cache.inner.is_none());

@@ -6,6 +6,7 @@ use smallvec::smallvec;
 
 use super::{
     Bytes, CmpOrder, PyTrait,
+    inline_str::InlineStr,
     unicode_type::{casefold, is_space, lowercase, type_record, uppercase},
     unicode_type_data::TypeRecord,
 };
@@ -31,7 +32,7 @@ use crate::{
         py_trait::PyObjectIdentity,
         slice::{optional_sequence_bound, slice_collect_iterator},
     },
-    value::{EitherStr, InlineLen, Value, eq_str},
+    value::{EitherStr, Value, eq_str},
 };
 
 /// Python string value stored on the heap.
@@ -146,16 +147,16 @@ impl Str {
 /// holding a Rust borrow of its text during Python execution.
 pub(crate) enum PyStr<'h> {
     Interned(StringId),
-    Inline { len: InlineLen, bytes: [u8; 15] },
+    Inline(InlineStr),
     Heap(HeapObjectRead<'h, Str>),
 }
 
 /// Owns inline text while string operations may re-enter Python through the VM.
-struct OwnedStrView(String);
+struct OwnedStrView(InlineStr);
 
 impl<'a> HeapView<'a, str> for OwnedStrView {
     fn get<'r>(&'r self, _reader: &'r HeapReader<'a>) -> &'r str {
-        &self.0
+        self.0.as_str()
     }
 }
 
@@ -164,10 +165,7 @@ impl<'h> PyStr<'h> {
     pub(crate) fn from_value(value: &Value, vm: &VM<'h>) -> Option<Self> {
         match value {
             Value::InternString(id) => Some(Self::Interned(*id)),
-            Value::InlineString { len, bytes } => Some(Self::Inline {
-                len: *len,
-                bytes: *bytes,
-            }),
+            Value::InlineString(text) => Some(Self::Inline(*text)),
             Value::Ref(id) => vm.heap.read_as(*id).map(Self::Heap),
             _ => None,
         }
@@ -177,7 +175,7 @@ impl<'h> PyStr<'h> {
     pub(crate) fn as_str<'a>(&'a self, vm: &'a VM<'h>) -> &'a str {
         match self {
             Self::Interned(id) => vm.interns.get_str(*id),
-            Self::Inline { len, bytes } => str::from_utf8(&bytes[..len.get()]).expect("inline string is valid UTF-8"),
+            Self::Inline(text) => text.as_str(),
             Self::Heap(value) => value.get(vm.heap).as_str(),
         }
     }
@@ -187,10 +185,7 @@ impl PyObjectIdentity for PyStr<'_> {
     fn py_identity(&self) -> Identity {
         match self {
             Self::Interned(id) => Identity::InternString(id.index()),
-            Self::Inline { len, bytes } => Identity::InlineString {
-                len: u8::try_from(len.get()).expect("inline string length fits in u8"),
-                bytes: *bytes,
-            },
+            Self::Inline(text) => Identity::InlineString(*text),
             Self::Heap(value) => value.py_identity(),
         }
     }
@@ -204,7 +199,7 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
         match self {
             Self::Interned(id) => Value::InternString(*id).py_eq_impl(other, vm),
-            Self::Inline { .. } => Ok(eq_str(self.as_str(vm), other, vm)),
+            Self::Inline(_) => Ok(eq_str(self.as_str(vm), other, vm)),
             Self::Heap(value) => value.py_eq_impl(other, vm),
         }
     }
@@ -212,10 +207,7 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
     fn py_str(&self, vm: &mut VM<'h>) -> RunResult<Value> {
         Ok(match self {
             Self::Interned(id) => Value::InternString(*id),
-            Self::Inline { len, bytes } => Value::InlineString {
-                len: *len,
-                bytes: *bytes,
-            },
+            Self::Inline(text) => Value::InlineString(*text),
             Self::Heap(value) => value.clone_value(vm.heap),
         })
     }
@@ -223,7 +215,7 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
     fn py_len(&self, vm: &VM<'h>) -> Option<usize> {
         match self {
             Self::Interned(id) => Some(vm.interns.get_str(*id).chars().count()),
-            Self::Inline { .. } => Some(self.as_str(vm).chars().count()),
+            Self::Inline(_) => Some(self.as_str(vm).chars().count()),
             Self::Heap(value) => value.py_len(vm),
         }
     }
@@ -258,10 +250,9 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
                 let text = vm.interns.get_str(*id);
                 str_getitem(&*vm.heap.protect(text), text.is_ascii(), key, vm)
             }
-            Self::Inline { .. } => {
-                let text = self.as_str(vm);
-                let ascii = text.is_ascii();
-                let text = OwnedStrView(text.to_owned());
+            Self::Inline(text) => {
+                let ascii = text.as_str().is_ascii();
+                let text = OwnedStrView(*text);
                 str_getitem(&text, ascii, key, vm)
             }
             Self::Heap(value) => value.py_getitem(key, vm),
@@ -283,12 +274,12 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
                 let text = vm.heap.protect(vm.interns.get_str(*id));
                 call_str_method_impl(&*text, method, args, vm).map(CallResult::Value)
             }
-            Self::Inline { .. } => {
+            Self::Inline(text) => {
                 let Some(method) = attr.static_string(vm.interns) else {
                     args.drop_with(vm);
                     return Err(ExcType::attribute_error(Type::Str, attr.as_str(vm.interns)));
                 };
-                let text = OwnedStrView(self.as_str(vm).to_owned());
+                let text = OwnedStrView(*text);
                 call_str_method_impl(&text, method, args, vm).map(CallResult::Value)
             }
             Self::Heap(value) => value.py_call_attr(vm, attr, args),
@@ -345,12 +336,12 @@ pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Valu
     match bytes.len() {
         0 => Value::InternString(StringId::EMPTY),
         1 => Value::InternString(StringId::from_ascii(bytes[0])),
-        2..=15 => inline_string(bytes),
+        2..=15 => Value::InlineString(InlineStr::new(s.as_ref()).expect("length checked above")),
         _ => allocate_string_no_interning(s, heap),
     }
 }
 
-/// Allocates a string directly on the heap, skipping the intern check.
+/// Stores 2–15 byte strings inline and longer strings on the heap, skipping interning.
 ///
 /// Use this only when the caller can guarantee the string is longer than one
 /// byte (e.g. always contains a fixed prefix like `"0x"`, `"0o"`, or a
@@ -360,7 +351,7 @@ pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Valu
 pub fn allocate_string_no_interning(s: impl Into<Box<str>>, heap: &Heap) -> Value {
     let text = s.into();
     if (2..=15).contains(&text.len()) {
-        return inline_string(text.as_bytes());
+        return Value::InlineString(InlineStr::new(&text).expect("length checked above"));
     }
     let heap_id = heap.allocate(HeapData::Str(Str::new(text)));
     Value::Ref(heap_id)
@@ -369,16 +360,6 @@ pub fn allocate_string_no_interning(s: impl Into<Box<str>>, heap: &Heap) -> Valu
 /// Allocates string content without looking it up in an executor interner.
 pub fn allocate_string_on_heap(s: impl Into<Box<str>>, heap: &Heap) -> Value {
     Value::Ref(heap.allocate(HeapData::Str(Str::new(s.into()))))
-}
-
-fn inline_string(bytes: &[u8]) -> Value {
-    debug_assert!((2..=15).contains(&bytes.len()));
-    let mut inline = [0; 15];
-    inline[..bytes.len()].copy_from_slice(bytes);
-    Value::InlineString {
-        len: InlineLen::from_len(bytes.len()),
-        bytes: inline,
-    }
 }
 
 /// Converts a native integer count and preflights the repeated string allocation.
@@ -2036,7 +2017,7 @@ fn str_istitle(s: &str) -> bool {
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 enum StringIteratorSource {
     Intern(StringId),
-    Inline { len: InlineLen, bytes: [u8; 15] },
+    Inline(InlineStr),
     Heap(HeapId),
 }
 
@@ -2056,9 +2037,8 @@ impl StringIterator {
     }
 
     /// Allocates an iterator over a string stored inside its `Value`.
-    pub(crate) fn from_inline(len: InlineLen, bytes: [u8; 15], vm: &mut VM<'_>) -> Value {
-        let text = str::from_utf8(&bytes[..len.get()]).expect("inline string is valid UTF-8");
-        Self::allocate(StringIteratorSource::Inline { len, bytes }, text.is_ascii(), vm)
+    pub(crate) fn from_inline(text: InlineStr, vm: &mut VM<'_>) -> Value {
+        Self::allocate(StringIteratorSource::Inline(text), text.as_str().is_ascii(), vm)
     }
 
     /// Allocates an iterator retaining a heap string.
@@ -2079,7 +2059,7 @@ impl StringIterator {
     pub(crate) fn source_id(&self) -> Option<HeapId> {
         match self.source {
             StringIteratorSource::Intern(_) => None,
-            StringIteratorSource::Inline { .. } => None,
+            StringIteratorSource::Inline(_) => None,
             StringIteratorSource::Heap(id) => Some(id),
         }
     }
@@ -2093,7 +2073,7 @@ impl StringIterator {
     fn as_str<'a>(&'a self, vm: &'a VM<'_>) -> &'a str {
         let string = match &self.source {
             StringIteratorSource::Intern(id) => vm.interns.get_str(*id),
-            StringIteratorSource::Inline { len, bytes } => str::from_utf8(&bytes[..len.get()]).unwrap(),
+            StringIteratorSource::Inline(text) => text.as_str(),
             StringIteratorSource::Heap(id) => match vm.heap.get(*id) {
                 HeapData::Str(string) => string.as_str(),
                 _ => unreachable!("string iterator must retain a string"),
@@ -2107,7 +2087,7 @@ impl StringIterator {
         let source_id = match source {
             StringIteratorSource::Heap(id) => Some(id),
             StringIteratorSource::Intern(_) => None,
-            StringIteratorSource::Inline { .. } => None,
+            StringIteratorSource::Inline(_) => None,
         };
         let id = vm.heap.allocate(HeapData::StringIterator(Self {
             source,

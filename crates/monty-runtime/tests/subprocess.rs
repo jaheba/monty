@@ -1254,6 +1254,12 @@ fn large_allocations_are_rejected_before_the_hard_limit() {
             "import csv\nclass S:\n    def write(self, t):\n        pass\nrow = {i: None for i in range(10_000)}\ncsv.DictWriter(S(), []).writerow(row)",
             1_079_568,
         ),
+        // A key can return an existing repr; copying repeated reprs into the error
+        // message must still respect the budget.
+        (
+            "import csv\nclass S:\n    def write(self, t):\n        pass\ntext = 'x' * 400_000\nclass Key:\n    def __repr__(self):\n        return text\nrow = {Key(): None, Key(): None}\ncsv.DictWriter(S(), []).writerow(row)",
+            1_254_593,
+        ),
         // `decimal` preflights results whose size scales with an exponent or the
         // precision: an integer conversion, `f` formatting, and division, `sqrt`,
         // `quantize` and the largest finite value (`next_minus` from infinity) under

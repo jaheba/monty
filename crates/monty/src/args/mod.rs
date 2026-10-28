@@ -761,34 +761,3 @@ impl ArgExprs {
         Ok(())
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use monty_types::ResourceTracker;
-
-    use super::*;
-    use crate::types::str::allocate_string;
-
-    #[test]
-    fn first_keyword_preserves_runtime_string_names() {
-        let mut heap = Heap::new(16, ResourceTracker::default());
-        let interns = Interns::default();
-
-        for name in ["short", "keyword_longer_than_inline_storage"] {
-            let key = allocate_string(name, &heap);
-            let kwargs = KwargsValues::Pairs(vec![(key, Value::None)]);
-            let result = kwargs.first_key(&heap, &interns);
-            kwargs.drop_with(&mut heap);
-            assert_eq!(result.unwrap().as_deref(), Some(name));
-        }
-
-        let kwargs = KwargsValues::Pairs(vec![(Value::Int(42), Value::None)]);
-        let result = kwargs.first_key(&heap, &interns);
-        kwargs.drop_with(&mut heap);
-        assert!(result.is_err());
-        assert_eq!(
-            KwargsValues::Pairs(Vec::new()).first_key(&heap, &interns).unwrap(),
-            None
-        );
-    }
-}

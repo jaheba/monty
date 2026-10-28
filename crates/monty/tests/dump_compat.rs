@@ -552,7 +552,7 @@ fn persisted_key_hashes_are_stable() {
 }
 
 /// The fixture for the current `DUMP_VERSION`; the name carries the version so
-/// a bump leaves the old file behind to delete rather than silently reuse.
+/// a bump creates a new fixture while older supported fixtures remain for compatibility tests.
 fn fixture_path() -> PathBuf {
     fixture_path_for(DUMP_VERSION)
 }

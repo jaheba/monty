@@ -89,7 +89,7 @@ impl VM<'_> {
                     let spec = decode_format_spec(*encoded);
                     this.format_parsed_value(value, conversion, &spec)?
                 } else {
-                    let spec = str_value_into_string(spec_value.py_str(this)?, this)?;
+                    let spec = str_value_into_string(spec_value.py_str(this)?, this);
                     this.format_runtime_value(value, conversion, Some(&spec))?
                 }
             }
@@ -170,9 +170,9 @@ impl VM<'_> {
             0 | 1 if value.py_type(self) == Type::Str => {
                 Ok(value.as_str(self).expect("string type checked above").to_owned())
             }
-            2 => str_value_into_string(value.py_repr(self)?, self),
+            2 => Ok(str_value_into_string(value.py_repr(self)?, self)),
             3 => {
-                let value = str_value_into_string(value.py_repr(self)?, self)?;
+                let value = str_value_into_string(value.py_repr(self)?, self);
                 let mut escaped = StringBuilder::with_capacity(value.len(), &self.heap.tracker)?;
                 for (index, character) in value.chars().enumerate() {
                     self.heap.tracker.check_time_every(index)?;
@@ -195,7 +195,7 @@ impl VM<'_> {
                 escaped.finish_raw()
             }
             // No conversion and `!s` both use `str()`.
-            _ => str_value_into_string(value.py_str(self)?, self),
+            _ => Ok(str_value_into_string(value.py_str(self)?, self)),
         }
     }
 
@@ -288,42 +288,7 @@ impl VM<'_> {
 /// `String`, dropping the value's heap reference on every path. Used by the
 /// f-string conversion arms, which need the text in an owned buffer to feed
 /// the mini-language formatter.
-fn str_value_into_string(value: Value, vm: &mut VM<'_>) -> Result<String, RunError> {
+fn str_value_into_string(value: Value, vm: &mut VM<'_>) -> String {
     defer_drop!(value, vm);
-    Ok(value.try_to_str(vm)?.to_owned())
-}
-
-#[cfg(test)]
-mod tests {
-    use monty_types::{PrintWriter, ResourceTracker};
-
-    use super::*;
-    use crate::{
-        exception_private::ExcType,
-        heap::{Heap, HeapData, HeapReader},
-        run::{Program, SessionTables},
-        types::{Bytes, str::allocate_string_on_heap},
-    };
-
-    #[test]
-    fn string_conversion_releases_owned_values_on_success_and_error() {
-        let mut heap = Heap::new(16, ResourceTracker::default());
-        let mut tables = SessionTables::default();
-        let program = Program::for_tests();
-
-        HeapReader::with(&mut heap, &mut (&program, &mut tables), |reader, (program, tables)| {
-            let vm = &mut VM::new(Vec::new(), tables, program, reader, PrintWriter::Disabled);
-            let text = allocate_string_on_heap("retained string", vm.heap);
-            defer_drop!(text, vm);
-            assert_eq!(
-                str_value_into_string(text.clone_with_heap(vm), vm).unwrap(),
-                "retained string"
-            );
-
-            let bytes = Value::Ref(vm.heap.allocate(HeapData::Bytes(Bytes::new(b"not text".to_vec()))));
-            defer_drop!(bytes, vm);
-            let error = str_value_into_string(bytes.clone_with_heap(vm), vm).unwrap_err();
-            assert!(matches!(error, RunError::Exc(exc) if exc.exc.exc_type() == ExcType::TypeError));
-        });
-    }
+    value.as_str(vm).expect("py_str and py_repr return str").to_owned()
 }

@@ -1,3 +1,4 @@
+import math
 import random
 import re
 
@@ -78,6 +79,8 @@ for operation in [
     lambda: f'{BadString()!s}',
     lambda: f'{BadString()!r}',
     lambda: f'{BadString()!a}',
+    lambda: '{!s}'.format(BadString()),
+    lambda: '{!r}'.format(BadString()),
 ]:
     raises(TypeError, operation)
 
@@ -105,3 +108,26 @@ class Sink:
 
 for invalid in [None, 42, [], {}]:
     raises(AttributeError, lambda: csv.DictWriter(Sink(), ['column'], extrasaction=invalid))
+
+
+from pathlib import Path
+
+for name in ['short!'[:-1], 'keyword_longer_than_inline_storage!'[:-1]]:
+    try:
+        Path.cwd(**{name: 1})
+    except TypeError as error:
+        assert str(error) == f"Path.cwd() got an unexpected keyword argument '{name}'"
+    else:
+        assert False, 'expected an unexpected-keyword error'
+
+for receiver in [math, list[int]]:
+    for name in ['missing_method!'[:-1], 'missing_method_longer_than_inline!'[:-1]]:
+        raises(AttributeError, lambda: getattr(receiver, name))
+
+try:
+    Path.cwd(**{42: 1})
+except TypeError as error:
+    assert str(error) == 'keywords must be strings'
+else:
+    assert False, 'expected a non-string-key error'
+assert Path.cwd(**{}) == Path.cwd()

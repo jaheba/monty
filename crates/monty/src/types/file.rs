@@ -1094,7 +1094,7 @@ pub(crate) fn apply_file_next(
 }
 
 /// Installs a host `ReadText` / `ReadBytes` result as `file`'s buffer and
-/// builds the position cache. Interned results are promoted to heap entries
+/// builds the position cache. Interned and inline results are promoted to heap entries
 /// and universal-newline text is translated here, once. A buffer already
 /// present (a snapshot/restore race) is kept and the new content dropped.
 fn install_buffer<'h>(file: &HeapReadMut<'h, OpenFile>, result: Value, vm: &mut VM<'h>) -> RunResult<()> {
@@ -1106,17 +1106,8 @@ fn install_buffer<'h>(file: &HeapReadMut<'h, OpenFile>, result: Value, vm: &mut 
     };
 
     let replacement = match &*result {
-        Value::InternString(string_id) => {
-            let text = vm.interns.get_str(*string_id);
-            let text = if translate {
-                translate_newlines(text)
-            } else {
-                text.to_owned()
-            };
-            Some(allocate_string_on_heap(text, vm.heap))
-        }
-        Value::InlineString { .. } => {
-            let text = result.inline_str().unwrap();
+        Value::InternString(_) | Value::InlineString(_) => {
+            let text = result.as_str(vm).expect("string result checked above");
             let text = if translate {
                 translate_newlines(text)
             } else {

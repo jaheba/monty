@@ -137,7 +137,7 @@ impl<'h> HeapRead<'h, Module> {
 
         let attr_str = match attr {
             EitherStr::Interned(id) => vm.interns.get_str(*id),
-            EitherStr::Inline { .. } | EitherStr::Heap(_) => {
+            EitherStr::Inline(_) | EitherStr::Heap(_) => {
                 return Err(ExcType::attribute_error_module(
                     self.get(vm.heap).name_str(vm.interns),
                     attr.as_str(vm.interns),
@@ -163,52 +163,5 @@ impl<'h> HeapRead<'h, Module> {
 impl HeapItem for Module {
     fn py_dec_ref_ids(&mut self, stack: &mut Vec<HeapId>) {
         self.attrs.py_dec_ref_ids(stack);
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use monty_types::{PrintWriter, ResourceTracker};
-
-    use super::*;
-    #[cfg(feature = "ref-count-return")]
-    use crate::heap::ContainsHeap as _;
-    use crate::{
-        exception_private::RunError,
-        heap::{Heap, HeapReader},
-        run::{Program, SessionTables},
-        types::str::{allocate_string, allocate_string_on_heap},
-    };
-
-    #[test]
-    fn unknown_runtime_methods_release_their_arguments() {
-        let mut heap = Heap::new(16, ResourceTracker::default());
-        let mut tables = SessionTables::default();
-        let program = Program::for_tests();
-
-        HeapReader::with(&mut heap, &mut (&program, &mut tables), |reader, (program, tables)| {
-            let vm = &mut VM::new(Vec::new(), tables, program, reader, PrintWriter::Disabled);
-            let module = vm
-                .heap
-                .allocate_as(Module::host("example".to_owned(), MontyUuid::from_u128(1), Dict::new()))
-                .into_value();
-            defer_drop!(module, vm);
-            let module = vm.heap.read_as::<Module>(module.ref_id().unwrap()).unwrap();
-
-            for name in ["missing_method", "missing_method_longer_than_inline"] {
-                let name_value = allocate_string(name, vm.heap);
-                defer_drop!(name_value, vm);
-                let name = name_value.as_either_str(vm.heap).unwrap();
-                let argument = allocate_string_on_heap("argument retained by the caller", vm.heap);
-                defer_drop!(argument, vm);
-                let args = ArgValues::One(argument.clone_with_heap(vm));
-                let error = module.py_call_attr(vm, &name, args).err().unwrap();
-                assert!(matches!(error, RunError::Exc(exc) if exc.exc.exc_type() == ExcType::AttributeError));
-                #[cfg(feature = "ref-count-return")]
-                {
-                    assert_eq!(vm.heap.heap().get_refcount(argument.ref_id().unwrap()), 1);
-                }
-            }
-        });
     }
 }

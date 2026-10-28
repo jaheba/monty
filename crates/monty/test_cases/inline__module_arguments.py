@@ -69,3 +69,12 @@ class Text:
 assert f'{Text()}' == 'hello'
 assert f'{Text()!s:>8}' == '   hello'
 assert '{!s:>8}!'[:-1].format(Text()) == '   hello'
+
+
+class ReprText:
+    def __repr__(self):
+        return 'repr result longer than inline!'[:-1]
+
+
+assert f'{ReprText()!r}' == 'repr result longer than inline'
+assert '{!r}'.format(ReprText()) == 'repr result longer than inline'
