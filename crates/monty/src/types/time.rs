@@ -33,7 +33,7 @@ use crate::{
         CmpOrder, LazyHeapSet, PyTrait, TimeZone, Type,
         date::{self, StrftimeArgs},
         datetime::{allocate_tzinfo_ref, tzinfo_from_value},
-        str::{StringRepr, allocate_string, allocate_string_no_interning},
+        str::{StringRepr, allocate_string},
         timezone,
     },
     value::{EitherStr, Value},
@@ -553,7 +553,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Time> {
     fn py_str(&self, vm: &mut VM<'h>) -> RunResult<Value> {
         let time = self.get(vm.heap);
         let s = format_isoformat(time, attached_offset(time, vm.heap), TimeSpec::Auto);
-        Ok(allocate_string_no_interning(s, vm.heap))
+        Ok(allocate_string(s, vm.heap))
     }
 
     fn py_call_attr(&mut self, vm: &mut VM<'h>, attr: &EitherStr, args: ArgValues) -> RunResult<CallResult> {
@@ -567,7 +567,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Time> {
                 };
                 let time = self.get(vm.heap);
                 let s = format_isoformat(time, attached_offset(time, vm.heap), spec);
-                Ok(CallResult::Value(allocate_string_no_interning(s, vm.heap)))
+                Ok(CallResult::Value(allocate_string(s, vm.heap)))
             }
             Some(StaticStrings::Strftime) => {
                 let StrftimeArgs { format } = StrftimeArgs::from_args(args, vm)?;

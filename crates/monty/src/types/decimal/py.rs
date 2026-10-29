@@ -34,7 +34,7 @@ use crate::{
     py_value::PyValue,
     types::{
         BuiltinType, CmpOrder, Complex, LazyHeapSet, LongInt, NamedTuple, PyTrait, Type, allocate_string,
-        str::allocate_string_no_interning, tuple::allocate_tuple,
+        tuple::allocate_tuple,
     },
     value::{EitherStr, Value},
 };
@@ -961,7 +961,7 @@ impl<'h> HeapObjectRead<'h, Decimal> {
         let id = self.id();
         let ctx_id = current_context(vm);
         let text = with_ctx(vm, ctx_id, |ctx, vm| decimal_at(vm, id).format_spec(spec, ctx))?;
-        Ok(allocate_string_no_interning(text, vm.heap))
+        Ok(allocate_string(text, vm.heap))
     }
 }
 

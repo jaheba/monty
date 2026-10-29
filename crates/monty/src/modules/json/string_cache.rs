@@ -20,7 +20,7 @@ use ahash::RandomState;
 
 use crate::{
     heap::{ContainsHeap, HeapReader},
-    types::str::{allocate_string, allocate_string_no_interning},
+    types::str::allocate_string,
     value::Value,
 };
 
@@ -144,16 +144,14 @@ impl CacheInner {
             }
         }
         // All 5 probe slots occupied — allocate without caching.
-        // Length is in [MIN_LEN..=MAX_LEN] here so interning would never apply.
-        allocate_string_no_interning(s, heap.heap())
+        allocate_string(s, heap.heap())
     }
 
     /// Allocates `s` on the heap, stores a clone in `entries[index]`, and
     /// returns the original `Value`.
     fn insert_at(&mut self, index: usize, hash: u64, s: String, heap: &HeapReader<'_>) -> Value {
         let key = s.clone().into_boxed_str();
-        // Length is in [MIN_LEN..=MAX_LEN] here so interning would never apply.
-        let value = allocate_string_no_interning(s, heap.heap());
+        let value = allocate_string(s, heap.heap());
         let cached = value.clone_with_heap(heap);
         self.entries[index] = Some((hash, key, cached));
         value

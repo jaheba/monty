@@ -60,7 +60,7 @@ impl PartialEq for Str {
 impl Str {
     /// Creates a new Str from anything convertible into a `Box<str>`.
     ///
-    /// Private — use [`allocate_string`] or [`allocate_string_no_interning`] instead.
+    /// Use [`allocate_string`] to construct Python values.
     #[must_use]
     fn new(s: impl Into<Box<str>>) -> Self {
         Self(s.into(), Cell::new(None), Cell::new(None))
@@ -108,7 +108,7 @@ impl Str {
         defer_drop!(errors, vm);
         if encoding.is_none() && errors.is_none() {
             return match object {
-                None => Ok(Value::InternString(StringId::EMPTY)),
+                None => Ok(Value::from_string_id(StringId::EMPTY)),
                 Some(v) => v.py_str(vm),
             };
         }
@@ -118,7 +118,7 @@ impl Str {
         str_ctor_arg_check(errors.as_ref(), "errors", vm)?;
         let Some(object) = object else {
             // A missing object wins over the decoding args: `str(encoding='utf-8')` is ''.
-            return Ok(Value::InternString(StringId::EMPTY));
+            return Ok(Value::from_string_id(StringId::EMPTY));
         };
         if object.is_str(vm.heap) {
             return Err(ExcType::type_error_decoding_str_not_supported());
@@ -180,7 +180,7 @@ impl PyObjectIdentity for PyStr<'_> {
     fn py_identity(&self) -> Identity {
         match self {
             Self::Interned(id) => Identity::InternString(id.index()),
-            Self::Inline(text) => Identity::InlineString(*text),
+            Self::Inline(text) => Identity::from_inline_string(*text),
             Self::Heap(value) => value.py_identity(),
         }
     }
@@ -201,7 +201,7 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
 
     fn py_str(&self, vm: &mut VM<'h>) -> RunResult<Value> {
         Ok(match self {
-            Self::Interned(id) => Value::InternString(*id),
+            Self::Interned(id) => Value::from_string_id(*id),
             Self::Inline(text) => Value::InlineString(*text),
             Self::Heap(value) => value.clone_value(vm.heap),
         })
@@ -318,25 +318,12 @@ fn ctor_str_arg<'a>(arg: Option<&'a Value>, default: &'a str, vm: &'a VM<'_>) ->
     }
 }
 
-/// Creates a string value, reusing reserved IDs for empty strings and ASCII characters.
-/// Moves owned text into storage when possible.
+/// Creates a string value, moving owned text into storage when possible.
 pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Value {
-    let bytes = s.as_ref().as_bytes();
-    match bytes.len() {
-        0 => Value::InternString(StringId::EMPTY),
-        1 => Value::InternString(StringId::from_ascii(bytes[0])),
-        2..=15 => Value::InlineString(InlineStr::new(s.as_ref()).expect("length checked above")),
-        _ => allocate_string_on_heap(s, heap),
+    match InlineStr::new(s.as_ref()) {
+        Some(text) => Value::InlineString(text),
+        None => allocate_string_on_heap(s, heap),
     }
-}
-
-/// Creates a string value without checking for reserved string IDs.
-/// The caller must know the text is longer than one byte; otherwise use [`allocate_string`].
-pub fn allocate_string_no_interning(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Value {
-    if (2..=15).contains(&s.as_ref().len()) {
-        return Value::InlineString(InlineStr::new(s.as_ref()).expect("length checked above"));
-    }
-    allocate_string_on_heap(s, heap)
 }
 
 /// Forces heap storage even for short strings.
@@ -355,13 +342,9 @@ fn repeat_str(value: &str, count: &Value, vm: &VM<'_>) -> RunResult<Option<Value
 
 /// Creates a single-character string without allocating.
 pub fn allocate_char(c: char) -> Value {
-    if c.is_ascii() {
-        Value::InternString(StringId::from_ascii(c as u8))
-    } else {
-        let mut bytes = [0; 4];
-        let text = c.encode_utf8(&mut bytes);
-        Value::InlineString(InlineStr::new(text).expect("a UTF-8 character fits inline"))
-    }
+    let mut bytes = [0; 4];
+    let text = c.encode_utf8(&mut bytes);
+    Value::InlineString(InlineStr::new(text).expect("a UTF-8 character fits inline"))
 }
 
 /// Concatenates two string slices and allocates the result as a Python string.
@@ -2132,15 +2115,10 @@ mod tests {
     use crate::run::{Program, SessionTables};
 
     #[test]
-    fn characters_use_reserved_or_inline_storage() {
-        for character in ['\0', 'a', '\x7f'] {
-            assert!(
-                matches!(allocate_char(character), Value::InternString(id) if id == StringId::from_ascii(character as u8))
-            );
-        }
-        for character in ['é', '中', '🐍'] {
+    fn characters_use_inline_storage() {
+        for character in ['\0', 'a', '\x7f', 'é', '中', '🐍'] {
             let Value::InlineString(text) = allocate_char(character) else {
-                unreachable!("non-ASCII characters fit inline")
+                unreachable!("characters fit inline")
             };
             assert_eq!(text.as_str(), character.to_string());
         }

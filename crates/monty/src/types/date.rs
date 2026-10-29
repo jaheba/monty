@@ -24,7 +24,7 @@ use crate::{
     string_builder::StringBuilder,
     types::{
         CmpOrder, LazyHeapSet, PyTrait, TimeDelta, Type, datetime,
-        str::{allocate_string, allocate_string_no_interning},
+        str::allocate_string,
         timedelta,
         timezone::{format_offset_compact, format_offset_hms, tzname_string},
     },
@@ -265,7 +265,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Date> {
             Some(StaticStrings::Isoformat) => {
                 args.check_zero_args("date.isoformat", vm.heap)?;
                 let (year, month, day) = to_ymd(date);
-                Ok(CallResult::Value(allocate_string_no_interning(
+                Ok(CallResult::Value(allocate_string(
                     format!("{year:04}-{month:02}-{day:02}"),
                     vm.heap,
                 )))

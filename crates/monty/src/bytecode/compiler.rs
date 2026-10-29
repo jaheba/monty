@@ -1478,7 +1478,7 @@ impl<'a, 'i> Compiler<'a, 'i> {
             Literal::Ellipsis => Value::Ellipsis,
             Literal::Int(n) => Value::Int(*n),
             Literal::Float(v) => Value::Float(*v),
-            Literal::Str(string_id) => Value::InternString(*string_id),
+            Literal::Str(string_id) => Value::from_string_id(*string_id),
             Literal::Bytes(bytes_id) => Value::InternBytes(*bytes_id),
             Literal::LongInt(long_int_id) => Value::InternLongInt(*long_int_id),
             Literal::Marker(marker) => Value::Marker(*marker),

@@ -572,9 +572,10 @@ fn adopted_field_ids(fields_id: HeapId, heap: &Heap) -> Vec<(StringId, HeapId)> 
     };
     fields
         .iter()
-        .filter_map(|(key, value)| match (key, value) {
-            (Value::InternString(name), Value::Ref(id)) if field_at_id(heap, *id).is_some() => Some((*name, *id)),
-            _ => None,
+        .filter_map(|(key, value)| {
+            let Value::Ref(id) = value else { return None };
+            let name = key.interned_string_id()?;
+            field_at_id(heap, *id).map(|_| (name, *id))
         })
         .collect()
 }
@@ -630,9 +631,9 @@ fn annotated_field_names<'h>(class: &HeapRead<'h, Class>, vm: &VM<'h>) -> Vec<St
     };
     annotations
         .into_iter()
-        .filter_map(|(key, annotation)| match key {
-            Value::InternString(name_id) if !is_classvar(&annotation_text(annotation, vm)) => Some(*name_id),
-            _ => None,
+        .filter_map(|(key, annotation)| {
+            let name = key.interned_string_id()?;
+            (!is_classvar(&annotation_text(annotation, vm))).then_some(name)
         })
         .collect()
 }

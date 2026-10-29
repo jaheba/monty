@@ -9,6 +9,7 @@ use serde::Serialize;
 use crate::{
     builtins::Builtins,
     heap::{Heap, HeapId},
+    intern::StringId,
     modules::ModuleFunctions,
     types::{LongInt, Property, inline_str::InlineStr},
     value::{Marker, Value},
@@ -63,6 +64,14 @@ pub(crate) enum Identity {
 }
 
 impl Identity {
+    /// Preserves reserved identities when old dumps or name metadata retain an intern ID.
+    pub(crate) fn from_inline_string(text: InlineStr) -> Self {
+        match StringId::from_reserved(text.as_str()) {
+            Some(id) => Self::InternString(id.index()),
+            None => Self::InlineString(text),
+        }
+    }
+
     /// Builds the structural identity used by both `is` and `id()`.
     pub(crate) fn new(value: &Value) -> Self {
         match value {
@@ -74,7 +83,7 @@ impl Identity {
             Value::Int(value) => Self::Int(*value),
             Value::Float(value) => Self::Float(value.to_bits()),
             Value::InternString(id) => Self::InternString(id.index()),
-            Value::InlineString(text) => Self::InlineString(*text),
+            Value::InlineString(text) => Self::from_inline_string(*text),
             Value::InternBytes(id) => Self::InternBytes(id.index()),
             Value::InternLongInt(id) => Self::InternLongInt(id.index()),
             Value::Builtin(builtin) => Self::Builtin(*builtin),
