@@ -196,7 +196,7 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
         match self {
             Self::Interned(id) => Value::InternString(*id).py_eq_impl(other, vm),
-            Self::Inline(_) => Ok(eq_str(self.as_str(vm), other, vm)),
+            Self::Inline(text) => Ok(eq_str(text.as_str(), other, vm)),
             Self::Heap(value) => value.py_eq_impl(other, vm),
         }
     }
@@ -212,7 +212,7 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
     fn py_len(&self, vm: &VM<'h>) -> Option<usize> {
         match self {
             Self::Interned(id) => Some(vm.interns.get_str(*id).chars().count()),
-            Self::Inline(_) => Some(self.as_str(vm).chars().count()),
+            Self::Inline(text) => Some(text.as_str().chars().count()),
             Self::Heap(value) => value.py_len(vm),
         }
     }
@@ -329,7 +329,7 @@ pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Valu
         0 => Value::InternString(StringId::EMPTY),
         1 => Value::InternString(StringId::from_ascii(bytes[0])),
         2..=15 => Value::InlineString(InlineStr::new(s.as_ref()).expect("length checked above")),
-        _ => allocate_string_no_interning(s, heap),
+        _ => allocate_string_on_heap(s, heap),
     }
 }
 
@@ -340,13 +340,11 @@ pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Valu
 /// formatted date). For inputs of unknown length, use [`allocate_string`].
 ///
 /// Accepts `impl Into<Box<str>>` for the same reasons as [`allocate_string`].
-pub fn allocate_string_no_interning(s: impl Into<Box<str>>, heap: &Heap) -> Value {
-    let text = s.into();
-    if (2..=15).contains(&text.len()) {
-        return Value::InlineString(InlineStr::new(&text).expect("length checked above"));
+pub fn allocate_string_no_interning(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Value {
+    if (2..=15).contains(&s.as_ref().len()) {
+        return Value::InlineString(InlineStr::new(s.as_ref()).expect("length checked above"));
     }
-    let heap_id = heap.allocate(HeapData::Str(Str::new(text)));
-    Value::Ref(heap_id)
+    allocate_string_on_heap(s, heap)
 }
 
 /// Allocates string content without looking it up in an executor interner.
@@ -368,12 +366,13 @@ fn repeat_str(value: &str, count: &Value, vm: &VM<'_>) -> RunResult<Option<Value
 /// ASCII characters use pre-interned strings. Non-ASCII characters fit inline.
 ///
 /// This is used by string iteration and `chr()` builtin.
-pub fn allocate_char(c: char, heap: &Heap) -> Value {
+pub fn allocate_char(c: char) -> Value {
     if c.is_ascii() {
         Value::InternString(StringId::from_ascii(c as u8))
     } else {
-        let heap_id = heap.allocate(HeapData::Str(Str::new(c.to_string())));
-        Value::Ref(heap_id)
+        let mut bytes = [0; 4];
+        let text = c.encode_utf8(&mut bytes);
+        Value::InlineString(InlineStr::new(text).expect("a UTF-8 character fits inline"))
     }
 }
 
@@ -546,7 +545,7 @@ fn str_getitem<'h>(s: &impl HeapView<'h, str>, ascii: bool, key: &Value, vm: &mu
     } else {
         let index = key.as_index(vm, Type::Str)?;
         let c = get_char_at_index(s.get(vm.heap), ascii, index).ok_or_else(ExcType::str_index_error)?;
-        Ok(allocate_char(c, vm.heap))
+        Ok(allocate_char(c))
     }
 }
 
@@ -2125,7 +2124,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, StringIterator> {
     fn py_next(&mut self, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
         let next = self.get(vm.heap).as_str(vm).chars().next();
         if let Some(character) = next {
-            let value = allocate_char(character, vm.heap);
+            let value = allocate_char(character);
             self.get_mut(vm.heap).byte_offset += character.len_utf8();
             Ok(Some(value))
         } else {
@@ -2155,6 +2154,21 @@ mod tests {
 
     use super::*;
     use crate::run::{Program, SessionTables};
+
+    #[test]
+    fn characters_use_reserved_or_inline_storage() {
+        for character in ['\0', 'a', '\x7f'] {
+            assert!(
+                matches!(allocate_char(character), Value::InternString(id) if id == StringId::from_ascii(character as u8))
+            );
+        }
+        for character in ['é', '中', '🐍'] {
+            let Value::InlineString(text) = allocate_char(character) else {
+                unreachable!("non-ASCII characters fit inline")
+            };
+            assert_eq!(text.as_str(), character.to_string());
+        }
+    }
 
     #[test]
     fn string_views_preserve_identity_and_content_across_storage_kinds() {

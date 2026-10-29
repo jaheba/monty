@@ -88,24 +88,7 @@ impl InlineLen {
     }
 
     fn get(self) -> usize {
-        match self {
-            Self::L0 => 0,
-            Self::L1 => 1,
-            Self::L2 => 2,
-            Self::L3 => 3,
-            Self::L4 => 4,
-            Self::L5 => 5,
-            Self::L6 => 6,
-            Self::L7 => 7,
-            Self::L8 => 8,
-            Self::L9 => 9,
-            Self::L10 => 10,
-            Self::L11 => 11,
-            Self::L12 => 12,
-            Self::L13 => 13,
-            Self::L14 => 14,
-            Self::L15 => 15,
-        }
+        self as usize
     }
 }
 

@@ -1985,7 +1985,7 @@ impl EitherStr {
     pub fn to_cow<'i>(&self, interns: &'i Interns) -> Cow<'i, str> {
         match self {
             Self::Interned(id) => Cow::Borrowed(interns.get_str(*id)),
-            Self::Inline(_) => Cow::Owned(self.as_str(interns).to_owned()),
+            Self::Inline(text) => Cow::Owned(text.as_str().to_owned()),
             Self::Heap(s) => Cow::Owned(s.clone()),
         }
     }
@@ -2002,7 +2002,7 @@ impl EitherStr {
                 Some(id) => Self::Interned(id),
                 None => Self::Heap(s),
             },
-            Self::Inline(_) => match interns.get_string_id_by_name(self.as_str(interns)) {
+            Self::Inline(text) => match interns.get_string_id_by_name(text.as_str()) {
                 Some(id) => Self::Interned(id),
                 None => self,
             },
@@ -2014,7 +2014,7 @@ impl EitherStr {
     pub fn matches(&self, target: StringId, interns: &Interns) -> bool {
         match self {
             Self::Interned(id) => *id == target,
-            Self::Inline(_) => self.as_str(interns) == interns.get_str(target),
+            Self::Inline(text) => text.as_str() == interns.get_str(target),
             Self::Heap(s) => s == interns.get_str(target),
         }
     }
@@ -2033,7 +2033,7 @@ impl EitherStr {
     pub fn static_string(&self, interns: &Interns) -> Option<StaticStrings> {
         match self {
             Self::Interned(id) => interns.static_string(*id),
-            Self::Inline(_) => StaticStrings::from_str(self.as_str(interns)).ok(),
+            Self::Inline(text) => StaticStrings::from_str(text.as_str()).ok(),
             Self::Heap(value) => StaticStrings::from_str(value).ok(),
         }
     }
@@ -2045,7 +2045,7 @@ impl EitherStr {
     pub fn into_string(self, interns: &Interns) -> String {
         match self {
             Self::Interned(id) => interns.get_str(id).to_owned(),
-            Self::Inline(_) => self.as_str(interns).to_owned(),
+            Self::Inline(text) => text.as_str().to_owned(),
             Self::Heap(s) => s,
         }
     }
