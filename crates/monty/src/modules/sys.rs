@@ -99,12 +99,12 @@ pub fn create_module(vm: &mut VM<'_>) -> HeapId {
     // the sandbox never reveals.
     module.set_attr(
         StaticStrings::Platform,
-        Value::InternString(vm.interns.intern_static(StaticStrings::Monty)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::Monty)),
         vm,
     );
     module.set_attr(
         StaticStrings::Version,
-        Value::InternString(vm.interns.intern_static(StaticStrings::MontyVersionString)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::MontyVersionString)),
         vm,
     );
     module.set_attr(StaticStrings::VersionInfo, version_info(vm), vm);
@@ -112,7 +112,7 @@ pub fn create_module(vm: &mut VM<'_>) -> HeapId {
     module.set_attr(StaticStrings::ApiVersion, Value::Int(CPYTHON_API_VERSION), vm);
     module.set_attr(
         StaticStrings::Copyright,
-        Value::InternString(vm.interns.intern_static(StaticStrings::MontyCopyright)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::MontyCopyright)),
         vm,
     );
     module.set_attr(StaticStrings::BuiltinModuleNames, builtin_module_names(vm), vm);
@@ -123,13 +123,13 @@ pub fn create_module(vm: &mut VM<'_>) -> HeapId {
     module.set_attr(StaticStrings::Maxunicode, Value::Int(MAXUNICODE), vm);
     module.set_attr(
         StaticStrings::Byteorder,
-        Value::InternString(vm.interns.intern_static(StaticStrings::Little)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::Little)),
         vm,
     );
     module.set_attr(StaticStrings::FloatInfo, float_info(vm), vm);
     module.set_attr(
         StaticStrings::FloatReprStyle,
-        Value::InternString(vm.interns.intern_static(StaticStrings::Short)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::Short)),
         vm,
     );
 
@@ -139,37 +139,37 @@ pub fn create_module(vm: &mut VM<'_>) -> HeapId {
     // usual "am I in a virtualenv?" test correctly.
     module.set_attr(
         StaticStrings::Executable,
-        Value::InternString(vm.interns.intern_static(StaticStrings::EmptyString)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::EmptyString)),
         vm,
     );
     module.set_attr(
         StaticStrings::Prefix,
-        Value::InternString(vm.interns.intern_static(StaticStrings::EmptyString)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::EmptyString)),
         vm,
     );
     module.set_attr(
         StaticStrings::ExecPrefix,
-        Value::InternString(vm.interns.intern_static(StaticStrings::EmptyString)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::EmptyString)),
         vm,
     );
     module.set_attr(
         StaticStrings::BasePrefix,
-        Value::InternString(vm.interns.intern_static(StaticStrings::EmptyString)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::EmptyString)),
         vm,
     );
     module.set_attr(
         StaticStrings::BaseExecPrefix,
-        Value::InternString(vm.interns.intern_static(StaticStrings::EmptyString)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::EmptyString)),
         vm,
     );
     module.set_attr(
         StaticStrings::Platlibdir,
-        Value::InternString(vm.interns.intern_static(StaticStrings::Lib)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::Lib)),
         vm,
     );
     module.set_attr(
         StaticStrings::Abiflags,
-        Value::InternString(vm.interns.intern_static(StaticStrings::EmptyString)),
+        Value::from_string_id(vm.interns.intern_static(StaticStrings::EmptyString)),
         vm,
     );
     module.set_attr(StaticStrings::DontWriteBytecode, Value::Bool(true), vm);
@@ -207,7 +207,7 @@ fn version_info(vm: &VM<'_>) -> Value {
             Value::Int(3),
             Value::Int(14),
             Value::Int(0),
-            Value::InternString(vm.interns.intern_static(StaticStrings::Final)),
+            Value::from_string_id(vm.interns.intern_static(StaticStrings::Final)),
             Value::Int(0),
         ],
     );
@@ -330,7 +330,7 @@ fn int_max_str_digits() -> Value {
 fn builtin_module_names(vm: &VM<'_>) -> Value {
     let names: SmallVec<_> = BUILTIN_MODULE_NAMES
         .iter()
-        .map(|name| Value::InternString(vm.interns.intern_static(*name)))
+        .map(|name| Value::from_string_id(vm.interns.intern_static(*name)))
         .collect();
     allocate_tuple(names, vm.heap)
 }

@@ -67,6 +67,15 @@ impl StringId {
         self.0 as usize
     }
 
+    /// Resolves empty and one-byte strings without consulting an executor.
+    pub(crate) fn from_reserved(text: &str) -> Option<Self> {
+        match text.as_bytes() {
+            [] => Some(Self::EMPTY),
+            [byte] => Some(Self::from_ascii(*byte)),
+            _ => None,
+        }
+    }
+
     /// Returns the StringId for an ASCII byte.
     #[must_use]
     pub const fn from_ascii(byte: u8) -> Self {

@@ -102,27 +102,33 @@ pub fn create_module(vm: &mut VM<'_>) -> HeapId {
         // `os.path` is its own module object, like CPython's `posixpath`.
         (StaticStrings::Path, Value::Ref(os_path::create_module(vm))),
         // POSIX path constants — the sandbox path model is POSIX on every host.
-        (StaticStrings::Sep, Value::InternString(StringId::from_ascii(b'/'))),
-        (StaticStrings::Pathsep, Value::InternString(StringId::from_ascii(b':'))),
+        (StaticStrings::Sep, Value::from_string_id(StringId::from_ascii(b'/'))),
+        (
+            StaticStrings::Pathsep,
+            Value::from_string_id(StringId::from_ascii(b':')),
+        ),
         (
             StaticStrings::Defpath,
-            Value::InternString(vm.interns.intern_static(StaticStrings::DefpathString)),
+            Value::from_string_id(vm.interns.intern_static(StaticStrings::DefpathString)),
         ),
         (StaticStrings::Altsep, Value::None),
-        (StaticStrings::Extsep, Value::InternString(StringId::from_ascii(b'.'))),
-        (StaticStrings::Curdir, Value::InternString(StringId::from_ascii(b'.'))),
+        (StaticStrings::Extsep, Value::from_string_id(StringId::from_ascii(b'.'))),
+        (StaticStrings::Curdir, Value::from_string_id(StringId::from_ascii(b'.'))),
         (
             StaticStrings::Pardir,
-            Value::InternString(vm.interns.intern_static(StaticStrings::ParentDirString)),
+            Value::from_string_id(vm.interns.intern_static(StaticStrings::ParentDirString)),
         ),
-        (StaticStrings::Linesep, Value::InternString(StringId::from_ascii(b'\n'))),
+        (
+            StaticStrings::Linesep,
+            Value::from_string_id(StringId::from_ascii(b'\n')),
+        ),
         (
             StaticStrings::Name,
-            Value::InternString(vm.interns.intern_static(StaticStrings::Posix)),
+            Value::from_string_id(vm.interns.intern_static(StaticStrings::Posix)),
         ),
         (
             StaticStrings::Devnull,
-            Value::InternString(vm.interns.intern_static(StaticStrings::DevNullString)),
+            Value::from_string_id(vm.interns.intern_static(StaticStrings::DevNullString)),
         ),
     ];
 

@@ -28,7 +28,7 @@ use crate::{
     types::{
         CmpOrder, LazyHeapSet, PyTrait, TimeDelta, TimeZone, Type,
         date::{self, StrftimeArgs},
-        str::{StringRepr, allocate_string, allocate_string_no_interning},
+        str::{StringRepr, allocate_string},
         time::{self, Time, TimeSpec},
         timedelta, timezone,
     },
@@ -1331,7 +1331,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, DateTime> {
                     None => TimeSpec::Auto,
                 };
                 let s = format_isoformat(&dt, separator, spec);
-                Ok(CallResult::Value(allocate_string_no_interning(s, vm.heap)))
+                Ok(CallResult::Value(allocate_string(s, vm.heap)))
             }
             Some(StaticStrings::Strftime) => {
                 let StrftimeArgs { format } = StrftimeArgs::from_args(args, vm)?;

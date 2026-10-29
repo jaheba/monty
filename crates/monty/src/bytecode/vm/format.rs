@@ -33,7 +33,7 @@ impl VM<'_> {
         }
         let this = self;
         if count == 0 {
-            this.push(Value::InternString(StringId::EMPTY));
+            this.push(Value::from_string_id(StringId::EMPTY));
             return Ok(());
         }
 

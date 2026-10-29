@@ -20,7 +20,7 @@ use crate::{
     hash::{HashValue, hash_f64, hash_named, hash_one, hash_python_str},
     heap::{ContainsHeap, DropWithContext, Heap, HeapData, HeapId, HeapReadOutput},
     identity::Identity,
-    intern::{BytesId, FunctionId, Interns, LongIntId, StaticStrings, StringId},
+    intern::{BytesId, FunctionId, Interns, LongIntId, RESERVED_STRS, StaticStrings, StringId},
     modules::ModuleFunctions,
     py_value::PyValue,
     types::{
@@ -479,7 +479,7 @@ impl<'h> PyTrait<'h> for Value {
             // Interned/heap strings are already what `str()` returns — hand the
             // same value back (inc-ref'd for the heap case) instead of cloning
             // the bytes into a fresh allocation.
-            Self::InternString(string_id) => Ok(Self::InternString(*string_id)),
+            Self::InternString(string_id) => Ok(Self::from_string_id(*string_id)),
             Self::InlineString(text) => Ok(Self::InlineString(*text)),
             Self::Ref(id) if matches!(vm.heap.get(*id), HeapData::Str(_)) => Ok(self.clone_with_heap(vm.heap)),
             // Instances dispatch to a user `__str__`/`__repr__` (needs the heap id).
@@ -843,6 +843,14 @@ impl<C: ContainsHeap> DropWithContext<C> for Value {
 }
 
 impl Value {
+    /// Builds a string value from an interned literal or static value.
+    pub(crate) fn from_string_id(id: StringId) -> Self {
+        match RESERVED_STRS.get(id.index()) {
+            Some(text) => Self::InlineString(InlineStr::new(text).expect("reserved text fits inline")),
+            None => Self::InternString(id),
+        }
+    }
+
     /// Opens a Python-type view without copying heap payloads or borrowing this owner.
     /// Drop the view before releasing the owning `Value`, so its heap readers are gone at cleanup.
     pub(crate) fn py_value<'h>(&self, vm: &VM<'h>) -> PyValue<'h> {
@@ -1123,7 +1131,10 @@ impl Value {
         // cold arms construct a hasher, via `hash_one`.
         match self {
             Self::InternString(string_id) => Ok(Some(vm.interns.str_hash(*string_id))),
-            Self::InlineString(text) => Ok(Some(hash_python_str(text.as_str()))),
+            Self::InlineString(text) => Ok(Some(match StringId::from_reserved(text.as_str()) {
+                Some(id) => vm.interns.str_hash(id),
+                None => hash_python_str(text.as_str()),
+            })),
             Self::InternBytes(bytes_id) => Ok(Some(vm.interns.bytes_hash(*bytes_id))),
             Self::InternLongInt(long_int_id) => Ok(Some(vm.interns.long_int_hash(*long_int_id))),
             // Bool and int hash directly as their value, and are equivalent
@@ -1790,12 +1801,24 @@ impl Value {
         }
     }
 
+    /// Returns a stored intern ID or reserved name ID without allocating.
+    pub(crate) fn interned_string_id(&self) -> Option<StringId> {
+        match self {
+            Self::InternString(id) => Some(*id),
+            Self::InlineString(text) => StringId::from_reserved(text.as_str()),
+            _ => None,
+        }
+    }
+
     /// Returns a string name that can outlive a heap borrow.
     /// Copies heap-backed text; returns `None` for non-string values.
     pub fn as_either_str(&self, heap: &Heap) -> Option<EitherStr> {
         match self {
             Self::InternString(id) => Some(EitherStr::Interned(*id)),
-            Self::InlineString(text) => Some(EitherStr::Inline(*text)),
+            Self::InlineString(text) => Some(match StringId::from_reserved(text.as_str()) {
+                Some(id) => EitherStr::Interned(id),
+                None => EitherStr::Inline(*text),
+            }),
             Self::Ref(heap_id) => match heap.get(*heap_id) {
                 HeapData::Str(s) => Some(EitherStr::Heap(s.as_str().to_owned())),
                 _ => None,
@@ -2243,7 +2266,8 @@ mod tests {
         run::{Program, SessionTables},
         types::{
             LongInt,
-            str::{allocate_string_no_interning, allocate_string_on_heap},
+            py_trait::PyObjectIdentity,
+            str::{allocate_string, allocate_string_on_heap},
         },
     };
 
@@ -2255,25 +2279,38 @@ mod tests {
     #[test]
     fn inline_string_capacity_is_fifteen_utf8_bytes() {
         let mut heap = Heap::new(16, ResourceTracker::default());
-        for text in ["123456789012345", "ééééééabc"] {
-            for value in [
-                allocate_string(text.to_owned(), &heap),
-                allocate_string_no_interning(text.to_owned(), &heap),
-            ] {
-                assert!(matches!(value, Value::InlineString(_)));
-                assert_eq!(value.inline_str(), Some(text));
-                value.drop_with(&mut heap);
-            }
+        for text in ["", "a", "\0", "123456789012345", "ééééééabc"] {
+            let value = allocate_string(text, &heap);
+            assert!(matches!(value, Value::InlineString(_)));
+            assert_eq!(value.inline_str(), Some(text));
+            value.drop_with(&mut heap);
         }
         for text in ["1234567890123456", "ééééééabcd"] {
-            for value in [
-                allocate_string(text.to_owned(), &heap),
-                allocate_string_no_interning(text.to_owned(), &heap),
-            ] {
-                assert!(matches!(value, Value::Ref(_)));
-                value.drop_with(&mut heap);
-            }
+            let value = allocate_string(text, &heap);
+            assert!(matches!(value, Value::Ref(_)));
+            value.drop_with(&mut heap);
         }
+    }
+
+    #[test]
+    fn reserved_string_values_keep_identity_hashes_and_name_ids() {
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        let mut tables = SessionTables::default();
+        let program = Program::for_tests();
+
+        HeapReader::with(&mut heap, &mut (&program, &mut tables), |reader, (program, tables)| {
+            let vm = &mut VM::new(Vec::new(), tables, program, reader, PrintWriter::Disabled);
+            for text in RESERVED_STRS {
+                let id = StringId::from_reserved(text).unwrap();
+                let value = Value::from_string_id(id);
+                let legacy = Value::InternString(id);
+                assert!(matches!(value, Value::InlineString(_)));
+                assert!(Identity::new(&value) == Identity::new(&legacy));
+                assert_eq!(value.py_hash(vm).unwrap(), legacy.py_hash(vm).unwrap());
+                assert_eq!(value.as_either_str(vm.heap).unwrap().string_id(), Some(id));
+                assert!(value.py_value(vm).py_identity() == Identity::new(&legacy));
+            }
+        });
     }
 
     #[test]

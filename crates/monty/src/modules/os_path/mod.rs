@@ -122,22 +122,25 @@ pub fn create_module(vm: &mut VM<'_>) -> HeapId {
         (StaticStrings::Splitext, function(OsPathFunctions::Splitext)),
         (StaticStrings::Splitroot, function(OsPathFunctions::Splitroot)),
         // POSIX constants — the sandbox path model is POSIX on every host.
-        (StaticStrings::Curdir, Value::InternString(StringId::from_ascii(b'.'))),
+        (StaticStrings::Curdir, Value::from_string_id(StringId::from_ascii(b'.'))),
         (
             StaticStrings::Pardir,
-            Value::InternString(vm.interns.intern_static(StaticStrings::ParentDirString)),
+            Value::from_string_id(vm.interns.intern_static(StaticStrings::ParentDirString)),
         ),
-        (StaticStrings::Extsep, Value::InternString(StringId::from_ascii(b'.'))),
-        (StaticStrings::Sep, Value::InternString(StringId::from_ascii(b'/'))),
-        (StaticStrings::Pathsep, Value::InternString(StringId::from_ascii(b':'))),
+        (StaticStrings::Extsep, Value::from_string_id(StringId::from_ascii(b'.'))),
+        (StaticStrings::Sep, Value::from_string_id(StringId::from_ascii(b'/'))),
+        (
+            StaticStrings::Pathsep,
+            Value::from_string_id(StringId::from_ascii(b':')),
+        ),
         (
             StaticStrings::Defpath,
-            Value::InternString(vm.interns.intern_static(StaticStrings::DefpathString)),
+            Value::from_string_id(vm.interns.intern_static(StaticStrings::DefpathString)),
         ),
         (StaticStrings::Altsep, Value::None),
         (
             StaticStrings::Devnull,
-            Value::InternString(vm.interns.intern_static(StaticStrings::DevNullString)),
+            Value::from_string_id(vm.interns.intern_static(StaticStrings::DevNullString)),
         ),
         // CPython sets this from `sys.platform == 'darwin'`; the sandbox is never darwin.
         (StaticStrings::SupportsUnicodeFilenames, Value::Bool(false)),
@@ -622,7 +625,7 @@ fn attributes_equal(a: &Value, b: &Value, attr: StaticStrings, vm: &mut VM<'_>) 
 /// `getattr(value, attr)` through the synchronous call path, so any
 /// stat-like object works; a lazy host attribute reads as absent there.
 fn data_attribute(value: &Value, attr: StaticStrings, vm: &mut VM<'_>) -> RunResult<Value> {
-    let name = Value::InternString(vm.interns.intern_static(attr));
+    let name = Value::from_string_id(vm.interns.intern_static(attr));
     let getattr = Value::Builtin(Builtins::Function(BuiltinsFunctions::Getattr));
     vm.evaluate_function(&getattr, ArgValues::Two(value.clone_with_heap(vm), name))
 }
