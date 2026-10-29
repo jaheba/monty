@@ -35,9 +35,7 @@ use crate::{
     value::{EitherStr, Value, eq_str},
 };
 
-/// Python string value stored on the heap.
-///
-/// Wraps a Rust `String` and provides Python-compatible operations.
+/// Heap-backed Python string with cached hash and ASCII status.
 /// `len()` returns the number of Unicode codepoints (characters), matching Python semantics.
 ///
 /// Caches its Python hash and whether it is ASCII, both computed on first use and
@@ -141,7 +139,7 @@ impl Str {
     }
 }
 
-/// An allocation-free string view that retains interned or heap identity.
+/// A string view that preserves Python identity.
 ///
 /// Heap reads keep the receiver available across calls such as `__index__` without
 /// holding a Rust borrow of its text during Python execution.
@@ -320,9 +318,8 @@ fn ctor_str_arg<'a>(arg: Option<&'a Value>, default: &'a str, vm: &'a VM<'_>) ->
     }
 }
 
-/// Allocates a string, reusing reserved IDs for empty strings and ASCII characters.
-/// Strings of 2–15 UTF-8 bytes are stored inline; longer strings use the heap.
-/// Owned buffers move into heap storage; borrowed text is copied only when needed.
+/// Creates a string value, reusing reserved IDs for empty strings and ASCII characters.
+/// Moves owned text into storage when possible.
 pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Value {
     let bytes = s.as_ref().as_bytes();
     match bytes.len() {
@@ -333,13 +330,8 @@ pub fn allocate_string(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Valu
     }
 }
 
-/// Stores 2–15 byte strings inline and longer strings on the heap, skipping interning.
-///
-/// Use this only when the caller can guarantee the string is longer than one
-/// byte (e.g. always contains a fixed prefix like `"0x"`, `"0o"`, or a
-/// formatted date). For inputs of unknown length, use [`allocate_string`].
-///
-/// Accepts `impl Into<Box<str>>` for the same reasons as [`allocate_string`].
+/// Creates a string value without checking for reserved string IDs.
+/// The caller must know the text is longer than one byte; otherwise use [`allocate_string`].
 pub fn allocate_string_no_interning(s: impl AsRef<str> + Into<Box<str>>, heap: &Heap) -> Value {
     if (2..=15).contains(&s.as_ref().len()) {
         return Value::InlineString(InlineStr::new(s.as_ref()).expect("length checked above"));
@@ -347,7 +339,7 @@ pub fn allocate_string_no_interning(s: impl AsRef<str> + Into<Box<str>>, heap: &
     allocate_string_on_heap(s, heap)
 }
 
-/// Allocates string content without looking it up in an executor interner.
+/// Forces heap storage even for short strings.
 pub fn allocate_string_on_heap(s: impl Into<Box<str>>, heap: &Heap) -> Value {
     Value::Ref(heap.allocate(HeapData::Str(Str::new(s.into()))))
 }
@@ -361,11 +353,7 @@ fn repeat_str(value: &str, count: &Value, vm: &VM<'_>) -> RunResult<Option<Value
     Ok(Some(allocate_string(value.repeat(count), vm.heap)))
 }
 
-/// Allocates a single character as a string value.
-///
-/// ASCII characters use pre-interned strings. Non-ASCII characters fit inline.
-///
-/// This is used by string iteration and `chr()` builtin.
+/// Creates a single-character string without allocating.
 pub fn allocate_char(c: char) -> Value {
     if c.is_ascii() {
         Value::InternString(StringId::from_ascii(c as u8))
@@ -709,19 +697,7 @@ fn call_str_method_impl<'h>(
     }
 }
 
-/// Implements Python's `str.join(iterable)` method.
-///
-/// Joins elements of the iterable with the separator string, returning
-/// a new heap-allocated string. Each element must be a string.
-///
-/// # Arguments
-/// * `separator` - The separator string (e.g., "," for comma-separated)
-/// * `iterable` - The iterable containing string elements to join
-/// * `heap` - The heap for allocation and reference counting
-/// * `interns` - The interns table for resolving interned strings
-///
-/// # Errors
-/// Returns `TypeError` if the argument is not iterable or if any element is not a string.
+/// Joins an iterable of strings with the separator, rejecting non-string elements.
 fn str_join<'h>(separator: &impl HeapView<'h, str>, iterable: Value, vm: &mut VM<'h>) -> RunResult<Value> {
     // Checked up front: a user `__iter__` can raise anything, and rewriting that
     // as "can only join an iterable" would hide it, resource errors included.
@@ -2046,7 +2022,7 @@ impl StringIterator {
         }
     }
 
-    /// Returns a retained heap source, if the string is not interned.
+    /// Returns the heap source when the iterator retains one.
     pub(crate) fn source_id(&self) -> Option<HeapId> {
         match self.source {
             StringIteratorSource::Intern(_) => None,

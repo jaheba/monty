@@ -40,8 +40,7 @@ use crate::{
 
 /// Primary value type representing Python objects at runtime.
 ///
-/// Small immediate values and strings up to 15 UTF-8 bytes are stored inline;
-/// other heap values are stored in the arena and referenced via `Ref(HeapId)`.
+/// Stores immediate values directly and arena objects through `Ref(HeapId)`.
 ///
 /// NOTE: `Clone` is intentionally NOT derived. Use `clone_with_heap()`. Direct cloning via `.clone()` would
 /// bypass reference counting and cause memory leaks.
@@ -1791,10 +1790,8 @@ impl Value {
         }
     }
 
-    /// Converts the value into a keyword string representation if possible.
-    ///
-    /// Preserves interned and inline strings; heap strings are copied.
-    /// Returns `None` for non-string values.
+    /// Returns a string name that can outlive a heap borrow.
+    /// Copies heap-backed text; returns `None` for non-string values.
     pub fn as_either_str(&self, heap: &Heap) -> Option<EitherStr> {
         match self {
             Self::InternString(id) => Some(EitherStr::Interned(*id)),
@@ -1807,10 +1804,7 @@ impl Value {
         }
     }
 
-    /// Borrows the value as `&str` if it is a string, including inline strings.
-    ///
-    /// Unlike [`as_either_str`](Self::as_either_str) this never allocates — both
-    /// interned, inline and heap strings are returned by borrow.
+    /// Borrows string contents without allocating, or returns `None` for non-strings.
     pub(crate) fn as_str<'a>(&'a self, vm: &'a VM<'_>) -> Option<&'a str> {
         self.as_str_heap(vm.heap, vm.interns)
     }
@@ -1828,9 +1822,7 @@ impl Value {
         }
     }
 
-    /// Borrows the value as a `&str`, or returns CPython's generic `expected
-    /// string, not <type>` error for non-strings. Use it wherever a function
-    /// requires `str` and can propagate that type error.
+    /// Borrows string contents, or raises `TypeError` with `expected string, not <type>`.
     pub(crate) fn try_to_str<'a>(&'a self, vm: &'a VM<'_>) -> RunResult<&'a str> {
         self.try_to_str_heap(vm.heap, vm.interns)
     }
@@ -1924,7 +1916,7 @@ pub(crate) fn eq_bigint(b: &BigInt, other: &Value, vm: &VM<'_>) -> Option<bool> 
     }
 }
 
-/// `s == other`, resolving the other operand from an interned or heap string.
+/// `s == other`, returning `None` for non-string operands.
 pub(crate) fn eq_str(s: &str, other: &Value, vm: &VM<'_>) -> Option<bool> {
     match other {
         Value::InternString(id) => Some(s == vm.interns.get_str(*id)),
@@ -1943,10 +1935,7 @@ pub(crate) fn eq_bytes(b: &[u8], other: &Value, vm: &VM<'_>) -> Option<bool> {
     }
 }
 
-/// Interned or heap-owned string identifier.
-///
-/// Used when a string value can come from either the intern table (for known
-/// static strings and keywords) or from a heap-allocated Python string object.
+/// A string name that can outlive a heap borrow.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub(crate) enum EitherStr {
     /// Interned string identifier (cheap comparisons and no allocation).
@@ -1992,9 +1981,7 @@ impl EitherStr {
 
     /// Re-resolves a runtime string to its interned id when the interner knows it.
     ///
-    /// Builtin attribute dispatch needs a `StringId` for inline or heap-owned names;
-    /// instances and modules compare names by text. This only looks up existing
-    /// entries, so sandboxed code cannot grow the interner.
+    /// Looks up existing IDs for builtin attribute dispatch without growing the interner.
     #[must_use]
     pub fn resolve_interned(self, interns: &Interns) -> Self {
         match self {
@@ -2038,10 +2025,7 @@ impl EitherStr {
         }
     }
 
-    /// Converts this `EitherStr` into an owned `String`.
-    ///
-    /// For interned strings, looks up and clones the string content. Heap
-    /// strings are returned directly; inline strings are copied into a `String`.
+    /// Returns owned text, reusing an existing `String` when possible.
     pub fn into_string(self, interns: &Interns) -> String {
         match self {
             Self::Interned(id) => interns.get_str(id).to_owned(),

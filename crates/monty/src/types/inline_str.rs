@@ -4,6 +4,7 @@ use std::str;
 
 use serde::{Deserialize, Deserializer, Serialize, Serializer, de::Error};
 
+/// UTF-8 text of at most 15 bytes.
 /// The length enum supplies niches so a containing `Value` remains 16 bytes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub(crate) struct InlineStr {

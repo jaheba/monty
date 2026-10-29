@@ -1093,10 +1093,8 @@ pub(crate) fn apply_file_next(
     }
 }
 
-/// Installs a host `ReadText` / `ReadBytes` result as `file`'s buffer and
-/// builds the position cache. Interned and inline results are promoted to heap entries
-/// and universal-newline text is translated here, once. A buffer already
-/// present (a snapshot/restore race) is kept and the new content dropped.
+/// Installs a host read result as a heap-backed buffer and builds the position cache.
+/// Translates universal newlines once. If a buffer is already present, keeps it and drops the result.
 fn install_buffer<'h>(file: &HeapReadMut<'h, OpenFile>, result: Value, vm: &mut VM<'h>) -> RunResult<()> {
     let mut result_guard = DropGuard::new(result, vm);
     let (result, vm) = result_guard.as_parts_mut();
