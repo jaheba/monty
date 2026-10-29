@@ -37,59 +37,30 @@ impl Serialize for InlineStr {
 
 impl<'de> Deserialize<'de> for InlineStr {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        // Older snapshots stored the length and the entire padded buffer.
-        #[derive(Deserialize)]
-        #[serde(untagged)]
-        enum Stored {
-            Text(String),
-            Legacy { len: InlineLen, bytes: [u8; 15] },
-        }
-
-        match Stored::deserialize(deserializer)? {
-            Stored::Text(text) => Self::new(&text).ok_or_else(|| D::Error::custom("inline string exceeds capacity")),
-            Stored::Legacy { len, bytes } => {
-                let text = str::from_utf8(&bytes[..len.get()]).map_err(D::Error::custom)?;
-                Ok(Self::new(text).expect("legacy length fits inline storage"))
-            }
-        }
+        let text = String::deserialize(deserializer)?;
+        Self::new(&text).ok_or_else(|| D::Error::custom("inline string exceeds capacity"))
     }
 }
 
 /// Byte length for an inline UTF-8 string.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u8)]
 enum InlineLen {
-    #[serde(rename = "0")]
     L0,
-    #[serde(rename = "1")]
     L1,
-    #[serde(rename = "2")]
     L2,
-    #[serde(rename = "3")]
     L3,
-    #[serde(rename = "4")]
     L4,
-    #[serde(rename = "5")]
     L5,
-    #[serde(rename = "6")]
     L6,
-    #[serde(rename = "7")]
     L7,
-    #[serde(rename = "8")]
     L8,
-    #[serde(rename = "9")]
     L9,
-    #[serde(rename = "10")]
     L10,
-    #[serde(rename = "11")]
     L11,
-    #[serde(rename = "12")]
     L12,
-    #[serde(rename = "13")]
     L13,
-    #[serde(rename = "14")]
     L14,
-    #[serde(rename = "15")]
     L15,
 }
 
@@ -155,44 +126,26 @@ mod tests {
     }
 
     #[test]
-    fn values_serialize_as_text_and_read_legacy_buffers() {
-        #[derive(Serialize)]
-        enum LegacyValue {
-            #[serde(rename = "S")]
-            Inline { len: String, bytes: [u8; 15] },
-        }
-
+    fn values_serialize_as_text() {
         for length in 0..=15 {
             let text = "x".repeat(length);
-            let mut bytes = [0; 15];
-            bytes[..length].fill(b'x');
-            let legacy = LegacyValue::Inline {
-                len: length.to_string(),
-                bytes,
-            };
-            let encoded = minicbor_serde::to_vec(&legacy).unwrap();
+            let value = Value::InlineString(InlineStr::new(&text).unwrap());
+            let expected = format!(r#"{{"S":"{text}"}}"#);
+            assert_eq!(serde_json::to_string(&value).unwrap(), expected);
+            let encoded = minicbor_serde::to_vec(&value).unwrap();
             let restored: Value = minicbor_serde::from_slice(&encoded).unwrap();
             assert_eq!(restored.inline_str(), Some(text.as_str()));
-            let expected = format!(r#"{{"S":"{text}"}}"#);
-            assert_eq!(serde_json::to_string(&restored).unwrap(), expected);
-            let compact = minicbor_serde::to_vec(&restored).unwrap();
-            let reloaded: Value = minicbor_serde::from_slice(&compact).unwrap();
-            assert_eq!(reloaded.inline_str(), Some(text.as_str()));
         }
     }
+
     #[test]
-    fn legacy_iterator_preserves_its_position() {
+    fn iterator_roundtrip_preserves_its_position() {
         let stored = serde_json::json!({
-            "source": {"Inline": {"len": "3", "bytes": [97, 195, 169, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}},
-            "byte_offset": 1,
-            "ascii": false,
+            "source": {"Inline": "aé"}, "byte_offset": 1, "ascii": false,
         });
-        let iterator: StringIterator = serde_json::from_value(stored).unwrap();
-        assert_eq!(
-            serde_json::to_value(iterator).unwrap(),
-            serde_json::json!({
-                "source": {"Inline": "aé"}, "byte_offset": 1, "ascii": false,
-            })
-        );
+        let iterator: StringIterator = serde_json::from_value(stored.clone()).unwrap();
+        let encoded = minicbor_serde::to_vec(&iterator).unwrap();
+        let restored: StringIterator = minicbor_serde::from_slice(&encoded).unwrap();
+        assert_eq!(serde_json::to_value(restored).unwrap(), stored);
     }
 }
