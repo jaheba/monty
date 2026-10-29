@@ -148,10 +148,9 @@ impl Dialect {
         let (params, vm) = params_guard.as_parts_mut();
         let base = match base {
             None => Base::Defaults,
-            Some(value) if value.is_str(vm.heap) => Base::Dialect(
-                Self::by_name(value.as_str(vm).expect("string dialect checked above"))
-                    .ok_or_else(ExcType::csv_unknown_dialect)?,
-            ),
+            Some(value) if let Some(name) = value.as_str(vm) => {
+                Base::Dialect(Self::by_name(name).ok_or_else(ExcType::csv_unknown_dialect)?)
+            }
             Some(Value::Ref(id))
                 if let HeapData::Csv(csv) = vm.heap.get(*id)
                     && let CsvObject::Dialect(dialect) = &**csv =>

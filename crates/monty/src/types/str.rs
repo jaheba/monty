@@ -2114,8 +2114,8 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, StringIterator> {
 /// Shared by logical string views and concrete heap dispatch.
 /// A non-str probe reports its own type, as CPython does.
 pub(crate) fn str_contains(container_str: &str, item: &Value, heap: &Heap, interns: &Interns) -> RunResult<bool> {
-    if item.is_str(heap) {
-        Ok(container_str.contains(item.try_to_str_heap(heap, interns).expect("is_str checked above")))
+    if let Some(text) = item.as_str_heap(heap, interns) {
+        Ok(container_str.contains(text))
     } else {
         Err(ExcType::type_error(format!(
             "'in <string>' requires string as left operand, not {}",

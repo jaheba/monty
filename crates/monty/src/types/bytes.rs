@@ -177,17 +177,13 @@ impl Bytes {
         defer_drop!(source, vm);
         defer_drop!(encoding, vm);
         defer_drop!(errors, vm);
-        let source_str = match source {
-            Some(v) if v.is_str(vm.heap) => Some(v),
-            _ => None,
-        };
+        let source_str = source.as_ref().and_then(|value| value.as_str(vm));
         // CPython's `bytes_new` ordering: an encoding demands a str source, a
         // str source demands an encoding, and a lone `errors` is never valid.
         if let Some(encoding) = encoding {
-            let Some(v) = source_str else {
+            let Some(s) = source_str else {
                 return Err(ExcType::type_error_encoding_without_string());
             };
-            let s = v.as_str(vm).expect("string source checked above");
             let errors = errors.as_ref().map_or("strict", |e| e.as_str(vm));
             let encoding = encoding.as_str(vm);
             let codec = Codec::find(encoding).ok_or_else(|| ExcType::lookup_error_unknown_encoding(encoding))?;

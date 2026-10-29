@@ -869,8 +869,8 @@ pub(crate) fn value_to_owned_string(value: &Value, heap: &Heap, interns: &Intern
 /// The text of a `str`, `Path` or `DirEntry` `value`, borrowed, else `None`:
 /// what [`value_to_owned_string`] copies, for sizing the copy first.
 pub(crate) fn value_as_path_str<'a>(value: &'a Value, heap: &'a Heap, interns: &'a Interns) -> Option<&'a str> {
-    if value.is_str(heap) {
-        return Some(value.try_to_str_heap(heap, interns).expect("is_str checked above"));
+    if let Some(text) = value.as_str_heap(heap, interns) {
+        return Some(text);
     }
 
     match value {
