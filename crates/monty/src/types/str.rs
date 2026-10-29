@@ -151,12 +151,9 @@ pub(crate) enum PyStr<'h> {
     Heap(HeapObjectRead<'h, Str>),
 }
 
-/// Owns inline text while string operations may re-enter Python through the VM.
-struct OwnedStrView(InlineStr);
-
-impl<'a> HeapView<'a, str> for OwnedStrView {
+impl<'a> HeapView<'a, str> for InlineStr {
     fn get<'r>(&'r self, _reader: &'r HeapReader<'a>) -> &'r str {
-        self.0.as_str()
+        self.as_str()
     }
 }
 
@@ -250,11 +247,7 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
                 let text = vm.interns.get_str(*id);
                 str_getitem(&*vm.heap.protect(text), text.is_ascii(), key, vm)
             }
-            Self::Inline(text) => {
-                let ascii = text.as_str().is_ascii();
-                let text = OwnedStrView(*text);
-                str_getitem(&text, ascii, key, vm)
-            }
+            Self::Inline(text) => str_getitem(text, text.as_str().is_ascii(), key, vm),
             Self::Heap(value) => value.py_getitem(key, vm),
         }
     }
@@ -279,8 +272,7 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
                     args.drop_with(vm);
                     return Err(ExcType::attribute_error(Type::Str, attr.as_str(vm.interns)));
                 };
-                let text = OwnedStrView(*text);
-                call_str_method_impl(&text, method, args, vm).map(CallResult::Value)
+                call_str_method_impl(text, method, args, vm).map(CallResult::Value)
             }
             Self::Heap(value) => value.py_call_attr(vm, attr, args),
         }
