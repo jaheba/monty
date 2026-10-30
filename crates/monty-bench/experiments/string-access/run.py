@@ -10,7 +10,7 @@ from pathlib import Path
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--runtime', action='append', required=True, help='LABEL=/absolute/path/to/executable')
-parser.add_argument('--circus', type=Path, default=Path('/Users/jaheba/p/flying-circus'))
+parser.add_argument('--circus', type=Path, required=True, help='Flying Circus checkout with Unicode agent workloads')
 parser.add_argument('--output', type=Path, required=True)
 parser.add_argument('--samples', type=int, default=30)
 parser.add_argument(

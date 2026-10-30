@@ -13,9 +13,9 @@
 //!
 //! Cursor state stays boxed to keep unused per-string metadata small. An inline
 //! `Cell`/`OnceCell` experiment saved about 0.35 MiB across 3,000 Unicode strings but
-//! regressed several access workloads by 2–4%, so it remains an experimental patch.
+//! regressed several access workloads by 2–4%, so the boxed layout remains the default.
 //! These measurements do not isolate the CPU cause; see the string-access benchmark
-//! README for workloads, raw results and the remaining moderate-access overhead.
+//! README for workloads and the remaining moderate-access overhead.
 //!
 //! Checkpoint allocation is resource-preflighted, with u32 offsets below 4 GiB and
 //! native-width offsets beyond that. All caches are derived, reset on clone and omitted
