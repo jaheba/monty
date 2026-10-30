@@ -32,7 +32,7 @@ use crate::{
         py_trait::PyObjectIdentity,
         slice::{SearchRange, search_range, slice_collect_iterator},
     },
-    value::{EitherStr, Value, eq_inline_str, eq_str},
+    value::{EitherStr, Value, eq_str},
 };
 
 /// Heap-backed Python string with cached hash and ASCII status.
@@ -194,7 +194,7 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
         match self {
             Self::Interned(id) => Value::InternString(*id).py_eq_impl(other, vm),
-            Self::Inline(text) => Ok(eq_inline_str(text, other, vm)),
+            Self::Inline(text) => Ok(text.eq_value(other, vm)),
             Self::Heap(value) => value.py_eq_impl(other, vm),
         }
     }

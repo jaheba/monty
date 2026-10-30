@@ -291,7 +291,7 @@ impl<'h> PyTrait<'h> for Value {
                 Self::InternString(o) => Some(id == o),
                 _ => eq_str(vm.interns.get_str(*id), other, vm),
             }),
-            Self::InlineString(text) => Ok(eq_inline_str(text, other, vm)),
+            Self::InlineString(text) => Ok(text.eq_value(other, vm)),
             Self::InternBytes(id) => Ok(match other {
                 // Fast path for the same interned bytes; otherwise compare content
                 // (interned bytes are not deduplicated, unlike strings).
@@ -1923,18 +1923,6 @@ pub(crate) fn eq_str(s: &str, other: &Value, vm: &VM<'_>) -> Option<bool> {
         Value::InternString(id) => Some(s == vm.interns.get_str(*id)),
         Value::InlineString(text) => Some(s.as_bytes() == text.as_bytes()),
         Value::Ref(id) if let HeapData::Str(o) = vm.heap.get(*id) => Some(s == o.as_str()),
-        _ => None,
-    }
-}
-
-/// Compares inline text without validating UTF-8; non-string operands return `None`.
-pub(crate) fn eq_inline_str(text: &InlineStr, other: &Value, vm: &VM<'_>) -> Option<bool> {
-    match other {
-        Value::InlineString(other) => Some(text == other),
-        Value::InternString(id) => Some(text.as_bytes() == vm.interns.get_str(*id).as_bytes()),
-        Value::Ref(id) if let HeapData::Str(other) = vm.heap.get(*id) => {
-            Some(text.as_bytes() == other.as_str().as_bytes())
-        }
         _ => None,
     }
 }
