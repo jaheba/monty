@@ -86,7 +86,7 @@ use monty_types::{MontyPath, OsFunctionCall, PathBytesDataArgs, PathStringDataAr
 use super::{
     LazyHeapSet, List, PyTrait, Type,
     bytes::{Bytes, bytes_repr_fmt},
-    str::{allocate_string, allocate_string_no_interning},
+    str::{allocate_string, allocate_string_on_heap},
 };
 use crate::{
     args::ArgValues,
@@ -1104,14 +1104,14 @@ fn install_buffer<'h>(file: &HeapReadMut<'h, OpenFile>, result: Value, vm: &mut 
     };
 
     let replacement = match &*result {
-        Value::InternString(string_id) => {
-            let text = vm.interns.get_str(*string_id);
+        Value::InternString(_) | Value::InlineString(_) => {
+            let text = result.as_str(vm).expect("string result checked above");
             let text = if translate {
                 translate_newlines(text)
             } else {
                 text.to_owned()
             };
-            Some(allocate_string_no_interning(text, vm.heap))
+            Some(allocate_string_on_heap(text, vm.heap))
         }
         Value::InternBytes(bytes_id) => {
             let bytes = vm.interns.get_bytes(*bytes_id).to_vec();
@@ -1119,7 +1119,7 @@ fn install_buffer<'h>(file: &HeapReadMut<'h, OpenFile>, result: Value, vm: &mut 
         }
         Value::Ref(id) => match vm.heap.get(*id) {
             HeapData::Str(text) if translate && text.as_str().contains('\r') => {
-                Some(allocate_string_no_interning(translate_newlines(text.as_str()), vm.heap))
+                Some(allocate_string_on_heap(translate_newlines(text.as_str()), vm.heap))
             }
             _ => None,
         },

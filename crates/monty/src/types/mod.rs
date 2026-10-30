@@ -24,6 +24,7 @@ pub mod generic_alias;
 pub mod hash_table;
 pub mod hashlib;
 pub mod host_class;
+pub(crate) mod inline_str;
 pub mod instance;
 pub mod iter;
 pub mod itertools;
