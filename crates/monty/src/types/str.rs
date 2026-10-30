@@ -1,4 +1,4 @@
-use std::{cell::Cell, fmt::Write, ops};
+use std::{cell::Cell, fmt::Write, ops, str};
 
 use monty_types::{ResourceError, ResourceTracker};
 pub use monty_types::{StringRepr, string_repr_fmt};
@@ -291,7 +291,7 @@ fn str_ctor_arg_check(arg: Option<&Value>, name: &str, vm: &VM<'_>) -> RunResult
 fn ctor_str_arg<'a>(arg: Option<&'a Value>, default: &'a str, vm: &'a VM<'_>) -> RunResult<&'a str> {
     match arg {
         None => Ok(default),
-        Some(v) => v.to_str(vm),
+        Some(v) => v.try_to_str(vm),
     }
 }
 
@@ -710,23 +710,12 @@ fn str_join<'h>(separator: &impl HeapView<'h, str>, iterable: Value, vm: &mut VM
             result.push_str(separator.get(vm.heap));
         }
 
-        // Check item is a string and extract its content
-        match item {
-            Value::InternString(id) => {
-                result.push_str(vm.interns.get_str(*id));
-            }
-            Value::Ref(heap_id) => {
-                if let HeapData::Str(s) = vm.heap.get(*heap_id) {
-                    result.push_str(s.as_str());
-                } else {
-                    let t = item.py_type_name(vm);
-                    return Err(ExcType::type_error_join_item(index, &t));
-                }
-            }
-            _ => {
-                let t = item.py_type_name(vm);
-                return Err(ExcType::type_error_join_item(index, &t));
-            }
+        // Borrow string contents without copying.
+        if let Some(text) = item.as_str(vm) {
+            result.push_str(text);
+        } else {
+            let t = item.py_type_name(vm);
+            return Err(ExcType::type_error_join_item(index, &t));
         }
         index += 1;
     }
@@ -1089,41 +1078,33 @@ fn affix_matches(
     // CPython error messages use the bare method name, not "str.startswith".
     let short_method = method.strip_prefix("str.").unwrap_or(method);
     let check = |a: &str| matcher(slice, a);
-    match affix {
-        Value::InternString(id) => Ok(check(vm.interns.get_str(*id))),
-        Value::Ref(heap_id) => match vm.heap.get(*heap_id) {
-            HeapData::Str(a) => Ok(check(a.as_str())),
-            HeapData::Tuple(tuple) => {
-                for item in tuple.as_slice() {
-                    let matched = match item {
-                        Value::InternString(id) => check(vm.interns.get_str(*id)),
-                        Value::Ref(hid) if let HeapData::Str(a) = vm.heap.get(*hid) => check(a.as_str()),
-                        _ => {
-                            return Err(ExcType::type_error_affix_tuple_item(
-                                short_method,
-                                "str",
-                                &item.py_type_name(vm),
-                            ));
-                        }
-                    };
-                    if matched {
-                        return Ok(true);
-                    }
-                }
-                Ok(false)
-            }
-            _ => Err(ExcType::type_error_affix_arg(
-                short_method,
-                "str",
-                &affix.py_type_name(vm),
-            )),
-        },
-        _ => Err(ExcType::type_error_affix_arg(
-            short_method,
-            "str",
-            &affix.py_type_name(vm),
-        )),
+    if let Some(text) = affix.as_str(vm) {
+        return Ok(check(text));
     }
+
+    if let Value::Ref(heap_id) = affix
+        && let HeapData::Tuple(tuple) = vm.heap.get(*heap_id)
+    {
+        for item in tuple.as_slice() {
+            let Some(text) = item.as_str(vm) else {
+                return Err(ExcType::type_error_affix_tuple_item(
+                    short_method,
+                    "str",
+                    &item.py_type_name(vm),
+                ));
+            };
+            if check(text) {
+                return Ok(true);
+            }
+        }
+        return Ok(false);
+    }
+
+    Err(ExcType::type_error_affix_arg(
+        short_method,
+        "str",
+        &affix.py_type_name(vm),
+    ))
 }
 
 /// Parses arguments for search methods (find, rfind, index, rindex, count).
@@ -1151,17 +1132,10 @@ fn parse_search_args(
 
 /// Extracts a string from a Value, returning an error if not a string.
 fn extract_string_arg(value: &Value, vm: &mut VM<'_>) -> RunResult<String> {
-    match value {
-        Value::InternString(id) => Ok(vm.interns.get_str(*id).to_owned()),
-        Value::Ref(heap_id) => {
-            if let HeapData::Str(s) = vm.heap.get(*heap_id) {
-                Ok(s.as_str().to_owned())
-            } else {
-                Err(ExcType::type_error("expected str"))
-            }
-        }
-        _ => Err(ExcType::type_error("expected str")),
-    }
+    value
+        .as_str(vm)
+        .map(str::to_owned)
+        .ok_or_else(|| ExcType::type_error("expected str"))
 }
 
 /// Extracts an integer from a Value, returning an error if not an integer.
@@ -2129,24 +2103,12 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, StringIterator> {
 /// Shared by logical string views and concrete heap dispatch.
 /// A non-str probe reports its own type, as CPython does.
 pub(crate) fn str_contains(container_str: &str, item: &Value, heap: &Heap, interns: &Interns) -> RunResult<bool> {
-    match item {
-        Value::InternString(item_id) => {
-            let item_str = interns.get_str(*item_id);
-            Ok(container_str.contains(item_str))
-        }
-        Value::Ref(item_heap_id) => {
-            if let HeapData::Str(item_str) = heap.get(*item_heap_id) {
-                Ok(container_str.contains(item_str.as_str()))
-            } else {
-                Err(ExcType::type_error(format!(
-                    "'in <string>' requires string as left operand, not {}",
-                    item.py_type_name_heap(heap, interns)
-                )))
-            }
-        }
-        _ => Err(ExcType::type_error(format!(
+    if let Some(text) = item.as_str_heap(heap, interns) {
+        Ok(container_str.contains(text))
+    } else {
+        Err(ExcType::type_error(format!(
             "'in <string>' requires string as left operand, not {}",
             item.py_type_name_heap(heap, interns)
-        ))),
+        )))
     }
 }

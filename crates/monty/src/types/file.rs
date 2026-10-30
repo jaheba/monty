@@ -96,6 +96,7 @@ use crate::{
     heap::{DropGuard, DropWithContext, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadMut, HeapReadOutput},
     intern::StaticStrings,
     os_dispatch::PostConversionEffect,
+    py_value::PyValue,
     types::str::StringRepr,
     value::{EitherStr, Value},
     virtual_path::posix_join,
@@ -1092,10 +1093,8 @@ pub(crate) fn apply_file_next(
     }
 }
 
-/// Installs a host `ReadText` / `ReadBytes` result as `file`'s buffer and
-/// builds the position cache. Interned results are promoted to heap entries
-/// and universal-newline text is translated here, once. A buffer already
-/// present (a snapshot/restore race) is kept and the new content dropped.
+/// Installs a host read result as a heap-backed buffer and builds the position cache.
+/// Translates universal newlines once. If a buffer is already present, keeps it and drops the result.
 fn install_buffer<'h>(file: &HeapReadMut<'h, OpenFile>, result: Value, vm: &mut VM<'h>) -> RunResult<()> {
     let mut result_guard = DropGuard::new(result, vm);
     let (result, vm) = result_guard.as_parts_mut();
@@ -1715,12 +1714,8 @@ fn validate_write_data(data: &Value, binary: bool, vm: &VM<'_>) -> RunResult<()>
 /// `None` for any other type. `write()` unwraps it after `validate_write_data`,
 /// `open()`'s `newline` argument uses `None` to raise its `TypeError`.
 pub(crate) fn extract_str_payload(data: &Value, vm: &VM<'_>) -> Option<String> {
-    match data {
-        Value::InternString(id) => Some(vm.interns.get_str(*id).to_owned()),
-        Value::Ref(id) => match vm.heap.get(*id) {
-            HeapData::Str(s) => Some(s.as_str().to_owned()),
-            _ => None,
-        },
+    match data.py_value(vm) {
+        PyValue::Str(text) => Some(text.as_str(vm).to_owned()),
         _ => None,
     }
 }
@@ -1728,12 +1723,8 @@ pub(crate) fn extract_str_payload(data: &Value, vm: &VM<'_>) -> Option<String> {
 /// Owned `Vec<u8>` from a value pre-validated as Python `bytes` — binary
 /// companion to [`extract_str_payload`].
 fn extract_bytes_payload(data: &Value, vm: &VM<'_>) -> Option<Vec<u8>> {
-    match data {
-        Value::InternBytes(id) => Some(vm.interns.get_bytes(*id).to_owned()),
-        Value::Ref(id) => match vm.heap.get(*id) {
-            HeapData::Bytes(b) => Some(b.as_slice().to_owned()),
-            _ => None,
-        },
+    match data.py_value(vm) {
+        PyValue::Bytes(bytes) => Some(bytes.as_slice(vm).to_owned()),
         _ => None,
     }
 }

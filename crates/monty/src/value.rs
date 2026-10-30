@@ -1772,36 +1772,39 @@ impl Value {
         }
     }
 
-    /// Borrows the value as a `&str` if it is a string (interned or heap `str`).
-    ///
-    /// Unlike [`as_either_str`](Self::as_either_str) this never allocates — both
-    /// interned and heap strings are returned by borrow — and it errors rather
-    /// than returning `None` for non-strings, with CPython's generic `expected
-    /// string, not <type>` message. Use it wherever a function reads a `str`
-    /// argument it does not need to own; the borrow keeps `self` and the heap
-    /// pinned, so drop/allocate only once it ends.
-    pub(crate) fn to_str<'a>(&'a self, vm: &'a VM<'_>) -> RunResult<&'a str> {
-        self.to_str_heap(vm.heap, vm.interns)
+    /// Borrows string contents without allocating, or returns `None` for non-strings.
+    pub(crate) fn as_str<'a>(&'a self, vm: &'a VM<'_>) -> Option<&'a str> {
+        self.as_str_heap(vm.heap, vm.interns)
     }
 
-    /// [`to_str`](Self::to_str) for contexts without a `&VM` — takes `heap` and
+    /// [`as_str`](Self::as_str) for contexts without a `&VM`.
+    pub(crate) fn as_str_heap<'a>(&'a self, heap: &'a Heap, interns: &'a Interns) -> Option<&'a str> {
+        match self {
+            Self::InternString(string_id) => Some(interns.get_str(*string_id)),
+            Self::Ref(heap_id) => match heap.get(*heap_id) {
+                HeapData::Str(s) => Some(s.as_str()),
+                _ => None,
+            },
+            _ => None,
+        }
+    }
+
+    /// Borrows string contents, or raises `TypeError` with `expected string, not <type>`.
+    pub(crate) fn try_to_str<'a>(&'a self, vm: &'a VM<'_>) -> RunResult<&'a str> {
+        self.try_to_str_heap(vm.heap, vm.interns)
+    }
+
+    /// [`try_to_str`](Self::try_to_str) for contexts without a `&VM` — takes `heap` and
     /// `interns` separately so callers can keep a disjoint `&mut` borrow of
     /// another `VM` field alive (e.g. resolving a `str` `Value` produced by
     /// `py_str` while writing it to `vm.print_writer`).
-    pub(crate) fn to_str_heap<'a>(&'a self, heap: &'a Heap, interns: &'a Interns) -> RunResult<&'a str> {
-        match self {
-            Self::InternString(string_id) => return Ok(interns.get_str(*string_id)),
-            Self::Ref(heap_id) => {
-                if let HeapData::Str(s) = heap.get(*heap_id) {
-                    return Ok(s.as_str());
-                }
-            }
-            _ => {}
-        }
-        Err(ExcType::type_error(format!(
-            "expected string, not {}",
-            self.py_type_name_heap(heap, interns)
-        )))
+    pub(crate) fn try_to_str_heap<'a>(&'a self, heap: &'a Heap, interns: &'a Interns) -> RunResult<&'a str> {
+        self.as_str_heap(heap, interns).ok_or_else(|| {
+            ExcType::type_error(format!(
+                "expected string, not {}",
+                self.py_type_name_heap(heap, interns)
+            ))
+        })
     }
 
     /// check if the value is a string.
@@ -1924,6 +1927,14 @@ impl From<String> for EitherStr {
 }
 
 impl EitherStr {
+    /// Returns an owned string value, preserving interned names.
+    pub(crate) fn as_value(&self, heap: &Heap) -> Value {
+        match self {
+            Self::Interned(id) => Value::InternString(*id),
+            Self::Heap(text) => allocate_string(text.as_str(), heap),
+        }
+    }
+
     /// Returns the keyword as a str slice for error messages or comparisons.
     pub fn as_str<'a>(&'a self, interns: &'a Interns) -> &'a str {
         match self {
