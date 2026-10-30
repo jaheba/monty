@@ -2316,6 +2316,36 @@ mod tests {
     use crate::run::{Program, SessionTables};
 
     #[test]
+    fn derived_string_caches_do_not_change_dump_bytes() {
+        let text = Str::new("aé中🐍".repeat(4096));
+        let encode = |text: &Str| {
+            let mut bytes = Vec::new();
+            serde::Serialize::serialize(text, &mut minicbor_serde::Serializer::new(&mut bytes)).unwrap();
+            bytes
+        };
+        let cold = encode(&text);
+        let tracker = ResourceTracker::default();
+        text.char_len();
+        text.1.set(Some(hash_python_str(text.as_str())));
+        for i in 0..1000 {
+            let position = i * 7919 % 16384;
+            assert_eq!(
+                text.3.character(text.as_str(), position, &tracker).unwrap(),
+                "aé中🐍".chars().nth(usize::try_from(position % 4).unwrap())
+            );
+        }
+        assert!(text.3.has_checkpoints());
+        assert_eq!(encode(&text), cold);
+
+        let reset = <Str as serde::Deserialize>::deserialize(&mut minicbor_serde::Deserializer::new(&cold)).unwrap();
+        assert!(!reset.3.has_checkpoints());
+        assert!(reset.1.get().is_none());
+        assert!(reset.2.get().is_none());
+        assert_eq!(reset.as_str(), text.as_str());
+        assert_eq!(encode(&reset), cold);
+    }
+
+    #[test]
     fn characters_use_reserved_or_inline_storage() {
         for character in ['\0', 'a', '\x7f'] {
             assert!(

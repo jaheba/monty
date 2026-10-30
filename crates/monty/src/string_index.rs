@@ -102,6 +102,14 @@ impl Offsets {
 }
 
 impl StringIndex {
+    #[cfg(test)]
+    pub(crate) fn has_checkpoints(&self) -> bool {
+        self.state
+            .borrow()
+            .as_ref()
+            .is_some_and(|state| state.offsets.len() != 0)
+    }
+
     pub fn char_len(&self, text: &str) -> usize {
         if let Some(length) = self.length.get().checked_sub(1) {
             length
@@ -254,10 +262,12 @@ mod tests {
                 assert_eq!(index.byte_offset(&text, target, &tracker).unwrap(), boundaries[target]);
                 assert_eq!(index.char_offset(&text, boundaries[target], &tracker).unwrap(), target);
                 assert_eq!(
-                    index.character(&text, target as i64, &tracker).unwrap(),
+                    index
+                        .character(&text, i64::try_from(target).unwrap(), &tracker)
+                        .unwrap(),
                     characters.get(target).copied()
                 );
-                let negative = -(target as i64) - 1;
+                let negative = -(i64::try_from(target).unwrap()) - 1;
                 let expected = characters.len().checked_sub(target + 1).map(|i| characters[i]);
                 assert_eq!(index.character(&text, negative, &tracker).unwrap(), expected);
             }
@@ -277,7 +287,9 @@ mod tests {
         }
         assert!(index.state.borrow().is_none());
         for target in 1..text.chars().count() {
-            index.character(&text, target as i64, &tracker).unwrap();
+            index
+                .character(&text, i64::try_from(target).unwrap(), &tracker)
+                .unwrap();
         }
         assert_eq!(index.state.borrow().as_ref().unwrap().offsets.len(), 0);
     }
@@ -288,11 +300,11 @@ mod tests {
         let text = "a中é🐍".repeat(1024);
         let index = StringIndex::default();
         for n in 0..64 {
-            index.character(&text, (n * 7919 % 4096) as i64, &tracker).unwrap();
+            index.character(&text, i64::from(n * 7919 % 4096), &tracker).unwrap();
         }
         assert_eq!(index.state.borrow().as_ref().unwrap().offsets.len(), 0);
         for n in 64..4096 {
-            index.character(&text, (n * 7919 % 4096) as i64, &tracker).unwrap();
+            index.character(&text, i64::from(n * 7919 % 4096), &tracker).unwrap();
         }
         assert!(index.state.borrow().as_ref().unwrap().offsets.len() > 0);
     }
@@ -318,6 +330,7 @@ mod tests {
         }
         assert!(rejected);
         let cloned = index.clone();
+        assert!(index.state.borrow().is_some());
         assert_eq!(cloned.length.get(), 0);
         assert!(cloned.state.borrow().is_none());
     }
