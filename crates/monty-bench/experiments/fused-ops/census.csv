@@ -1,0 +1,13 @@
+case,instructions,fused_sites,eliminated_dispatches
+agg_rows,173,1,1
+attr_dispatch,60,0,0
+dict_comp,19,1,2
+fib_25,27,3,5
+fstring_report,74,0,0
+list_comp,16,1,2
+local_arithmetic,48,10,12
+local_compare,48,8,10
+local_moves,44,9,10
+local_subscript,36,4,5
+pair_tuples,18,1,1
+str_parse,120,0,0

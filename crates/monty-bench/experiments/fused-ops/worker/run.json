@@ -1,0 +1,67 @@
+{
+  "runtimes": {
+    "baseline": {
+      "label": "baseline",
+      "binary": "/private/tmp/monty-fused-ops/baseline",
+      "arguments": [],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "candidate": {
+      "label": "candidate",
+      "binary": "/private/tmp/monty-fused-ops/candidate",
+      "arguments": [],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    }
+  },
+  "timestamp": "2026-10-30T09:22:49.166798+00:00",
+  "options": {
+    "runtime": [
+      "baseline=/private/tmp/monty-fused-ops/baseline",
+      "candidate=/private/tmp/monty-fused-ops/candidate"
+    ],
+    "runtime_arg": [],
+    "verbose": false,
+    "x": 1,
+    "chart_baseline": null,
+    "diff": true,
+    "output": "crates/monty-bench/experiments/fused-ops/worker",
+    "format": [
+      "html",
+      "markdown",
+      "json"
+    ],
+    "benchmark": [
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/agg_rows.py",
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/attr_dispatch.py",
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/dict_comp.py",
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/fib_25.py",
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/fstring_report.py",
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/list_comp.py",
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_arithmetic.py",
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_compare.py",
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_moves.py",
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_subscript.py",
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/pair_tuples.py",
+      "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/str_parse.py"
+    ],
+    "include_defaults": false,
+    "quick": false,
+    "samples": 20,
+    "memory_samples": 3,
+    "startup_samples": 5,
+    "warmups": 3,
+    "timeout": 30,
+    "threshold": 1.0,
+    "absolute_threshold_ms": 0.01
+  },
+  "completed_at": "2026-10-30T09:23:10.126926+00:00",
+  "elapsed_seconds": 20.96009208308533
+}

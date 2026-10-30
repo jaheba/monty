@@ -563,6 +563,24 @@ pub enum Opcode {
     YieldValue = 125,
     /// Advance a delegate beneath TOS (the resume value), yielding or replacing it with its return value.
     YieldFrom = 126,
+    // BEGIN GENERATED FUSIONS
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadLocal0LoadLocal1BinaryAdd = 127,
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadLocal1LoadLocal2BinaryAdd = 128,
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadSmallIntBinaryAdd = 129,
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadSmallIntBinarySub = 130,
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadSmallIntBinaryMul = 131,
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadSmallIntBinaryMod = 132,
+    #[cfg(feature = "experimental-fusion")]
+    FusedCompareLtJumpIfFalse = 133,
+    #[cfg(feature = "experimental-fusion")]
+    FusedCompareEqJumpIfFalse = 134,
+    // END GENERATED FUSIONS
 }
 
 /// `LoadName` flag: the load is in call position, so an unresolved name under
@@ -602,6 +620,17 @@ impl Opcode {
     /// Returns this opcode's serialized operand shape.
     fn operand_shape(self) -> OperandShape {
         match self {
+            // BEGIN GENERATED FUSION SHAPES
+            #[cfg(feature = "experimental-fusion")]
+            Self::FusedLoadLocal0LoadLocal1BinaryAdd
+            | Self::FusedLoadLocal1LoadLocal2BinaryAdd
+            | Self::FusedLoadSmallIntBinaryAdd
+            | Self::FusedLoadSmallIntBinarySub
+            | Self::FusedLoadSmallIntBinaryMul
+            | Self::FusedLoadSmallIntBinaryMod
+            | Self::FusedCompareLtJumpIfFalse
+            | Self::FusedCompareEqJumpIfFalse => OperandShape::None,
+            // END GENERATED FUSION SHAPES
             Self::Pop
             | Self::Dup
             | Self::Dup2

@@ -337,7 +337,11 @@ mod tests {
     fn serialized_components_match_dump_version() {
         assert_eq!(
             opcode_fingerprint(),
-            0x6de8_58ef_543b_91a6,
+            if cfg!(feature = "experimental-fusion") {
+                0x8b4b_1a90_b45e_77ef
+            } else {
+                0x6de8_58ef_543b_91a6
+            },
             "opcodes changed for dump version {DUMP_VERSION}, actual: {}",
             grouped_hex(opcode_fingerprint())
         );

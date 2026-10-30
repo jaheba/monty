@@ -1,0 +1,12 @@
+total = 0.0
+lines = []
+for i in range(2_000):
+    name = 'product-' + str(i % 100)
+    price = (i * 7) % 300 + 0.99
+    share = (i % 100) / 100
+    total += price
+    lines.append(f'| {name:<14} | {price:>10.2f} | {share:>7.1%} | {i:06d} |')
+lines.append(f'total: {total:,.2f}')
+report = '\n'.join(lines)
+result = len(report)
+print(result)

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "scenario": "empty_command_process",
+  "samples": 5,
+  "timestamp": "2026-10-30T09:22:49.591610+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "scope": "Fresh process launch through exit; empty -c command; no shell; normal interpreter defaults",
+  "engines": {
+    "baseline": {
+      "binary_sha256": "22d2cc7a1384be1ee79cb2ab42b43e1ecb585bdacb19b99bd6432e54f93abe49",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-fused-ops/baseline",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.005954167,
+        0.006183333,
+        0.00654525,
+        0.005516458,
+        0.005570209
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.005954167
+    },
+    "candidate": {
+      "binary_sha256": "8954e88b1c6fdaf63e471e05e5ea032477bf32302b56c748c7b97134a66e1f58",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-fused-ops/candidate",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.006961625,
+        0.005679458,
+        0.005527209,
+        0.00545175,
+        0.005753375
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.005679458
+    }
+  }
+}

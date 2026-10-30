@@ -1,0 +1,4 @@
+22d2cc7a1384be1ee79cb2ab42b43e1ecb585bdacb19b99bd6432e54f93abe49  /tmp/monty-fused-ops/baseline
+8954e88b1c6fdaf63e471e05e5ea032477bf32302b56c748c7b97134a66e1f58  /tmp/monty-fused-ops/candidate
+4c4747862912ff2b5e63cc3c0c2983a6b3fe0391220483abc6d51374b024fc3a  /tmp/monty-fused-ops/baseline-direct
+d1f186d9e3ad1f6d6decac39bead6ba310d90b83ff3978e3a102da642cf4c21e  /tmp/monty-fused-ops/candidate-direct

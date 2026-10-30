@@ -1,0 +1,11 @@
+Date: 2026-10-30
+Host: Darwin arm64
+Rust: rustc 1.99.0 (b940084d7 2026-09-28)
+HEAD: fec08a311f38c4e0305436ee9fb557f509c7ec98 (dirty working tree)
+Baseline: saved unfused binaries from the first fusion experiment, unchanged.
+Candidate: experimental-fusion with eight focused integer fast paths.
+The feature-disabled production behavior is unchanged from the saved baseline.
+Profile: release, fat LTO, one codegen unit, stripped.
+Both variants retain the pre-existing unrelated working-tree changes and the
+local spam API build fix recorded in provenance.txt.
+Focused benchmark inputs: original twelve workloads plus local_add and small_int_math.

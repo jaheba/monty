@@ -1,0 +1,4 @@
+22d2cc7a1384be1ee79cb2ab42b43e1ecb585bdacb19b99bd6432e54f93abe49  /tmp/monty-fused-ops/baseline
+6e3f4678815b9f1e6565d50dc3ba5ac7459dd37623be615cbb1a225f9f3ff18e  /tmp/monty-fused-ops/focused
+4c4747862912ff2b5e63cc3c0c2983a6b3fe0391220483abc6d51374b024fc3a  /tmp/monty-fused-ops/baseline-direct
+d400be90aa6545e8de700fbef015ac412a9afff9ce50010e14f50df1a0f67c57  /tmp/monty-fused-ops/focused-direct

@@ -1,0 +1,142 @@
+{
+  "agg_rows": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/agg_rows.py",
+    "suite": "custom",
+    "stdout": "909800\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/agg_rows.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "85cf89bf621b0c7fc748a1ab3d1fa1a04241c1aba167a6f935179ded7b1cab7a"
+  },
+  "attr_dispatch": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/attr_dispatch.py",
+    "suite": "custom",
+    "stdout": "50715000\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/attr_dispatch.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "32336ee636dcc799c9baaaf3dc68443113cd84aad568d02576b1f6cfe2b76267"
+  },
+  "dict_comp": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/dict_comp.py",
+    "suite": "custom",
+    "stdout": "500\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/dict_comp.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "bbb903f02631c3bcb7d79f14f4d0f6e468d600e88a346837ea9495e8dada90c4"
+  },
+  "fib_25": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/fib_25.py",
+    "suite": "custom",
+    "stdout": "75025\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/fib_25.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "f22913b564587b14e219e1493b94290dfeedca16d52d74984eea6c99f5bb6ca5"
+  },
+  "fstring_report": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/fstring_report.py",
+    "suite": "custom",
+    "stdout": "102017\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/fstring_report.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "7b4ceee15a2598d72a88077839af9c7bf1a76adfe3da638aea8f68f4c6dc97b2"
+  },
+  "list_comp": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/list_comp.py",
+    "suite": "custom",
+    "stdout": "1000\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/list_comp.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "66efcbd28b7e7334f4c763485acd167b8a0f5b657edfd355d249123cb90811a6"
+  },
+  "local_add": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/local_add.py",
+    "suite": "custom",
+    "stdout": "1000000\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_add.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "1f7a9bb337375e61acfc19231ab07aad103b4f8dabd7c682e31a4cb791d10776"
+  },
+  "local_arithmetic": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/local_arithmetic.py",
+    "suite": "custom",
+    "stdout": "101745215\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_arithmetic.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "3f54ef33d9a3b7e23237d5e6f12efdea4509cbcf51b80f92dc72bb396c34627c"
+  },
+  "local_compare": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/local_compare.py",
+    "suite": "custom",
+    "stdout": "52944\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_compare.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "0ac3dc5b709e7cf0480b339436719657d820f8a2db9e65396a2f69003afc562c"
+  },
+  "local_moves": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/local_moves.py",
+    "suite": "custom",
+    "stdout": "10\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_moves.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "2bf59b0462cd258c47d3aa7ad5bf946e83dfda384c296bd5d55a667b55da0d70"
+  },
+  "local_subscript": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/local_subscript.py",
+    "suite": "custom",
+    "stdout": "3149488\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_subscript.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "8908db890ca877daf72d5b9be6eb8b370e56c5405600bc4b7b3a2d7b1a0ef464"
+  },
+  "pair_tuples": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/pair_tuples.py",
+    "suite": "custom",
+    "stdout": "100000\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/pair_tuples.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "79ef05b64cc5f1c81f19011d22cedf4cba226e9dd58527681e9daab978938212"
+  },
+  "small_int_math": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/small_int_math.py",
+    "suite": "custom",
+    "stdout": "91\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/small_int_math.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "88a6ae891e379da116d4b91217382cac97edd79c44449f8db1bcca167f2a828d"
+  },
+  "str_parse": {
+    "file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/focused-worker/workloads/str_parse.py",
+    "suite": "custom",
+    "stdout": "655040\n",
+    "compatibility_probe": true,
+    "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/str_parse.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "cce2c9d80d7ad06613517a9a2ac658227b665d4c21bda5b36ef97c2111d6dd12"
+  }
+}

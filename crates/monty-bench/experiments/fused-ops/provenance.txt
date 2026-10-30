@@ -1,0 +1,10 @@
+Date: 2026-10-30
+Host: Darwin arm64
+Rust: rustc 1.99.0 (b940084d7 2026-09-28)
+HEAD: fec08a311f38c4e0305436ee9fb557f509c7ec98
+Baseline: initial dirty working tree plus source_nesting.rs local spam API build fix.
+Candidate: same tree with monty/experimental-fusion enabled.
+Profile: release, fat LTO, one codegen unit, stripped.
+Baseline and candidate both retain existing unrelated uncommitted changes.
+Prerequisite fix: adapt the local spam dependency's optional limits and retain
+Monty's prior 16 MiB source, 1,000,000 token and combined work budgets.

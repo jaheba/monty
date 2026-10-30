@@ -1,0 +1,6 @@
+extend = "../../../../pyproject.toml"
+include = ["*.py"]
+
+[format]
+# Preserve the exact benchmark inputs and archived source snapshots.
+exclude = ["**/workloads/**"]

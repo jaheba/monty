@@ -1,0 +1,3121 @@
+{
+  "schema_version": 1,
+  "revision": "monty-runtime 1.0.1",
+  "runtime_label": "candidate",
+  "build_info": "Source revision and compiler flags unverified",
+  "engine": "monty",
+  "runtime_version": "monty-runtime 1.0.1",
+  "binary_sha256": "8954e88b1c6fdaf63e471e05e5ea032477bf32302b56c748c7b97134a66e1f58",
+  "manifest_sha256": "ce81bcf875fe12bb38bb802d148d18a1752c98ddf8881849ad4931bbf8f276a4",
+  "harness_sha256": "ce368099fcebba8ebd2f60cf7e9ffe022684da37169bfd9dd05f5f2ad35dcbc6",
+  "memory_helper_sha256": "a82b030ad8ebee819972de97bbd8ef7ef6785b4b2d5525f1575121f20f912c64",
+  "timestamp": "2026-10-30T09:22:49.628138+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "harness_python": "3.14.2",
+  "memory_method": "RUSAGE_CHILDREN.ru_maxrss",
+  "protocol_version": 5,
+  "configuration": {
+    "samples": 20,
+    "memory_samples": 3,
+    "warmups": 0,
+    "timeout": 30.0,
+    "legacy_cli_summary": false,
+    "scenario": "warm_worker_one_shot",
+    "suite": "all",
+    "binary": "/private/tmp/monty-fused-ops/candidate",
+    "arguments": []
+  },
+  "schedule_seed": 0,
+  "schedule": [
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "local_compare"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "pair_tuples"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "candidate",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "candidate",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "fib_25"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "local_arithmetic"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "baseline",
+      "attr_dispatch"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "dict_comp"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "local_arithmetic"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ],
+    [
+      "baseline",
+      "pair_tuples"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "fstring_report"
+    ],
+    [
+      "candidate",
+      "list_comp"
+    ],
+    [
+      "candidate",
+      "fib_25"
+    ],
+    [
+      "baseline",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "local_subscript"
+    ],
+    [
+      "candidate",
+      "agg_rows"
+    ],
+    [
+      "candidate",
+      "local_moves"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "candidate",
+      "str_parse"
+    ],
+    [
+      "baseline",
+      "fstring_report"
+    ],
+    [
+      "baseline",
+      "list_comp"
+    ],
+    [
+      "baseline",
+      "agg_rows"
+    ]
+  ],
+  "benchmarks": {
+    "agg_rows": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/agg_rows.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/agg_rows.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "85cf89bf621b0c7fc748a1ab3d1fa1a04241c1aba167a6f935179ded7b1cab7a",
+      "expected_sha256": "0577741e0da0605391e0dbc5b3ccb08dacca6d06fde678c2afc1cd7300f92c6a",
+      "wall_seconds": [
+        0.010466709,
+        0.010264208,
+        0.010249,
+        0.010114875,
+        0.010253125,
+        0.010366125,
+        0.010133458,
+        0.010255833,
+        0.010352375,
+        0.010160041,
+        0.010168416,
+        0.010361833,
+        0.010322417,
+        0.010477666,
+        0.010348833,
+        0.010056791,
+        0.010191959,
+        0.010429041,
+        0.010533125,
+        0.010463209
+      ],
+      "worker_ready_seconds": [
+        0.005659833,
+        0.005904166,
+        0.005908583,
+        0.005971708,
+        0.006655625,
+        0.005673542,
+        0.0065025,
+        0.006459666,
+        0.007441542,
+        0.006202667,
+        0.005601666,
+        0.006515916,
+        0.005873125,
+        0.005622166,
+        0.005995333,
+        0.006678625,
+        0.006339833,
+        0.0056195,
+        0.006112667,
+        0.005523833
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        4.175e-05,
+        2.6209e-05,
+        3.6375e-05,
+        4.2125e-05,
+        4.3125e-05,
+        2.9292e-05,
+        3.6917e-05,
+        4.0167e-05,
+        3.3583e-05,
+        3.2417e-05,
+        3.3209e-05,
+        3.1584e-05,
+        3.3417e-05,
+        4.8584e-05,
+        4.2667e-05,
+        3.2792e-05,
+        8.3e-05,
+        3.8917e-05,
+        3.9541e-05,
+        2.875e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        12042240,
+        11960320,
+        12124160
+      ],
+      "median_peak_rss_bytes": 12042240,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.0102933125,
+      "stdev_wall_seconds": 0.00013543987950202728,
+      "median_worker_ready_seconds": 0.005983520500000001,
+      "median_session_setup_seconds": 3.6646e-05,
+      "median_session_reset_seconds": null
+    },
+    "attr_dispatch": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/attr_dispatch.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/attr_dispatch.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "32336ee636dcc799c9baaaf3dc68443113cd84aad568d02576b1f6cfe2b76267",
+      "expected_sha256": "5bc2ad02a5a97e42bf34a362abb27ffb3869b79a04665edc09abf30532168418",
+      "wall_seconds": [
+        0.011209208,
+        0.011192375,
+        0.011019792,
+        0.01106475,
+        0.011307416,
+        0.011143666,
+        0.011079791,
+        0.011264875,
+        0.011102917,
+        0.011111375,
+        0.010946583,
+        0.011075083,
+        0.011313375,
+        0.011142,
+        0.011314583,
+        0.011052,
+        0.01123375,
+        0.011504333,
+        0.011403583,
+        0.011097209
+      ],
+      "worker_ready_seconds": [
+        0.008733459,
+        0.005655875,
+        0.005623084,
+        0.006137959,
+        0.005724167,
+        0.006496084,
+        0.006323792,
+        0.007800458,
+        0.009411958,
+        0.006167125,
+        0.005819292,
+        0.00643725,
+        0.005942,
+        0.006199041,
+        0.007132833,
+        0.0064515,
+        0.00598525,
+        0.006937625,
+        0.006044416,
+        0.006179083
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        5.5625e-05,
+        3.5584e-05,
+        3.4083e-05,
+        2.5791e-05,
+        4.4417e-05,
+        4.1375e-05,
+        3.0625e-05,
+        4.5e-05,
+        3.5625e-05,
+        3.125e-05,
+        3.0417e-05,
+        3.1084e-05,
+        3.4083e-05,
+        4.0875e-05,
+        3.575e-05,
+        3.6625e-05,
+        3.475e-05,
+        3.3792e-05,
+        3.6542e-05,
+        6.9833e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        11190272,
+        11190272,
+        11206656
+      ],
+      "median_peak_rss_bytes": 11190272,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.011142833000000001,
+      "stdev_wall_seconds": 0.00013945941686443575,
+      "median_worker_ready_seconds": 0.006189062,
+      "median_session_setup_seconds": 3.56045e-05,
+      "median_session_reset_seconds": null
+    },
+    "dict_comp": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/dict_comp.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/dict_comp.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "bbb903f02631c3bcb7d79f14f4d0f6e468d600e88a346837ea9495e8dada90c4",
+      "expected_sha256": "792376c209f338959be4cf00c54dbf82662b90516082e23106faec4c43c69e49",
+      "wall_seconds": [
+        0.000359583,
+        0.000408333,
+        0.000361791,
+        0.0003545,
+        0.000362917,
+        0.000371167,
+        0.000391042,
+        0.00041,
+        0.000381958,
+        0.000468208,
+        0.000376375,
+        0.000381416,
+        0.000340709,
+        0.000402375,
+        0.000377875,
+        0.000364958,
+        0.000390167,
+        0.000343167,
+        0.000379458,
+        0.000399292
+      ],
+      "worker_ready_seconds": [
+        0.006231417,
+        0.00644575,
+        0.00622625,
+        0.006078334,
+        0.006049416,
+        0.006100584,
+        0.0060335,
+        0.005685458,
+        0.006059833,
+        0.005880542,
+        0.006684417,
+        0.00641075,
+        0.005398542,
+        0.007029833,
+        0.006051667,
+        0.00550775,
+        0.006493833,
+        0.005377041,
+        0.005376709,
+        0.006359875
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        4.3125e-05,
+        4.1e-05,
+        2.7584e-05,
+        3.6791e-05,
+        3.3875e-05,
+        4.0416e-05,
+        3.9292e-05,
+        3.7042e-05,
+        3.7917e-05,
+        7.5792e-05,
+        2.9375e-05,
+        3.9542e-05,
+        3.9583e-05,
+        3.575e-05,
+        3.7958e-05,
+        3.4167e-05,
+        4.675e-05,
+        4.05e-05,
+        3.9958e-05,
+        3.2083e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        10764288,
+        10764288,
+        10764288
+      ],
+      "median_peak_rss_bytes": 10764288,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.0003786665,
+      "stdev_wall_seconds": 2.8533055140116827e-05,
+      "median_worker_ready_seconds": 0.0060690835,
+      "median_session_setup_seconds": 3.8625000000000004e-05,
+      "median_session_reset_seconds": null
+    },
+    "fib_25": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/fib_25.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/fib_25.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "f22913b564587b14e219e1493b94290dfeedca16d52d74984eea6c99f5bb6ca5",
+      "expected_sha256": "f264c2aa02b4aa37296b3a317dc830e70eb71a461b91355451da16dbb0bb0fa9",
+      "wall_seconds": [
+        0.022181333,
+        0.0220445,
+        0.022236583,
+        0.022256875,
+        0.022005084,
+        0.022176834,
+        0.022054291,
+        0.022204125,
+        0.022158833,
+        0.022171041,
+        0.022171459,
+        0.02222375,
+        0.02207175,
+        0.022252959,
+        0.022211625,
+        0.022661334,
+        0.022184209,
+        0.022659208,
+        0.022108166,
+        0.022266417
+      ],
+      "worker_ready_seconds": [
+        0.006323083,
+        0.005510667,
+        0.005638,
+        0.00553525,
+        0.006010667,
+        0.006393791,
+        0.006064458,
+        0.006015084,
+        0.005934166,
+        0.005552459,
+        0.0060025,
+        0.005661125,
+        0.005659167,
+        0.006309,
+        0.007606417,
+        0.0058945,
+        0.006413917,
+        0.007646541,
+        0.006184375,
+        0.005403625
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        5.1e-05,
+        3.3458e-05,
+        3.0708e-05,
+        3.3708e-05,
+        3.5333e-05,
+        4.4375e-05,
+        4.2084e-05,
+        0.0001135,
+        4.9459e-05,
+        3.8375e-05,
+        3.9541e-05,
+        4.3584e-05,
+        3.7791e-05,
+        3.075e-05,
+        3.3541e-05,
+        4.4416e-05,
+        2.7166e-05,
+        4.0209e-05,
+        3.3959e-05,
+        2.9375e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        10633216,
+        10633216,
+        10649600
+      ],
+      "median_peak_rss_bytes": 10633216,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.022182771,
+      "stdev_wall_seconds": 0.0001692805985331674,
+      "median_worker_ready_seconds": 0.0060065835,
+      "median_session_setup_seconds": 3.8082999999999994e-05,
+      "median_session_reset_seconds": null
+    },
+    "fstring_report": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/fstring_report.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/fstring_report.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "7b4ceee15a2598d72a88077839af9c7bf1a76adfe3da638aea8f68f4c6dc97b2",
+      "expected_sha256": "11db5d694ad504f96120d81e23f8283f1402a1547a62d469c5327704108b6006",
+      "wall_seconds": [
+        0.003445375,
+        0.003576834,
+        0.003592708,
+        0.0034725,
+        0.003495167,
+        0.003453042,
+        0.003496875,
+        0.003484,
+        0.003530125,
+        0.003520333,
+        0.003453791,
+        0.00371375,
+        0.0035675,
+        0.003548375,
+        0.003475917,
+        0.003462958,
+        0.003512625,
+        0.003486125,
+        0.003497542,
+        0.003662666
+      ],
+      "worker_ready_seconds": [
+        0.006216167,
+        0.006365833,
+        0.005708917,
+        0.00666725,
+        0.005747542,
+        0.006625709,
+        0.006437208,
+        0.006203125,
+        0.005592166,
+        0.006118875,
+        0.006355375,
+        0.006077666,
+        0.006009167,
+        0.005849916,
+        0.006115875,
+        0.006215541,
+        0.005316583,
+        0.006224666,
+        0.006116625,
+        0.006215958
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        4.1125e-05,
+        3.4083e-05,
+        3.5e-05,
+        2.8208e-05,
+        4.7958e-05,
+        3.5166e-05,
+        4.1542e-05,
+        4.0125e-05,
+        3.35e-05,
+        3.8125e-05,
+        3.3584e-05,
+        3.7834e-05,
+        3.2542e-05,
+        3.1792e-05,
+        4.3416e-05,
+        3.2417e-05,
+        2.8917e-05,
+        4.275e-05,
+        3.1125e-05,
+        4.8584e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        11665408,
+        11730944,
+        11714560
+      ],
+      "median_peak_rss_bytes": 11714560,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.0034972085,
+      "stdev_wall_seconds": 7.089650785802615e-05,
+      "median_worker_ready_seconds": 0.006161,
+      "median_session_setup_seconds": 3.5083e-05,
+      "median_session_reset_seconds": null
+    },
+    "list_comp": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/list_comp.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/list_comp.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "66efcbd28b7e7334f4c763485acd167b8a0f5b657edfd355d249123cb90811a6",
+      "expected_sha256": "83c02ac2d48c863dab2ccf6870455aadfc2cec073b8db269b517c879d76aa6d9",
+      "wall_seconds": [
+        0.000322542,
+        0.000314958,
+        0.000308208,
+        0.000298792,
+        0.000325958,
+        0.000316041,
+        0.000327,
+        0.000315083,
+        0.000324625,
+        0.000287916,
+        0.000386958,
+        0.000343875,
+        0.000399042,
+        0.000304833,
+        0.000300167,
+        0.00039025,
+        0.000314958,
+        0.000318,
+        0.000332875,
+        0.000309417
+      ],
+      "worker_ready_seconds": [
+        0.006185417,
+        0.00599,
+        0.006219917,
+        0.00591825,
+        0.00614175,
+        0.005513166,
+        0.006560292,
+        0.005783,
+        0.005761167,
+        0.005531584,
+        0.00609725,
+        0.006331583,
+        0.006161042,
+        0.006099458,
+        0.005977084,
+        0.00588725,
+        0.00630725,
+        0.005507833,
+        0.005468917,
+        0.006407875
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        2.8625e-05,
+        2.6625e-05,
+        3.0292e-05,
+        4.375e-05,
+        4.2333e-05,
+        3.1459e-05,
+        3.3458e-05,
+        4.2e-05,
+        3.5166e-05,
+        3.7875e-05,
+        5.9334e-05,
+        3.3125e-05,
+        8.8375e-05,
+        3.1667e-05,
+        4.3916e-05,
+        6.7291e-05,
+        4.3167e-05,
+        5.4417e-05,
+        3.7166e-05,
+        4.4958e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        10649600,
+        10715136,
+        10665984
+      ],
+      "median_peak_rss_bytes": 10665984,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.00031702049999999995,
+      "stdev_wall_seconds": 3.0746343025848754e-05,
+      "median_worker_ready_seconds": 0.006043625,
+      "median_session_setup_seconds": 3.99375e-05,
+      "median_session_reset_seconds": null
+    },
+    "local_arithmetic": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/local_arithmetic.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_arithmetic.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "3f54ef33d9a3b7e23237d5e6f12efdea4509cbcf51b80f92dc72bb396c34627c",
+      "expected_sha256": "1e266413e12eb6f94773c04e47a65cd3af276d1d5155803e372b4da425ee7749",
+      "wall_seconds": [
+        0.017572041,
+        0.01746525,
+        0.017398042,
+        0.01755875,
+        0.017422792,
+        0.017486834,
+        0.017722708,
+        0.017439958,
+        0.017508959,
+        0.0178925,
+        0.017631833,
+        0.017676334,
+        0.017627459,
+        0.017640166,
+        0.017792208,
+        0.017865208,
+        0.017690125,
+        0.017480458,
+        0.017647667,
+        0.017528125
+      ],
+      "worker_ready_seconds": [
+        0.005541666,
+        0.006388708,
+        0.007304291,
+        0.007495375,
+        0.00593075,
+        0.006435375,
+        0.006143333,
+        0.006150125,
+        0.006266167,
+        0.006033166,
+        0.005968709,
+        0.006046375,
+        0.005759417,
+        0.006612375,
+        0.007036917,
+        0.00601625,
+        0.005696916,
+        0.007678042,
+        0.006157042,
+        0.006338292
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.5584e-05,
+        2.7792e-05,
+        5.0667e-05,
+        3.5208e-05,
+        3.8791e-05,
+        3.5333e-05,
+        3.0125e-05,
+        4.5917e-05,
+        3.4666e-05,
+        3.025e-05,
+        3.6958e-05,
+        3.2041e-05,
+        3.1833e-05,
+        3.5e-05,
+        3.2e-05,
+        2.725e-05,
+        4.2209e-05,
+        4.5292e-05,
+        3.0958e-05,
+        3.4333e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        10813440,
+        10747904,
+        10813440
+      ],
+      "median_peak_rss_bytes": 10813440,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.01759975,
+      "stdev_wall_seconds": 0.0001426031961501546,
+      "median_worker_ready_seconds": 0.0061535835,
+      "median_session_setup_seconds": 3.4833e-05,
+      "median_session_reset_seconds": null
+    },
+    "local_compare": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/local_compare.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_compare.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "0ac3dc5b709e7cf0480b339436719657d820f8a2db9e65396a2f69003afc562c",
+      "expected_sha256": "900cfe93b3b66b9a72dcd4b39f2601bb3a76fbd41b60939169fd3f114e0fd57a",
+      "wall_seconds": [
+        0.014306875,
+        0.014350667,
+        0.014606083,
+        0.014529875,
+        0.014330917,
+        0.014284959,
+        0.01444075,
+        0.014460584,
+        0.014653417,
+        0.014381791,
+        0.01462325,
+        0.014299041,
+        0.014358,
+        0.014413792,
+        0.014493666,
+        0.014164417,
+        0.014637375,
+        0.01437575,
+        0.014555083,
+        0.01453
+      ],
+      "worker_ready_seconds": [
+        0.006400667,
+        0.006222708,
+        0.005741375,
+        0.0058055,
+        0.006113375,
+        0.006330084,
+        0.005839625,
+        0.005957208,
+        0.005786041,
+        0.00620925,
+        0.005606375,
+        0.006007875,
+        0.006546666,
+        0.006102959,
+        0.006481542,
+        0.00645,
+        0.006256542,
+        0.006629959,
+        0.00650625,
+        0.006008625
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.6042e-05,
+        4.2625e-05,
+        3.2458e-05,
+        2.9875e-05,
+        2.875e-05,
+        3.0416e-05,
+        3.4459e-05,
+        4.8875e-05,
+        3.6792e-05,
+        3.2042e-05,
+        3.7709e-05,
+        3.4542e-05,
+        2.7375e-05,
+        4.4041e-05,
+        5.0792e-05,
+        4.3e-05,
+        3.5417e-05,
+        4.3666e-05,
+        3.1583e-05,
+        3.7708e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        10797056,
+        10780672,
+        10764288
+      ],
+      "median_peak_rss_bytes": 10780672,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.014427271,
+      "stdev_wall_seconds": 0.00013587439287905814,
+      "median_worker_ready_seconds": 0.0061613125,
+      "median_session_setup_seconds": 3.5729500000000004e-05,
+      "median_session_reset_seconds": null
+    },
+    "local_moves": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/local_moves.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_moves.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "2bf59b0462cd258c47d3aa7ad5bf946e83dfda384c296bd5d55a667b55da0d70",
+      "expected_sha256": "917df3320d778ddbaa5c5c7742bc4046bf803c36ed2b050f30844ed206783469",
+      "wall_seconds": [
+        0.028422416,
+        0.028408917,
+        0.029018416,
+        0.028361959,
+        0.028718833,
+        0.029019042,
+        0.028108375,
+        0.02830275,
+        0.028302375,
+        0.028344291,
+        0.028545083,
+        0.028603958,
+        0.028225167,
+        0.028344583,
+        0.028594459,
+        0.02801025,
+        0.028372375,
+        0.028693291,
+        0.028332667,
+        0.028444375
+      ],
+      "worker_ready_seconds": [
+        0.006665708,
+        0.00757675,
+        0.006713625,
+        0.006119334,
+        0.00632175,
+        0.006192334,
+        0.005545875,
+        0.006028417,
+        0.005685625,
+        0.006329625,
+        0.006889042,
+        0.006000791,
+        0.006040583,
+        0.006239375,
+        0.006610708,
+        0.00631775,
+        0.00542325,
+        0.006328167,
+        0.006042708,
+        0.006064042
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.7167e-05,
+        3.15e-05,
+        4.625e-05,
+        4.2916e-05,
+        3.4375e-05,
+        2.7916e-05,
+        4.1542e-05,
+        2.8708e-05,
+        3.9042e-05,
+        3.1209e-05,
+        4.3e-05,
+        2.5917e-05,
+        2.85e-05,
+        2.6208e-05,
+        3.0958e-05,
+        5.1042e-05,
+        3.8e-05,
+        3.45e-05,
+        3.225e-05,
+        2.9417e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        10731520,
+        10731520,
+        10715136
+      ],
+      "median_peak_rss_bytes": 10731520,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.028390646,
+      "stdev_wall_seconds": 0.00026025266990508663,
+      "median_worker_ready_seconds": 0.0062158544999999996,
+      "median_session_setup_seconds": 3.33125e-05,
+      "median_session_reset_seconds": null
+    },
+    "local_subscript": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/local_subscript.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/local_subscript.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "8908db890ca877daf72d5b9be6eb8b370e56c5405600bc4b7b3a2d7b1a0ef464",
+      "expected_sha256": "1349d8a07c93ab2ff94d6c8410d59ef6a21dfd5b218d8d34616806a0c5012cd4",
+      "wall_seconds": [
+        0.009427875,
+        0.009547292,
+        0.009332166,
+        0.009556958,
+        0.009213792,
+        0.009383875,
+        0.009362208,
+        0.009460375,
+        0.009369333,
+        0.009253458,
+        0.009334458,
+        0.009282917,
+        0.009489375,
+        0.009349,
+        0.009294709,
+        0.009899209,
+        0.009348791,
+        0.009384291,
+        0.009438958,
+        0.009393791
+      ],
+      "worker_ready_seconds": [
+        0.006016041,
+        0.005622583,
+        0.006158917,
+        0.006211792,
+        0.005728875,
+        0.006540667,
+        0.00639825,
+        0.006627791,
+        0.0066575,
+        0.005831917,
+        0.005988917,
+        0.006278125,
+        0.006117917,
+        0.005943833,
+        0.00623675,
+        0.006248709,
+        0.006160166,
+        0.005566958,
+        0.006323958,
+        0.006448958
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.4292e-05,
+        3.4e-05,
+        5.1875e-05,
+        2.8792e-05,
+        3.6667e-05,
+        4.6333e-05,
+        3.8e-05,
+        3.7e-05,
+        5.725e-05,
+        2.4625e-05,
+        3.9208e-05,
+        3.1875e-05,
+        6.1666e-05,
+        4.2959e-05,
+        4.125e-05,
+        3.2291e-05,
+        3.2834e-05,
+        3.2417e-05,
+        7.5792e-05,
+        3.5459e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        10813440,
+        10813440,
+        10846208
+      ],
+      "median_peak_rss_bytes": 10813440,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.009376604,
+      "stdev_wall_seconds": 0.0001463037540186334,
+      "median_worker_ready_seconds": 0.0061859789999999994,
+      "median_session_setup_seconds": 3.68335e-05,
+      "median_session_reset_seconds": null
+    },
+    "pair_tuples": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/pair_tuples.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/pair_tuples.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "79ef05b64cc5f1c81f19011d22cedf4cba226e9dd58527681e9daab978938212",
+      "expected_sha256": "b80500a01f984c764f1a3b486622d0ef7cc5b13fa9bd57ec9015113eaf875597",
+      "wall_seconds": [
+        0.012506958,
+        0.01250075,
+        0.012386833,
+        0.012852375,
+        0.012803792,
+        0.012956667,
+        0.013111209,
+        0.012758541,
+        0.0131465,
+        0.013034416,
+        0.012782667,
+        0.012757625,
+        0.013066459,
+        0.012661375,
+        0.012739542,
+        0.012770666,
+        0.013076292,
+        0.012987875,
+        0.01269725,
+        0.012624334
+      ],
+      "worker_ready_seconds": [
+        0.00600225,
+        0.006504709,
+        0.006223416,
+        0.006770625,
+        0.008033334,
+        0.00711475,
+        0.006420167,
+        0.006070791,
+        0.007103542,
+        0.006270708,
+        0.006104709,
+        0.007417208,
+        0.006089083,
+        0.005615791,
+        0.006099917,
+        0.005845375,
+        0.005607875,
+        0.005536875,
+        0.006121667,
+        0.006434458
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.9833e-05,
+        4.0333e-05,
+        4.2042e-05,
+        4.3375e-05,
+        5.1708e-05,
+        2.6708e-05,
+        2.6833e-05,
+        5.2334e-05,
+        4.7708e-05,
+        3.3584e-05,
+        3.4916e-05,
+        7.0625e-05,
+        3.3208e-05,
+        3.95e-05,
+        3.1416e-05,
+        4.225e-05,
+        4.15e-05,
+        4.0792e-05,
+        3.2791e-05,
+        3.3708e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        25247744,
+        25231360,
+        25264128
+      ],
+      "median_peak_rss_bytes": 25247744,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.012776666499999999,
+      "stdev_wall_seconds": 0.00021696817926286364,
+      "median_worker_ready_seconds": 0.0061725415,
+      "median_session_setup_seconds": 4.0083e-05,
+      "median_session_reset_seconds": null
+    },
+    "str_parse": {
+      "source_file": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/worker/workloads/str_parse.py",
+      "original_source": "/Users/jaheba/p/monty/crates/monty-bench/experiments/fused-ops/workloads/str_parse.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "cce2c9d80d7ad06613517a9a2ac658227b665d4c21bda5b36ef97c2111d6dd12",
+      "expected_sha256": "71272304b384f57dea8ed110536ce6526d7104f686f183be66aa981965308ada",
+      "wall_seconds": [
+        0.007178167,
+        0.007432584,
+        0.00717475,
+        0.007373875,
+        0.007197042,
+        0.007146542,
+        0.007085291,
+        0.007292833,
+        0.007082542,
+        0.007161709,
+        0.007079875,
+        0.007192,
+        0.00722725,
+        0.007087667,
+        0.007107042,
+        0.0071825,
+        0.007168792,
+        0.007285666,
+        0.007167542,
+        0.007379292
+      ],
+      "worker_ready_seconds": [
+        0.006815709,
+        0.005534333,
+        0.005616625,
+        0.0064925,
+        0.006429458,
+        0.005788625,
+        0.006096625,
+        0.007019458,
+        0.005742958,
+        0.006399167,
+        0.005976042,
+        0.005509417,
+        0.005573666,
+        0.005393292,
+        0.006154333,
+        0.005492709,
+        0.006386208,
+        0.006475334,
+        0.007674542,
+        0.005706542
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.3041e-05,
+        2.8625e-05,
+        3.2709e-05,
+        3.475e-05,
+        3.3167e-05,
+        3.6625e-05,
+        4.125e-05,
+        3.7625e-05,
+        4.8875e-05,
+        4.0541e-05,
+        3.7041e-05,
+        4.0542e-05,
+        2.95e-05,
+        3.15e-05,
+        4.8458e-05,
+        3.7e-05,
+        4e-05,
+        8.5375e-05,
+        4.7125e-05,
+        4.8875e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        11616256,
+        11632640,
+        11649024
+      ],
+      "median_peak_rss_bytes": 11632640,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.0071764585,
+      "stdev_wall_seconds": 0.00010353268333769121,
+      "median_worker_ready_seconds": 0.006036333499999999,
+      "median_session_setup_seconds": 3.7333e-05,
+      "median_session_reset_seconds": null
+    }
+  },
+  "run_error": null
+}
