@@ -598,6 +598,22 @@ pub enum Opcode {
     /// becomes `[v, a, b, c]`. Operand: u8 n. The inverse of `LiftToTop`; the
     /// pattern compiler uses it to park a capture under the pattern's temporaries.
     SinkTop = 129,
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadLocal0LoadLocal1BinaryAdd = 130,
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadLocal1LoadLocal2BinaryAdd = 131,
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadSmallIntBinaryAdd = 132,
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadSmallIntBinarySub = 133,
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadSmallIntBinaryMul = 134,
+    #[cfg(feature = "experimental-fusion")]
+    FusedLoadSmallIntBinaryMod = 135,
+    #[cfg(feature = "experimental-fusion")]
+    FusedCompareLtJumpIfFalse = 136,
+    #[cfg(feature = "experimental-fusion")]
+    FusedCompareEqJumpIfFalse = 137,
 }
 
 /// `LoadName` flag: the load is in call position, so an unresolved name under
@@ -637,6 +653,15 @@ impl Opcode {
     /// Returns this opcode's serialized operand shape.
     fn operand_shape(self) -> OperandShape {
         match self {
+            #[cfg(feature = "experimental-fusion")]
+            Self::FusedLoadLocal0LoadLocal1BinaryAdd
+            | Self::FusedLoadLocal1LoadLocal2BinaryAdd
+            | Self::FusedLoadSmallIntBinaryAdd
+            | Self::FusedLoadSmallIntBinarySub
+            | Self::FusedLoadSmallIntBinaryMul
+            | Self::FusedLoadSmallIntBinaryMod
+            | Self::FusedCompareLtJumpIfFalse
+            | Self::FusedCompareEqJumpIfFalse => OperandShape::None,
             Self::Pop
             | Self::Dup
             | Self::Dup2

@@ -893,6 +893,9 @@ pub struct VM<'h> {
     pub(crate) env: VmEnv<'h>,
 }
 
+#[cfg(feature = "experimental-fusion")]
+mod fused;
+
 impl<'h> VM<'h> {
     /// Creates a new VM ready to run `program`'s module code.
     ///
@@ -1319,6 +1322,38 @@ impl<'h> VM<'h> {
             };
 
             match opcode {
+                #[cfg(feature = "experimental-fusion")]
+                Opcode::FusedLoadLocal0LoadLocal1BinaryAdd => {
+                    try_catch!(self, self.fused_0(&mut countdown, check_limits, poll_print));
+                }
+                #[cfg(feature = "experimental-fusion")]
+                Opcode::FusedLoadLocal1LoadLocal2BinaryAdd => {
+                    try_catch!(self, self.fused_1(&mut countdown, check_limits, poll_print));
+                }
+                #[cfg(feature = "experimental-fusion")]
+                Opcode::FusedLoadSmallIntBinaryAdd => {
+                    try_catch!(self, self.fused_2(&mut countdown, check_limits, poll_print));
+                }
+                #[cfg(feature = "experimental-fusion")]
+                Opcode::FusedLoadSmallIntBinarySub => {
+                    try_catch!(self, self.fused_3(&mut countdown, check_limits, poll_print));
+                }
+                #[cfg(feature = "experimental-fusion")]
+                Opcode::FusedLoadSmallIntBinaryMul => {
+                    try_catch!(self, self.fused_4(&mut countdown, check_limits, poll_print));
+                }
+                #[cfg(feature = "experimental-fusion")]
+                Opcode::FusedLoadSmallIntBinaryMod => {
+                    try_catch!(self, self.fused_5(&mut countdown, check_limits, poll_print));
+                }
+                #[cfg(feature = "experimental-fusion")]
+                Opcode::FusedCompareLtJumpIfFalse => {
+                    try_catch!(self, self.fused_6(&mut countdown, check_limits, poll_print));
+                }
+                #[cfg(feature = "experimental-fusion")]
+                Opcode::FusedCompareEqJumpIfFalse => {
+                    try_catch!(self, self.fused_7(&mut countdown, check_limits, poll_print));
+                }
                 // ============================================================
                 // Stack Operations
                 // ============================================================

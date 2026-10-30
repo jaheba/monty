@@ -15,6 +15,8 @@
 mod builder;
 mod code;
 mod compiler;
+#[cfg(feature = "experimental-fusion")]
+mod fused;
 mod op;
 mod pattern;
 mod vm;

@@ -22,6 +22,9 @@ pub struct CodeBuilder {
     /// The bytecode being built.
     bytecode: Vec<u8>,
 
+    #[cfg(feature = "experimental-fusion")]
+    instruction_offsets: Vec<usize>,
+
     /// Constants collected during compilation.
     constants: Vec<Value>,
 
@@ -444,10 +447,19 @@ impl CodeBuilder {
     /// Finishes a compiled body, transferring its buffers and metadata to `Code`.
     #[must_use]
     pub fn build(self) -> Code {
+        #[cfg(feature = "experimental-fusion")]
+        let bytecode = {
+            let mut bytes = self.bytecode;
+            super::fused::fuse(&mut bytes, &self.instruction_offsets);
+            bytes
+        };
+        #[cfg(not(feature = "experimental-fusion"))]
+        let bytecode = self.bytecode;
+
         // Unnamed slots use the sentinel understood by local-name lookup.
         let local_names = self.local_names.into_iter().map(Option::unwrap_or_default).collect();
         Code::new(
-            self.bytecode,
+            bytecode,
             self.constants,
             self.location_table,
             self.exception_table,
@@ -516,6 +528,8 @@ impl CodeBuilder {
             return Ok(());
         }
         self.record_location()?;
+        #[cfg(feature = "experimental-fusion")]
+        self.instruction_offsets.push(self.bytecode.len());
         self.bytecode.push(op as u8);
         match operand {
             Operand::None => {}
