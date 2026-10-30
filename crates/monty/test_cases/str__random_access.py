@@ -62,3 +62,14 @@ for text in ('abcdefghijklmnop', 'aé中🐍aé中🐍aé中🐍aé中🐍aé中
     assert text[Index(1)] == text[1]
     assert text[Index(-1)] == text[-1]
     assert text[Index(-9) : Index(-1) : Index(2)] == text[-9:-1:2]
+
+
+# Repeated contiguous slices exercise the cursor and eventual sparse checkpoints.
+text = 'abcdefghü中🐍' * 500
+characters = list(text)
+for i in range(500):
+    start = (i * 7919) % len(text)
+    stop = min(start + 73, len(text))
+    assert text[start:stop] == ''.join(characters[start:stop])
+    assert text[start - len(text) : stop - len(text) or None] == ''.join(characters[start:stop])
+assert text[Index(7) : Index(34) : Index(1)] == ''.join(characters[7:34])

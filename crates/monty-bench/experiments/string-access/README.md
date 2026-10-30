@@ -112,3 +112,120 @@ as established wins. Three RSS samples describe measured medians, not statistica
 The complete local reports are under `playground/string-access-comparison/results/` and
 `playground/string-access-final/results/`. The frozen tuned module snapshot uses the equivalent pre-Clippy `match`
 spelling of the out-of-range early return; the policy and lookup algorithm are the same as the final source.
+
+## Affix checks and contiguous slices
+
+`affix_slices.py` compares saved builds on 16,384-character ASCII, German and Chinese text.
+Fixtures construct heap strings before the timed body.
+Each affix case makes 100 calls, including hits, misses, tuples and bounded checks near the middle of the text.
+Slice cases make 1,024 random or nearby 64-character excerpts, or 100 whole-string copies.
+The four large agent workloads are included as application-level checks.
+
+```sh
+python3 crates/monty-bench/experiments/string-access/affix_slices.py \
+  --runtime baseline=/absolute/path/to/unicode-cache-build \
+  --runtime candidate=/absolute/path/to/affix-slice-build \
+  --runtime cpython=/absolute/path/to/python \
+  --output playground/affix-slice-comparison
+```
+
+The baseline for this comparison includes commit `c8e8d2a9`'s cache policy and search work.
+The new paths reuse its character lengths and offsets for bounded affix checks and contiguous slices.
+Unbounded affix checks compare UTF-8 directly.
+Stepped slices retain their iterator-based implementation.
+
+Measured October 30, 2026 with the same macOS arm64 toolchain as the preceding comparison, 30 timing samples and
+three RSS samples per workload. Repeated request medians in milliseconds:
+
+| Workload | Cache baseline | Affix/slice changes | CPython |
+| --- | ---: | ---: | ---: |
+| German startswith, 100 calls | 1.461 | 0.056 | 0.085 |
+| Chinese startswith, 100 calls | 3.103 | 0.053 | 0.087 |
+| Chinese endswith, 100 calls | 3.108 | 0.047 | 0.089 |
+| German random 64-character slices, 1,024 calls | 1.868 | 0.480 | 0.259 |
+| Chinese random 64-character slices, 1,024 calls | 2.747 | 0.517 | 0.277 |
+| Chinese whole-string slices, 100 calls | 10.402 | 0.107 | 0.084 |
+| German agent workload | 5.069 | 4.609 | 5.640 |
+| German with rare emoji, agent workload | 5.157 | 4.588 | 6.158 |
+| Chinese agent workload | 6.552 | 6.014 | 4.118 |
+
+No candidate regressions or compatibility failures were detected across the 34 workloads.
+ASCII slice differences were not established as improvements.
+The whole-string slice comparison includes Monty's copy while CPython can reuse the original immutable string.
+Consult `affix-slice-comparison.csv` and `affix-slice-provenance.json` for results and executable hashes.
+The complete local report is `playground/affix-slice-comparison/results/report.html`.
+
+
+## Inline cursor comparison
+
+The inline variant replaces `RefCell<Option<Box<State>>>` with inline `Cell` fields for the cursor and scan counter,
+plus `OnceCell<Box<Offsets>>` for the immutable checkpoint table.
+Reads before checkpoint construction allocate no cache storage and perform no runtime borrow checks.
+Checkpoint spacing and the 32x scan budget are unchanged.
+The 64-bit layout uses 40 bytes of cache metadata and a 72-byte string payload; the existing 80-byte heap-slot limit
+still passes. Interned entries gain inline metadata, so retained-memory measurements include that tradeoff.
+
+Use repeated `--only` filters to select the access, memory and agent cases from `run.py`:
+
+```sh
+python3 crates/monty-bench/experiments/string-access/run.py \
+  --runtime boxed=/absolute/path/to/affix-slice-build \
+  --runtime inline=/absolute/path/to/inline-cache-build \
+  --runtime uncached=/absolute/path/to/pre-cache-build \
+  --runtime cpython=/absolute/path/to/python \
+  --only 'access_*' --only 'memory_index_*' --only 'agent_unicode_*' --only 'string_*' \
+  --samples 30 --memory-samples 0 --output playground/inline-cache-timing
+```
+
+For RSS, select only `memory_index_*` with `--samples 10 --memory-samples 10` and a new output directory.
+The `uncached` build predates Unicode caching, affix and slicing optimizations; use it as a memory-case reference,
+not an isolated layout comparison for the agent workloads.
+
+
+The experiment remains in `inline-cursor.patch`; the production source keeps the boxed cache.
+Apply the patch with `git apply crates/monty-bench/experiments/string-access/inline-cursor.patch` before building the
+inline candidate. It applies to the documented boxed implementation in this branch.
+
+Measured October 30, 2026 on macOS arm64 with the same release toolchain.
+The timing run uses 30 samples per runtime and mode across 33 workloads.
+The retained-memory run uses ten timing samples and ten fresh-process RSS samples for each of five cases.
+All cases validate their output; neither run had compatibility or measurement failures.
+
+Repeated request medians, milliseconds:
+
+| Workload | Boxed cache | Inline cache | Before Unicode caching |
+| --- | ---: | ---: | ---: |
+| 3,000 German strings, 64 accesses each | 42.743 | 42.491 | 40.753 |
+| 3,000 strings with 10% Latin-1, 64 accesses each | 43.563 | 43.528 | 41.439 |
+| 3,000 Chinese strings, 64 accesses each | 54.603 | 55.912 | 52.964 |
+| 3,000 strings with 10% emoji, 64 accesses each | 48.635 | 48.543 | 45.504 |
+| Interned ASCII random access | 2.406 | 2.494 | 2.403 |
+| Mixed Unicode random access | 3.371 | 3.459 | 19.394 |
+| Chinese random access | 0.801 | 0.827 | 4.703 |
+| German agent workload | 4.513 | 4.473 | 5.878 |
+| Chinese agent workload | 5.898 | 5.882 | 7.728 |
+
+The inline variant has established regressions in Chinese random access (about 3%), Chinese retained-string access
+(about 2.4%), interned ASCII access (3.6%), and mixed Unicode random access (2.6%).
+The moderate German, Latin-1 and emoji timing differences do not establish a general runtime improvement.
+The extra cost relative to the uncached 64-access cases therefore remains.
+
+One-shot whole-process RSS medians, MiB, from ten independent samples:
+
+| Corpus | Boxed cache | Inline cache | Before Unicode caching | CPython |
+| --- | ---: | ---: | ---: | ---: |
+| ASCII | 25.703 | 25.562 | 25.641 | 32.953 |
+| German | 25.945 | 25.594 | 25.641 | 32.961 |
+| 10% Latin-1 | 25.945 | 25.578 | 25.656 | 32.922 |
+| Chinese | 34.445 | 34.125 | 34.172 | 49.234 |
+| 10% emoji | 28.844 | 28.484 | 28.562 | 80.641 |
+
+Removing the separate cursor allocation saves about 0.32–0.37 MiB for the retained Unicode strings.
+The German, Latin-1 and emoji RSS improvements exceed the harness's 1% significance threshold; the Chinese change
+is below that threshold. These are whole-process peaks rather than exact live cache sizes.
+The small RSS benefit does not justify the observed runtime regressions for the default policy.
+The measurements do not isolate the CPU cause; larger payloads and interned entries are possible costs to profile.
+
+`inline-cursor-timing.csv`, `inline-cursor-rss.csv` and `inline-cursor-provenance.json` retain the evidence.
+Complete local reports are `playground/inline-cache-timing/results/report.html` and
+`playground/inline-cache-rss/results/report.html`.

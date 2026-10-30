@@ -1,4 +1,9 @@
 //! Borrowed ASCII runs and individual non-ASCII characters, with source byte offsets.
+//!
+//! Mostly-ASCII agent text benefits from bulk ASCII case conversion between Unicode
+//! characters. Runs are maximal to avoid repeated iterator dispatch inside long ASCII spans.
+//! Retaining `Chars` also avoids restarting its decoder for each character
+//! in Chinese text. Source offsets preserve context-sensitive mappings such as Greek sigma.
 
 use std::str::Chars;
 

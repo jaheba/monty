@@ -1,6 +1,7 @@
 """Compare production string policies with Flying Circus, including cold access and RSS."""
 
 import argparse
+import fnmatch
 import hashlib
 import json
 import os
@@ -12,6 +13,9 @@ parser.add_argument('--runtime', action='append', required=True, help='LABEL=/ab
 parser.add_argument('--circus', type=Path, default=Path('/Users/jaheba/p/flying-circus'))
 parser.add_argument('--output', type=Path, required=True)
 parser.add_argument('--samples', type=int, default=30)
+parser.add_argument(
+    '--only', action='append', default=[], help='Only workload stems matching these shell-style patterns'
+)
 parser.add_argument('--memory-samples', type=int, default=5)
 args = parser.parse_args()
 root = Path(__file__).resolve().parents[4]
@@ -96,6 +100,10 @@ for name in (
     'string_end_access_unicode',
 ):
     paths.append(root / 'crates/monty-bench/benches/python' / f'{name}.py')
+if args.only:
+    paths = [path for path in paths if any(fnmatch.fnmatchcase(path.stem, pattern) for pattern in args.only)]
+if not paths:
+    parser.error('No workloads match --only')
 command = [str(args.circus / '.venv/bin/python'), '-m', 'flying_circus']
 for runtime in args.runtime:
     command += ['-r', runtime]

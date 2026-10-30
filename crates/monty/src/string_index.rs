@@ -1,4 +1,25 @@
-//! Derived UTF-8 offsets. Caches are discarded on clone and never persisted.
+//! Lazy character-to-byte offsets for immutable Python strings stored as UTF-8.
+//!
+//! ASCII access uses byte offsets directly. Unicode access caches its character length
+//! and last character/byte position, so nearby reads can resume without scanning a prefix.
+//! Forward skipping uses `Chars::nth`; reverse walks are limited to eight characters
+//! because distant reverse skipping was slower in the index-policy experiments.
+//!
+//! Sustained distant access builds checkpoints every 32 code points. This uses one
+//! quarter of stride-8 storage while keeping similar agent-workload performance.
+//! Construction waits until long traversals scan 32 times the text's byte length;
+//! counting bytes rather than requests avoids building indexes for short local reads.
+//! The earlier 16x budget built too soon for 64-access strings and hurt their runtime.
+//!
+//! Cursor state stays boxed to keep unused per-string metadata small. An inline
+//! `Cell`/`OnceCell` experiment saved about 0.35 MiB across 3,000 Unicode strings but
+//! regressed several access workloads by 2–4%, so it remains an experimental patch.
+//! These measurements do not isolate the CPU cause; see the string-access benchmark
+//! README for workloads, raw results and the remaining moderate-access overhead.
+//!
+//! Checkpoint allocation is resource-preflighted, with u32 offsets below 4 GiB and
+//! native-width offsets beyond that. All caches are derived, reset on clone and omitted
+//! from snapshots; the text alone determines their validity.
 use std::cell::{Cell, RefCell};
 
 use monty_types::ResourceTracker;
@@ -31,6 +52,7 @@ impl Clone for StringIndex {
     }
 }
 
+/// Allocated only after a nontrivial Unicode access; local reads need no offset table.
 #[derive(Debug, Default)]
 struct State {
     last: (usize, usize),
@@ -178,6 +200,8 @@ impl StringIndex {
         Ok(result)
     }
 
+    /// Counts only costly traversals so local reads do not pay for checkpoint construction.
+    /// A single allocation preflight covers the known-size offset buffer.
     fn charge(
         &self,
         text: &str,
