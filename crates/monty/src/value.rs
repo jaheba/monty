@@ -396,19 +396,20 @@ impl<'h> PyTrait<'h> for Value {
                 Ok(CmpOrder::Ordered(interns.get_str(*s1).cmp(interns.get_str(*s2))))
             }
             (Self::InlineString(text), Self::Ref(id)) if let HeapData::Str(value) = vm.heap.get(*id) => {
-                Ok(CmpOrder::Ordered(text.as_str().cmp(value.as_str())))
+                Ok(CmpOrder::Ordered(text.as_bytes().cmp(value.as_str().as_bytes())))
             }
             (Self::Ref(id), Self::InlineString(text)) if let HeapData::Str(value) = vm.heap.get(*id) => {
-                Ok(CmpOrder::Ordered(value.as_str().cmp(text.as_str())))
+                Ok(CmpOrder::Ordered(value.as_str().as_bytes().cmp(text.as_bytes())))
             }
             (Self::InlineString(left), Self::InlineString(right)) => {
-                Ok(CmpOrder::Ordered(left.as_str().cmp(right.as_str())))
+                // UTF-8 byte order matches Unicode scalar order, including prefixes.
+                Ok(CmpOrder::Ordered(left.as_bytes().cmp(right.as_bytes())))
             }
             (Self::InlineString(text), Self::InternString(id)) => {
-                Ok(CmpOrder::Ordered(text.as_str().cmp(interns.get_str(*id))))
+                Ok(CmpOrder::Ordered(text.as_bytes().cmp(interns.get_str(*id).as_bytes())))
             }
             (Self::InternString(id), Self::InlineString(text)) => {
-                Ok(CmpOrder::Ordered(interns.get_str(*id).cmp(text.as_str())))
+                Ok(CmpOrder::Ordered(interns.get_str(*id).as_bytes().cmp(text.as_bytes())))
             }
             // Cross-type string comparisons: interned vs heap-allocated
             (Self::InternString(s1), Self::Ref(id2)) if let HeapData::Str(s2) = vm.heap.get(*id2) => {
@@ -2010,7 +2011,7 @@ impl EitherStr {
     pub fn matches(&self, target: StringId, interns: &Interns) -> bool {
         match self {
             Self::Interned(id) => *id == target,
-            Self::Inline(text) => text.as_str() == interns.get_str(target),
+            Self::Inline(text) => text.as_bytes() == interns.get_str(target).as_bytes(),
             Self::Heap(s) => s == interns.get_str(target),
         }
     }

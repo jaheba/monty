@@ -20,8 +20,12 @@ impl InlineStr {
         Some(Self { len, bytes })
     }
 
+    pub(crate) fn as_bytes(&self) -> &[u8] {
+        &self.bytes[..self.len.get()]
+    }
+
     pub(crate) fn as_str(&self) -> &str {
-        str::from_utf8(&self.bytes[..self.len.get()]).expect("inline string contains valid UTF-8")
+        str::from_utf8(self.as_bytes()).expect("inline string contains valid UTF-8")
     }
 }
 

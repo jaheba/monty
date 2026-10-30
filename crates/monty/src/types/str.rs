@@ -245,7 +245,7 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
                 let text = vm.interns.get_str(*id);
                 str_getitem(&*vm.heap.protect(text), text.is_ascii(), key, vm)
             }
-            Self::Inline(text) => str_getitem(text, text.as_str().is_ascii(), key, vm),
+            Self::Inline(text) => str_getitem(text, text.as_bytes().is_ascii(), key, vm),
             Self::Heap(value) => value.py_getitem(key, vm),
         }
     }
@@ -2012,7 +2012,7 @@ impl StringIterator {
 
     /// Allocates an iterator over a string stored inside its `Value`.
     pub(crate) fn from_inline(text: InlineStr, vm: &mut VM<'_>) -> Value {
-        Self::allocate(StringIteratorSource::Inline(text), text.as_str().is_ascii(), vm)
+        Self::allocate(StringIteratorSource::Inline(text), text.as_bytes().is_ascii(), vm)
     }
 
     /// Allocates an iterator retaining a heap string.
@@ -2151,6 +2151,65 @@ mod tests {
             };
             assert_eq!(text.as_str(), character.to_string());
         }
+    }
+
+    #[test]
+    fn comparisons_agree_across_string_storage_kinds() {
+        let texts = [
+            "",
+            "\0",
+            "\0\0",
+            "a",
+            "a\0",
+            "a\0\0",
+            "1234",
+            "1235",
+            "é",
+            "é\0",
+            "🐍",
+            "éééééééa",
+            "abcdefghijklmno",
+            "abcdefghijklmn",
+            "\u{e000}",
+            "\u{10000}",
+        ];
+        let mut heap = Heap::new(16, ResourceTracker::default());
+        let mut tables = SessionTables::default();
+        let program = Program::for_tests();
+        let ids: Vec<_> = {
+            let mut interns = crate::intern::CompileInterns::direct(&mut tables.interns);
+            texts.iter().map(|text| interns.intern(text)).collect()
+        };
+
+        HeapReader::with(&mut heap, &mut (&program, &mut tables), |reader, (program, tables)| {
+            let vm = &mut VM::new(Vec::new(), tables, program, reader, PrintWriter::Disabled);
+            let values: Vec<_> = texts
+                .iter()
+                .zip(ids)
+                .flat_map(|(text, id)| {
+                    [
+                        Value::InternString(id),
+                        Value::InlineString(InlineStr::new(text).unwrap()),
+                        allocate_string_on_heap(*text, vm.heap),
+                    ]
+                })
+                .collect();
+            defer_drop!(values, vm);
+
+            for lhs in values {
+                for rhs in values {
+                    let expected = lhs.as_str(vm) == rhs.as_str(vm);
+                    assert_eq!(lhs.py_eq_impl(rhs, vm).unwrap(), Some(expected));
+                    let view = PyStr::from_value(lhs, vm).unwrap();
+                    assert_eq!(view.py_eq_impl(rhs, vm).unwrap(), Some(expected));
+                    let order = lhs.as_str(vm).unwrap().cmp(rhs.as_str(vm).unwrap());
+                    assert_eq!(lhs.py_cmp(rhs, vm).unwrap(), CmpOrder::Ordered(order));
+                }
+                assert_eq!(lhs.py_eq_impl(&Value::Int(7), vm).unwrap(), None);
+                let view = PyStr::from_value(lhs, vm).unwrap();
+                assert_eq!(view.py_eq_impl(&Value::Int(7), vm).unwrap(), None);
+            }
+        });
     }
 
     #[test]
