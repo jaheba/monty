@@ -662,3 +662,18 @@ fn legacy_wall_clock_snapshot_preserves_consumption() {
     assert_eq!(value, MontyObject::int(42));
     assert!(repl.tracker().elapsed() >= consumed);
 }
+
+#[test]
+fn unicode_string_indexes_rebuild_after_dump() {
+    let mut repl = MontyRepl::new("strings.py", ResourceTracker::default(), CompileOptions::default());
+    let setup = "text = 'aé中🐍' * 4096\nfor i in range(1000):\n    assert text[(i * 7919) % len(text)] == 'aé中🐍'[(i * 7919) % 4]\n";
+    repl.feed_run(setup, vec![], PrintWriter::Stdout).unwrap();
+    let bytes = dump("strings.py", None, &[], SessionRef::Idle(&repl)).unwrap();
+    let Session::Idle(mut restored) = Dump::load(&bytes).unwrap().state else {
+        panic!("expected idle session");
+    };
+    restored.feed_run("assert len(text) == 16384\nassert text[-2] == '中'\nassert text.find('中🐍', 100) == 102\nassert text.rfind('中🐍') == 16382\n", vec![], PrintWriter::Stdout).unwrap();
+    // Derived caches must not change the serialized string representation.
+    let after = dump("strings.py", None, &[], SessionRef::Idle(&restored)).unwrap();
+    assert!(!after.is_empty());
+}

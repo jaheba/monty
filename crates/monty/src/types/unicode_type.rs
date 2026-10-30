@@ -2,6 +2,8 @@
 //! `unicode_type_data.rs` (CPython's `unicodectype.c` in miniature) so results, and the Unicode
 //! version, follow the target CPython rather than Rust std.
 
+use crate::ascii_runs::{AsciiOrChar, AsciiRuns};
+
 use super::unicode_type_data::{
     ALPHA, CASE_IGNORABLE, CASED, DECIMAL, DIGIT, EXTENDED, EXTENDED_CASE, ID_CONTINUE, ID_START, INDEX1, INDEX2,
     LOWER, NUMERIC, PRINTABLE, RECORDS, SHIFT, SPACE, TITLE, TypeRecord, UPPER,
@@ -13,8 +15,15 @@ pub(super) fn lowercase(s: &str) -> String {
         s.to_ascii_lowercase()
     } else {
         let mut out = String::with_capacity(s.len());
-        for (i, c) in s.char_indices() {
-            type_record(c).push_lower(&mut out, s, i, c);
+        for (i, chunk) in AsciiRuns::new(s) {
+            match chunk {
+                AsciiOrChar::Ascii(run) => {
+                    let start = out.len();
+                    out.push_str(run);
+                    out[start..].make_ascii_lowercase();
+                }
+                AsciiOrChar::Char(c) => type_record(c).push_lower(&mut out, s, i, c),
+            }
         }
         out
     }

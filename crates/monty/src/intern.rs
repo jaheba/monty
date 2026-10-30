@@ -40,6 +40,7 @@ use crate::{
     function::Function,
     hash::{HashValue, RESERVED_STRING_HASHES, WithHash, hash_python_str},
     prepare::SnippetNames,
+    string_index::StringIndex,
 };
 
 /// Index into the string interner's storage.
@@ -2596,11 +2597,14 @@ pub enum StaticStrings {
 }
 
 /// One immutable interned string with directly accessible dispatch metadata.
-/// Snapshots store only text; loading reconstructs the tag and cached hash.
+/// Snapshots store only text; loading reconstructs the tag, hash and ASCII status.
 #[derive(Debug, Clone)]
 struct InternedString {
     /// Runtime classification, independent of the string's executor-local ID.
     static_tag: Option<StaticStrings>,
+    /// Cached at construction so repeated literal indexing never scans the text.
+    ascii: bool,
+    index: StringIndex,
     /// Text and its eagerly computed Python hash.
     text: WithHash<InternedText>,
 }
@@ -2627,7 +2631,9 @@ impl InternedString {
     /// Creates an entry for compile-time-known text.
     fn static_string(value: StaticStrings) -> Self {
         Self {
+            index: StringIndex::default(),
             static_tag: Some(value),
+            ascii: <&str>::from(value).is_ascii(),
             text: WithHash::for_str(InternedText::Static(value.into())),
         }
     }
@@ -2635,7 +2641,9 @@ impl InternedString {
     /// Creates an entry owning text not present in the static registry.
     fn owned(value: String) -> Self {
         Self {
+            index: StringIndex::default(),
             static_tag: None,
+            ascii: value.is_ascii(),
             text: WithHash::for_str(InternedText::Owned(value.into_boxed_str())),
         }
     }
@@ -2723,11 +2731,14 @@ impl FunctionId {
 }
 
 /// Prehashed core strings reused when constructing independent interners.
-static CORE_ENTRIES: LazyLock<Vec<InternedString>> = LazyLock::new(|| {
+static CORE_ENTRIES: LazyLock<Vec<(StaticStrings, bool, WithHash<InternedText>)>> = LazyLock::new(|| {
     CORE_STATIC_STRINGS
         .iter()
         .copied()
-        .map(InternedString::static_string)
+        .map(|value| {
+            let entry = InternedString::static_string(value);
+            (value, entry.ascii, entry.text)
+        })
         .collect()
 });
 
@@ -2940,11 +2951,16 @@ impl Interns {
             compiling: Cell::new(false),
             hint_snippets: RefCell::default(),
         };
-        for entry in CORE_ENTRIES.iter() {
-            let value = entry.static_value().expect("core entries are static");
+        for (value, ascii, text) in CORE_ENTRIES.iter() {
             let id = next_string_id(interns.strings.len());
-            interns.strings.push(entry.clone());
-            interns.static_string_ids.borrow_mut().insert(value, id);
+            // Only immutable prehashed text is shared; access caches belong to the session.
+            interns.strings.push(InternedString {
+                static_tag: Some(*value),
+                ascii: *ascii,
+                index: StringIndex::default(),
+                text: text.clone(),
+            });
+            interns.static_string_ids.borrow_mut().insert(*value, id);
         }
         interns
     }
@@ -3016,6 +3032,18 @@ impl Interns {
             .checked_sub(FILE_SOURCE_ID_BASE)
             .and_then(|index| self.file_sources.get(index))
             .map(|file| &*file.source)
+    }
+
+    /// Returns ASCII status without rescanning immutable literal text.
+    #[inline]
+    pub fn str_is_ascii(&self, id: StringId) -> bool {
+        id.index() < RESERVED_STRS.len() || self.strings[id.index() - INTERN_STRING_ID_OFFSET].ascii
+    }
+
+    pub(crate) fn str_index(&self, id: StringId) -> Option<&StringIndex> {
+        id.index()
+            .checked_sub(INTERN_STRING_ID_OFFSET)
+            .map(|index| &self.strings[index].index)
     }
 
     /// Returns the same hash as an equal heap string.

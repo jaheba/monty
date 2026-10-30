@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-10-30T21:09:47.383883+00:00",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "compiler": "rustc 1.99.0 (b940084d7 2026-09-28)",
+  "command": [
+    "rustc",
+    "--edition=2024",
+    "-O",
+    "/Users/jaheba/.codex/worktrees/string-access/monty/crates/monty-bench/experiments/unicode-index/main.rs",
+    "-o",
+    "/Users/jaheba/.codex/worktrees/string-access/monty/playground/unicode-index-final/unicode-index"
+  ],
+  "source_sha256": "592476b9f8f406de24787f2b15b58a6b82be9840900bfa8e78efc3e352940776",
+  "binary_sha256": "cb03a8035a7febb21f725999326c969ee59eba1e1b0ab6e9cb3c5015faae477a",
+  "rss_samples": 3
+}
