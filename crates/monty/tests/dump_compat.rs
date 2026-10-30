@@ -224,6 +224,8 @@ fn fixture_dump_loads_and_resumes() {
         fs::create_dir_all(path.parent().unwrap()).unwrap();
         fs::write(&path, bytes).unwrap();
         eprintln!("updated {}", path.display());
+        let call = progress.into_function_call().expect("suspended on host_call");
+        call.resume(MontyObject::int(41), PrintWriter::Stdout).unwrap();
         return;
     }
     let bytes = fs::read(&path).unwrap_or_else(|err| {
@@ -271,6 +273,21 @@ fn fixture_dump_loads_and_resumes() {
         checked,
         MontyObject::tuple(vec![MontyObject::int(42), MontyObject::int(13)])
     );
+}
+
+/// Main's version-14 dump format remains readable after inline strings bump it to 15.
+#[test]
+fn version_14_fixture_loads_after_inline_string_bump() {
+    let bytes = fs::read(fixture_path_for(14)).expect("main's version-14 fixture exists");
+    let loaded = Dump::load(&bytes).expect("version-14 dumps remain supported");
+    assert_eq!(loaded.script_name, "fixture.py");
+    let Session::Suspended(progress) = loaded.state else {
+        panic!("fixture was dumped suspended on a host call");
+    };
+    let call = progress.into_function_call().expect("suspended on host_call");
+    let progress = call.resume(MontyObject::int(41), PrintWriter::Stdout).unwrap();
+    let (_, value) = progress.into_complete().expect("host_call resumed to completion");
+    assert_eq!(value, MontyObject::int(42));
 }
 
 /// The class definitions in `dataclasses_v13.bin`, kept for reference: the
@@ -535,11 +552,15 @@ fn persisted_key_hashes_are_stable() {
 }
 
 /// The fixture for the current `DUMP_VERSION`; the name carries the version so
-/// a bump leaves the old file behind to delete rather than silently reuse.
+/// a bump creates a new fixture while older supported fixtures remain for compatibility tests.
 fn fixture_path() -> PathBuf {
+    fixture_path_for(DUMP_VERSION)
+}
+
+fn fixture_path_for(version: u16) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("tests/fixtures")
-        .join(format!("dump_v{DUMP_VERSION}.bin"))
+        .join(format!("dump_v{version}.bin"))
 }
 
 /// A record as an older build wrote it.

@@ -170,6 +170,13 @@ Those workers are single-use, never prewarmed or returned to the pool, and isola
 responsibility.
 See [the security model](../security.md#remote-workers) before using it.
 
+### Host decode budget
+
+`PoolConfig::max_decode_bytes` can lower the default 1 GiB allocation budget for
+each protocol frame from a subprocess or WebSocket worker. Values above 1 GiB do not
+raise the ceiling. The budget excludes wire buffers and host-language conversion.
+Exhaustion discards the worker without replaying the request.
+
 ## The in-process interpreter
 
 [`MontyRun`](../api/rust/monty.md#montyrun) parses and compiles code once; `run` executes it with input values and returns the value of the final
@@ -306,10 +313,16 @@ code can `await`, and when every task is blocked the run yields [`RunProgress::R
 When `FunctionCall::allow_eager_await` is true the call is awaited immediately and no other task can run, so a host that already has the
 result can pass it to [`FunctionCall::resume_eager`](../api/rust/monty.md#functioncall) and skip the `ResolveFutures` round trip.
 
-Unknown imports suspend with [`OsFunctionCall::Import`](../api/rust/monty-types.md#osfunctioncall) and the top-level
-name.
+Unknown imports suspend with [`OsFunctionCall::Import`](../api/rust/monty-types.md#osfunctioncall), whose
+[`ImportArgs`](../api/rust/monty-types.md#importargs) carry the dotted name and the module's search path.
 The host's answer becomes the module; dotted imports read subsequent components as attributes.
 Hosts usually return a host-backed class instance containing the module's attributes.
+A host with no such module may answer with the module's `.py` file instead,
+[`ResumeValue::ModuleFile`](../api/rust/monty-pool.md#resumevalue) (in-process,
+[`ExtFunctionResult::ModuleFile`](../api/rust/monty-types.md#extfunctionresult)), which the sandbox runs as the module.
+`ImportArgs::candidates` lists the files to try, [`Checkout::read_from_mounts`](../api/rust/monty-pool.md#checkout)
+reads one through the feed's mounts without resuming, and `find_module_file` runs the whole search with a read
+function the host supplies.
 [`ResumeValue::NotFound`](../api/rust/monty-pool.md#resumevalue) and `NotHandled` raise `ModuleNotFoundError`;
 in-process, [`OsCall::resume`](../api/rust/monty.md#oscall) with
 [`ExtFunctionResult::NotFound`](../api/rust/monty-types.md#extfunctionresult) does the same, as does a run with no host.
