@@ -8,7 +8,7 @@ assert json.loads('"ok"!'[:-1]) == 'ok'
 assert json.dumps([s]) == '["abc"]'
 assert json.dumps({s: s}) == '{"abc": "abc"}'
 assert json.dumps([s], indent='--!'[:-1]) == '[\n--"abc"\n]'
-assert json.dumps({s: s}, separators=(', !'[:-1], ': !'[:-1])) == '{"abc": "abc"}'
+assert json.dumps({s: s, 'other': 1}, separators=('||!'[:-1], '::!'[:-1])) == '{"abc"::"abc"||"other"::1}'
 assert json.dumps({s: 1}, sort_keys=True) == '{"abc": 1}'
 assert json.dumps('é!'[:-1], ensure_ascii=False) == '"é"'
 match = re.search('(?P<word>abc)', s)

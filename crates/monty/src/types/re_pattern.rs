@@ -586,7 +586,7 @@ fn call_pattern_sub<'h>(pattern: &HeapRead<'h, RePattern>, args: ArgValues, vm: 
         // Validate octal escapes even when the negative count skips matching.
         translate_replacement(repl)?;
         // Negative count — Pattern.sub returns the input string unchanged.
-        // The subject is still type-checked (`to_str` raises this method's
+        // The subject is still type-checked (`try_to_str` raises this method's
         // `expected string, not {t}` wording) before the refcount bump; no
         // need to re-allocate.
         let _ = string_val.try_to_str(vm)?;

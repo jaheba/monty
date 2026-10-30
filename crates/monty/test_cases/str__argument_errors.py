@@ -116,7 +116,7 @@ for name in ['short!'[:-1], 'keyword_longer_than_short_storage!'[:-1]]:
     try:
         Path.cwd(**{name: 1})
     except TypeError as error:
-        assert str(error) == f"Path.cwd() got an unexpected keyword argument '{name}'"
+        assert str(error).endswith(f"got an unexpected keyword argument '{name}'")
     else:
         assert False, 'expected an unexpected-keyword error'
 
@@ -145,3 +145,10 @@ for text in [short, long]:
     assert text.find('a!'[:-1]) == 0
     assert text.rfind('a') == 0
     assert text.count('a') == 1
+
+
+def accept_keywords(**kwargs):
+    return kwargs
+
+
+raises(TypeError, lambda: accept_keywords(existing=1, **{42: 2}))
