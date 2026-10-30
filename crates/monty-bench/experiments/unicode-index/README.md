@@ -40,5 +40,4 @@ Non-ASCII delta tables were compact for sparse Unicode but larger than a full in
 
 All policies share a 128-byte prototype state, including unused fields, so this harness isolates index-buffer costs.
 Its u32 offsets are valid for its bounded inputs; production needs wider offsets for larger strings.
-Choose defaults using the VM benchmarks in `../string-access/`, which also measure object layout, resource accounting,
-snapshots and application workloads.
+Choose defaults using the VM benchmarks in `../string-access/`, which measure VM timing, RSS and application workloads.
