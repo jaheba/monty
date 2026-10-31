@@ -42,7 +42,7 @@ def make_text():
             f'00:{minute:02}:{second:02},000 --> 00:{end_minute:02}:{end_second:02},000\n'
             f'{DIALOGUE[index % len(DIALOGUE)]}\n\n'
         )
-    return ''.join(cues)
+    return ''.join(cues).rstrip('\n') + '\n'
 
 
 if __name__ == '__main__':

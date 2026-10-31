@@ -3,9 +3,9 @@
 `subtitles_en.txt` contains original fictional dialogue written for this benchmark.
 It follows the short dialogue turns and timestamps of subtitles; no OpenSubtitles or Rebar text is included.
 The fixture and generator use the repository's MIT license.
-Regenerate it with `python crates/monty-bench/benches/python/data/generate_subtitles.py`.
+Regenerate it with `python3 crates/monty-bench/benches/python/data/generate_subtitles.py`.
 
-The file contains 41,992 UTF-8 bytes and 41,952 characters, including 40 non-ASCII characters
+The file contains 41,991 UTF-8 bytes and 41,951 characters, including 40 non-ASCII characters
 (0.095%).
 Its 480 cues repeat 24 original dialogue lines with distinct timestamps.
 This small, repetitive fixture measures string operations; it does not represent natural-language diversity.
