@@ -36,6 +36,20 @@ Checkpoints are spaced 32 code points apart and built after scanning 32 times th
 Compact offsets cost about 0.125 bytes per character; strings too large for u32 offsets use native-width offsets.
 ASCII, endpoints and short local reads avoid checkpoint construction.
 
+Interned ASCII strings store no character-offset cache.
+A session allocates an append-only side table on its first Unicode cache access, with cache boxes only for accessed
+Unicode entries. This keeps ordinary text reads and clones on their original storage path.
+Embedding the 24-byte cache in every entry added 6,144 bytes to each 256-slot interner page, including ASCII-only sessions.
+The side table is derived state, omitted from snapshots and reset on clone.
+
+A release allocation probe reduced module-clone storage from 16,746 to 10,602 bytes.
+Five alternating baseline/candidate runs, each with 30 native timing samples, measured clone medians of 327.5 and 317 ns.
+Native keyword calls and session setup varied across runs; these measurements do not establish a fix for their CodSpeed
+CPU regressions. A 30-sample Flying Circus comparison measured 100,000 keyword calls at 25.674 versus 24.767 ms per
+repeated request, with Unicode random access at 3.513 versus 3.536 ms.
+The list-append workload took about 11 ms in both a saved pre-Unicode build and the updated builds on macOS arm64;
+CodSpeed's reported simulation improvement did not reproduce as a similar local wall-clock improvement.
+
 A stride of eight was 10–22% faster on sustained random access but used four times the checkpoint storage.
 Agent workloads performed similarly with either spacing.
 An earlier 16x scan budget built indexes too soon for 64-access strings, causing 15–29% runtime regressions.
