@@ -33,6 +33,12 @@ impl<'a> AsciiRuns<'a> {
 impl<'a> Iterator for AsciiRuns<'a> {
     type Item = (usize, AsciiOrChar<'a>);
 
+    // Keep decoding inside each case-conversion loop when multiple methods share this iterator.
+    #[expect(
+        clippy::inline_always,
+        reason = "decoding must stay in case-conversion loops to avoid measured dense-Unicode regressions"
+    )]
+    #[inline(always)]
     fn next(&mut self) -> Option<Self::Item> {
         let text = self.chars.as_str();
         let character = self.chars.next()?;

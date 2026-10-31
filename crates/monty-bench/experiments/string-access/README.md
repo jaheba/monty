@@ -58,3 +58,43 @@ Representative repeated-request medians, measured October 30, 2026 on macOS arm6
 These are staged comparisons: random-access and agent baselines precede Unicode caching but already include earlier
 ASCII indexing and lowercase changes; affix and slice baselines include the Unicode cache.
 The standalone `../unicode-index/` harness compares additional index policies without VM costs.
+
+## Case conversion
+
+`case_conversion.py` compares `lower()`, `upper()` and `casefold()` on 200,000-character ASCII, German, dense Chinese,
+mixed Chinese/ASCII and rare-emoji inputs. Each request makes 20 conversions and checks the complete result.
+It also runs the standalone German uppercase and casefold workloads in `benches/python/`.
+
+```sh
+python3 crates/monty-bench/experiments/string-access/case_conversion.py \
+  --circus /path/to/flying-circus \
+  --runtime baseline=/path/to/baseline/monty \
+  --runtime candidate=/path/to/candidate/monty \
+  --runtime cpython=/path/to/python \
+  --output playground/case-conversion-comparison
+```
+
+Uppercase and casefold use ASCII runs when an aligned ASCII word appears in a bounded 256-byte prefix sample.
+Other mixed text retains the original Unicode character loop, which was faster for dense Chinese in preliminary tests.
+Missing an ASCII span only selects the fallback; both paths use the same Unicode mappings.
+The shared iterator is forced inline to keep decoding inside the conversion loops.
+The suite includes lowercase as a control because sharing the iterator can change its code generation even when the
+lowercase function itself is unchanged.
+
+Repeated-request medians for 20 conversions of 200,000 characters, measured with 30 samples on macOS arm64,
+Rust 1.99.0 release with fat LTO and CPython 3.14.2:
+
+| Workload | Before upper/fold ASCII runs | Guarded, inlined runs | CPython |
+| --- | ---: | ---: | ---: |
+| German uppercase | 13.221 ms | 3.811 ms | 7.849 ms |
+| German casefold | 13.181 ms | 3.804 ms | 13.166 ms |
+| Mixed Chinese/ASCII uppercase | 14.920 ms | 9.433 ms | 7.626 ms |
+| Mixed Chinese/ASCII casefold | 14.842 ms | 9.477 ms | 12.432 ms |
+| Rare-emoji uppercase | 11.250 ms | 0.425 ms | 10.241 ms |
+| Rare-emoji casefold | 11.287 ms | 0.436 ms | 13.333 ms |
+| Dense Chinese casefold | 15.664 ms | 15.573 ms | 12.526 ms |
+
+The first shared-iterator build regressed dense-Chinese lowercase from 19.583 to 36.412 ms despite unchanged lowercase
+source. Keeping the iterator step inlined restored it to 19.363 ms; German lowercase improved from 3.963 to 3.782 ms.
+The prefix probe avoids the separate dense-Unicode cost observed when routing every string through ASCII runs.
+All benchmark outputs matched the reference; raw reports remain in the local output directories.
