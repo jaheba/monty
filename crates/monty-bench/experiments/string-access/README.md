@@ -112,3 +112,24 @@ The first shared-iterator build regressed dense-Chinese lowercase from 19.583 to
 source. Keeping the iterator step inlined restored it to 19.363 ms; German lowercase improved from 3.963 to 3.782 ms.
 The prefix probe avoids the separate dense-Unicode cost observed when routing every string through ASCII runs.
 All benchmark outputs matched the reference; raw reports remain in the local output directories.
+
+## English subtitle search
+
+`../../benches/python/rebar_sherlock_en.py` adapts Rebar's English OpenSubtitles literal-search case.
+It finds 513 occurrences of `Sherlock Holmes`, takes 48-character excerpts, and validates character positions,
+`count()` and `rfind()` results.
+The pinned corpus contains 898,664 characters, only 422 of which are non-ASCII (0.047%).
+Its source, license notices and checksum are in `../../benches/python/data/README.md`.
+
+The benchmark registers automatically with the existing harness:
+
+```sh
+cargo bench -p monty-bench --bench main -- rebar_sherlock_en
+```
+
+A 30-sample Flying Circus comparison on macOS arm64, Rust 1.99.0 release with fat LTO, measured repeated-request
+medians of 335.086 ms on mainline `d2ad8bb` and 2.876 ms with Unicode implementation `09cb7bf7`.
+Fixture preparation was excluded; workload-body compilation and execution were timed.
+Ten separate whole-process peak-RSS samples measured 15.50 and 15.52 MiB respectively.
+The speedup comes from avoiding repeated Unicode prefix scans when converting positions for successive matches and
+excerpts. It is not a regex-engine throughput comparison.

@@ -1,0 +1,2 @@
+# Preserve upstream benchmark bytes and collapse vendored datasets in reviews.
+crates/monty-bench/benches/python/data/rebar/en-sampled.txt -text linguist-vendored
