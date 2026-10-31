@@ -31,7 +31,7 @@ use crate::{
         LazyHeapSet, Type,
         long_int::repeat_count,
         py_trait::PyObjectIdentity,
-        slice::{SearchRange, search_range, slice_collect_iterator},
+        slice::{SearchRange, Slice, search_range, slice_collect_iterator},
     },
     value::{EitherStr, Value, eq_str},
 };
@@ -570,28 +570,7 @@ fn str_getitem<'h>(
     {
         let text = s.get(vm.heap);
         if slice.step.unwrap_or(1) == 1 {
-            let index = cache.get(vm.heap);
-            let length = if ascii {
-                text.len()
-            } else {
-                index.map_or_else(|| text.chars().count(), |index| index.char_len(text))
-            };
-            let (start, stop, _) = slice.indices(length)?;
-            if start >= stop {
-                return Ok(allocate_string("", vm.heap));
-            }
-            let start = usize::try_from(start).expect("normalized slice start");
-            let stop = usize::try_from(stop).expect("normalized slice stop");
-            let (start, stop) = if ascii {
-                (start, stop)
-            } else {
-                (
-                    string_byte_offset(text, index, start, &vm.heap.tracker)?,
-                    string_byte_offset(text, index, stop, &vm.heap.tracker)?,
-                )
-            };
-            // Contiguous slices copy UTF-8 directly, without collecting characters.
-            return Ok(allocate_string(&text[start..stop], vm.heap));
+            return slice_contiguous_text(text, ascii, cache.get(vm.heap), slice, vm.heap);
         }
         let result: Box<str> = if ascii {
             // Byte iterators count and skip in O(1), unlike `chars()`.
@@ -611,6 +590,52 @@ fn str_getitem<'h>(
         .ok_or_else(ExcType::str_index_error)?;
         Ok(allocate_char(c))
     }
+}
+
+/// Slices an exact builtin string without constructing a heap slice object.
+pub(crate) fn slice_contiguous_value(value: &Value, slice: &Slice, vm: &VM<'_>) -> RunResult<Value> {
+    let string = PyStr::from_value(value, vm).expect("string receiver checked by caller");
+    let (ascii, cache) = match &string {
+        PyStr::Interned(id) => {
+            let ascii = vm.interns.str_is_ascii(*id);
+            (ascii, if ascii { None } else { vm.interns.str_index(*id) })
+        }
+        PyStr::Inline(text) => (text.as_bytes().is_ascii(), None),
+        PyStr::Heap(value) => {
+            let value = value.get(vm.heap);
+            (value.is_ascii(), Some(&value.3))
+        }
+    };
+    slice_contiguous_text(string.as_str(vm), ascii, cache, slice, vm.heap)
+}
+
+fn slice_contiguous_text(
+    text: &str,
+    ascii: bool,
+    index: Option<&StringIndex>,
+    slice: &Slice,
+    heap: &Heap,
+) -> RunResult<Value> {
+    let length = if ascii {
+        text.len()
+    } else {
+        index.map_or_else(|| text.chars().count(), |index| index.char_len(text))
+    };
+    let (start, stop, _) = slice.indices(length)?;
+    if start >= stop {
+        return Ok(allocate_string("", heap));
+    }
+    let start = usize::try_from(start).expect("normalized slice start");
+    let stop = usize::try_from(stop).expect("normalized slice stop");
+    let (start, stop) = if ascii {
+        (start, stop)
+    } else {
+        (
+            string_byte_offset(text, index, start, &heap.tracker)?,
+            string_byte_offset(text, index, stop, &heap.tracker)?,
+        )
+    };
+    Ok(allocate_string(&text[start..stop], heap))
 }
 
 impl HeapItem for Str {

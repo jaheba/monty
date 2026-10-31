@@ -2,13 +2,14 @@
 
 use super::VM;
 use crate::{
+    bytecode::Opcode,
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
     heap::{DropGuard, DropWithContext, Heap, HeapData, HeapReadOutput},
     intern::StringId,
     types::{
         Dict, List, PyTrait, Set, Slice, allocate_tuple, collect_iterable, collect_iterable_bounded,
-        instance::instance_defines_iter, slice::value_to_option_i64,
+        instance::instance_defines_iter, slice::value_to_option_i64, str::slice_contiguous_value,
     },
     value::{VALUE_SIZE, Value},
 };
@@ -82,10 +83,10 @@ impl VM<'_> {
         Ok(())
     }
 
-    /// Builds a slice object from the top 3 stack values.
+    /// Builds a slice, fusing an immediately following subscript when possible.
     ///
-    /// Stack: [start, stop, step] -> [slice]
-    /// Each value can be None (for default) or an integer.
+    /// Stack: [start, stop, step] -> [slice], or [receiver, start, stop, step] -> [result].
+    /// Bounds are coerced before fusion; other receivers and steps still get a slice object.
     pub(super) fn build_slice(&mut self) -> Result<(), RunError> {
         let this = self;
 
@@ -101,6 +102,23 @@ impl VM<'_> {
         let step = value_to_option_i64(step_val, this)?;
 
         let slice = Slice::new(start, stop, step);
+        // Fuse adjacent subscripting without changing persisted bytecode. Only
+        // contiguous builtin strings skip the slice object; callbacks keep it.
+        if this.current_frame.bytecode.get(this.current_frame.ip) == Some(&(Opcode::BinarySubscr as u8)) {
+            this.instruction_ip = this.current_frame.ip;
+            this.current_frame.ip += 1;
+            let receiver = this.pop();
+            defer_drop!(receiver, this);
+            let result = if step.unwrap_or(1) == 1 && receiver.is_str(this.heap) {
+                slice_contiguous_value(receiver, &slice, this)?
+            } else {
+                let key = Value::Ref(this.heap.allocate(HeapData::Slice(slice)));
+                defer_drop!(key, this);
+                receiver.py_getitem(key, this)?
+            };
+            this.push(result);
+            return Ok(());
+        }
         let heap_id = this.heap.allocate(HeapData::Slice(slice));
         this.push(Value::Ref(heap_id));
         Ok(())

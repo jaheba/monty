@@ -521,79 +521,104 @@ pub(crate) trait TableProbe<'h>: TableSource<'h> {
 
 impl<'h, S: TableSource<'h>> TableProbe<'h> for S {
     fn find_index(&self, key: &Value, hash: u64, vm: &mut VM<'h>) -> RunResult<Option<Slot>> {
-        // False for anything whose `__eq__` could mutate the container; when
-        // true, revalidation and the miss continuation are skipped (the
-        // str/int path).
-        let key_native = eq_is_native(key, vm.heap);
+        // Native comparisons cannot mutate the table. Stop before any guest equality,
+        // then let the existing guarded probe handle callbacks and mutation.
+        let mut deferred = false;
+        let found = self.table(vm).probe(hash, |_, entry| {
+            if deferred || entry.hash() != hash {
+                return false;
+            }
+            if let Some(equal) = probe_native_eq(entry.probe_key(), key, vm) {
+                equal
+            } else {
+                deferred = true;
+                false
+            }
+        });
+        if !deferred {
+            return Ok(found.map(Slot));
+        }
+        find_index_with_callbacks(self, key, hash, vm)
+    }
+}
 
-        'restart: loop {
-            // Collected inline rather than through `probe_candidates`: every
-            // lookup runs this, and moving the buffers out of a call shows up
-            // in the dict benchmarks.
-            let mut candidate_indices: SmallVec<[usize; 2]> = SmallVec::new();
-            let mut candidate_keys: SmallVec<[Value; 2]> = SmallVec::new();
-            let mut all_native = key_native;
-            let table = self.table(vm);
-            // The predicate doubles as the probe walk: native pairs are
-            // compared inline (a `true` stops at the match), and only pairs
-            // that may need user code are cloned for the guarded loop below.
-            // Once one is deferred, later candidates queue behind it so
-            // comparisons keep CPython's probe order.
-            let found = table.probe(hash, |index, entry| {
-                if entry.hash() != hash {
-                    return false;
-                }
-                let entry_key = entry.probe_key();
-                if candidate_indices.is_empty()
-                    && let Some(eq) = probe_native_eq(entry_key, key, vm)
-                {
-                    eq
-                } else {
-                    candidate_indices.push(index);
-                    candidate_keys.push(entry_key.clone_with_heap(vm.heap));
-                    all_native = all_native && eq_is_native(entry_key, vm.heap);
-                    false
-                }
-            });
-            // Guarded before the early returns below: the deferred keys are
-            // owned, and only the `candidate_indices.is_empty()` condition in
-            // the predicate above keeps them empty on the `found` path.
-            defer_drop!(candidate_keys, vm);
-            if let Some(index) = found {
-                return Ok(Some(Slot(index)));
-            }
-            if candidate_indices.is_empty() {
-                return Ok(None);
-            }
+/// Keeps callback candidate buffers out of native-key lookup stack frames.
+#[inline(never)]
+fn find_index_with_callbacks<'h>(
+    source: &impl TableSource<'h>,
+    key: &Value,
+    hash: u64,
+    vm: &mut VM<'h>,
+) -> RunResult<Option<Slot>> {
+    // False for anything whose `__eq__` could mutate the container; when
+    // true, revalidation and the miss continuation are skipped (the
+    // str/int path).
+    let key_native = eq_is_native(key, vm.heap);
 
-            for (&candidate_index, candidate_key) in candidate_indices.iter().zip(candidate_keys.iter()) {
-                if !all_native && !probe_valid(self, candidate_index, hash, candidate_key, vm) {
-                    vm.heap.tracker.check_memory_time()?;
-                    continue 'restart;
-                }
-                // CPython compares the stored key on the left.
-                let eq = candidate_key.py_eq(key, vm)?;
-                if !all_native && !probe_valid(self, candidate_index, hash, candidate_key, vm) {
-                    vm.heap.tracker.check_memory_time()?;
-                    continue 'restart;
-                }
-                if eq {
-                    return Ok(Some(Slot(candidate_index)));
-                }
+    'restart: loop {
+        let mut candidate_indices: SmallVec<[usize; 2]> = SmallVec::new();
+        let mut candidate_keys: SmallVec<[Value; 2]> = SmallVec::new();
+        let mut all_native = key_native;
+        let table = source.table(vm);
+        // The predicate doubles as the probe walk: native pairs are
+        // compared inline (a `true` stops at the match), and only pairs
+        // that may need user code are cloned for the guarded loop below.
+        // Once one is deferred, later candidates queue behind it so
+        // comparisons keep CPython's probe order.
+        let found = table.probe(hash, |index, entry| {
+            if entry.hash() != hash {
+                return false;
             }
+            let entry_key = entry.probe_key();
+            if candidate_indices.is_empty()
+                && let Some(eq) = probe_native_eq(entry_key, key, vm)
+            {
+                eq
+            } else {
+                candidate_indices.push(index);
+                candidate_keys.push(entry_key.clone_with_heap(vm.heap));
+                all_native = all_native && eq_is_native(entry_key, vm.heap);
+                false
+            }
+        });
+        // Guarded before the early returns below: the deferred keys are
+        // owned, and only the `candidate_indices.is_empty()` condition in
+        // the predicate above keeps them empty on the `found` path.
+        defer_drop!(candidate_keys, vm);
+        if let Some(index) = found {
+            return Ok(Some(Slot(index)));
+        }
+        if candidate_indices.is_empty() {
+            return Ok(None);
+        }
 
-            // Nothing matched. Comparisons can themselves add colliding keys
-            // the snapshot never saw, so a pass that ran any hands over to the
-            // mutation-aware continuation — unless none could run user code.
-            if all_native {
-                return Ok(None);
+        for (&candidate_index, candidate_key) in candidate_indices.iter().zip(candidate_keys.iter()) {
+            if !all_native && !probe_valid(source, candidate_index, hash, candidate_key, vm) {
+                vm.heap.tracker.check_memory_time()?;
+                continue 'restart;
             }
-            match probe_after_compare(self, hash, key, candidate_keys, vm)? {
-                ProbeOutcome::Found(slot) => return Ok(Some(slot)),
-                ProbeOutcome::Missing => return Ok(None),
-                // a candidate moved: fall through to the next probe from scratch
-                ProbeOutcome::Restart => (),
+            // CPython compares the stored key on the left.
+            let eq = candidate_key.py_eq(key, vm)?;
+            if !all_native && !probe_valid(source, candidate_index, hash, candidate_key, vm) {
+                vm.heap.tracker.check_memory_time()?;
+                continue 'restart;
             }
+            if eq {
+                return Ok(Some(Slot(candidate_index)));
+            }
+        }
+
+        // Nothing matched. Comparisons can themselves add colliding keys
+        // the snapshot never saw, so a pass that ran any hands over to the
+        // mutation-aware continuation — unless none could run user code.
+        if all_native {
+            return Ok(None);
+        }
+        match probe_after_compare(source, hash, key, candidate_keys, vm)? {
+            ProbeOutcome::Found(slot) => return Ok(Some(slot)),
+            ProbeOutcome::Missing => return Ok(None),
+            // a candidate moved: fall through to the next probe from scratch
+            ProbeOutcome::Restart => (),
         }
     }
 }
