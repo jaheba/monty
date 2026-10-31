@@ -1,8 +1,5 @@
 fail_fast: true
 
-# Preserve the pinned upstream corpus, including its whitespace and file size.
-exclude: ^crates/monty-bench/benches/python/data/rebar/en-sampled[.]txt$
-
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0

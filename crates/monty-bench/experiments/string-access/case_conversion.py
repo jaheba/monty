@@ -32,7 +32,8 @@ for corpus, phrase in corpora.items():
         expected = getattr(text, method)()
         path = fixtures / f'case_{corpus}_{method}.py'
         path.write_text(
-            f'TEXT = {text!r}\nEXPECTED = {expected!r}\n# --- benchmark ---\nfor _ in range(20):\n    result = TEXT.{method}()\nassert result == EXPECTED\n'
+            f'TEXT = {text!r}\nEXPECTED = {expected!r}\n# --- benchmark ---\nfor _ in range(20):\n    result = TEXT.{method}()\nassert result == EXPECTED\n',
+            encoding='utf-8',
         )
         paths.append(path)
 for method in ('upper', 'casefold'):

@@ -115,21 +115,12 @@ All benchmark outputs matched the reference; raw reports remain in the local out
 
 ## English subtitle search
 
-`../../benches/python/rebar_sherlock_en.py` adapts Rebar's English OpenSubtitles literal-search case.
-It finds 513 occurrences of `Sherlock Holmes`, takes 48-character excerpts, and validates character positions,
-`count()` and `rfind()` results.
-The pinned corpus contains 898,664 characters, only 422 of which are non-ASCII (0.047%).
-Its source, license notices and checksum are in `../../benches/python/data/README.md`.
-
-The benchmark registers automatically with the existing harness:
+`../../benches/python/subtitle_search.py` searches original English dialogue for `Alex Rivera` and takes
+48-character excerpts, validating positions, `count()` and `rfind()`.
+The smaller generated fixture and its limitations are described in `../../benches/python/data/README.md`.
 
 ```sh
-cargo bench -p monty-bench --bench main -- rebar_sherlock_en
+cargo bench -p monty-bench --bench main -- subtitle_search
 ```
 
-A 30-sample Flying Circus comparison on macOS arm64, Rust 1.99.0 release with fat LTO, measured repeated-request
-medians of 335.086 ms on mainline `d2ad8bb` and 2.876 ms with Unicode implementation `09cb7bf7`.
-Fixture preparation was excluded; workload-body compilation and execution were timed.
-Ten separate whole-process peak-RSS samples measured 15.50 and 15.52 MiB respectively.
-The speedup comes from avoiding repeated Unicode prefix scans when converting positions for successive matches and
-excerpts. It is not a regex-engine throughput comparison.
+Earlier measurements used a larger OpenSubtitles corpus and do not apply to this replacement fixture.

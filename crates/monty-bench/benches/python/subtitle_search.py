@@ -1,12 +1,12 @@
 # /// monty
 # [bench]
-# data = 'data/rebar/en-sampled.txt'
+# data = 'data/subtitles_en.txt'
 # ///
 
-# Rebar's literal-search corpus and pattern, using Python string operations.
+# Locate mentions in original subtitle-style dialogue for an agent's excerpts.
 # Excerpts add character-index conversion and slicing around each match.
 text = DATA
-needle = 'Sherlock Holmes'
+needle = 'Alex Rivera'
 position = 0
 count = 0
 checksum = 0
@@ -18,7 +18,7 @@ while True:
     checksum += position + len(text[position : position + 48])
     position += len(needle)
 
-assert count == 513
-assert checksum == 236800171
-assert text.count(needle) == 513
-assert text.rfind(needle) == 896565
+assert count == 80
+assert checksum == 1685732
+assert text.count(needle) == 80
+assert text.rfind(needle) == 41813

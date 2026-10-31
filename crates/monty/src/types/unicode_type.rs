@@ -2,12 +2,11 @@
 //! `unicode_type_data.rs` (CPython's `unicodectype.c` in miniature) so results, and the Unicode
 //! version, follow the target CPython rather than Rust std.
 
-use crate::ascii_runs::{AsciiOrChar, AsciiRuns};
-
 use super::unicode_type_data::{
     ALPHA, CASE_IGNORABLE, CASED, DECIMAL, DIGIT, EXTENDED, EXTENDED_CASE, ID_CONTINUE, ID_START, INDEX1, INDEX2,
     LOWER, NUMERIC, PRINTABLE, RECORDS, SHIFT, SPACE, TITLE, TypeRecord, UPPER,
 };
+use crate::ascii_runs::{AsciiOrChar, AsciiRuns};
 
 /// Full lowercase of `s` with `Final_Sigma` applied; ASCII input takes the bulk path.
 pub(super) fn lowercase(s: &str) -> String {

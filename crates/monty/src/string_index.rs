@@ -247,8 +247,9 @@ impl StringIndex {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use monty_types::ResourceLimits;
+
+    use super::*;
 
     #[test]
     fn random_local_and_inverse_offsets() {

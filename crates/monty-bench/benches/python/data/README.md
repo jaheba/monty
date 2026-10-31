@@ -1,19 +1,16 @@
 # English subtitle search fixture
 
-`rebar/en-sampled.txt` is the unmodified English OpenSubtitles sample from
-[BurntSushi/rebar](https://github.com/BurntSushi/rebar), commit `463d00f31887e84c38467805b9e3122c314b9521`,
-path `benchmarks/haystacks/opensubtitles/en-sampled.txt`.
-Rebar's `UNLICENSE` and its corpus-provenance README are retained alongside the sample.
-The latter attributes the subtitle text to OPUS OpenSubtitles v2018.
+`subtitles_en.txt` contains original fictional dialogue written for this benchmark.
+It follows the short dialogue turns and timestamps of subtitles; no OpenSubtitles or Rebar text is included.
+The fixture and generator use the repository's MIT license.
+Regenerate it with `python crates/monty-bench/benches/python/data/generate_subtitles.py`.
 
-The file contains 899,232 UTF-8 bytes and 898,664 characters, including 422 non-ASCII characters (0.047%).
-It exercises Unicode handling in otherwise mostly ASCII English text.
-Git preserves its bytes, and formatting hooks exclude this pinned fixture.
+The file contains 41,992 UTF-8 bytes and 41,952 characters, including 40 non-ASCII characters
+(0.095%).
+Its 480 cues repeat 24 original dialogue lines with distinct timestamps.
+This small, repetitive fixture measures string operations; it does not represent natural-language diversity.
 
-SHA-256: `0d40805f6d02c8fe02bd75945b98911891f707e8ecb939e018446858065d76ea`.
-
-`../rebar_sherlock_en.py` uses Rebar's `Sherlock Holmes` pattern and its expected count of 513 matches from
-`benchmarks/definitions/curated/01-literal.toml`.
-Our adaptation uses successive `str.find()` calls and takes a 48-character excerpt at each match.
-It verifies the match count, a character-position checksum, `count()` and the final `rfind()` position.
-This measures Python string searching and slicing, rather than regex-engine throughput.
+`../subtitle_search.py` finds 80 mentions of `Alex Rivera` and takes a 48-character excerpt at each match.
+It validates the match count, character-position checksum, `count()` and final `rfind()` position.
+This models an agent locating mentions and retrieving nearby text from a transcript.
+The workload is inspired by subtitle searches in Rebar, but uses our own text, pattern and expected results.
