@@ -37,10 +37,24 @@ Compact offsets cost about 0.125 bytes per character; strings too large for u32 
 ASCII, endpoints and short local reads avoid checkpoint construction.
 
 Interned ASCII strings store no character-offset cache.
-A session allocates an append-only side table on its first Unicode cache access, with cache boxes only for accessed
-Unicode entries. This keeps ordinary text reads and clones on their original storage path.
+A session allocates a sparse lookup table on its first Unicode cache access, with cache boxes only for accessed
+Unicode entries.
+A map translates 256-ID groups to append-only cache pages, keeping existing cache references valid during growth.
+A late Unicode ID allocates only its own page, rather than empty slots for every preceding ASCII entry.
+The last directory lookup is cached so operations on nearby intern IDs avoid hashing.
+This keeps ordinary text reads and clones on their original storage path.
 Embedding the 24-byte cache in every entry added 6,144 bytes to each 256-slot interner page, including ASCII-only sessions.
 The side table is derived state, omitted from snapshots and reset on clone.
+
+A regression test accesses intern ID 1,000,000: the original table filled 1,000,001 slots, while the sparse directory
+allocates one 256-slot page and one cache box.
+A per-string map regressed repeated Unicode `len()` by 15–16%; memoizing its last lookup still regressed an
+alternating-eight-string workload by 12.5%.
+Sparse pages reduced that regression to about 1–2% across two runs, while repeated Unicode `len()` improved 3–4%.
+Random indexing, nearby indexing, ASCII controls and subtitle search showed no meaningful timing change.
+These macOS arm64 comparisons used 50 samples per workload, with a 100-sample check in reversed runtime order
+for alternating strings, repeated `len()` and subtitle search.
+The remaining alternating-string cost is a tradeoff for eliminating allocation proportional to the highest accessed ID.
 
 A release allocation probe reduced module-clone storage from 16,746 to 10,602 bytes.
 Five alternating baseline/candidate runs, each with 30 native timing samples, measured clone medians of 327.5 and 317 ns.

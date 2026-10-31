@@ -21,6 +21,7 @@ mod compile;
 mod storage;
 
 use std::{
+    array,
     cell::{Cell, OnceCell, RefCell},
     collections::BTreeMap,
     mem,
@@ -2815,7 +2816,19 @@ fn get_static_string(strings: &Entries<InternedString>, id: StringId) -> Option<
 /// Lazily allocated outside the text table so ASCII-only sessions pay no per-entry cache cost.
 /// Append-only slots keep returned cache borrows valid when runtime compilation interns more strings.
 #[derive(Debug, Default)]
-struct StringIndexes(OnceCell<Box<Entries<OnceCell<Box<StringIndex>>>>>);
+struct StringIndexes(OnceCell<Box<SparseStringIndexes>>);
+
+const STRING_INDEX_PAGE_SIZE: usize = 256;
+type StringIndexPage = [OnceCell<Box<StringIndex>>; STRING_INDEX_PAGE_SIZE];
+
+/// Sparse pages avoid filling the gap before a late Unicode intern ID.
+#[derive(Debug, Default)]
+struct SparseStringIndexes {
+    slots: RefCell<AHashMap<usize, usize>>,
+    pages: Entries<Box<StringIndexPage>>,
+    // Nearby intern IDs share a directory lookup, including alternating string accesses.
+    last: Cell<Option<(usize, usize)>>,
+}
 
 impl Clone for StringIndexes {
     fn clone(&self) -> Self {
@@ -2825,11 +2838,22 @@ impl Clone for StringIndexes {
 
 impl StringIndexes {
     fn get(&self, index: usize) -> &StringIndex {
-        let entries = self.0.get_or_init(Box::default);
-        while entries.len() <= index {
-            entries.push(OnceCell::new());
-        }
-        entries[index].get_or_init(Box::default)
+        let table = self.0.get_or_init(Box::default);
+        let page = index / STRING_INDEX_PAGE_SIZE;
+        let slot = if let Some((last_page, slot)) = table.last.get()
+            && last_page == page
+        {
+            slot
+        } else {
+            let slot = *table.slots.borrow_mut().entry(page).or_insert_with(|| {
+                let slot = table.pages.len();
+                table.pages.push(Box::new(array::from_fn(|_| OnceCell::new())));
+                slot
+            });
+            table.last.set(Some((page, slot)));
+            slot
+        };
+        table.pages[slot][index % STRING_INDEX_PAGE_SIZE].get_or_init(Box::default)
     }
 }
 
@@ -3145,6 +3169,20 @@ mod cache_layout_tests {
     }
 
     #[test]
+    fn late_unicode_cache_allocates_only_its_page() {
+        let indexes = StringIndexes::default();
+        indexes.get(1_000_000).char_len("é中");
+        let table = indexes.0.get().unwrap();
+        assert_eq!(table.pages.len(), 1);
+        assert_eq!(table.pages[0].iter().filter(|entry| entry.get().is_some()).count(), 1);
+        assert_eq!(table.slots.borrow().len(), 1);
+        assert_eq!(indexes.get(1_000_001).char_len("é中🐍"), 3);
+        assert_eq!(indexes.get(1_000_000).char_len("é中"), 2);
+        assert_eq!(table.pages.len(), 1);
+        assert!(!ptr::eq(indexes.get(1_000_000), indexes.get(1_000_001)));
+    }
+
+    #[test]
     fn unicode_cache_survives_table_growth_and_resets_on_clone() {
         let indexes = StringIndexes::default();
         let text = "aé中🐍".repeat(4096);
@@ -3154,7 +3192,9 @@ mod cache_layout_tests {
             original.character(&text, (i * 7919) % 16384, &tracker).unwrap();
         }
         assert!(original.has_checkpoints());
-        indexes.get(1024).char_len("é中");
+        for index in 1024..2048 {
+            indexes.get(index * STRING_INDEX_PAGE_SIZE).char_len("é中");
+        }
         assert!(ptr::eq(original, indexes.get(3)));
         assert!(original.has_checkpoints());
         assert!(indexes.clone().0.get().is_none());
