@@ -1,0 +1,17 @@
+storage,bytes,median_ns_per_construction
+Box<str>,8,36
+Arc<Box<str>>,8,69
+Arc<str>,8,59
+Rc<str>,8,57
+Box<str>,128,46
+Arc<Box<str>>,128,68
+Arc<str>,128,72
+Rc<str>,128,72
+Box<str>,4096,99
+Arc<Box<str>>,4096,120
+Arc<str>,4096,203
+Rc<str>,4096,194
+Box<str>,1000000,19102
+Arc<Box<str>>,1000000,16646
+Arc<str>,1000000,37339
+Rc<str>,1000000,36773

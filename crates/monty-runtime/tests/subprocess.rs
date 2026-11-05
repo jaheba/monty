@@ -3262,3 +3262,20 @@ fn slice_assignment_rejects_large_replacement_without_killing_worker() {
         child.shutdown();
     }
 }
+
+#[test]
+fn string_views_release_backing_and_stay_within_the_soft_limit() {
+    let mut child = ChildProc::spawn();
+    child.create_repl_with(configure_with_max_memory(1024 * 1024));
+    assert_eq!(
+        child.feed_complete("source = 'x' * 600_000\nview = source[:300_000]\nsource = None\nlen(view)"),
+        MontyObject::int(300_000)
+    );
+    assert_eq!(
+        child.feed_complete(
+            "tiny = view[:128]\nview = None\nother = 'y' * 600_000\nassert tiny == 'x' * 128\nlen(other)"
+        ),
+        MontyObject::int(600_000)
+    );
+    child.shutdown();
+}

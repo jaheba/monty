@@ -1,4 +1,4 @@
-use std::{cell::Cell, fmt::Write, ops, str};
+use std::{cell::Cell, fmt::Write, ops, str, sync::Arc};
 
 use monty_types::{ResourceError, ResourceTracker};
 pub use monty_types::{StringRepr, string_repr_fmt};
@@ -17,10 +17,7 @@ use crate::{
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::{HashValue, hash_python_str},
-    heap::{
-        DropGuard, DropWithContext, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReader, HeapView,
-        heap_read_ref_as_field,
-    },
+    heap::{DropGuard, DropWithContext, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReader, HeapView},
     identity::Identity,
     intern::{Interns, StaticStrings, StringId},
     percent_format::percent_format,
@@ -44,16 +41,111 @@ use crate::{
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 #[serde(transparent)]
 pub(crate) struct Str(
-    Box<str>,
+    StringStorage,
     #[serde(skip)] Cell<Option<HashValue>>,
     #[serde(skip)] Cell<Option<bool>>,
 );
+
+const MIN_VIEW_LEN: usize = 128;
+const MIN_VIEW_RATIO: usize = 4;
+
+/// Strings too short to produce a view keep their original boxed representation.
+#[derive(Debug, Clone)]
+enum StringStorage {
+    Owned(Box<str>),
+    Shared {
+        backing: Arc<Box<str>>,
+        start: usize,
+        len: usize,
+    },
+}
+
+impl StringStorage {
+    fn new(text: Box<str>) -> Self {
+        Self::with_minimum(text, MIN_VIEW_LEN)
+    }
+
+    fn with_minimum(text: Box<str>, min_len: usize) -> Self {
+        if text.len() < min_len {
+            Self::Owned(text)
+        } else {
+            Self::Shared {
+                len: text.len(),
+                backing: Arc::new(text),
+                start: 0,
+            }
+        }
+    }
+
+    fn slice(&self, range: ops::Range<usize>) -> Self {
+        self.slice_with_policy(range, MIN_VIEW_LEN, MIN_VIEW_RATIO)
+    }
+
+    fn slice_with_policy(&self, range: ops::Range<usize>, min_len: usize, ratio: usize) -> Self {
+        let len = range.len();
+        if let Self::Shared { backing, start, .. } = self
+            && len >= min_len
+            && len >= backing.len().div_ceil(ratio)
+        {
+            Self::Shared {
+                backing: Arc::clone(backing),
+                start: start + range.start,
+                len,
+            }
+        } else {
+            Self::with_minimum(self[range].into(), min_len)
+        }
+    }
+
+    #[cfg(test)]
+    fn shares_backing(&self, other: &Self) -> bool {
+        matches!((self, other), (Self::Shared { backing: a, .. }, Self::Shared { backing: b, .. }) if Arc::ptr_eq(a, b))
+    }
+
+    #[cfg(test)]
+    fn backing_len(&self) -> usize {
+        match self {
+            Self::Owned(text) => text.len(),
+            Self::Shared { backing, .. } => backing.len(),
+        }
+    }
+}
+
+impl Default for StringStorage {
+    fn default() -> Self {
+        Self::new(Box::default())
+    }
+}
+
+impl ops::Deref for StringStorage {
+    type Target = str;
+
+    fn deref(&self) -> &str {
+        match self {
+            Self::Owned(text) => text,
+            Self::Shared { backing, start, len } => &backing[*start..*start + *len],
+        }
+    }
+}
+
+// Dumps keep the existing text-only representation; restored strings own their bytes.
+impl serde::Serialize for StringStorage {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        serializer.serialize_str(self)
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for StringStorage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        <Box<str> as serde::Deserialize>::deserialize(deserializer).map(Self::new)
+    }
+}
 
 impl PartialEq for Str {
     /// Compares only the string content — the cached fields are pure
     /// optimisations and must not affect equality.
     fn eq(&self, other: &Self) -> bool {
-        self.0 == other.0
+        self.as_str() == other.as_str()
     }
 }
 
@@ -63,7 +155,7 @@ impl Str {
     /// Private — use [`allocate_string`] or [`allocate_string_no_interning`] instead.
     #[must_use]
     fn new(s: impl Into<Box<str>>) -> Self {
-        Self(s.into(), Cell::new(None), Cell::new(None))
+        Self(StringStorage::new(s.into()), Cell::new(None), Cell::new(None))
     }
 
     /// Returns a reference to the inner string.
@@ -253,9 +345,9 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
         match self {
             Self::Interned(id) => {
                 let text = vm.interns.get_str(*id);
-                str_getitem(&*vm.heap.protect(text), vm.interns.str_is_ascii(*id), key, vm)
+                str_getitem(&*vm.heap.protect(text), vm.interns.str_is_ascii(*id), None, key, vm)
             }
-            Self::Inline(text) => str_getitem(text, text.as_bytes().is_ascii(), key, vm),
+            Self::Inline(text) => str_getitem(text, text.as_bytes().is_ascii(), None, key, vm),
             Self::Heap(value) => value.py_getitem(key, vm),
         }
     }
@@ -464,8 +556,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Str> {
 
     fn py_getitem(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<Value> {
         let ascii = self.get(vm.heap).is_ascii();
-        let s = heap_read_ref_as_field!(self, Str, 0);
-        str_getitem(&s.as_box_value(), ascii, key, vm)
+        str_getitem(&StrView(self), ascii, Some(self), key, vm)
     }
 
     fn py_eq_impl(&self, other: &Value, vm: &mut VM<'h>) -> RunResult<Option<bool>> {
@@ -491,7 +582,9 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Str> {
     }
 
     fn py_cmp(&self, other: &Self, vm: &mut VM<'h>) -> RunResult<CmpOrder> {
-        Ok(CmpOrder::Ordered(self.get(vm.heap).0.cmp(&other.get(vm.heap).0)))
+        Ok(CmpOrder::Ordered(
+            self.get(vm.heap).as_str().cmp(other.get(vm.heap).as_str()),
+        ))
     }
 
     fn py_repr_fmt(&self, f: &mut impl Write, vm: &mut VM<'h>, _heap_ids: &mut LazyHeapSet) -> RunResult<()> {
@@ -518,9 +611,16 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Str> {
             return Err(ExcType::attribute_error(Type::Str, attr.as_str(vm.interns)));
         };
 
-        let s = heap_read_ref_as_field!(self, Str, 0);
-        let s = s.as_box_value();
-        call_str_method_impl(&s, method, args, vm).map(CallResult::Value)
+        call_str_method_impl(&StrView(self), method, args, vm).map(CallResult::Value)
+    }
+}
+
+/// Re-borrows visible text through the source handle while methods can execute Python.
+struct StrView<'r, 'h>(&'r HeapObjectRead<'h, Str>);
+
+impl<'h> HeapView<'h, str> for StrView<'_, 'h> {
+    fn get<'r>(&'r self, heap: &'r HeapReader<'h>) -> &'r str {
+        self.0.get(heap).as_str()
     }
 }
 
@@ -535,7 +635,13 @@ fn str_add(s: &str, other: &Value, vm: &VM<'_>) -> RunResult<Option<Value>> {
 /// Indexes protected text, allowing `__index__` to execute before borrowing it.
 ///
 /// `ascii` says whether the text is ASCII, letting indexes and slices address bytes directly.
-fn str_getitem<'h>(s: &impl HeapView<'h, str>, ascii: bool, key: &Value, vm: &mut VM<'h>) -> RunResult<Value> {
+fn str_getitem<'h>(
+    s: &impl HeapView<'h, str>,
+    ascii: bool,
+    source: Option<&HeapObjectRead<'h, Str>>,
+    key: &Value,
+    vm: &mut VM<'h>,
+) -> RunResult<Value> {
     if let Value::Ref(id) = key
         && let HeapData::Slice(slice) = vm.heap.get(*id)
     {
@@ -548,12 +654,30 @@ fn str_getitem<'h>(s: &impl HeapView<'h, str>, ascii: bool, key: &Value, vm: &mu
             }
             let start = usize::try_from(start).expect("normalized slice start");
             let stop = usize::try_from(stop).expect("normalized slice stop");
+            if start == 0
+                && stop == length
+                && let Some(source) = source
+            {
+                return Ok(source.clone_value(vm.heap));
+            }
             let result = if ascii {
                 &text[start..stop]
             } else {
                 slice_string(text, start, stop)
             };
-            // Contiguous slices copy UTF-8 directly, without collecting characters.
+            if result.len() > 15
+                && let Some(source) = source
+            {
+                // `result` borrows `text`, so their pointer difference is its byte offset.
+                let offset = result.as_ptr().addr() - text.as_ptr().addr();
+                let storage = source.get(vm.heap).0.slice(offset..offset + result.len());
+                let ascii_cache = if ascii { Some(true) } else { None };
+                return Ok(Value::Ref(vm.heap.allocate(HeapData::Str(Str(
+                    storage,
+                    Cell::new(None),
+                    Cell::new(ascii_cache),
+                )))));
+            }
             return Ok(allocate_string(result, vm.heap));
         }
         let result: Box<str> = if ascii {
@@ -2331,3 +2455,127 @@ mod tests {
 #[cfg(test)]
 #[path = "../../tests/unit/format_template.rs"]
 mod format_template_tests;
+
+#[cfg(test)]
+mod view_tests {
+    use std::{hint::black_box, time::Instant};
+
+    use super::*;
+
+    #[test]
+    fn chained_views_use_original_backing_and_release_it_after_copy() {
+        let source = StringStorage::new("x".repeat(1000).into());
+        let StringStorage::Shared { backing, .. } = &source else {
+            panic!("expected shared storage");
+        };
+        let backing = Arc::downgrade(backing);
+        let half = source.slice(100..600);
+        let third = half.slice(50..350);
+        let fifth = third.slice(0..200);
+        assert!(source.shares_backing(&half));
+        assert!(source.shares_backing(&third));
+        assert!(matches!(third, StringStorage::Shared { start: 150, .. }));
+        assert!(!source.shares_backing(&fifth));
+        drop(source);
+        drop(half);
+        assert_eq!(&*third, "x".repeat(300));
+        assert!(backing.upgrade().is_some());
+        drop(third);
+        assert!(backing.upgrade().is_none());
+        assert_eq!(&*fifth, "x".repeat(200));
+    }
+
+    #[test]
+    fn view_thresholds_use_byte_lengths_and_round_up() {
+        let source = StringStorage::new("é".repeat(257).into());
+        for (bytes, shares) in [(126, false), (128, false), (130, true)] {
+            let part = source.slice(0..bytes);
+            assert_eq!(source.shares_backing(&part), shares);
+            assert_eq!(part.chars().count(), bytes / 2);
+        }
+        let source = StringStorage::new("x".repeat(256).into());
+        assert!(!source.shares_backing(&source.slice(0..127)));
+        assert!(source.shares_backing(&source.slice(0..128)));
+    }
+
+    #[test]
+    fn view_serialization_keeps_the_existing_text_format() {
+        let source = Str::new("abcd".repeat(100));
+        let view = Str(source.0.slice(128..384), Cell::new(None), Cell::new(None));
+        let encoded = serde_json::to_string(&view).unwrap();
+        assert_eq!(encoded, serde_json::to_string(view.as_str()).unwrap());
+        let restored: Str = serde_json::from_str(&encoded).unwrap();
+        assert_eq!(view, restored);
+        assert!(matches!(restored.0, StringStorage::Shared { start: 0, .. }));
+        assert_eq!(restored.0.backing_len(), 256);
+    }
+
+    /// Storage-only measurements exclude VM objects and allocator metadata.
+    #[test]
+    #[ignore = "release-mode storage benchmark; run with --ignored --nocapture"]
+    fn benchmark_string_view_policies() {
+        println!("policy,min_len,ratio,workload,ns,copied_bytes,backing_allocations,peak_payload,retained_payload");
+        let mut policies = vec![("copy", usize::MAX, 1), ("view", 16, usize::MAX)];
+        for min in [32, 64, 128, 256] {
+            for ratio in [8, 4, 2] {
+                policies.push(("heuristic", min, ratio));
+            }
+        }
+        for (policy, min, ratio) in policies {
+            for workload in [
+                "half", "prefix", "suffix", "chain", "lines", "tokens", "retain", "unicode",
+            ] {
+                let text = if workload == "unicode" {
+                    "é🦀".repeat(16384)
+                } else {
+                    "x".repeat(98304)
+                };
+                let source_len = text.len();
+                let mut current = StringStorage::new(text.into());
+                let mut copied = 0;
+                let mut allocations = 0;
+                let mut peak = source_len;
+                let start = Instant::now();
+                let count = match workload {
+                    "prefix" | "suffix" => source_len - 1,
+                    "lines" | "tokens" => 1000,
+                    "chain" => 10,
+                    _ => 1,
+                };
+                for _ in 0..count {
+                    let range = match workload {
+                        "prefix" => 1..current.len(),
+                        "suffix" => 0..current.len() - 1,
+                        "chain" => 0..current.len() * 3 / 4,
+                        "tokens" => 0..8,
+                        "retain" => 0..128,
+                        "lines" => 0..256,
+                        "unicode" => 6..current.len() / 2,
+                        _ => 0..current.len() / 2,
+                    };
+                    let next = current.slice_with_policy(range, min, ratio);
+                    if !current.shares_backing(&next) {
+                        copied += next.len();
+                        allocations += if matches!(next, StringStorage::Shared { .. }) {
+                            2
+                        } else {
+                            1
+                        };
+                        peak = peak.max(current.backing_len() + next.backing_len());
+                    }
+                    if matches!(workload, "lines" | "tokens") {
+                        black_box(next);
+                    } else {
+                        current = next;
+                    }
+                }
+                let elapsed = start.elapsed().as_nanos();
+                println!(
+                    "{policy},{min},{ratio},{workload},{elapsed},{copied},{allocations},{peak},{}",
+                    current.backing_len()
+                );
+                black_box(current);
+            }
+        }
+    }
+}

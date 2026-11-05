@@ -20,6 +20,20 @@ This crate is the pure-Rust core. Most users want one of the bindings built on t
 
 See the [documentation](https://pydantic.dev/docs/monty/) for the motivation, latency measurements, comparison to alternatives and the supported Python subset.
 
+## String slices
+
+Contiguous slices of heap strings share immutable backing storage when the result is at least 128 UTF-8 bytes and
+at least one quarter of the original backing allocation.
+Smaller results are copied; empty results reuse the empty string, and full slices reuse the source value.
+Chained views compose byte offsets directly, and the backing survives until its last string is released.
+Interned strings and non-unit slice steps materialize their results.
+Results up to 15 bytes use the existing inline string representation.
+
+Strings below 128 bytes keep a plain boxed payload; larger strings add a separate shared-storage header.
+String methods borrow the visible bytes through the existing heap handles.
+Snapshots serialize only the visible text and restore independent storage, preserving the existing dump format.
+See [the benchmark experiment](../monty-bench/experiments/string-views/README.md) for measurements and commands.
+
 ## Basic usage
 
 `MontyRun` parses and compiles code once; `run` executes it with input values and returns the value of the final expression as a `MontyObject`:
