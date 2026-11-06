@@ -17,6 +17,7 @@ use sha2::{Digest, Sha512};
 
 use crate::{
     args::{ArgValues, FromArgs},
+    builtin_protocols,
     bytecode::{CallResult, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
@@ -27,7 +28,7 @@ use crate::{
         copy::{Memo, PyDeepCopy},
         random::{RandomFunctions, random_dispatch},
     },
-    py_attrs::PyAttrs,
+    py_attrs::{MethodCall, PyAttrs},
     py_value::PyValue,
     types::{LazyHeapSet, PyTrait, Type, py_trait::PyObjectIdentity},
     value::{EitherStr, Value},
@@ -667,6 +668,36 @@ pub(crate) struct PyRandomImpl;
 #[pyattrs]
 impl<'heap> PyAttrs<'heap> for PyRandomImpl {
     type Receiver = HeapObjectRead<'heap, Random>;
+
+    #[pymethod]
+    const __repr__: MethodCall = builtin_protocols::repr;
+
+    #[pymethod]
+    const __str__: MethodCall = builtin_protocols::str;
+
+    #[pymethod]
+    const __hash__: MethodCall = builtin_protocols::hash;
+
+    #[pymethod]
+    const __format__: MethodCall = builtin_protocols::format;
+
+    #[pymethod]
+    const __eq__: MethodCall = builtin_protocols::eq;
+
+    #[pymethod]
+    const __ne__: MethodCall = builtin_protocols::ne;
+
+    #[pymethod]
+    const __lt__: MethodCall = builtin_protocols::lt;
+
+    #[pymethod]
+    const __le__: MethodCall = builtin_protocols::le;
+
+    #[pymethod]
+    const __gt__: MethodCall = builtin_protocols::gt;
+
+    #[pymethod]
+    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn random<'h>(this: &mut HeapObjectRead<'h, Random>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {

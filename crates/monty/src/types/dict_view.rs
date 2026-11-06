@@ -5,11 +5,13 @@ use smallvec::smallvec;
 
 use crate::{
     args::ArgValues,
+    builtin_protocols,
     bytecode::{CallResult, VM},
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
     heap::{ContainsHeap, DropGuard, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapRead, HeapReadOutput},
-    py_attrs::PyAttrs,
+    py_attrs::{MethodCall, PyAttrs},
+    py_value::PyValue,
     types::{
         Dict, FrozenSet, LazyHeapSet, PyTrait, Set, Type, allocate_tuple,
         dict::{DictItemIterator, DictKeyIterator, DictValueIterator},
@@ -873,6 +875,63 @@ impl<'heap> PyAttrs<'heap> for PyDictItemsViewImpl {
     type Receiver = HeapObjectRead<'heap, DictItemsView>;
 
     #[pymethod]
+    const __repr__: MethodCall = builtin_protocols::repr;
+
+    #[pymethod]
+    const __str__: MethodCall = builtin_protocols::str;
+
+    #[pymethod]
+    const __format__: MethodCall = builtin_protocols::format;
+
+    #[pymethod]
+    const __iter__: MethodCall = builtin_protocols::iter;
+
+    #[pymethod]
+    const __reversed__: MethodCall = builtin_protocols::reversed;
+
+    #[pymethod]
+    const __sub__: MethodCall = builtin_protocols::sub;
+
+    #[pymethod]
+    const __rsub__: MethodCall = builtin_protocols::rsub;
+
+    #[pymethod]
+    const __and__: MethodCall = builtin_protocols::and;
+
+    #[pymethod]
+    const __rand__: MethodCall = builtin_protocols::rand;
+
+    #[pymethod]
+    const __or__: MethodCall = builtin_protocols::or;
+
+    #[pymethod]
+    const __ror__: MethodCall = builtin_protocols::ror;
+
+    #[pymethod]
+    const __xor__: MethodCall = builtin_protocols::xor;
+
+    #[pymethod]
+    const __rxor__: MethodCall = builtin_protocols::rxor;
+
+    #[pymethod]
+    const __eq__: MethodCall = builtin_protocols::eq;
+
+    #[pymethod]
+    const __ne__: MethodCall = builtin_protocols::ne;
+
+    #[pymethod]
+    const __lt__: MethodCall = builtin_protocols::lt;
+
+    #[pymethod]
+    const __le__: MethodCall = builtin_protocols::le;
+
+    #[pymethod]
+    const __gt__: MethodCall = builtin_protocols::gt;
+
+    #[pymethod]
+    const __ge__: MethodCall = builtin_protocols::ge;
+
+    #[pymethod]
     fn __len__<'h>(this: &HeapObjectRead<'h, DictItemsView>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
         args.check_zero_args("__len__", vm.heap)?;
 
@@ -918,6 +977,63 @@ impl<'heap> PyAttrs<'heap> for PyDictKeysViewImpl {
     type Receiver = HeapObjectRead<'heap, DictKeysView>;
 
     #[pymethod]
+    const __repr__: MethodCall = builtin_protocols::repr;
+
+    #[pymethod]
+    const __str__: MethodCall = builtin_protocols::str;
+
+    #[pymethod]
+    const __format__: MethodCall = builtin_protocols::format;
+
+    #[pymethod]
+    const __iter__: MethodCall = builtin_protocols::iter;
+
+    #[pymethod]
+    const __reversed__: MethodCall = builtin_protocols::reversed;
+
+    #[pymethod]
+    const __sub__: MethodCall = builtin_protocols::sub;
+
+    #[pymethod]
+    const __rsub__: MethodCall = builtin_protocols::rsub;
+
+    #[pymethod]
+    const __and__: MethodCall = builtin_protocols::and;
+
+    #[pymethod]
+    const __rand__: MethodCall = builtin_protocols::rand;
+
+    #[pymethod]
+    const __or__: MethodCall = builtin_protocols::or;
+
+    #[pymethod]
+    const __ror__: MethodCall = builtin_protocols::ror;
+
+    #[pymethod]
+    const __xor__: MethodCall = builtin_protocols::xor;
+
+    #[pymethod]
+    const __rxor__: MethodCall = builtin_protocols::rxor;
+
+    #[pymethod]
+    const __eq__: MethodCall = builtin_protocols::eq;
+
+    #[pymethod]
+    const __ne__: MethodCall = builtin_protocols::ne;
+
+    #[pymethod]
+    const __lt__: MethodCall = builtin_protocols::lt;
+
+    #[pymethod]
+    const __le__: MethodCall = builtin_protocols::le;
+
+    #[pymethod]
+    const __gt__: MethodCall = builtin_protocols::gt;
+
+    #[pymethod]
+    const __ge__: MethodCall = builtin_protocols::ge;
+
+    #[pymethod]
     fn __len__<'h>(this: &HeapObjectRead<'h, DictKeysView>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
         args.check_zero_args("__len__", vm.heap)?;
 
@@ -950,4 +1066,51 @@ impl<'heap> PyAttrs<'heap> for PyDictKeysViewImpl {
             Ok(CallResult::Value(Value::Bool(this.isdisjoint_from_value(other, vm)?)))
         }
     }
+}
+
+/// Values views use identity comparison; only keys and items expose set algebra.
+pub(crate) struct PyDictValuesAttrs;
+
+#[monty_macros::pyattrs]
+impl<'h> PyAttrs<'h> for PyDictValuesAttrs {
+    type Receiver = PyValue<'h>;
+
+    #[pymethod]
+    const __repr__: MethodCall = builtin_protocols::repr;
+
+    #[pymethod]
+    const __str__: MethodCall = builtin_protocols::str;
+
+    #[pymethod]
+    const __hash__: MethodCall = builtin_protocols::hash;
+
+    #[pymethod]
+    const __format__: MethodCall = builtin_protocols::format;
+
+    #[pymethod]
+    const __iter__: MethodCall = builtin_protocols::iter;
+
+    #[pymethod]
+    const __reversed__: MethodCall = builtin_protocols::reversed;
+
+    #[pymethod]
+    const __len__: MethodCall = builtin_protocols::len;
+
+    #[pymethod]
+    const __eq__: MethodCall = builtin_protocols::eq;
+
+    #[pymethod]
+    const __ne__: MethodCall = builtin_protocols::ne;
+
+    #[pymethod]
+    const __lt__: MethodCall = builtin_protocols::lt;
+
+    #[pymethod]
+    const __le__: MethodCall = builtin_protocols::le;
+
+    #[pymethod]
+    const __gt__: MethodCall = builtin_protocols::gt;
+
+    #[pymethod]
+    const __ge__: MethodCall = builtin_protocols::ge;
 }

@@ -14,13 +14,14 @@ use monty_types::FormatComplex;
 
 use crate::{
     args::{ArgValues, FromArgs, FromValue, FromValueFail},
+    builtin_protocols,
     bytecode::{CallResult, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::{HashValue, hash_f64},
     heap::{Heap, HeapData, HeapId, HeapItem, HeapObjectRead},
     intern::StaticStrings,
-    py_attrs::PyAttrs,
+    py_attrs::{MethodCall, PyAttrs},
     py_class::PyClass,
     py_value::PyValue,
     types::{
@@ -765,6 +766,81 @@ pub(crate) struct PyComplexImpl;
 #[pyattrs]
 impl<'heap> PyAttrs<'heap> for PyComplexImpl {
     type Receiver = HeapObjectRead<'heap, Complex>;
+
+    #[pymethod]
+    const __repr__: MethodCall = builtin_protocols::repr;
+
+    #[pymethod]
+    const __str__: MethodCall = builtin_protocols::str;
+
+    #[pymethod]
+    const __bool__: MethodCall = builtin_protocols::bool;
+
+    #[pymethod]
+    const __complex__: MethodCall = builtin_protocols::complex;
+
+    #[pymethod]
+    const __hash__: MethodCall = builtin_protocols::hash;
+
+    #[pymethod]
+    const __format__: MethodCall = builtin_protocols::format;
+
+    #[pymethod]
+    const __neg__: MethodCall = builtin_protocols::neg;
+
+    #[pymethod]
+    const __pos__: MethodCall = builtin_protocols::pos;
+
+    #[pymethod]
+    const __abs__: MethodCall = builtin_protocols::abs;
+
+    #[pymethod]
+    const __add__: MethodCall = builtin_protocols::add;
+
+    #[pymethod]
+    const __radd__: MethodCall = builtin_protocols::radd;
+
+    #[pymethod]
+    const __sub__: MethodCall = builtin_protocols::sub;
+
+    #[pymethod]
+    const __rsub__: MethodCall = builtin_protocols::rsub;
+
+    #[pymethod]
+    const __mul__: MethodCall = builtin_protocols::mul;
+
+    #[pymethod]
+    const __rmul__: MethodCall = builtin_protocols::rmul;
+
+    #[pymethod]
+    const __truediv__: MethodCall = builtin_protocols::truediv;
+
+    #[pymethod]
+    const __rtruediv__: MethodCall = builtin_protocols::rtruediv;
+
+    #[pymethod]
+    const __pow__: MethodCall = builtin_protocols::pow;
+
+    #[pymethod]
+    const __rpow__: MethodCall = builtin_protocols::rpow;
+
+    #[pymethod]
+    const __eq__: MethodCall = builtin_protocols::eq;
+
+    #[pymethod]
+    const __ne__: MethodCall = builtin_protocols::ne;
+
+    #[pymethod]
+    const __lt__: MethodCall = builtin_protocols::lt;
+
+    #[pymethod]
+    const __le__: MethodCall = builtin_protocols::le;
+
+    #[pymethod]
+    const __gt__: MethodCall = builtin_protocols::gt;
+
+    #[pymethod]
+    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn conjugate<'h>(value: &mut HeapObjectRead<'h, Complex>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

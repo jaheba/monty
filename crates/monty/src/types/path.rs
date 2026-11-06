@@ -17,6 +17,7 @@ use smallvec::SmallVec;
 
 use crate::{
     args::{ArgValues, FromArgs, LaxBool},
+    builtin_protocols,
     builtins::open::builtin_open,
     bytecode::{CallResult, VM},
     defer_drop,
@@ -25,7 +26,7 @@ use crate::{
     heap::{DropWithContext, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
     intern::{Interns, StaticStrings},
     os_dispatch::{build_path_os_call, value_as_path_str},
-    py_attrs::PyAttrs,
+    py_attrs::{MethodCall, PyAttrs},
     py_class::PyClass,
     types::{
         LazyHeapSet, List, PyTrait, Type, allocate_tuple,
@@ -624,6 +625,45 @@ pub(crate) struct PyPathImpl;
 #[pyattrs]
 impl<'heap> PyAttrs<'heap> for PyPathImpl {
     type Receiver = HeapObjectRead<'heap, Path>;
+
+    #[pymethod]
+    const __repr__: MethodCall = builtin_protocols::repr;
+
+    #[pymethod]
+    const __str__: MethodCall = builtin_protocols::str;
+
+    #[pymethod]
+    const __hash__: MethodCall = builtin_protocols::hash;
+
+    #[pymethod]
+    const __format__: MethodCall = builtin_protocols::format;
+
+    #[pymethod]
+    const __bytes__: MethodCall = builtin_protocols::bytes;
+
+    #[pymethod]
+    const __truediv__: MethodCall = builtin_protocols::truediv;
+
+    #[pymethod]
+    const __rtruediv__: MethodCall = builtin_protocols::rtruediv;
+
+    #[pymethod]
+    const __eq__: MethodCall = builtin_protocols::eq;
+
+    #[pymethod]
+    const __ne__: MethodCall = builtin_protocols::ne;
+
+    #[pymethod]
+    const __lt__: MethodCall = builtin_protocols::lt;
+
+    #[pymethod]
+    const __le__: MethodCall = builtin_protocols::le;
+
+    #[pymethod]
+    const __gt__: MethodCall = builtin_protocols::gt;
+
+    #[pymethod]
+    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn glob<'h>(this: &mut HeapObjectRead<'h, Path>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {

@@ -6,6 +6,7 @@ use monty_types::{ResourceError, ResourceTracker};
 use super::{PyTrait, iter::checked_preallocation_hint};
 use crate::{
     args::ArgValues,
+    builtin_protocols,
     bytecode::{CallResult, ContainsVM, RecursionToken, VM},
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
@@ -17,7 +18,7 @@ use crate::{
         heap_read_ref_as_field_mut,
     },
     modules::copy::{Memo, PyDeepCopy, deep_copy},
-    py_attrs::PyAttrs,
+    py_attrs::{MethodCall, PyAttrs},
     py_value::PyValue,
     types::{
         LazyHeapSet, Type,
@@ -1836,6 +1837,63 @@ impl<'heap> PyAttrs<'heap> for PyFrozenSetImpl {
     type Receiver = HeapObjectRead<'heap, FrozenSet>;
 
     #[pymethod]
+    const __repr__: MethodCall = builtin_protocols::repr;
+
+    #[pymethod]
+    const __str__: MethodCall = builtin_protocols::str;
+
+    #[pymethod]
+    const __hash__: MethodCall = builtin_protocols::hash;
+
+    #[pymethod]
+    const __format__: MethodCall = builtin_protocols::format;
+
+    #[pymethod]
+    const __iter__: MethodCall = builtin_protocols::iter;
+
+    #[pymethod]
+    const __sub__: MethodCall = builtin_protocols::sub;
+
+    #[pymethod]
+    const __rsub__: MethodCall = builtin_protocols::rsub;
+
+    #[pymethod]
+    const __and__: MethodCall = builtin_protocols::and;
+
+    #[pymethod]
+    const __rand__: MethodCall = builtin_protocols::rand;
+
+    #[pymethod]
+    const __or__: MethodCall = builtin_protocols::or;
+
+    #[pymethod]
+    const __ror__: MethodCall = builtin_protocols::ror;
+
+    #[pymethod]
+    const __xor__: MethodCall = builtin_protocols::xor;
+
+    #[pymethod]
+    const __rxor__: MethodCall = builtin_protocols::rxor;
+
+    #[pymethod]
+    const __eq__: MethodCall = builtin_protocols::eq;
+
+    #[pymethod]
+    const __ne__: MethodCall = builtin_protocols::ne;
+
+    #[pymethod]
+    const __lt__: MethodCall = builtin_protocols::lt;
+
+    #[pymethod]
+    const __le__: MethodCall = builtin_protocols::le;
+
+    #[pymethod]
+    const __gt__: MethodCall = builtin_protocols::gt;
+
+    #[pymethod]
+    const __ge__: MethodCall = builtin_protocols::ge;
+
+    #[pymethod]
     fn __len__<'h>(this: &HeapObjectRead<'h, FrozenSet>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
         args.check_zero_args("__len__", vm.heap)?;
 
@@ -1939,6 +1997,72 @@ pub(crate) struct PySetImpl;
 #[pyattrs]
 impl<'heap> PyAttrs<'heap> for PySetImpl {
     type Receiver = HeapObjectRead<'heap, Set>;
+
+    #[pymethod]
+    const __repr__: MethodCall = builtin_protocols::repr;
+
+    #[pymethod]
+    const __str__: MethodCall = builtin_protocols::str;
+
+    #[pymethod]
+    const __format__: MethodCall = builtin_protocols::format;
+
+    #[pymethod]
+    const __iter__: MethodCall = builtin_protocols::iter;
+
+    #[pymethod]
+    const __ixor__: MethodCall = builtin_protocols::ixor;
+
+    #[pymethod]
+    const __sub__: MethodCall = builtin_protocols::sub;
+
+    #[pymethod]
+    const __rsub__: MethodCall = builtin_protocols::rsub;
+
+    #[pymethod]
+    const __and__: MethodCall = builtin_protocols::and;
+
+    #[pymethod]
+    const __rand__: MethodCall = builtin_protocols::rand;
+
+    #[pymethod]
+    const __or__: MethodCall = builtin_protocols::or;
+
+    #[pymethod]
+    const __ror__: MethodCall = builtin_protocols::ror;
+
+    #[pymethod]
+    const __xor__: MethodCall = builtin_protocols::xor;
+
+    #[pymethod]
+    const __rxor__: MethodCall = builtin_protocols::rxor;
+
+    #[pymethod]
+    const __isub__: MethodCall = builtin_protocols::isub;
+
+    #[pymethod]
+    const __iand__: MethodCall = builtin_protocols::iand;
+
+    #[pymethod]
+    const __ior__: MethodCall = builtin_protocols::ior;
+
+    #[pymethod]
+    const __eq__: MethodCall = builtin_protocols::eq;
+
+    #[pymethod]
+    const __ne__: MethodCall = builtin_protocols::ne;
+
+    #[pymethod]
+    const __lt__: MethodCall = builtin_protocols::lt;
+
+    #[pymethod]
+    const __le__: MethodCall = builtin_protocols::le;
+
+    #[pymethod]
+    const __gt__: MethodCall = builtin_protocols::gt;
+
+    #[pymethod]
+    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn __len__<'h>(this: &HeapObjectRead<'h, Set>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

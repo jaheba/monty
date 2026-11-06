@@ -1,8 +1,8 @@
 //! Binding and receiver adaptation for builtin attribute tables.
 //!
-//! Generated PyAttrs registrations describe type-specific methods. Shared special
-//! methods are registered in builtin_protocols; Type combines both sources for
-//! lookup and enumeration. MethodCall adapters borrow an existing PyValue view,
+//! Each PyAttrs table registers type-specific methods and shared special-method
+//! adapters together. Lookup and enumeration use that same table.
+//! MethodCall adapters borrow an existing PyValue view,
 //! while call_unbound owns and validates an explicit first positional receiver.
 //!
 //! Native subtypes can share storage without sharing descriptor semantics:
@@ -32,7 +32,7 @@ pub(crate) type MethodCall = for<'h> fn(&mut PyValue<'h>, ArgValues, &mut VM<'h>
 pub(crate) trait PyAttrs<'h> {
     /// Native view selected by the macro, such as PyStr or a typed heap capability.
     type Receiver;
-    /// Generated entries only; Type::attrs adds the shared protocol registrations.
+    /// Complete attribute table, including any shared special-method adapters.
     const ATTRS: &'static [(StaticStrings, AttrDef)];
 }
 
@@ -192,7 +192,6 @@ mod tests {
 
     use super::*;
     use crate::{
-        builtin_protocols,
         heap::{Heap as ObjectHeap, HeapData, HeapReader},
         intern::Interns,
         run::{Program, SessionTables},
@@ -269,10 +268,7 @@ mod tests {
         const SORT: Option<AttrDef> = list::PyListImpl::lookup_attr(StaticStrings::Sort);
         const LIST_TABLE: &[(StaticStrings, AttrDef)] = Type::List.attrs();
         assert!(matches!(SORT, Some(AttrDef::Method(_))));
-        assert_eq!(
-            LIST_TABLE.len(),
-            <list::PyListImpl as PyAttrs<'static>>::ATTRS.len() + builtin_protocols::attrs(Type::List).len()
-        );
+        assert_eq!(LIST_TABLE.len(), <list::PyListImpl as PyAttrs<'static>>::ATTRS.len());
 
         let mut heap = ObjectHeap::new(16, ResourceTracker::default());
         let list_id = heap.allocate(HeapData::List(List::new(vec![Value::Int(2), Value::Int(1)])));

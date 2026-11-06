@@ -76,6 +76,7 @@ use smallvec::smallvec;
 use super::{CmpOrder, LazyHeapSet, PyTrait, Type};
 use crate::{
     args::{ArgValues, FromArgs, StrArg},
+    builtin_protocols,
     bytecode::{CallResult, VM},
     codecs::Codec,
     defer_drop,
@@ -85,7 +86,7 @@ use crate::{
     identity::Identity,
     intern::{BytesId, StaticStrings},
     percent_format::{copy_bytes_template, percent_format_bytes},
-    py_attrs::PyAttrs,
+    py_attrs::{MethodCall, PyAttrs},
     py_class::PyClass,
     py_value::PyValue,
     resource_checks::{check_repeat_size, check_replace_size, push_checked, repeated_len, try_vec_with_capacity},
@@ -2449,6 +2450,57 @@ impl<'h> PyBytes<'h> {
 #[pyattrs]
 impl<'h> PyAttrs<'h> for PyBytes<'h> {
     type Receiver = PyBytes<'h>;
+
+    #[pymethod]
+    const __repr__: MethodCall = builtin_protocols::repr;
+
+    #[pymethod]
+    const __str__: MethodCall = builtin_protocols::str;
+
+    #[pymethod]
+    const __hash__: MethodCall = builtin_protocols::hash;
+
+    #[pymethod]
+    const __format__: MethodCall = builtin_protocols::format;
+
+    #[pymethod]
+    const __bytes__: MethodCall = builtin_protocols::bytes;
+
+    #[pymethod]
+    const __iter__: MethodCall = builtin_protocols::iter;
+
+    #[pymethod]
+    const __add__: MethodCall = builtin_protocols::add;
+
+    #[pymethod]
+    const __mul__: MethodCall = builtin_protocols::mul;
+
+    #[pymethod]
+    const __rmul__: MethodCall = builtin_protocols::rmul;
+
+    #[pymethod]
+    const __mod__: MethodCall = builtin_protocols::modulo;
+
+    #[pymethod]
+    const __rmod__: MethodCall = builtin_protocols::rmod;
+
+    #[pymethod]
+    const __eq__: MethodCall = builtin_protocols::eq;
+
+    #[pymethod]
+    const __ne__: MethodCall = builtin_protocols::ne;
+
+    #[pymethod]
+    const __lt__: MethodCall = builtin_protocols::lt;
+
+    #[pymethod]
+    const __le__: MethodCall = builtin_protocols::le;
+
+    #[pymethod]
+    const __gt__: MethodCall = builtin_protocols::gt;
+
+    #[pymethod]
+    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn __len__(this: &PyBytes<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

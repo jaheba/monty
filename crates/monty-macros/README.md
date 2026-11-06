@@ -171,9 +171,17 @@ Names map from Rust snake case to `StaticStrings` variants: `sort` becomes `Sort
 Dunder names use the `Dunder` prefix: `__len__` becomes `DunderLen`.
 Declaration order determines table order.
 
-Shared native protocol adapters are registered in `monty/src/builtin_protocols.rs`.
-`Type::attrs()` joins those entries with the generated per-type table at compile time;
-lookup gives the per-type implementation precedence.
+Shared native protocol adapters are defined in `monty/src/builtin_protocols.rs`.
+Register them inside each type's `PyAttrs` implementation using a method declaration:
+
+```rust
+#[pymethod]
+const __repr__: crate::py_attrs::MethodCall = crate::builtin_protocols::repr;
+```
+
+The macro inserts the adapter directly into the generated table without emitting an associated constant or wrapper.
+These declarations require a dunder name and a `MethodCall` type.
+A namespace containing only shared adapters can use `PyValue<'h>` as its `Receiver`.
 
 Functions keep their visibility, lifetime parameters, documentation, and bodies.
 Unannotated helper functions are preserved without registration.
@@ -194,13 +202,13 @@ An explicit method call preserves its own result, including `NotImplemented`.
 
 Lookup and binding use the same entry for bound and unbound calls:
 
-1. `Type::lookup_attr` checks the generated per-type table, then the shared protocol table.
+1. `Type::lookup_attr` checks the type's generated `PyAttrs` table.
 2. An instance call passes its existing `PyValue` view to the adapter.
 3. A call through a builtin type uses `py_attrs::call_unbound` to extract and validate the first positional receiver.
 4. The adapter enforces the method's argument rules and invokes the native operation.
 
-`Type::attrs()` joins the generated and shared tables into a static array for enumeration.
-The two tables must have disjoint Python names, even though lookup gives generated entries precedence.
+`Type::attrs()` returns that same static table for enumeration.
+The macro rejects duplicate Python names across native methods and shared adapter declarations.
 The `tables_and_lookups_agree` test checks duplicate names and verifies that enumerated entries can be looked up.
 
 ### Adding a special method
@@ -208,9 +216,9 @@ The `tables_and_lookups_agree` test checks duplicate names and verifies that enu
 Use `#[pymethod]` in the type's `PyAttrs` implementation when the method needs a concrete native receiver or type-specific
 argument handling.
 Use a shared adapter in `builtin_protocols.rs` when several types can use the same `PyValue` operation and calling rules.
-Register its Python name in `StaticStrings`, add its spelling to the `entries!` macro, and opt each supported type into it
-in `attrs`.
-A defining-type variant can reuse the Python name: the `dict_eq` registration still exposes `__eq__`.
+Register its Python name in `StaticStrings`, then add a `#[pymethod]` constant declaration to each supported type's
+`PyAttrs` implementation.
+The declaration names the Python method independently of its adapter: `__eq__` can refer to `builtin_protocols::dict_eq`.
 
 Check method availability on instances or in the type's class hierarchy.
 For example, `hasattr(str, '__or__')` can find the metaclass's union method; it does not establish that string instances

@@ -15,13 +15,14 @@ pub(crate) use monty_types::{MAX_TIMEZONE_OFFSET_SECONDS, MIN_TIMEZONE_OFFSET_SE
 
 use crate::{
     args::{ArgValues, FromArgs},
+    builtin_protocols,
     bytecode::VM,
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
     hash::HashValue,
     heap::{Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
     intern::Interns,
-    py_attrs::PyAttrs,
+    py_attrs::{MethodCall, PyAttrs},
     types::{
         LazyHeapSet, PyTrait, Type,
         str::{StringRepr, allocate_string},
@@ -357,6 +358,36 @@ pub(crate) struct PyTimeZoneImpl;
 #[pyattrs]
 impl<'heap> PyAttrs<'heap> for PyTimeZoneImpl {
     type Receiver = HeapObjectRead<'heap, TimeZone>;
+
+    #[pymethod]
+    const __repr__: MethodCall = builtin_protocols::repr;
+
+    #[pymethod]
+    const __str__: MethodCall = builtin_protocols::str;
+
+    #[pymethod]
+    const __hash__: MethodCall = builtin_protocols::hash;
+
+    #[pymethod]
+    const __format__: MethodCall = builtin_protocols::format;
+
+    #[pymethod]
+    const __eq__: MethodCall = builtin_protocols::eq;
+
+    #[pymethod]
+    const __ne__: MethodCall = builtin_protocols::ne;
+
+    #[pymethod]
+    const __lt__: MethodCall = builtin_protocols::lt;
+
+    #[pymethod]
+    const __le__: MethodCall = builtin_protocols::le;
+
+    #[pymethod]
+    const __gt__: MethodCall = builtin_protocols::gt;
+
+    #[pymethod]
+    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn utcoffset<'h>(value: &mut HeapObjectRead<'h, TimeZone>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
