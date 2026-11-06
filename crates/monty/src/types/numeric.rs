@@ -5,13 +5,7 @@ use num_integer::Integer;
 use num_traits::Pow;
 
 use crate::{
-    builtin_protocols,
-    bytecode::VM,
-    exception_private::RunResult,
-    heap::Heap,
-    py_attrs::{MethodCall, PyAttrs},
-    py_value::PyValue,
-    types::LongInt,
+    bytecode::VM, exception_private::RunResult, heap::Heap, py_attrs::PyAttrs, py_value::PyValue, types::LongInt,
     value::Value,
 };
 
@@ -129,419 +123,88 @@ fn round_float_to_digits(value: f64, digits: i64) -> f64 {
 /// Python-visible methods for the native Int value.
 pub(crate) struct PyIntAttrs;
 
-#[monty_macros::pyattrs]
+#[monty_macros::pyattrs(protocols(
+    comparison,
+    additive,
+    bitwise,
+    multiplicative,
+    division,
+    shifts,
+    unary_numeric,
+    repr,
+    str,
+    bool,
+    float,
+    round,
+    hash,
+    format,
+    invert,
+    index,
+    int,
+    floor,
+    ceil,
+    trunc,
+    pow,
+    rpow
+))]
 impl<'h> PyAttrs<'h> for PyIntAttrs {
     type Receiver = PyValue<'h>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __bool__: MethodCall = builtin_protocols::bool;
-
-    #[pymethod]
-    const __float__: MethodCall = builtin_protocols::float;
-
-    #[pymethod]
-    const __round__: MethodCall = builtin_protocols::round;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __neg__: MethodCall = builtin_protocols::neg;
-
-    #[pymethod]
-    const __pos__: MethodCall = builtin_protocols::pos;
-
-    #[pymethod]
-    const __abs__: MethodCall = builtin_protocols::abs;
-
-    #[pymethod]
-    const __invert__: MethodCall = builtin_protocols::invert;
-
-    #[pymethod]
-    const __index__: MethodCall = builtin_protocols::index;
-
-    #[pymethod]
-    const __int__: MethodCall = builtin_protocols::int;
-
-    #[pymethod]
-    const __floor__: MethodCall = builtin_protocols::floor;
-
-    #[pymethod]
-    const __ceil__: MethodCall = builtin_protocols::ceil;
-
-    #[pymethod]
-    const __trunc__: MethodCall = builtin_protocols::trunc;
-
-    #[pymethod]
-    const __add__: MethodCall = builtin_protocols::add;
-
-    #[pymethod]
-    const __radd__: MethodCall = builtin_protocols::radd;
-
-    #[pymethod]
-    const __sub__: MethodCall = builtin_protocols::sub;
-
-    #[pymethod]
-    const __rsub__: MethodCall = builtin_protocols::rsub;
-
-    #[pymethod]
-    const __mul__: MethodCall = builtin_protocols::mul;
-
-    #[pymethod]
-    const __rmul__: MethodCall = builtin_protocols::rmul;
-
-    #[pymethod]
-    const __truediv__: MethodCall = builtin_protocols::truediv;
-
-    #[pymethod]
-    const __rtruediv__: MethodCall = builtin_protocols::rtruediv;
-
-    #[pymethod]
-    const __floordiv__: MethodCall = builtin_protocols::floordiv;
-
-    #[pymethod]
-    const __rfloordiv__: MethodCall = builtin_protocols::rfloordiv;
-
-    #[pymethod]
-    const __mod__: MethodCall = builtin_protocols::modulo;
-
-    #[pymethod]
-    const __rmod__: MethodCall = builtin_protocols::rmod;
-
-    #[pymethod]
-    const __divmod__: MethodCall = builtin_protocols::divmod;
-
-    #[pymethod]
-    const __rdivmod__: MethodCall = builtin_protocols::rdivmod;
-
-    #[pymethod]
-    const __and__: MethodCall = builtin_protocols::and;
-
-    #[pymethod]
-    const __rand__: MethodCall = builtin_protocols::rand;
-
-    #[pymethod]
-    const __or__: MethodCall = builtin_protocols::or;
-
-    #[pymethod]
-    const __ror__: MethodCall = builtin_protocols::ror;
-
-    #[pymethod]
-    const __xor__: MethodCall = builtin_protocols::xor;
-
-    #[pymethod]
-    const __rxor__: MethodCall = builtin_protocols::rxor;
-
-    #[pymethod]
-    const __lshift__: MethodCall = builtin_protocols::lshift;
-
-    #[pymethod]
-    const __rlshift__: MethodCall = builtin_protocols::rlshift;
-
-    #[pymethod]
-    const __rshift__: MethodCall = builtin_protocols::rshift;
-
-    #[pymethod]
-    const __rrshift__: MethodCall = builtin_protocols::rrshift;
-
-    #[pymethod]
-    const __pow__: MethodCall = builtin_protocols::pow;
-
-    #[pymethod]
-    const __rpow__: MethodCall = builtin_protocols::rpow;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 }
 
 /// Python-visible methods for the native Bool value.
 pub(crate) struct PyBoolAttrs;
 
-#[monty_macros::pyattrs]
+#[monty_macros::pyattrs(protocols(
+    comparison,
+    additive,
+    bitwise,
+    multiplicative,
+    division,
+    shifts,
+    unary_numeric,
+    repr,
+    str,
+    bool,
+    float,
+    round,
+    hash,
+    format,
+    invert,
+    index,
+    int,
+    floor,
+    ceil,
+    trunc,
+    pow,
+    rpow
+))]
 impl<'h> PyAttrs<'h> for PyBoolAttrs {
     type Receiver = PyValue<'h>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __bool__: MethodCall = builtin_protocols::bool;
-
-    #[pymethod]
-    const __float__: MethodCall = builtin_protocols::float;
-
-    #[pymethod]
-    const __round__: MethodCall = builtin_protocols::round;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __neg__: MethodCall = builtin_protocols::neg;
-
-    #[pymethod]
-    const __pos__: MethodCall = builtin_protocols::pos;
-
-    #[pymethod]
-    const __abs__: MethodCall = builtin_protocols::abs;
-
-    #[pymethod]
-    const __invert__: MethodCall = builtin_protocols::invert;
-
-    #[pymethod]
-    const __index__: MethodCall = builtin_protocols::index;
-
-    #[pymethod]
-    const __int__: MethodCall = builtin_protocols::int;
-
-    #[pymethod]
-    const __floor__: MethodCall = builtin_protocols::floor;
-
-    #[pymethod]
-    const __ceil__: MethodCall = builtin_protocols::ceil;
-
-    #[pymethod]
-    const __trunc__: MethodCall = builtin_protocols::trunc;
-
-    #[pymethod]
-    const __add__: MethodCall = builtin_protocols::add;
-
-    #[pymethod]
-    const __radd__: MethodCall = builtin_protocols::radd;
-
-    #[pymethod]
-    const __sub__: MethodCall = builtin_protocols::sub;
-
-    #[pymethod]
-    const __rsub__: MethodCall = builtin_protocols::rsub;
-
-    #[pymethod]
-    const __mul__: MethodCall = builtin_protocols::mul;
-
-    #[pymethod]
-    const __rmul__: MethodCall = builtin_protocols::rmul;
-
-    #[pymethod]
-    const __truediv__: MethodCall = builtin_protocols::truediv;
-
-    #[pymethod]
-    const __rtruediv__: MethodCall = builtin_protocols::rtruediv;
-
-    #[pymethod]
-    const __floordiv__: MethodCall = builtin_protocols::floordiv;
-
-    #[pymethod]
-    const __rfloordiv__: MethodCall = builtin_protocols::rfloordiv;
-
-    #[pymethod]
-    const __mod__: MethodCall = builtin_protocols::modulo;
-
-    #[pymethod]
-    const __rmod__: MethodCall = builtin_protocols::rmod;
-
-    #[pymethod]
-    const __divmod__: MethodCall = builtin_protocols::divmod;
-
-    #[pymethod]
-    const __rdivmod__: MethodCall = builtin_protocols::rdivmod;
-
-    #[pymethod]
-    const __and__: MethodCall = builtin_protocols::and;
-
-    #[pymethod]
-    const __rand__: MethodCall = builtin_protocols::rand;
-
-    #[pymethod]
-    const __or__: MethodCall = builtin_protocols::or;
-
-    #[pymethod]
-    const __ror__: MethodCall = builtin_protocols::ror;
-
-    #[pymethod]
-    const __xor__: MethodCall = builtin_protocols::xor;
-
-    #[pymethod]
-    const __rxor__: MethodCall = builtin_protocols::rxor;
-
-    #[pymethod]
-    const __lshift__: MethodCall = builtin_protocols::lshift;
-
-    #[pymethod]
-    const __rlshift__: MethodCall = builtin_protocols::rlshift;
-
-    #[pymethod]
-    const __rshift__: MethodCall = builtin_protocols::rshift;
-
-    #[pymethod]
-    const __rrshift__: MethodCall = builtin_protocols::rrshift;
-
-    #[pymethod]
-    const __pow__: MethodCall = builtin_protocols::pow;
-
-    #[pymethod]
-    const __rpow__: MethodCall = builtin_protocols::rpow;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 }
 
 /// Python-visible methods for the native Float value.
 pub(crate) struct PyFloatAttrs;
 
-#[monty_macros::pyattrs]
+#[monty_macros::pyattrs(protocols(
+    comparison,
+    additive,
+    multiplicative,
+    division,
+    unary_numeric,
+    repr,
+    str,
+    bool,
+    float,
+    round,
+    hash,
+    format,
+    int,
+    floor,
+    ceil,
+    trunc,
+    pow,
+    rpow
+))]
 impl<'h> PyAttrs<'h> for PyFloatAttrs {
     type Receiver = PyValue<'h>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __bool__: MethodCall = builtin_protocols::bool;
-
-    #[pymethod]
-    const __float__: MethodCall = builtin_protocols::float;
-
-    #[pymethod]
-    const __round__: MethodCall = builtin_protocols::round;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __neg__: MethodCall = builtin_protocols::neg;
-
-    #[pymethod]
-    const __pos__: MethodCall = builtin_protocols::pos;
-
-    #[pymethod]
-    const __abs__: MethodCall = builtin_protocols::abs;
-
-    #[pymethod]
-    const __int__: MethodCall = builtin_protocols::int;
-
-    #[pymethod]
-    const __floor__: MethodCall = builtin_protocols::floor;
-
-    #[pymethod]
-    const __ceil__: MethodCall = builtin_protocols::ceil;
-
-    #[pymethod]
-    const __trunc__: MethodCall = builtin_protocols::trunc;
-
-    #[pymethod]
-    const __add__: MethodCall = builtin_protocols::add;
-
-    #[pymethod]
-    const __radd__: MethodCall = builtin_protocols::radd;
-
-    #[pymethod]
-    const __sub__: MethodCall = builtin_protocols::sub;
-
-    #[pymethod]
-    const __rsub__: MethodCall = builtin_protocols::rsub;
-
-    #[pymethod]
-    const __mul__: MethodCall = builtin_protocols::mul;
-
-    #[pymethod]
-    const __rmul__: MethodCall = builtin_protocols::rmul;
-
-    #[pymethod]
-    const __truediv__: MethodCall = builtin_protocols::truediv;
-
-    #[pymethod]
-    const __rtruediv__: MethodCall = builtin_protocols::rtruediv;
-
-    #[pymethod]
-    const __floordiv__: MethodCall = builtin_protocols::floordiv;
-
-    #[pymethod]
-    const __rfloordiv__: MethodCall = builtin_protocols::rfloordiv;
-
-    #[pymethod]
-    const __mod__: MethodCall = builtin_protocols::modulo;
-
-    #[pymethod]
-    const __rmod__: MethodCall = builtin_protocols::rmod;
-
-    #[pymethod]
-    const __divmod__: MethodCall = builtin_protocols::divmod;
-
-    #[pymethod]
-    const __rdivmod__: MethodCall = builtin_protocols::rdivmod;
-
-    #[pymethod]
-    const __pow__: MethodCall = builtin_protocols::pow;
-
-    #[pymethod]
-    const __rpow__: MethodCall = builtin_protocols::rpow;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 }

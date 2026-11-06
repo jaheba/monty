@@ -1,8 +1,4 @@
-use crate::{
-    builtin_protocols,
-    py_attrs::{MethodCall, PyAttrs},
-    py_value::PyValue,
-};
+use crate::{py_attrs::PyAttrs, py_value::PyValue};
 
 mod builtin_type;
 
@@ -106,119 +102,23 @@ pub(crate) use union::Union;
 /// Python-visible methods for the native NoneType value.
 pub(crate) struct PyNoneAttrs;
 
-#[monty_macros::pyattrs]
+#[monty_macros::pyattrs(protocols(comparison, repr, str, bool, hash, format))]
 impl<'h> PyAttrs<'h> for PyNoneAttrs {
     type Receiver = PyValue<'h>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __bool__: MethodCall = builtin_protocols::bool;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 }
 
 /// Python-visible methods for the native Ellipsis value.
 pub(crate) struct PyEllipsisAttrs;
 
-#[monty_macros::pyattrs]
+#[monty_macros::pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'h> PyAttrs<'h> for PyEllipsisAttrs {
     type Receiver = PyValue<'h>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 }
 
 /// Python-visible methods for the native NotImplementedType value.
 pub(crate) struct PyNotImplementedAttrs;
 
-#[monty_macros::pyattrs]
+#[monty_macros::pyattrs(protocols(comparison, repr, str, bool, hash, format))]
 impl<'h> PyAttrs<'h> for PyNotImplementedAttrs {
     type Receiver = PyValue<'h>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __bool__: MethodCall = builtin_protocols::bool;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 }

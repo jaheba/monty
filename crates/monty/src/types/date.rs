@@ -16,14 +16,13 @@ use monty_types::{OsFunctionCall, ResourceTracker};
 
 use crate::{
     args::{ArgValues, FromArgs, StrArg},
-    builtin_protocols,
     bytecode::{CallResult, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
     hash::HashValue,
     heap::{Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
     intern::{Interns, StaticStrings},
-    py_attrs::{MethodCall, PyAttrs},
+    py_attrs::PyAttrs,
     py_class::PyClass,
     string_builder::StringBuilder,
     types::{
@@ -494,51 +493,9 @@ struct DateReplaceArgs {
 
 pub(crate) struct PyDateImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, additive, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyDateImpl {
     type Receiver = HeapObjectRead<'heap, Date>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __add__: MethodCall = builtin_protocols::add;
-
-    #[pymethod]
-    const __radd__: MethodCall = builtin_protocols::radd;
-
-    #[pymethod]
-    const __sub__: MethodCall = builtin_protocols::sub;
-
-    #[pymethod]
-    const __rsub__: MethodCall = builtin_protocols::rsub;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn isoformat<'h>(value: &mut HeapObjectRead<'h, Date>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

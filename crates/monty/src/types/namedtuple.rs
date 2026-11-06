@@ -32,7 +32,6 @@ use smallvec::SmallVec;
 use super::{CmpOrder, PyTrait, tuple::TupleIterator};
 use crate::{
     args::{ArgValues, KwargsValues},
-    builtin_protocols,
     bytecode::{CallResult, ContainsVM, RecursionToken, VM},
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
@@ -40,7 +39,7 @@ use crate::{
     heap::{DropGuard, DropWithContext, HeapData, HeapId, HeapItem, HeapObjectRead, HeapRead, HeapReadOutput},
     intern::{Interns, StaticStrings},
     modules::copy::{Memo, PyDeepCopy, deep_copy_slots},
-    py_attrs::{MethodCall, PyAttrs},
+    py_attrs::PyAttrs,
     resource_checks::{check_repeat_size, repeated_len},
     types::{
         Dict, Type, Union, allocate_tuple,
@@ -1299,51 +1298,9 @@ impl<'h> PyDeepCopy<'h> for HeapRead<'h, NamedTuple> {
 
 pub(crate) struct PyNamedTupleImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format, iter, add, mul, rmul))]
 impl<'heap> PyAttrs<'heap> for PyNamedTupleImpl {
     type Receiver = HeapObjectRead<'heap, NamedTuple>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __iter__: MethodCall = builtin_protocols::iter;
-
-    #[pymethod]
-    const __add__: MethodCall = builtin_protocols::add;
-
-    #[pymethod]
-    const __mul__: MethodCall = builtin_protocols::mul;
-
-    #[pymethod]
-    const __rmul__: MethodCall = builtin_protocols::rmul;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn __len__<'h>(this: &HeapObjectRead<'h, NamedTuple>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

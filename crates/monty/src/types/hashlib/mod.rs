@@ -9,8 +9,6 @@
 //! [`HashAlgorithm`] names the algorithm and carries the sizes CPython
 //! reports; [`HashCore`] is the streaming state behind it.
 
-use crate::{builtin_protocols, py_attrs::MethodCall};
-
 mod blake2;
 mod block;
 mod keccak;
@@ -542,39 +540,9 @@ pub(crate) fn hash_input<'a, 'h>(value: &'a PyValue<'h>, vm: &'a VM<'h>) -> RunR
 
 pub(crate) struct PyHashImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyHashImpl {
     type Receiver = HeapObjectRead<'heap, HashObject>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn update<'h>(
@@ -644,39 +612,9 @@ impl<'heap> PyAttrs<'heap> for PyHashImpl {
 
 pub(crate) struct PyHashXofImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyHashXofImpl {
     type Receiver = HeapObjectRead<'heap, HashObject>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn update<'h>(

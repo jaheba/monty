@@ -17,13 +17,12 @@ use smallvec::smallvec;
 
 use crate::{
     args::{ArgValues, FromArgs, FromValue, FromValueFail, is_long_int},
-    builtin_protocols,
     bytecode::{CallResult, VM},
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
     hash::HashValue,
     heap::{Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
     intern::StaticStrings,
-    py_attrs::{MethodCall, PyAttrs},
+    py_attrs::PyAttrs,
     types::{
         CmpOrder, LazyHeapSet, PyTrait, Type, date, datetime, long_int, str::allocate_string, tuple::allocate_tuple,
     },
@@ -552,93 +551,20 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, TimeDelta> {
 
 pub(crate) struct PyTimeDeltaImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(
+    comparison,
+    additive,
+    multiplicative,
+    division,
+    unary_numeric,
+    repr,
+    str,
+    bool,
+    hash,
+    format
+))]
 impl<'heap> PyAttrs<'heap> for PyTimeDeltaImpl {
     type Receiver = HeapObjectRead<'heap, TimeDelta>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __bool__: MethodCall = builtin_protocols::bool;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __neg__: MethodCall = builtin_protocols::neg;
-
-    #[pymethod]
-    const __pos__: MethodCall = builtin_protocols::pos;
-
-    #[pymethod]
-    const __abs__: MethodCall = builtin_protocols::abs;
-
-    #[pymethod]
-    const __add__: MethodCall = builtin_protocols::add;
-
-    #[pymethod]
-    const __radd__: MethodCall = builtin_protocols::radd;
-
-    #[pymethod]
-    const __sub__: MethodCall = builtin_protocols::sub;
-
-    #[pymethod]
-    const __rsub__: MethodCall = builtin_protocols::rsub;
-
-    #[pymethod]
-    const __mul__: MethodCall = builtin_protocols::mul;
-
-    #[pymethod]
-    const __rmul__: MethodCall = builtin_protocols::rmul;
-
-    #[pymethod]
-    const __truediv__: MethodCall = builtin_protocols::truediv;
-
-    #[pymethod]
-    const __rtruediv__: MethodCall = builtin_protocols::rtruediv;
-
-    #[pymethod]
-    const __floordiv__: MethodCall = builtin_protocols::floordiv;
-
-    #[pymethod]
-    const __rfloordiv__: MethodCall = builtin_protocols::rfloordiv;
-
-    #[pymethod]
-    const __mod__: MethodCall = builtin_protocols::modulo;
-
-    #[pymethod]
-    const __rmod__: MethodCall = builtin_protocols::rmod;
-
-    #[pymethod]
-    const __divmod__: MethodCall = builtin_protocols::divmod;
-
-    #[pymethod]
-    const __rdivmod__: MethodCall = builtin_protocols::rdivmod;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn total_seconds<'h>(

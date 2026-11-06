@@ -2,7 +2,10 @@ use std::{collections::HashSet, mem};
 
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{FnArg, GenericArgument, GenericParam, ImplItem, ImplItemFn, ItemImpl, PathArguments, ReturnType, Type};
+use syn::{
+    FnArg, GenericArgument, GenericParam, ImplItem, ImplItemFn, ItemImpl, PathArguments, ReturnType, Type,
+    ext::IdentExt, punctuated::Punctuated,
+};
 
 #[derive(Clone, Copy)]
 enum Mode {
@@ -297,6 +300,57 @@ fn static_name(spelling: &str) -> String {
     name
 }
 
+/// Expands explicit protocol opt-ins into the same entries as local method declarations.
+/// Groups describe Python-visible methods, not the presence of default PyTrait hooks.
+pub(crate) fn expand_with_protocols(args: TokenStream, mut input: ItemImpl) -> syn::Result<TokenStream> {
+    if !args.is_empty() {
+        let option: syn::Meta = syn::parse2(args)?;
+        let syn::Meta::List(list) = option else {
+            return Err(syn::Error::new_spanned(option, "expected protocols(name, ...)"));
+        };
+        if !list.path.is_ident("protocols") {
+            return Err(syn::Error::new_spanned(list.path, "expected protocols(name, ...)"));
+        }
+        let protocols = list.parse_args_with(|input: syn::parse::ParseStream| {
+            Punctuated::<syn::Ident, syn::Token![,]>::parse_terminated_with(input, syn::Ident::parse_any)
+        })?;
+        let mut declarations = Vec::new();
+        for protocol in protocols {
+            let spelling = protocol.to_string();
+            let methods: &[&str] = match spelling.as_str() {
+                "comparison" => &["eq", "ne", "lt", "le", "gt", "ge"],
+                "set_binary" => &["sub", "rsub", "and", "rand", "or", "ror", "xor", "rxor"],
+                "bitwise" => &["and", "rand", "or", "ror", "xor", "rxor"],
+                "set_inplace" => &["isub", "iand", "ior", "ixor"],
+                "additive" => &["add", "radd", "sub", "rsub"],
+                "multiplicative" => &["mul", "rmul", "truediv", "rtruediv"],
+                "division" => &["floordiv", "rfloordiv", "mod", "rmod", "divmod", "rdivmod"],
+                "shifts" => &["lshift", "rlshift", "rshift", "rrshift"],
+                "unary_numeric" => &["neg", "pos", "abs"],
+                "abs" | "add" | "and" | "bool" | "bytes" | "ceil" | "complex" | "contains" | "delitem" | "divmod"
+                | "eq" | "float" | "floor" | "floordiv" | "format" | "ge" | "getitem" | "gt" | "hash" | "iadd"
+                | "iand" | "imul" | "index" | "int" | "invert" | "ior" | "isub" | "iter" | "ixor" | "le" | "len"
+                | "lshift" | "lt" | "mod" | "mul" | "ne" | "neg" | "next" | "or" | "pos" | "pow" | "radd" | "rand"
+                | "rdivmod" | "repr" | "reversed" | "rfloordiv" | "rlshift" | "rmod" | "rmul" | "ror" | "round"
+                | "rpow" | "rrshift" | "rshift" | "rsub" | "rtruediv" | "rxor" | "setitem" | "str" | "sub"
+                | "truediv" | "trunc" | "xor" => &[&spelling],
+                _ => return Err(syn::Error::new_spanned(protocol, "unknown protocol method or group")),
+            };
+            for method in methods {
+                let name = format_ident!("__{}__", method, span = protocol.span());
+                let handler = format_ident!("{}", if *method == "mod" { "modulo" } else { method });
+                declarations.push(syn::parse_quote! {
+                    #[pymethod]
+                    const #name: crate::py_attrs::MethodCall = crate::builtin_protocols::#handler;
+                });
+            }
+        }
+        // Reuse normal entry generation so group/local name collisions are rejected together.
+        input.items.splice(0..0, declarations);
+    }
+    expand(input)
+}
+
 pub(crate) fn expand(mut input: ItemImpl) -> syn::Result<TokenStream> {
     let Some((negation, trait_path, _)) = &input.trait_ else {
         return Err(syn::Error::new_spanned(
@@ -515,6 +569,90 @@ mod tests {
 
     fn error(input: ItemImpl) -> String {
         expand(input).unwrap_err().to_string()
+    }
+
+    #[test]
+    fn protocol_groups_share_one_table_with_local_methods() {
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PySetImpl {
+                type Receiver = PyValue<'h>;
+
+                #[pymethod]
+                const __repr__: MethodCall = custom_repr;
+            }
+        };
+        let output = expand_with_protocols(quote!(protocols(comparison, set_binary, mod,)), input)
+            .unwrap()
+            .to_string();
+        let file: syn::File = syn::parse_str(&output).unwrap();
+        let syn::Item::Impl(table_impl) = &file.items[1] else {
+            panic!("expected PyAttrs impl")
+        };
+        let ImplItem::Const(table) = &table_impl.items[1] else {
+            panic!("expected ATTRS")
+        };
+        let syn::Expr::Reference(reference) = &table.expr else {
+            panic!("expected static slice")
+        };
+        let syn::Expr::Array(array) = reference.expr.as_ref() else {
+            panic!("expected attribute entries")
+        };
+        assert_eq!(array.elems.len(), 6 + 8 + 1 + 1);
+        assert!(output.contains("builtin_protocols :: modulo"));
+        assert!(output.contains("custom_repr"));
+        assert!(output.contains("StaticStrings :: DunderRor"));
+    }
+
+    #[test]
+    fn protocols_reject_overlapping_groups_and_local_names() {
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PySetImpl {
+                type Receiver = PyValue<'h>;
+            }
+        };
+        for args in [
+            quote!(protocols(comparison, eq)),
+            quote!(protocols(set_binary, bitwise)),
+            quote!(protocols(repr, repr)),
+        ] {
+            assert!(
+                expand_with_protocols(args, input.clone())
+                    .unwrap_err()
+                    .to_string()
+                    .contains("duplicate")
+            );
+        }
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PySetImpl {
+                type Receiver = PyValue<'h>;
+                #[pymethod]
+                const __eq__: MethodCall = custom_eq;
+            }
+        };
+        assert!(
+            expand_with_protocols(quote!(protocols(comparison)), input)
+                .unwrap_err()
+                .to_string()
+                .contains("duplicate")
+        );
+    }
+
+    #[test]
+    fn protocols_reject_unknown_names_and_malformed_options() {
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PySetImpl {
+                type Receiver = PyValue<'h>;
+            }
+        };
+        for args in [
+            quote!(protocols(typo)),
+            quote!(methods(repr)),
+            quote!(protocols),
+            quote!(protocols(repr = true)),
+            quote!(protocols(repr), other),
+        ] {
+            assert!(expand_with_protocols(args, input.clone()).is_err());
+        }
     }
 
     #[test]

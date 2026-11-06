@@ -21,14 +21,13 @@ use smallvec::SmallVec;
 
 use crate::{
     args::{ArgValues, FromArgs},
-    builtin_protocols,
     bytecode::{CallResult, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
     heap::{HEAP_ENTRY_SIZE, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapRead, HeapReadOutput},
     intern::StaticStrings,
     modules::re::{ASCII, DOTALL, IGNORECASE, MULTILINE},
-    py_attrs::{MethodCall, PyAttrs},
+    py_attrs::PyAttrs,
     resource_checks::check_estimated_size,
     types::{
         LazyHeapSet, List, PyTrait, ReMatch, Type, allocate_tuple, re_syntax,
@@ -875,39 +874,9 @@ impl<'de> Deserialize<'de> for RePattern {
 
 pub(crate) struct PyRePatternImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyRePatternImpl {
     type Receiver = HeapRead<'heap, RePattern>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn search<'h>(value: &HeapRead<'h, RePattern>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

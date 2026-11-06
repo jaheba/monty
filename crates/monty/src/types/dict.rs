@@ -2136,7 +2136,7 @@ impl<'h> PyDeepCopy<'h> for HeapRead<'h, Dict> {
 
 pub(crate) struct PyDictImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(str, format, iter, reversed, setitem, delitem))]
 impl<'heap> PyAttrs<'heap> for PyDictImpl {
     type Receiver = HeapObjectRead<'heap, Dict>;
 
@@ -2144,24 +2144,6 @@ impl<'heap> PyAttrs<'heap> for PyDictImpl {
 
     #[pymethod]
     const __repr__: MethodCall = builtin_protocols::dict_repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __iter__: MethodCall = builtin_protocols::iter;
-
-    #[pymethod]
-    const __reversed__: MethodCall = builtin_protocols::reversed;
-
-    #[pymethod]
-    const __setitem__: MethodCall = builtin_protocols::setitem;
-
-    #[pymethod]
-    const __delitem__: MethodCall = builtin_protocols::delitem;
 
     #[pymethod]
     const __or__: MethodCall = builtin_protocols::dict_or;
@@ -2343,57 +2325,9 @@ impl<'heap> PyAttrs<'heap> for PyDictImpl {
 
 pub(crate) struct PyDefaultDictImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, format, iter, reversed, setitem, delitem, or, ror, ior))]
 impl<'heap> PyAttrs<'heap> for PyDefaultDictImpl {
     type Receiver = HeapObjectRead<'heap, Dict>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __iter__: MethodCall = builtin_protocols::iter;
-
-    #[pymethod]
-    const __reversed__: MethodCall = builtin_protocols::reversed;
-
-    #[pymethod]
-    const __setitem__: MethodCall = builtin_protocols::setitem;
-
-    #[pymethod]
-    const __delitem__: MethodCall = builtin_protocols::delitem;
-
-    #[pymethod]
-    const __or__: MethodCall = builtin_protocols::or;
-
-    #[pymethod]
-    const __ror__: MethodCall = builtin_protocols::ror;
-
-    #[pymethod]
-    const __ior__: MethodCall = builtin_protocols::ior;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn __len__<'h>(this: &HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
@@ -2479,83 +2413,19 @@ impl<'heap> PyAttrs<'heap> for PyDefaultDictImpl {
 
 pub(crate) struct PyCounterImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(
+    comparison, repr, str, format, iter, reversed, setitem, neg, pos, add, sub, and, or, iadd, isub, iand, ior
+))]
 impl<'heap> PyAttrs<'heap> for PyCounterImpl {
     type Receiver = HeapObjectRead<'heap, Dict>;
 
     // Counter inherits dict.__ror__, but overrides deletion, comparisons, and multiset arithmetic.
 
     #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __iter__: MethodCall = builtin_protocols::iter;
-
-    #[pymethod]
-    const __reversed__: MethodCall = builtin_protocols::reversed;
-
-    #[pymethod]
-    const __setitem__: MethodCall = builtin_protocols::setitem;
-
-    #[pymethod]
     const __delitem__: MethodCall = builtin_protocols::counter_delitem;
 
     #[pymethod]
-    const __neg__: MethodCall = builtin_protocols::neg;
-
-    #[pymethod]
-    const __pos__: MethodCall = builtin_protocols::pos;
-
-    #[pymethod]
-    const __add__: MethodCall = builtin_protocols::add;
-
-    #[pymethod]
-    const __sub__: MethodCall = builtin_protocols::sub;
-
-    #[pymethod]
-    const __and__: MethodCall = builtin_protocols::and;
-
-    #[pymethod]
-    const __or__: MethodCall = builtin_protocols::or;
-
-    #[pymethod]
     const __ror__: MethodCall = builtin_protocols::dict_ror;
-
-    #[pymethod]
-    const __iadd__: MethodCall = builtin_protocols::iadd;
-
-    #[pymethod]
-    const __isub__: MethodCall = builtin_protocols::isub;
-
-    #[pymethod]
-    const __iand__: MethodCall = builtin_protocols::iand;
-
-    #[pymethod]
-    const __ior__: MethodCall = builtin_protocols::ior;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn __len__<'h>(this: &HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

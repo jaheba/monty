@@ -7,12 +7,11 @@ use monty_types::{ResourceError, ResourceTracker};
 
 use crate::{
     args::ArgValues,
-    builtin_protocols,
     bytecode::{CallResult, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
     heap::{DropGuard, DropWithContext, HeapReadOutput},
-    py_attrs::{MethodCall, PyAttrs},
+    py_attrs::PyAttrs,
     py_value::PyValue,
     resource_checks::check_estimated_size,
     types::PyTrait,
@@ -185,43 +184,7 @@ pub fn collect_iterable_bounded(value: &Value, limit: usize, vm: &mut VM<'_>) ->
 /// Internal size hints do not imply a Python __len__ method.
 pub(crate) struct PyIteratorAttrs;
 
-#[monty_macros::pyattrs]
+#[monty_macros::pyattrs(protocols(comparison, repr, str, hash, format, iter, next))]
 impl<'h> PyAttrs<'h> for PyIteratorAttrs {
     type Receiver = PyValue<'h>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __iter__: MethodCall = builtin_protocols::iter;
-
-    #[pymethod]
-    const __next__: MethodCall = builtin_protocols::next;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 }

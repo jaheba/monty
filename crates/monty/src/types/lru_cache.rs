@@ -13,7 +13,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     args::{ArgValues, FromArgs, KwargsValues},
-    builtin_protocols,
     builtins::type_of_ref,
     bytecode::{CallResult, VM},
     defer_drop, defer_drop_mut,
@@ -23,7 +22,7 @@ use crate::{
     heap::{ContainsHeap, DropGuard, DropWithContext, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
     intern::StaticStrings,
     modules::ModuleFunctions,
-    py_attrs::{MethodCall, PyAttrs},
+    py_attrs::PyAttrs,
     types::{
         Dict, LazyHeapSet, NamedTuple, PyTrait, Type,
         hash_table::{PyHashTable, Slot, TableEntry, TableProbe, TableSource},
@@ -556,39 +555,9 @@ fn maxsize_value(maxsize: Option<u64>) -> Value {
 
 pub(crate) struct PyLruCacheImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyLruCacheImpl {
     type Receiver = HeapObjectRead<'heap, LruCache>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn cache_info<'h>(this: &mut HeapObjectRead<'h, LruCache>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

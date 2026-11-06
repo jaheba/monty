@@ -13,13 +13,12 @@ use num_integer::div_ceil;
 
 use crate::{
     args::ArgValues,
-    builtin_protocols,
     bytecode::{CallResult, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::HashValue,
     heap::{Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
-    py_attrs::{MethodCall, PyAttrs},
+    py_attrs::PyAttrs,
     py_value::PyValue,
     types::{LazyHeapSet, PyTrait, Type},
     value::Value,
@@ -399,55 +398,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, RangeIterator> {
 /// Python-visible methods for the native Range value.
 pub(crate) struct PyRangeAttrs;
 
-#[monty_macros::pyattrs]
+#[monty_macros::pyattrs(protocols(comparison, repr, str, bool, hash, format, iter, reversed, len, contains, getitem))]
 impl<'h> PyAttrs<'h> for PyRangeAttrs {
     type Receiver = PyValue<'h>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __bool__: MethodCall = builtin_protocols::bool;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __iter__: MethodCall = builtin_protocols::iter;
-
-    #[pymethod]
-    const __reversed__: MethodCall = builtin_protocols::reversed;
-
-    #[pymethod]
-    const __len__: MethodCall = builtin_protocols::len;
-
-    #[pymethod]
-    const __contains__: MethodCall = builtin_protocols::contains;
-
-    #[pymethod]
-    const __getitem__: MethodCall = builtin_protocols::getitem;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 }

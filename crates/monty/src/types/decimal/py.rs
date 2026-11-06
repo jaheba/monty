@@ -24,7 +24,6 @@ use super::{
 };
 use crate::{
     args::{ArgValues, FromArgs},
-    builtin_protocols,
     builtins::Builtins,
     bytecode::{CallResult, VM},
     defer_drop,
@@ -33,7 +32,7 @@ use crate::{
     hash::{HashValue, hash_f64, hash_python_long_int, identity_hash},
     heap::{DropWithContext, HeapData, HeapId, HeapObjectRead},
     intern::StaticStrings,
-    py_attrs::{MethodCall, PyAttrs},
+    py_attrs::PyAttrs,
     py_class::PyClass,
     py_value::PyValue,
     types::{
@@ -1547,96 +1546,21 @@ impl Decimal {
 /// Python-visible Decimal operations and constructors.
 pub(crate) struct PyDecimalImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(
+    comparison,
+    additive,
+    multiplicative,
+    division,
+    unary_numeric,
+    repr,
+    str,
+    bool,
+    hash,
+    pow,
+    rpow
+))]
 impl<'heap> PyAttrs<'heap> for PyDecimalImpl {
     type Receiver = HeapObjectRead<'heap, Decimal>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __bool__: MethodCall = builtin_protocols::bool;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __neg__: MethodCall = builtin_protocols::neg;
-
-    #[pymethod]
-    const __pos__: MethodCall = builtin_protocols::pos;
-
-    #[pymethod]
-    const __abs__: MethodCall = builtin_protocols::abs;
-
-    #[pymethod]
-    const __add__: MethodCall = builtin_protocols::add;
-
-    #[pymethod]
-    const __radd__: MethodCall = builtin_protocols::radd;
-
-    #[pymethod]
-    const __sub__: MethodCall = builtin_protocols::sub;
-
-    #[pymethod]
-    const __rsub__: MethodCall = builtin_protocols::rsub;
-
-    #[pymethod]
-    const __mul__: MethodCall = builtin_protocols::mul;
-
-    #[pymethod]
-    const __rmul__: MethodCall = builtin_protocols::rmul;
-
-    #[pymethod]
-    const __truediv__: MethodCall = builtin_protocols::truediv;
-
-    #[pymethod]
-    const __rtruediv__: MethodCall = builtin_protocols::rtruediv;
-
-    #[pymethod]
-    const __floordiv__: MethodCall = builtin_protocols::floordiv;
-
-    #[pymethod]
-    const __rfloordiv__: MethodCall = builtin_protocols::rfloordiv;
-
-    #[pymethod]
-    const __mod__: MethodCall = builtin_protocols::modulo;
-
-    #[pymethod]
-    const __rmod__: MethodCall = builtin_protocols::rmod;
-
-    #[pymethod]
-    const __divmod__: MethodCall = builtin_protocols::divmod;
-
-    #[pymethod]
-    const __rdivmod__: MethodCall = builtin_protocols::rdivmod;
-
-    #[pymethod]
-    const __pow__: MethodCall = builtin_protocols::pow;
-
-    #[pymethod]
-    const __rpow__: MethodCall = builtin_protocols::rpow;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn adjusted<'h>(value: &HeapObjectRead<'h, Decimal>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

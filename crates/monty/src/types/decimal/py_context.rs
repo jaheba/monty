@@ -19,14 +19,13 @@ use super::{
 };
 use crate::{
     args::{ArgValues, FromArgs, is_long_int},
-    builtin_protocols,
     builtins::Builtins,
     bytecode::{CallResult, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::{HashValue, identity_hash},
     heap::{DropWithContext, HeapData, HeapId, HeapItem, HeapObjectRead},
-    py_attrs::{MethodCall, PyAttrs},
+    py_attrs::PyAttrs,
     types::{Dict, LazyHeapSet, List, PyTrait, Type, allocate_string, iter::collect_iterable, tuple::allocate_tuple},
     value::{EitherStr, Value},
 };
@@ -839,39 +838,9 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, ContextManager> {
 /// Python methods for a session decimal context.
 pub(crate) struct PyContextImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyContextImpl {
     type Receiver = HeapObjectRead<'heap, DecContext>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     #[pymethod]
     fn clear_flags<'h>(

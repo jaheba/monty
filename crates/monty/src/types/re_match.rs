@@ -16,13 +16,12 @@ use smallvec::smallvec;
 
 use crate::{
     args::{ArgValues, FromArgs},
-    builtin_protocols,
     bytecode::{CallResult, VM},
     defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunResult},
     heap::{DropGuard, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapRead},
     intern::StaticStrings,
-    py_attrs::{MethodCall, PyAttrs},
+    py_attrs::PyAttrs,
     types::{
         Dict, LazyHeapSet, PyTrait, Type, allocate_tuple,
         str::{allocate_string, string_repr_fmt},
@@ -452,42 +451,9 @@ struct GroupdictArgs {
 
 pub(crate) struct PyReMatchImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format, getitem))]
 impl<'heap> PyAttrs<'heap> for PyReMatchImpl {
     type Receiver = HeapRead<'heap, ReMatch>;
-
-    #[pymethod]
-    const __repr__: MethodCall = builtin_protocols::repr;
-
-    #[pymethod]
-    const __str__: MethodCall = builtin_protocols::str;
-
-    #[pymethod]
-    const __hash__: MethodCall = builtin_protocols::hash;
-
-    #[pymethod]
-    const __format__: MethodCall = builtin_protocols::format;
-
-    #[pymethod]
-    const __getitem__: MethodCall = builtin_protocols::getitem;
-
-    #[pymethod]
-    const __eq__: MethodCall = builtin_protocols::eq;
-
-    #[pymethod]
-    const __ne__: MethodCall = builtin_protocols::ne;
-
-    #[pymethod]
-    const __lt__: MethodCall = builtin_protocols::lt;
-
-    #[pymethod]
-    const __le__: MethodCall = builtin_protocols::le;
-
-    #[pymethod]
-    const __gt__: MethodCall = builtin_protocols::gt;
-
-    #[pymethod]
-    const __ge__: MethodCall = builtin_protocols::ge;
 
     /// Handles `m.group(...)` calls, supporting zero, one, or multiple arguments.
     ///

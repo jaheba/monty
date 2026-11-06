@@ -169,24 +169,55 @@ Its generated adapter supplies the registered static name, so callers only pass 
 Names map from Rust snake case to `StaticStrings` variants: `sort` becomes `Sort`, `total_seconds` becomes
 `TotalSeconds`, and `r#match` becomes `Match`.
 Dunder names use the `Dunder` prefix: `__len__` becomes `DunderLen`.
-Declaration order determines table order.
+Protocol option order, followed by local declaration order, determines table order.
 
 Shared native protocol adapters are defined in `monty/src/builtin_protocols.rs`.
-Register them inside each type's `PyAttrs` implementation using a method declaration:
+Opt into them on the type's `PyAttrs` implementation:
+
+```rust
+#[pyattrs(protocols(repr, str, hash, format, iter, comparison, set_binary))]
+impl<'h> PyAttrs<'h> for PyFrozenSetImpl {
+    type Receiver = HeapObjectRead<'h, FrozenSet>;
+
+    // Type-specific methods use #[pymethod] as before.
+}
+```
+
+Individual names register their corresponding dunder: `repr` registers `__repr__`, and `mod` registers `__mod__`.
+Groups expand into these exact method lists:
+
+| Group | Methods (without surrounding double underscores) |
+| --- | --- |
+| `comparison` | `eq`, `ne`, `lt`, `le`, `gt`, `ge` |
+| `set_binary` | `sub`, `rsub`, `and`, `rand`, `or`, `ror`, `xor`, `rxor` |
+| `bitwise` | `and`, `rand`, `or`, `ror`, `xor`, `rxor` |
+| `set_inplace` | `isub`, `iand`, `ior`, `ixor` |
+| `additive` | `add`, `radd`, `sub`, `rsub` |
+| `multiplicative` | `mul`, `rmul`, `truediv`, `rtruediv` |
+| `division` | `floordiv`, `rfloordiv`, `mod`, `rmod`, `divmod`, `rdivmod` |
+| `shifts` | `lshift`, `rlshift`, `rshift`, `rrshift` |
+| `unary_numeric` | `neg`, `pos`, `abs` |
+
+The macro inserts protocol entries before local declarations in the same generated table.
+It rejects unknown names, overlapping groups, and duplicates between protocols and local methods.
+Availability stays explicit: implementing a `PyTrait` hook does not automatically expose its dunders.
+A namespace containing only shared adapters can use `PyValue<'h>` as its `Receiver`.
+
+Use a local declaration for a specialized adapter whose Python name differs from its Rust function:
 
 ```rust
 #[pymethod]
-const __repr__: crate::py_attrs::MethodCall = crate::builtin_protocols::repr;
+const __eq__: MethodCall = builtin_protocols::dict_eq;
 ```
 
-The macro inserts the adapter directly into the generated table without emitting an associated constant or wrapper.
-These declarations require a dunder name and a `MethodCall` type.
-A namespace containing only shared adapters can use `PyValue<'h>` as its `Receiver`.
+Omit `comparison` for this type and opt into any remaining comparison methods individually or through local declarations.
+Local declarations require a dunder name and a `MethodCall` type.
+The macro emits neither an associated constant nor a forwarding function.
 
 Functions keep their visibility, lifetime parameters, documentation, and bodies.
 Unannotated helper functions are preserved without registration.
-Annotations take no arguments; conditional attributes, `self` parameters, async functions, and type or const
-parameters on registered functions are rejected.
+Function annotations (`#[pymethod]`, `#[pyclassmethod]`, and `#[pyvalue]`) take no arguments.
+Conditional attributes, `self` parameters, async functions, and type or const parameters on registered functions are rejected.
 Implementation types may have lifetime parameters; Rust rejects overlapping `PyAttrs` implementations.
 
 String methods are defined directly in `impl<'h> PyAttrs<'h> for PyStr<'h>` with `type Receiver = PyStr<'h>`.
@@ -216,8 +247,8 @@ The `tables_and_lookups_agree` test checks duplicate names and verifies that enu
 Use `#[pymethod]` in the type's `PyAttrs` implementation when the method needs a concrete native receiver or type-specific
 argument handling.
 Use a shared adapter in `builtin_protocols.rs` when several types can use the same `PyValue` operation and calling rules.
-Register its Python name in `StaticStrings`, then add a `#[pymethod]` constant declaration to each supported type's
-`PyAttrs` implementation.
+Register its Python name in `StaticStrings` and add its name to the macro's protocol mapping.
+Opt each supported type into the adapter with `#[pyattrs(protocols(...))]`.
 The declaration names the Python method independently of its adapter: `__eq__` can refer to `builtin_protocols::dict_eq`.
 
 Check method availability on instances or in the type's class hierarchy.
