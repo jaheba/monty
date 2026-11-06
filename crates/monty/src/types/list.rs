@@ -135,42 +135,46 @@ impl List {
 
 impl<'h> HeapReadMut<'h, List> {
     /// Implements explicit `list.__delitem__` for integer/`__index__` keys and slices.
-    /// Selected slice indices are removed from right to left; zero steps fail before mutation.
+    /// Slices compact in one allocation-free pass; zero steps fail before mutation.
     /// Index callbacks may resize the receiver, so bounds use its length after conversion.
     pub(crate) fn delete_item(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<()> {
         if let Some(HeapReadOutput::Slice(slice)) = key.read_heap(vm) {
             let (start, stop, step) = slice.get(vm.heap).indices(self.get(vm.heap).len())?;
-            if step > 0 && start >= stop {
+            if (step > 0 && start >= stop) || (step < 0 && start <= stop) {
                 return Ok(());
             }
-            // Remove in descending index order so earlier indices remain valid.
-            let mut index = if step > 0 && start < stop {
-                start + ((stop - start - 1) / step) * step
-            } else {
-                start
-            };
-            // Positive slices start at their last selected index; negative slices already
-            // traverse backwards. Both can then remove without shifting an unvisited index.
-            let stride = if step > 0 { -step } else { step };
-            let bound = if step > 0 { start - 1 } else { stop };
-            while index > bound
-                && index >= 0
-                && index < i64::try_from(self.get(vm.heap).len()).expect("list length fits i64")
-            {
-                // Each removal mutates immediately; a resource-limit error can leave a slice
-                // partially deleted, so no later step may assume the original length.
-                vm.heap.tracker.check_memory_time()?;
-                let removed = self
-                    .get_mut(vm.heap)
-                    .items
-                    .remove(usize::try_from(index).expect("nonnegative index"));
-                removed.drop_with(vm);
-                index = match index.checked_add(stride) {
-                    Some(next) => next,
-                    None => break,
+            // Detach the buffer so reference cleanup can borrow the heap during compaction.
+            // No Python callbacks run here; restore the buffer before returning any error.
+            let items = mem::take(&mut self.get_mut(vm.heap).items);
+            defer_drop_mut!(items, vm);
+            let mut error = None;
+            let mut index = 0_i128;
+            let (start, stop, step) = (i128::from(start), i128::from(stop), i128::from(step));
+            items.retain_mut(|item| {
+                let current = index;
+                index += 1;
+                if error.is_some() {
+                    return true;
+                }
+                if current % 256 == 0
+                    && let Err(exc) = vm.heap.tracker.check_memory_time()
+                {
+                    error = Some(exc);
+                    return true;
+                }
+                let selected = if step > 0 {
+                    current >= start && current < stop && (current - start) % step == 0
+                } else {
+                    current <= start && current > stop && (start - current) % -step == 0
                 };
-            }
-            return Ok(());
+                if selected {
+                    mem::replace(item, Value::Undefined).drop_with(vm);
+                }
+                !selected
+            });
+            // retain_mut moves each surviving value at most once, including for stepped slices.
+            mem::swap(&mut self.get_mut(vm.heap).items, items);
+            return error.map_or(Ok(()), |error| Err(error.into()));
         }
         let index = key.as_index(vm, Type::List)?;
         // __index__ can mutate the list, so inspect its length after the callback.

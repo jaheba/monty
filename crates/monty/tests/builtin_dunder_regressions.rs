@@ -197,3 +197,76 @@ True
 "#,
     );
 }
+
+#[test]
+fn date_descriptors_preserve_datetime_subtype_rules() {
+    run_assertions(
+        r"
+from datetime import date, datetime, timedelta, timezone
+for value in [datetime(2024, 1, 2, 12, 34), datetime(2024, 1, 2, 12, 34, tzinfo=timezone.utc)]:
+    assert date.__repr__(value) == 'datetime.datetime(2024, 1, 2)'
+    assert date.__str__(value) == value.isoformat()
+    assert date.__format__(value, '') == str(value)
+    assert date.__format__(value, '%H:%M') == '12:34'
+    assert date.__add__(value, timedelta(days=1)) is NotImplemented
+    assert date.__radd__(value, timedelta(days=1)) is NotImplemented
+    assert date.__sub__(value, date(2024, 1, 1)) is NotImplemented
+    assert date.__rsub__(value, date(2024, 1, 1)) is NotImplemented
+    assert date.__eq__(value, date(2024, 1, 2)) is True
+    assert date.__eq__(value, datetime(2024, 1, 2)) is NotImplemented
+    assert date.__lt__(value, datetime(2024, 1, 3)) is NotImplemented
+assert date.__repr__(date(2024, 1, 2)) == 'datetime.date(2024, 1, 2)'
+assert date.__add__(date(2024, 1, 2), timedelta(days=1)) == date(2024, 1, 3)
+for call in [lambda: date.__repr__(value, 1), lambda: date.__add__(value), lambda: date.__str__(value, 1), lambda: date.__format__(value)]:
+    try:
+        call()
+    except TypeError:
+        pass
+    else:
+        raise AssertionError('expected TypeError')
+True
+",
+    );
+}
+
+#[test]
+fn slice_deletion_compacts_without_losing_owned_references() {
+    run_assertions(
+        r"
+for selection, expected in [(slice(1, 7), [0, 7, 8, 9]), (slice(None, None, 2), [1, 3, 5, 7, 9]), (slice(None, None, -2), [0, 2, 4, 6, 8]), (slice(8, 1, -3), [0, 1, 3, 4, 6, 7, 9]), (slice(None, None, -(2**63)), list(range(9)))]:
+    values = [[i] for i in range(10)]
+    alias = values
+    assert values.__delitem__(selection) is None
+    assert alias is values
+    assert values == [[i] for i in expected]
+    assert values.__delitem__(slice(None)) is None
+    assert alias == []
+values = []
+values.extend([values, [1], values, [2]])
+values.__delitem__(slice(None, None, 2))
+assert values == [[1], [2]]
+values.append(values)
+values.__delitem__(slice(0, 2))
+assert values[0] is values
+values.__delitem__(slice(None))
+assert values == []
+True
+",
+    );
+}
+
+#[test]
+fn large_stepped_slice_deletion_finishes_within_feed_limit() {
+    // Repeated Vec::remove made this quadratic; the shared two-second feed limit
+    // leaves ample time for linear construction and compaction of these values.
+    run_assertions(
+        r"
+values = list(range(500000))
+values.__delitem__(slice(None, None, 2))
+assert len(values) == 250000
+assert values[0] == 1
+assert values[-1] == 499999
+True
+",
+    );
+}

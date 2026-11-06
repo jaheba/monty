@@ -11,6 +11,7 @@
 
 use crate::{
     args::ArgValues,
+    builtin_protocols,
     bytecode::{CallResult, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunResult},
@@ -18,7 +19,7 @@ use crate::{
     intern::StaticStrings,
     py_class::PyClass,
     py_value::PyValue,
-    types::{PyTrait, Type, date, datetime, tuple},
+    types::{PyTrait, Type, date, datetime, str::allocate_string, tuple},
     value::{EitherStr, Value},
 };
 
@@ -148,7 +149,37 @@ fn call_unbound_subtype(
         unreachable!("date's native subclass is datetime")
     };
     let (year, month, day, ..) = datetime::to_components(datetime).expect("datetime has valid civil components");
-    // Date descriptors read only the date portion, even when datetime overrides
+    // These date descriptors inspect the original subtype rather than a projected Date.
+    // CPython declines datetime arithmetic, while repr keeps its class name and omits time.
+    match attr.static_string(vm.interns) {
+        Some(
+            StaticStrings::DunderAdd | StaticStrings::DunderRadd | StaticStrings::DunderSub | StaticStrings::DunderRsub,
+        ) => {
+            args.get_one_arg(attr.as_str(vm.interns), vm.heap)?.drop_with(vm);
+            return Ok(CallResult::Value(Value::NotImplemented));
+        }
+        Some(StaticStrings::DunderRepr) => {
+            args.check_zero_args("__repr__", vm.heap)?;
+            return Ok(CallResult::Value(allocate_string(
+                format!("datetime.datetime({year}, {month}, {day})"),
+                vm.heap,
+            )));
+        }
+        Some(StaticStrings::DunderStr) => {
+            args.check_zero_args("__str__", vm.heap)?;
+            // date.__str__ calls the receiver's isoformat(), including datetime's T separator.
+            return this.py_value(vm).py_call_attr(
+                vm,
+                &EitherStr::Interned(vm.interns.intern_static(StaticStrings::Isoformat)),
+                ArgValues::Empty,
+            );
+        }
+        Some(StaticStrings::DunderFormat) => {
+            return builtin_protocols::format(&mut this.py_value(vm), args, vm);
+        }
+        _ => {}
+    }
+    // The remaining date descriptors read only the date portion, even when datetime overrides
     // the same method name. Project it rather than passing a mismatched heap handle.
     let date = date::from_ymd(year, i32::from(month), i32::from(day)).expect("datetime date is valid");
     let date_receiver = Value::Ref(vm.heap.allocate(HeapData::Date(date)));
