@@ -7,6 +7,7 @@ mod heap_traits;
 mod annotations;
 mod args;
 mod asyncio;
+mod builtin_protocols;
 mod builtins;
 mod bytecode;
 mod codecs;

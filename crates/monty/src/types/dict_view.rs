@@ -7,9 +7,10 @@ use crate::{
     args::ArgValues,
     bytecode::{CallResult, VM},
     defer_drop, defer_drop_mut,
-    exception_private::{RunError, RunResult},
+    exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
     heap::{ContainsHeap, DropGuard, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapRead, HeapReadOutput},
     py_attrs::PyAttrs,
+    py_value::PyValue,
     types::{
         Dict, FrozenSet, LazyHeapSet, PyTrait, Set, Type, allocate_tuple,
         dict::{DictItemIterator, DictKeyIterator, DictValueIterator},
@@ -868,9 +869,34 @@ pub(crate) fn cloned_items_view_candidate(item: &Value, heap: &impl ContainsHeap
 
 pub(crate) struct PyDictItemsViewImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, set_binary, repr, str, format, iter, reversed))]
 impl<'heap> PyAttrs<'heap> for PyDictItemsViewImpl {
     type Receiver = HeapObjectRead<'heap, DictItemsView>;
+
+    #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, DictItemsView>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        args.check_zero_args("__len__", vm.heap)?;
+
+        let len = this.py_len(vm).expect("registered length protocol");
+        Ok(Value::Int(
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?,
+        ))
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(
+        this: &HeapObjectRead<'h, DictItemsView>,
+        args: ArgValues,
+        vm: &mut VM<'h>,
+    ) -> RunResult<Value> {
+        let item = args.get_one_arg("__contains__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        Ok(Value::Bool(
+            this.py_contains_impl(item, vm)?
+                .expect("registered containment protocol"),
+        ))
+    }
 
     #[pymethod]
     fn isdisjoint<'h>(
@@ -888,9 +914,30 @@ impl<'heap> PyAttrs<'heap> for PyDictItemsViewImpl {
 
 pub(crate) struct PyDictKeysViewImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, set_binary, repr, str, format, iter, reversed))]
 impl<'heap> PyAttrs<'heap> for PyDictKeysViewImpl {
     type Receiver = HeapObjectRead<'heap, DictKeysView>;
+
+    #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, DictKeysView>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        args.check_zero_args("__len__", vm.heap)?;
+
+        let len = this.py_len(vm).expect("registered length protocol");
+        Ok(Value::Int(
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?,
+        ))
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(this: &HeapObjectRead<'h, DictKeysView>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__contains__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        Ok(Value::Bool(
+            this.py_contains_impl(item, vm)?
+                .expect("registered containment protocol"),
+        ))
+    }
 
     #[pymethod]
     fn isdisjoint<'h>(
@@ -904,4 +951,12 @@ impl<'heap> PyAttrs<'heap> for PyDictKeysViewImpl {
             Ok(CallResult::Value(Value::Bool(this.isdisjoint_from_value(other, vm)?)))
         }
     }
+}
+
+/// Values views use identity comparison; only keys and items expose set algebra.
+pub(crate) struct PyDictValuesAttrs;
+
+#[monty_macros::pyattrs(protocols(comparison, repr, str, hash, format, iter, reversed, len))]
+impl<'h> PyAttrs<'h> for PyDictValuesAttrs {
+    type Receiver = PyValue<'h>;
 }

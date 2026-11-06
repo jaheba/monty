@@ -18,6 +18,8 @@ use crate::{
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::HashValue,
     heap::{Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
+    py_attrs::PyAttrs,
+    py_value::PyValue,
     types::{LazyHeapSet, PyTrait, Type},
     value::Value,
 };
@@ -391,4 +393,12 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, RangeIterator> {
             Ok(Some(Value::Int(value)))
         }
     }
+}
+
+/// Python-visible methods for the native Range value.
+pub(crate) struct PyRangeAttrs;
+
+#[monty_macros::pyattrs(protocols(comparison, repr, str, bool, hash, format, iter, reversed, len, contains, getitem))]
+impl<'h> PyAttrs<'h> for PyRangeAttrs {
+    type Receiver = PyValue<'h>;
 }

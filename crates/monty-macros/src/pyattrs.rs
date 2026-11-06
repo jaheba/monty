@@ -2,7 +2,10 @@ use std::{collections::HashSet, mem};
 
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{FnArg, GenericArgument, GenericParam, ImplItem, ImplItemFn, ItemImpl, PathArguments, ReturnType, Type};
+use syn::{
+    FnArg, GenericArgument, GenericParam, ImplItem, ImplItemFn, ItemImpl, PathArguments, ReturnType, Type,
+    ext::IdentExt, punctuated::Punctuated,
+};
 
 #[derive(Clone, Copy)]
 enum Mode {
@@ -36,7 +39,7 @@ fn receiver(ty: &Type) -> syn::Result<(Mode, Type, syn::Ident)> {
             };
             Ok((Mode::Immediate, ty.clone(), format_ident!("{variant}")))
         }
-        "PyStr" | "PyBytes" => {
+        "PyStr" | "PyBytes" | "PyValue" => {
             if !matches!(&view.arguments, PathArguments::AngleBracketed(args)
                 if args.args.len() == 1 && matches!(args.args.first(), Some(GenericArgument::Lifetime(_))))
             {
@@ -68,7 +71,7 @@ fn receiver(ty: &Type) -> syn::Result<(Mode, Type, syn::Ident)> {
         }
         _ => Err(syn::Error::new_spanned(
             ty,
-            "Receiver must be HeapRead<'h, T>, HeapReadMut<'h, T>, HeapObjectRead<'h, T>, PyStr<'h>, PyBytes<'h>, f64, i64, or bool",
+            "Receiver must be HeapRead<'h, T>, HeapReadMut<'h, T>, HeapObjectRead<'h, T>, PyStr<'h>, PyBytes<'h>, PyValue<'h>, f64, i64, or bool",
         )),
     }
 }
@@ -170,7 +173,8 @@ fn validate(method: &ImplItemFn, kind: Kind, mode: Mode, native: &Type) -> syn::
         let valid = match mode {
             Mode::Immediate => first == native,
             Mode::NativeView => matches!(first, Type::Reference(reference)
-                if reference.mutability.is_none() && reference.elem.as_ref() == native),
+                if reference.mutability.is_some() == named(native, "PyValue")
+                    && reference.elem.as_ref() == native),
             Mode::HeapHandle => matches!(first, Type::Reference(reference)
             if type_path(&reference.elem).is_ok_and(|segment| {
                 (segment.ident == "HeapRead" || segment.ident == "HeapReadMut" || segment.ident == "HeapObjectRead")
@@ -183,7 +187,7 @@ fn validate(method: &ImplItemFn, kind: Kind, mode: Mode, native: &Type) -> syn::
         if !valid {
             return Err(syn::Error::new_spanned(
                 first,
-                "method receiver does not match Receiver; heap views take & or &mut, PyStr/PyBytes take &, immediate values are passed by value",
+                "method receiver does not match Receiver; heap views take & or &mut, PyStr/PyBytes take &, PyValue takes &mut, immediate values are passed by value",
             ));
         }
     }
@@ -233,6 +237,7 @@ fn definition(
                         #handler(*value, args, vm)
                     }
                 }
+                Mode::NativeView if variant == "PyValue" => quote!(#handler(this, args, vm)),
                 Mode::NativeView => {
                     let variant = if variant == "PyBytes" {
                         format_ident!("Bytes")
@@ -273,6 +278,77 @@ fn definition(
             }
         }
     }
+}
+
+/// Uses the same static name for native functions and direct adapter declarations.
+fn static_name(spelling: &str) -> String {
+    let mut name = spelling
+        .trim_start_matches("r#")
+        .split('_')
+        .map(|part| {
+            let mut chars = part.chars();
+            chars
+                .next()
+                .map(|first| first.to_uppercase().collect::<String>() + chars.as_str())
+                .unwrap_or_default()
+        })
+        .collect::<String>();
+    // Splitting snake case removes the outer underscores; retain their distinct Python name.
+    if spelling.starts_with("__") && spelling.ends_with("__") {
+        name.insert_str(0, "Dunder");
+    }
+    name
+}
+
+/// Expands explicit protocol opt-ins into the same entries as local method declarations.
+/// Groups describe Python-visible methods, not the presence of default PyTrait hooks.
+pub(crate) fn expand_with_protocols(args: TokenStream, mut input: ItemImpl) -> syn::Result<TokenStream> {
+    if !args.is_empty() {
+        let option: syn::Meta = syn::parse2(args)?;
+        let syn::Meta::List(list) = option else {
+            return Err(syn::Error::new_spanned(option, "expected protocols(name, ...)"));
+        };
+        if !list.path.is_ident("protocols") {
+            return Err(syn::Error::new_spanned(list.path, "expected protocols(name, ...)"));
+        }
+        let protocols = list.parse_args_with(|input: syn::parse::ParseStream| {
+            Punctuated::<syn::Ident, syn::Token![,]>::parse_terminated_with(input, syn::Ident::parse_any)
+        })?;
+        let mut declarations = Vec::new();
+        for protocol in protocols {
+            let spelling = protocol.to_string();
+            let methods: &[&str] = match spelling.as_str() {
+                "comparison" => &["eq", "ne", "lt", "le", "gt", "ge"],
+                "set_binary" => &["sub", "rsub", "and", "rand", "or", "ror", "xor", "rxor"],
+                "bitwise" => &["and", "rand", "or", "ror", "xor", "rxor"],
+                "set_inplace" => &["isub", "iand", "ior", "ixor"],
+                "additive" => &["add", "radd", "sub", "rsub"],
+                "multiplicative" => &["mul", "rmul", "truediv", "rtruediv"],
+                "division" => &["floordiv", "rfloordiv", "mod", "rmod", "divmod", "rdivmod"],
+                "shifts" => &["lshift", "rlshift", "rshift", "rrshift"],
+                "unary_numeric" => &["neg", "pos", "abs"],
+                "abs" | "add" | "and" | "bool" | "bytes" | "ceil" | "complex" | "contains" | "delitem" | "divmod"
+                | "eq" | "float" | "floor" | "floordiv" | "format" | "ge" | "getitem" | "gt" | "hash" | "iadd"
+                | "iand" | "imul" | "index" | "int" | "invert" | "ior" | "isub" | "iter" | "ixor" | "le" | "len"
+                | "lshift" | "lt" | "mod" | "mul" | "ne" | "neg" | "next" | "or" | "pos" | "pow" | "radd" | "rand"
+                | "rdivmod" | "repr" | "reversed" | "rfloordiv" | "rlshift" | "rmod" | "rmul" | "ror" | "round"
+                | "rpow" | "rrshift" | "rshift" | "rsub" | "rtruediv" | "rxor" | "setitem" | "str" | "sub"
+                | "truediv" | "trunc" | "xor" => &[&spelling],
+                _ => return Err(syn::Error::new_spanned(protocol, "unknown protocol method or group")),
+            };
+            for method in methods {
+                let name = format_ident!("__{}__", method, span = protocol.span());
+                let handler = format_ident!("{}", if *method == "mod" { "modulo" } else { method });
+                declarations.push(syn::parse_quote! {
+                    #[pymethod]
+                    const #name: crate::py_attrs::MethodCall = crate::builtin_protocols::#handler;
+                });
+            }
+        }
+        // Reuse normal entry generation so group/local name collisions are rejected together.
+        input.items.splice(0..0, declarations);
+    }
+    expand(input)
 }
 
 pub(crate) fn expand(mut input: ItemImpl) -> syn::Result<TokenStream> {
@@ -321,6 +397,43 @@ pub(crate) fn expand(mut input: ItemImpl) -> syn::Result<TokenStream> {
     for item in &mut input.items {
         match item {
             ImplItem::Type(item) if item.ident == "Receiver" => {}
+            ImplItem::Const(item) => {
+                // Existing MethodCall adapters need no receiver conversion or forwarding function.
+                if item.attrs.len() != 1
+                    || !item.attrs[0].path().is_ident("pymethod")
+                    || !matches!(item.attrs[0].meta, syn::Meta::Path(_))
+                    || !named(&item.ty, "MethodCall")
+                    || !item.generics.params.is_empty()
+                    || item.generics.where_clause.is_some()
+                {
+                    return Err(syn::Error::new_spanned(
+                        item,
+                        "expected #[pymethod] const name: MethodCall = adapter",
+                    ));
+                }
+                let spelling = item.ident.to_string();
+                let suffix = spelling
+                    .strip_prefix("__")
+                    .and_then(|s| s.strip_suffix("__"))
+                    .ok_or_else(|| syn::Error::new_spanned(&item.ident, "shared adapters require a dunder name"))?;
+                let static_name = static_name(&spelling);
+                if suffix.is_empty() || !names.insert(static_name.clone()) {
+                    return Err(syn::Error::new_spanned(
+                        &item.ident,
+                        "duplicate or empty Python attribute name",
+                    ));
+                }
+                let static_name = syn::parse_str::<syn::Ident>(&static_name)?;
+                let adapter = &item.expr;
+                let ty = &item.ty;
+                entries.push((
+                    static_name,
+                    quote!(crate::py_attrs::AttrDef::Method({
+                        let adapter: #ty = #adapter;
+                        adapter
+                    })),
+                ));
+            }
             ImplItem::Fn(method) => {
                 let mut annotation = None;
                 let mut kept = Vec::new();
@@ -378,16 +491,7 @@ pub(crate) fn expand(mut input: ItemImpl) -> syn::Result<TokenStream> {
                     validate(method, kind, mode, &native)?;
                     let name = &method.sig.ident;
                     let spelling = name.to_string().trim_start_matches("r#").to_owned();
-                    let static_name = spelling
-                        .split('_')
-                        .map(|part| {
-                            let mut chars = part.chars();
-                            chars
-                                .next()
-                                .map(|first| first.to_uppercase().collect::<String>() + chars.as_str())
-                                .unwrap_or_default()
-                        })
-                        .collect::<String>();
+                    let static_name = static_name(&spelling);
                     if static_name.is_empty() || !names.insert(static_name.clone()) {
                         return Err(syn::Error::new_spanned(
                             name,
@@ -406,7 +510,7 @@ pub(crate) fn expand(mut input: ItemImpl) -> syn::Result<TokenStream> {
             _ => {
                 return Err(syn::Error::new_spanned(
                     item,
-                    "#[pyattrs] supports Receiver and associated functions only",
+                    "#[pyattrs] supports Receiver, associated functions, and shared method declarations only",
                 ));
             }
         }
@@ -465,6 +569,197 @@ mod tests {
 
     fn error(input: ItemImpl) -> String {
         expand(input).unwrap_err().to_string()
+    }
+
+    #[test]
+    fn protocol_groups_share_one_table_with_local_methods() {
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PySetImpl {
+                type Receiver = PyValue<'h>;
+
+                #[pymethod]
+                const __repr__: MethodCall = custom_repr;
+            }
+        };
+        let output = expand_with_protocols(quote!(protocols(comparison, set_binary, mod,)), input)
+            .unwrap()
+            .to_string();
+        let file: syn::File = syn::parse_str(&output).unwrap();
+        let syn::Item::Impl(table_impl) = &file.items[1] else {
+            panic!("expected PyAttrs impl")
+        };
+        let ImplItem::Const(table) = &table_impl.items[1] else {
+            panic!("expected ATTRS")
+        };
+        let syn::Expr::Reference(reference) = &table.expr else {
+            panic!("expected static slice")
+        };
+        let syn::Expr::Array(array) = reference.expr.as_ref() else {
+            panic!("expected attribute entries")
+        };
+        assert_eq!(array.elems.len(), 6 + 8 + 1 + 1);
+        assert!(output.contains("builtin_protocols :: modulo"));
+        assert!(output.contains("custom_repr"));
+        assert!(output.contains("StaticStrings :: DunderRor"));
+    }
+
+    #[test]
+    fn protocols_reject_overlapping_groups_and_local_names() {
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PySetImpl {
+                type Receiver = PyValue<'h>;
+            }
+        };
+        for args in [
+            quote!(protocols(comparison, eq)),
+            quote!(protocols(set_binary, bitwise)),
+            quote!(protocols(repr, repr)),
+        ] {
+            assert!(
+                expand_with_protocols(args, input.clone())
+                    .unwrap_err()
+                    .to_string()
+                    .contains("duplicate")
+            );
+        }
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PySetImpl {
+                type Receiver = PyValue<'h>;
+                #[pymethod]
+                const __eq__: MethodCall = custom_eq;
+            }
+        };
+        assert!(
+            expand_with_protocols(quote!(protocols(comparison)), input)
+                .unwrap_err()
+                .to_string()
+                .contains("duplicate")
+        );
+    }
+
+    #[test]
+    fn protocols_reject_unknown_names_and_malformed_options() {
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PySetImpl {
+                type Receiver = PyValue<'h>;
+            }
+        };
+        for args in [
+            quote!(protocols(typo)),
+            quote!(methods(repr)),
+            quote!(protocols),
+            quote!(protocols(repr = true)),
+            quote!(protocols(repr), other),
+        ] {
+            assert!(expand_with_protocols(args, input.clone()).is_err());
+        }
+    }
+
+    #[test]
+    fn shared_adapters_register_directly_in_the_generated_table() {
+        let output = expand(parse_quote! {
+            impl<'h> PyAttrs<'h> for PySetImpl {
+                type Receiver = PyValue<'h>;
+
+                #[pymethod]
+                const __eq__: crate::py_attrs::MethodCall = crate::builtin_protocols::dict_eq;
+
+                #[pymethod]
+                const __length_hint__: MethodCall = adapter;
+            }
+        })
+        .unwrap()
+        .to_string();
+        assert!(output.contains("StaticStrings :: DunderEq"));
+        assert!(output.contains("StaticStrings :: DunderLengthHint"));
+        assert!(
+            output.contains("let adapter : crate :: py_attrs :: MethodCall = crate :: builtin_protocols :: dict_eq")
+        );
+        assert!(!output.contains("const __eq__"));
+        assert!(!output.contains("fn call"));
+    }
+
+    #[test]
+    fn shared_adapter_names_cannot_duplicate_native_methods() {
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PySetImpl {
+                type Receiver = PyValue<'h>;
+
+                #[pymethod]
+                const __eq__: MethodCall = crate::builtin_protocols::eq;
+
+                #[pymethod]
+                fn __eq__(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+                    todo!()
+                }
+            }
+        };
+        assert!(error(input).contains("duplicate or empty Python attribute name"));
+    }
+
+    #[test]
+    fn shared_adapters_reject_invalid_declarations() {
+        for declaration in [
+            quote!(
+                #[pymethod]
+                const __eq__: usize = 0;
+            ),
+            quote!(
+                #[pymethod]
+                const eq: MethodCall = adapter;
+            ),
+            quote!(
+                #[pymethod]
+                #[cfg(test)]
+                const __eq__: MethodCall = adapter;
+            ),
+        ] {
+            let input: ItemImpl = syn::parse2(quote! {
+                impl<'h> PyAttrs<'h> for PySetImpl {
+                    type Receiver = PyValue<'h>;
+                    #declaration
+                }
+            })
+            .unwrap();
+            assert!(expand(input).is_err());
+        }
+    }
+
+    #[test]
+    fn dunder_names_use_the_dunder_static_string_prefix() {
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PyListImpl {
+                type Receiver = HeapObjectRead<'h, List>;
+
+                #[pymethod]
+                fn __len__(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+                    todo!()
+                }
+            }
+        };
+        let output = expand(input).unwrap().to_string();
+        assert!(output.contains("StaticStrings :: DunderLen"));
+        assert!(output.contains(":: __len__"));
+    }
+
+    #[test]
+    fn dunder_aliases_cannot_register_the_same_static_name_twice() {
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PyListImpl {
+                type Receiver = HeapObjectRead<'h, List>;
+
+                #[pymethod]
+                fn __len__(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+                    todo!()
+                }
+
+                #[pymethod]
+                fn dunder_len(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+                    todo!()
+                }
+            }
+        };
+        assert!(error(input).contains("duplicate or empty Python attribute name"));
     }
 
     #[test]

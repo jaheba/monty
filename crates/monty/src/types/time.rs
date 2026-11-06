@@ -655,7 +655,7 @@ struct TimeReplaceArgs {
 
 pub(crate) struct PyTimeImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyTimeImpl {
     type Receiver = HeapObjectRead<'heap, Time>;
 

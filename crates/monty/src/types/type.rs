@@ -641,9 +641,11 @@ impl Type {
         PyClass::Builtin(BuiltinType::try_from(self).expect("registered builtin type"))
     }
 
-    /// Returns the generated attribute definitions for this builtin type.
+    /// Returns the native method and protocol definitions for this builtin type.
     ///
-    /// Types without a registered table return an empty slice.
+    /// Each type has one generated PyAttrs table, including its special methods.
+    /// Enumeration returns that static slice without allocating or binding receivers.
+    /// Types without registered methods or protocols return an empty slice.
     #[cfg_attr(not(test), expect(dead_code, reason = "retained for builtin attribute enumeration"))]
     pub(crate) const fn attrs(self) -> &'static [(StaticStrings, AttrDef)] {
         match self {
@@ -686,14 +688,27 @@ impl Type {
             Self::TimeZone => <super::timezone::PyTimeZoneImpl as PyAttrs<'static>>::ATTRS,
             Self::RePattern => <super::re_pattern::PyRePatternImpl as PyAttrs<'static>>::ATTRS,
             Self::ReMatch => <super::re_match::PyReMatchImpl as PyAttrs<'static>>::ATTRS,
+            Self::Int => <super::numeric::PyIntAttrs as PyAttrs<'static>>::ATTRS,
+            Self::Bool => <super::numeric::PyBoolAttrs as PyAttrs<'static>>::ATTRS,
+            Self::Float => <super::numeric::PyFloatAttrs as PyAttrs<'static>>::ATTRS,
+            Self::Range => <super::range::PyRangeAttrs as PyAttrs<'static>>::ATTRS,
+            Self::DictValues => <super::dict_view::PyDictValuesAttrs as PyAttrs<'static>>::ATTRS,
+            Self::Iterator => <super::iter::PyIteratorAttrs as PyAttrs<'static>>::ATTRS,
+            Self::ListIterator => <super::iter::PyIteratorAttrs as PyAttrs<'static>>::ATTRS,
+            Self::CallableIterator => <super::iter::PyIteratorAttrs as PyAttrs<'static>>::ATTRS,
+            Self::NoneType => <super::PyNoneAttrs as PyAttrs<'static>>::ATTRS,
+            Self::Ellipsis => <super::PyEllipsisAttrs as PyAttrs<'static>>::ATTRS,
+            Self::NotImplementedType => <super::PyNotImplementedAttrs as PyAttrs<'static>>::ATTRS,
+            _ if self.is_iterator() => <super::iter::PyIteratorAttrs as PyAttrs<'static>>::ATTRS,
             _ => &[],
         }
     }
 
-    /// Looks up a name in this builtin type's generated attribute table.
+    /// Looks up an attribute in this builtin type's generated PyAttrs table.
     ///
     /// Returns the definition without binding a receiver or evaluating a value factory.
-    /// Names absent from the table return `None`; dynamic namespaces are handled separately.
+    /// Absent names return None.
+    /// This lookup does not consult module or user-class namespaces; call sites handle those fallbacks.
     pub(crate) fn lookup_attr(self, attr: &EitherStr, interns: &Interns) -> Option<AttrDef> {
         let name = attr.static_string(interns)?;
         match self {
@@ -734,11 +749,25 @@ impl Type {
             Self::TimeZone => super::timezone::PyTimeZoneImpl::lookup_attr(name),
             Self::RePattern => super::re_pattern::PyRePatternImpl::lookup_attr(name),
             Self::ReMatch => super::re_match::PyReMatchImpl::lookup_attr(name),
+            Self::Int => super::numeric::PyIntAttrs::lookup_attr(name),
+            Self::Bool => super::numeric::PyBoolAttrs::lookup_attr(name),
+            Self::Float => super::numeric::PyFloatAttrs::lookup_attr(name),
+            Self::Range => super::range::PyRangeAttrs::lookup_attr(name),
+            Self::DictValues => super::dict_view::PyDictValuesAttrs::lookup_attr(name),
+            Self::Iterator => super::iter::PyIteratorAttrs::lookup_attr(name),
+            Self::ListIterator => super::iter::PyIteratorAttrs::lookup_attr(name),
+            Self::CallableIterator => super::iter::PyIteratorAttrs::lookup_attr(name),
+            Self::NoneType => super::PyNoneAttrs::lookup_attr(name),
+            Self::Ellipsis => super::PyEllipsisAttrs::lookup_attr(name),
+            Self::NotImplementedType => super::PyNotImplementedAttrs::lookup_attr(name),
+            _ if self.is_iterator() => super::iter::PyIteratorAttrs::lookup_attr(name),
             _ => None,
         }
     }
 
     /// Calls registered methods on existing native views, binding class methods to their owner.
+    /// A table miss preserves dynamic attribute handling for modules, user objects, and stored callables.
+    /// Protocol adapters return their own result; this path does not add operator fallback.
     pub(crate) fn call_attr<'h>(
         self,
         obj: &mut PyValue<'h>,

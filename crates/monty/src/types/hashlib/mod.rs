@@ -540,7 +540,7 @@ pub(crate) fn hash_input<'a, 'h>(value: &'a PyValue<'h>, vm: &'a VM<'h>) -> RunR
 
 pub(crate) struct PyHashImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyHashImpl {
     type Receiver = HeapObjectRead<'heap, HashObject>;
 
@@ -612,7 +612,7 @@ impl<'heap> PyAttrs<'heap> for PyHashImpl {
 
 pub(crate) struct PyHashXofImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyHashXofImpl {
     type Receiver = HeapObjectRead<'heap, HashObject>;
 

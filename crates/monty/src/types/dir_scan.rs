@@ -1095,7 +1095,7 @@ impl<'heap> PyAttrs<'heap> for PyDirEntryImpl {
 
 pub(crate) struct PyScandirImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format, iter, next))]
 impl<'heap> PyAttrs<'heap> for PyScandirImpl {
     type Receiver = HeapObjectRead<'heap, DirScan>;
 

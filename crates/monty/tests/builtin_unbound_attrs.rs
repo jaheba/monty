@@ -26,3 +26,18 @@ True
 ",
     );
 }
+
+#[test]
+fn collection_dunders_share_native_protocols() {
+    run_assertions(include_str!("../test_cases/builtin__dunder_methods.py"));
+}
+
+#[test]
+fn explicit_native_protocols_preserve_one_sided_results() {
+    run_assertions(include_str!("../test_cases/builtin__protocol_methods.py"));
+}
+
+#[test]
+fn mutable_protocols_preserve_identity_and_iteration() {
+    run_assertions(include_str!("../test_cases/builtin__mutable_protocols.py"));
+}

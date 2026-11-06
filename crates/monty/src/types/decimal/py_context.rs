@@ -838,7 +838,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, ContextManager> {
 /// Python methods for a session decimal context.
 pub(crate) struct PyContextImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyContextImpl {
     type Receiver = HeapObjectRead<'heap, DecContext>;
 

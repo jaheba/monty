@@ -493,7 +493,7 @@ struct DateReplaceArgs {
 
 pub(crate) struct PyDateImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, additive, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyDateImpl {
     type Receiver = HeapObjectRead<'heap, Date>;
 

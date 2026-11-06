@@ -134,6 +134,63 @@ impl List {
 }
 
 impl<'h> HeapReadMut<'h, List> {
+    /// Implements explicit `list.__delitem__` for integer/`__index__` keys and slices.
+    /// Slices compact in one allocation-free pass; zero steps fail before mutation.
+    /// Index callbacks may resize the receiver, so bounds use its length after conversion.
+    pub(crate) fn delete_item(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<()> {
+        if let Some(HeapReadOutput::Slice(slice)) = key.read_heap(vm) {
+            let (start, stop, step) = slice.get(vm.heap).indices(self.get(vm.heap).len())?;
+            if (step > 0 && start >= stop) || (step < 0 && start <= stop) {
+                return Ok(());
+            }
+            // Detach the buffer so reference cleanup can borrow the heap during compaction.
+            // No Python callbacks run here; restore the buffer before returning any error.
+            let items = mem::take(&mut self.get_mut(vm.heap).items);
+            defer_drop_mut!(items, vm);
+            let mut error = None;
+            let mut index = 0_i128;
+            let (start, stop, step) = (i128::from(start), i128::from(stop), i128::from(step));
+            items.retain_mut(|item| {
+                let current = index;
+                index += 1;
+                if error.is_some() {
+                    return true;
+                }
+                if current % 256 == 0
+                    && let Err(exc) = vm.heap.tracker.check_memory_time()
+                {
+                    error = Some(exc);
+                    return true;
+                }
+                let selected = if step > 0 {
+                    current >= start && current < stop && (current - start) % step == 0
+                } else {
+                    current <= start && current > stop && (start - current) % -step == 0
+                };
+                if selected {
+                    mem::replace(item, Value::Undefined).drop_with(vm);
+                }
+                !selected
+            });
+            // retain_mut moves each surviving value at most once, including for stepped slices.
+            mem::swap(&mut self.get_mut(vm.heap).items, items);
+            return error.map_or(Ok(()), |error| Err(error.into()));
+        }
+        let index = key.as_index(vm, Type::List)?;
+        // __index__ can mutate the list, so inspect its length after the callback.
+        let len = i64::try_from(self.get(vm.heap).len()).expect("list length fits i64");
+        let index = if index < 0 { index + len } else { index };
+        if index < 0 || index >= len {
+            return Err(ExcType::list_assignment_index_error());
+        }
+        let removed = self
+            .get_mut(vm.heap)
+            .items
+            .remove(usize::try_from(index).expect("validated index"));
+        removed.drop_with(vm);
+        Ok(())
+    }
+
     /// Collects replacements before assignment to support self-assignment and avoid
     /// partial writes on iterator failure. Bounds are normalized after collection
     /// because the iterator may have resized the target.
@@ -1011,9 +1068,40 @@ impl<'h> PyDeepCopy<'h> for HeapRead<'h, List> {
 
 pub(crate) struct PyListImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(
+    comparison, repr, str, format, iter, reversed, setitem, delitem, imul, add, mul, rmul, iadd
+))]
 impl<'heap> PyAttrs<'heap> for PyListImpl {
     type Receiver = HeapReadMut<'heap, List>;
+
+    #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        args.check_zero_args("__len__", vm.heap)?;
+
+        let len = this.py_len(vm).expect("registered length protocol");
+        Ok(Value::Int(
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?,
+        ))
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__contains__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        Ok(Value::Bool(
+            this.py_contains_impl(item, vm)?
+                .expect("registered containment protocol"),
+        ))
+    }
+
+    #[pymethod]
+    fn __getitem__<'h>(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__getitem__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        this.py_getitem(item, vm)
+    }
 
     #[pymethod]
     fn append<'h>(list: &HeapReadMut<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

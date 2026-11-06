@@ -14,6 +14,7 @@ use super::{
 };
 use crate::{
     args::{ArgValues, FromArgs, KwargsValues},
+    builtin_protocols,
     bytecode::{CallResult, ContainsVM, RecursionToken, VM},
     defer_drop, defer_drop_mut,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
@@ -22,6 +23,7 @@ use crate::{
         ContainsHeap, DropGuard, DropWithContext, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapRead,
         HeapReadMut, HeapReadOutput, HeapReader,
     },
+    identity::Identity,
     intern::{Interns, StaticStrings, StringId},
     modules::{
         collections::{
@@ -33,11 +35,12 @@ use crate::{
         },
         copy::{Memo, PyDeepCopy, deep_copy, deep_copy_pair},
     },
-    py_attrs::PyAttrs,
+    py_attrs::{MethodCall, PyAttrs},
     py_class::PyClass,
     types::{
         Type,
         hash_table::{Live, PyHashTable, Slot, TableCursor, TableEntry, TableProbe, TableScan, TableSource, TableWalk},
+        py_trait::PyObjectIdentity,
     },
     value::{EitherStr, VALUE_SIZE, Value, eq_bigint, eq_bytes, eq_f64, eq_i64, eq_str},
 };
@@ -1607,7 +1610,22 @@ fn dict_copy<'h>(dict: &HeapRead<'h, Dict>, kind: DictKind, vm: &mut VM<'h>) -> 
 /// `__ror__` both build a defaultdict with its own factory, the left one
 /// first); otherwise the result is a plain dict, as `PyDict_Copy` of a
 /// Counter is, so `Counter | dict` and `dict | Counter` are plain dicts.
-fn dict_or<'h>(left: &HeapRead<'h, Dict>, right: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
+pub(crate) fn dict_or<'h>(left: &HeapRead<'h, Dict>, right: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
+    dict_or_impl(left, right, true, vm)
+}
+
+/// Implements the defining dict union descriptor, whose result ignores native subtype factories.
+/// The ordinary operator helper preserves defaultdict metadata when its override is selected.
+pub(crate) fn dict_or_plain<'h>(left: &HeapRead<'h, Dict>, right: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
+    dict_or_impl(left, right, false, vm)
+}
+
+fn dict_or_impl<'h>(
+    left: &HeapRead<'h, Dict>,
+    right: &Value,
+    preserve_kind: bool,
+    vm: &mut VM<'h>,
+) -> RunResult<Option<Value>> {
     let Some(HeapReadOutput::Dict(right_dict)) = right.read_heap(vm) else {
         return Ok(None);
     };
@@ -1621,7 +1639,9 @@ fn dict_or<'h>(left: &HeapRead<'h, Dict>, right: &Value, vm: &mut VM<'h>) -> Run
     let (mut merged, vm) = merged_guard.into_parts();
     // Cloned after the merge, the only step that can fail, so the factory
     // reference a defaultdict kind holds needs no guard of its own.
-    let kind = if left.get(vm.heap).is_defaultdict() {
+    let kind = if !preserve_kind {
+        DictKind::plain()
+    } else if left.get(vm.heap).is_defaultdict() {
         left.get(vm.heap).cloned_kind(vm.heap)
     } else if right_dict.get(vm.heap).is_defaultdict() {
         right_dict.get(vm.heap).cloned_kind(vm.heap)
@@ -2116,9 +2136,78 @@ impl<'h> PyDeepCopy<'h> for HeapRead<'h, Dict> {
 
 pub(crate) struct PyDictImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(str, format, iter, reversed, setitem, delitem))]
 impl<'heap> PyAttrs<'heap> for PyDictImpl {
     type Receiver = HeapObjectRead<'heap, Dict>;
+
+    // Base dict descriptors must bypass Counter's repr, equality, and multiset union overrides.
+
+    #[pymethod]
+    const __repr__: MethodCall = builtin_protocols::dict_repr;
+
+    #[pymethod]
+    const __or__: MethodCall = builtin_protocols::dict_or;
+
+    #[pymethod]
+    const __ror__: MethodCall = builtin_protocols::dict_ror;
+
+    #[pymethod]
+    const __ior__: MethodCall = builtin_protocols::dict_ior;
+
+    #[pymethod]
+    const __eq__: MethodCall = builtin_protocols::dict_eq;
+
+    #[pymethod]
+    const __ne__: MethodCall = builtin_protocols::dict_ne;
+
+    #[pymethod]
+    const __lt__: MethodCall = builtin_protocols::dict_order;
+
+    #[pymethod]
+    const __le__: MethodCall = builtin_protocols::dict_order;
+
+    #[pymethod]
+    const __gt__: MethodCall = builtin_protocols::dict_order;
+
+    #[pymethod]
+    const __ge__: MethodCall = builtin_protocols::dict_order;
+
+    #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        args.check_zero_args("__len__", vm.heap)?;
+
+        let len = this.py_len(vm).expect("registered length protocol");
+        Ok(Value::Int(
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?,
+        ))
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(this: &HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__contains__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        Ok(Value::Bool(
+            this.py_contains_impl(item, vm)?
+                .expect("registered containment protocol"),
+        ))
+    }
+
+    #[pymethod]
+    fn __getitem__<'h>(this: &mut HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__getitem__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        // A missing defaultdict key calls the factory and inserts its result.
+        if this.get(vm.heap).is_defaultdict() {
+            match this.dict_get(item, vm)? {
+                Some(value) => Ok(value),
+                None => defaultdict_missing(this, item, vm),
+            }
+        } else {
+            this.py_getitem(item, vm)
+        }
+    }
 
     #[pymethod]
     fn get<'h>(this: &mut HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
@@ -2236,9 +2325,24 @@ impl<'heap> PyAttrs<'heap> for PyDictImpl {
 
 pub(crate) struct PyDefaultDictImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, format, iter, reversed, setitem, delitem, or, ror, ior))]
 impl<'heap> PyAttrs<'heap> for PyDefaultDictImpl {
     type Receiver = HeapObjectRead<'heap, Dict>;
+
+    #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        PyDictImpl::__len__(this, args, vm)
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(this: &HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        PyDictImpl::__contains__(this, args, vm)
+    }
+
+    #[pymethod]
+    fn __getitem__<'h>(this: &mut HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        PyDictImpl::__getitem__(this, args, vm)
+    }
 
     #[pymethod]
     fn get<'h>(this: &mut HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
@@ -2309,9 +2413,34 @@ impl<'heap> PyAttrs<'heap> for PyDefaultDictImpl {
 
 pub(crate) struct PyCounterImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(
+    comparison, repr, str, format, iter, reversed, setitem, neg, pos, add, sub, and, or, iadd, isub, iand, ior
+))]
 impl<'heap> PyAttrs<'heap> for PyCounterImpl {
     type Receiver = HeapObjectRead<'heap, Dict>;
+
+    // Counter inherits dict.__ror__, but overrides deletion, comparisons, and multiset arithmetic.
+
+    #[pymethod]
+    const __delitem__: MethodCall = builtin_protocols::counter_delitem;
+
+    #[pymethod]
+    const __ror__: MethodCall = builtin_protocols::dict_ror;
+
+    #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        PyDictImpl::__len__(this, args, vm)
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(this: &HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        PyDictImpl::__contains__(this, args, vm)
+    }
+
+    #[pymethod]
+    fn __getitem__<'h>(this: &mut HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        PyDictImpl::__getitem__(this, args, vm)
+    }
 
     #[pymethod]
     fn get<'h>(this: &mut HeapObjectRead<'h, Dict>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
@@ -2392,5 +2521,44 @@ impl<'heap> PyAttrs<'heap> for PyCounterImpl {
     fn fromkeys(_name: StaticStrings, _class: PyClass<'_>, args: ArgValues, vm: &mut VM<'_>) -> RunResult<CallResult> {
         args.drop_with(vm);
         Err(ExcType::not_implemented("Counter.fromkeys() is undefined.  Use Counter(iterable) instead.").into())
+    }
+}
+
+/// Formats the original mapping with dict syntax, bypassing native subtype repr wrappers.
+/// Element repr callbacks can add or remove entries; write_map_repr observes that live payload.
+/// The borrowed handle retains the original identity for recursion detection and callback mutation.
+struct MappingRepr<'a, 'h>(&'a HeapObjectRead<'h, Dict>);
+
+impl PyObjectIdentity for MappingRepr<'_, '_> {
+    fn py_identity(&self) -> Identity {
+        self.0.py_identity()
+    }
+}
+
+impl<'h> PyTrait<'h> for MappingRepr<'_, 'h> {
+    fn py_type(&self, _: &VM<'h>) -> Type {
+        Type::Dict
+    }
+    fn py_len(&self, vm: &VM<'h>) -> Option<usize> {
+        self.0.py_len(vm)
+    }
+    fn py_eq_impl(&self, _: &Value, _: &mut VM<'h>) -> RunResult<Option<bool>> {
+        Ok(None)
+    }
+    fn py_repr_fmt(&self, f: &mut impl Write, vm: &mut VM<'h>, ids: &mut LazyHeapSet) -> RunResult<()> {
+        // PyTrait::py_repr starts an empty cycle set. Seed the receiver as PyValue's
+        // ordinary repr path does, so references back to that mapping format as {...}.
+        ids.insert(self.0.id());
+        let result = self.0.write_map_repr(f, vm, ids);
+        ids.remove(&self.0.id());
+        result
+    }
+}
+
+impl<'h> HeapObjectRead<'h, Dict> {
+    /// Applies `dict.__repr__` to this exact object without copying or retagging its payload.
+    /// The adapter changes formatting only; Counter/defaultdict identity and contents stay live.
+    pub(crate) fn plain_repr(&self, vm: &mut VM<'h>) -> RunResult<Value> {
+        MappingRepr(self).py_repr(vm)
     }
 }

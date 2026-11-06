@@ -11,6 +11,8 @@ use crate::{
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
     heap::{DropGuard, DropWithContext, HeapReadOutput},
+    py_attrs::PyAttrs,
+    py_value::PyValue,
     resource_checks::check_estimated_size,
     types::PyTrait,
     value::{VALUE_SIZE, Value, ValueRead},
@@ -176,4 +178,13 @@ pub fn collect_iterable_bounded(value: &Value, limit: usize, vm: &mut VM<'_>) ->
         }
     }
     Ok(items_guard.into_inner())
+}
+
+/// Shared object and iteration methods for native iterator kinds.
+/// Internal size hints do not imply a Python __len__ method.
+pub(crate) struct PyIteratorAttrs;
+
+#[monty_macros::pyattrs(protocols(comparison, repr, str, hash, format, iter, next))]
+impl<'h> PyAttrs<'h> for PyIteratorAttrs {
+    type Receiver = PyValue<'h>;
 }

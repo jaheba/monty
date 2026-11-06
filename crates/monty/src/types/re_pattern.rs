@@ -874,7 +874,7 @@ impl<'de> Deserialize<'de> for RePattern {
 
 pub(crate) struct PyRePatternImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyRePatternImpl {
     type Receiver = HeapRead<'heap, RePattern>;
 

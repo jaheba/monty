@@ -19,13 +19,8 @@ mod to_args;
 /// Functions retain their explicit native receiver and argument signatures.
 #[proc_macro_attribute]
 pub fn pyattrs(args: TokenStream, input: TokenStream) -> TokenStream {
-    if !args.is_empty() {
-        return syn::Error::new(proc_macro2::Span::call_site(), "#[pyattrs] does not take arguments")
-            .into_compile_error()
-            .into();
-    }
     let input = syn::parse_macro_input!(input as syn::ItemImpl);
-    pyattrs::expand(input)
+    pyattrs::expand_with_protocols(args.into(), input)
         .unwrap_or_else(syn::Error::into_compile_error)
         .into()
 }

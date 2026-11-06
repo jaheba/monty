@@ -1648,8 +1648,13 @@ mod tests {
     fn module_and_instance_method_names_match() {
         let module_names: HashSet<_> = RANDOM_FUNCTIONS.iter().map(|(name, _)| *name).collect();
         let methods = <PyRandomImpl as PyAttrs<'static>>::ATTRS;
-        let method_names: HashSet<_> = methods.iter().map(|(name, _)| *name).collect();
-        assert_eq!(RANDOM_FUNCTIONS.len(), methods.len());
+        // Object dunders belong to Random instances, not the module-level generator API.
+        let method_names: HashSet<_> = methods
+            .iter()
+            .map(|(name, _)| *name)
+            .filter(|name| !<&'static str>::from(*name).starts_with("__"))
+            .collect();
+        assert_eq!(RANDOM_FUNCTIONS.len(), method_names.len());
         assert_eq!(module_names, method_names);
     }
 }

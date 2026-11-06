@@ -664,7 +664,7 @@ impl<'h> PyDeepCopy<'h> for HeapRead<'h, Random> {
 
 pub(crate) struct PyRandomImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyRandomImpl {
     type Receiver = HeapObjectRead<'heap, Random>;
 

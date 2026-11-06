@@ -1546,7 +1546,19 @@ impl Decimal {
 /// Python-visible Decimal operations and constructors.
 pub(crate) struct PyDecimalImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(
+    comparison,
+    additive,
+    multiplicative,
+    division,
+    unary_numeric,
+    repr,
+    str,
+    bool,
+    hash,
+    pow,
+    rpow
+))]
 impl<'heap> PyAttrs<'heap> for PyDecimalImpl {
     type Receiver = HeapObjectRead<'heap, Decimal>;
 

@@ -354,7 +354,7 @@ fn take_dt_arg(qualified_name: &'static str, args: ArgValues, vm: &mut VM<'_>) -
 
 pub(crate) struct PyTimeZoneImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyTimeZoneImpl {
     type Receiver = HeapObjectRead<'heap, TimeZone>;
 

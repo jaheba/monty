@@ -451,7 +451,7 @@ struct GroupdictArgs {
 
 pub(crate) struct PyReMatchImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format, getitem))]
 impl<'heap> PyAttrs<'heap> for PyReMatchImpl {
     type Receiver = HeapRead<'heap, ReMatch>;
 

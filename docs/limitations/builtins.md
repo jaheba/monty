@@ -44,6 +44,13 @@ These raise `NameError`:
     reached through `getattr`.
     Direct calls with an explicit first positional receiver, such as `str.upper('foo')` and `list.append(items, value)`,
     are supported for registered builtin instance methods.
+- **Explicit native protocols** — direct calls expose supported collection, iteration, representation,
+    comparison, arithmetic, reflected arithmetic, in-place, and conversion methods through the builtin
+    attribute tables. Bound calls and calls through a defining builtin type share the registrations.
+    Unsupported numeric and set operands return `NotImplemented`; sequence descriptors raise their corresponding
+    operand errors. Operator fallback is not applied to an explicit call.
+    `__init__` and `__new__` are not added by these registrations, and builtin methods remain call-only.
+    Explicit `__reversed__` calls use the same eager traversal as `reversed()`, wrapped in an iterator.
 - **Large integer literal identity** — separate occurrences of the same literal outside the `i64` range are not
     deduplicated, so `a = 18446744073709551616; b = 18446744073709551616; a is b` is `False` where CPython may reuse a
     single constant and return `True`.

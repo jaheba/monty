@@ -586,9 +586,38 @@ pub(crate) fn copy_format_template(template: &str, tracker: &ResourceTracker) ->
     copy.finish_raw()
 }
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format, iter, add, mul, rmul, mod, rmod))]
 impl<'h> PyAttrs<'h> for PyStr<'h> {
     type Receiver = PyStr<'h>;
+
+    #[pymethod]
+    fn __len__(this: &PyStr<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        args.check_zero_args("__len__", vm.heap)?;
+
+        let len = this.py_len(vm).expect("registered length protocol");
+        Ok(Value::Int(
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?,
+        ))
+    }
+
+    #[pymethod]
+    fn __contains__(this: &PyStr<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__contains__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        Ok(Value::Bool(
+            this.py_contains_impl(item, vm)?
+                .expect("registered containment protocol"),
+        ))
+    }
+
+    #[pymethod]
+    fn __getitem__(this: &PyStr<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__getitem__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        this.py_getitem(item, vm)
+    }
 
     #[pymethod]
     fn lower(s: &PyStr<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

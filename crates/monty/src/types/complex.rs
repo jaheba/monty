@@ -762,7 +762,20 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Complex> {
 
 pub(crate) struct PyComplexImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(
+    comparison,
+    additive,
+    multiplicative,
+    unary_numeric,
+    repr,
+    str,
+    bool,
+    complex,
+    hash,
+    format,
+    pow,
+    rpow
+))]
 impl<'heap> PyAttrs<'heap> for PyComplexImpl {
     type Receiver = HeapObjectRead<'heap, Complex>;
 

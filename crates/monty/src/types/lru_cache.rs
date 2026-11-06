@@ -555,7 +555,7 @@ fn maxsize_value(maxsize: Option<u64>) -> Value {
 
 pub(crate) struct PyLruCacheImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyLruCacheImpl {
     type Receiver = HeapObjectRead<'heap, LruCache>;
 

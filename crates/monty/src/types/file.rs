@@ -1719,7 +1719,7 @@ fn unsupported_operation(message: &'static str) -> RunError {
 
 pub(crate) struct PyFileImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format, iter, next))]
 impl<'heap> PyAttrs<'heap> for PyFileImpl {
     type Receiver = HeapObjectRead<'heap, OpenFile>;
 

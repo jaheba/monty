@@ -1,3 +1,5 @@
+use crate::{py_attrs::PyAttrs, py_value::PyValue};
+
 mod builtin_type;
 
 /// Type definitions for Python runtime values.
@@ -96,3 +98,27 @@ pub(crate) use timezone::TimeZone;
 pub(crate) use tuple::{Tuple, TupleIterator, TupleVec, allocate_tuple};
 pub(crate) use r#type::Type;
 pub(crate) use union::Union;
+
+/// Python-visible methods for the native NoneType value.
+pub(crate) struct PyNoneAttrs;
+
+#[monty_macros::pyattrs(protocols(comparison, repr, str, bool, hash, format))]
+impl<'h> PyAttrs<'h> for PyNoneAttrs {
+    type Receiver = PyValue<'h>;
+}
+
+/// Python-visible methods for the native Ellipsis value.
+pub(crate) struct PyEllipsisAttrs;
+
+#[monty_macros::pyattrs(protocols(comparison, repr, str, hash, format))]
+impl<'h> PyAttrs<'h> for PyEllipsisAttrs {
+    type Receiver = PyValue<'h>;
+}
+
+/// Python-visible methods for the native NotImplementedType value.
+pub(crate) struct PyNotImplementedAttrs;
+
+#[monty_macros::pyattrs(protocols(comparison, repr, str, bool, hash, format))]
+impl<'h> PyAttrs<'h> for PyNotImplementedAttrs {
+    type Receiver = PyValue<'h>;
+}

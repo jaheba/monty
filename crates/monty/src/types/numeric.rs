@@ -4,7 +4,10 @@ use num_bigint::BigInt;
 use num_integer::Integer;
 use num_traits::Pow;
 
-use crate::{bytecode::VM, exception_private::RunResult, heap::Heap, types::LongInt, value::Value};
+use crate::{
+    bytecode::VM, exception_private::RunResult, heap::Heap, py_attrs::PyAttrs, py_value::PyValue, types::LongInt,
+    value::Value,
+};
 
 /// Resolves numeric rounding precision through `__index__`, clamping huge integers.
 /// User `__round__` methods receive the original argument instead of using this helper.
@@ -115,4 +118,93 @@ fn round_float_to_digits(value: f64, digits: i64) -> f64 {
     } else {
         rounded
     }
+}
+
+/// Python-visible methods for the native Int value.
+pub(crate) struct PyIntAttrs;
+
+#[monty_macros::pyattrs(protocols(
+    comparison,
+    additive,
+    bitwise,
+    multiplicative,
+    division,
+    shifts,
+    unary_numeric,
+    repr,
+    str,
+    bool,
+    float,
+    round,
+    hash,
+    format,
+    invert,
+    index,
+    int,
+    floor,
+    ceil,
+    trunc,
+    pow,
+    rpow
+))]
+impl<'h> PyAttrs<'h> for PyIntAttrs {
+    type Receiver = PyValue<'h>;
+}
+
+/// Python-visible methods for the native Bool value.
+pub(crate) struct PyBoolAttrs;
+
+#[monty_macros::pyattrs(protocols(
+    comparison,
+    additive,
+    bitwise,
+    multiplicative,
+    division,
+    shifts,
+    unary_numeric,
+    repr,
+    str,
+    bool,
+    float,
+    round,
+    hash,
+    format,
+    invert,
+    index,
+    int,
+    floor,
+    ceil,
+    trunc,
+    pow,
+    rpow
+))]
+impl<'h> PyAttrs<'h> for PyBoolAttrs {
+    type Receiver = PyValue<'h>;
+}
+
+/// Python-visible methods for the native Float value.
+pub(crate) struct PyFloatAttrs;
+
+#[monty_macros::pyattrs(protocols(
+    comparison,
+    additive,
+    multiplicative,
+    division,
+    unary_numeric,
+    repr,
+    str,
+    bool,
+    float,
+    round,
+    hash,
+    format,
+    int,
+    floor,
+    ceil,
+    trunc,
+    pow,
+    rpow
+))]
+impl<'h> PyAttrs<'h> for PyFloatAttrs {
+    type Receiver = PyValue<'h>;
 }

@@ -1613,7 +1613,7 @@ struct DatetimeReplaceArgs {
 
 pub(crate) struct PyDateTimeImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, additive, repr, str, hash, format))]
 impl<'heap> PyAttrs<'heap> for PyDateTimeImpl {
     type Receiver = HeapObjectRead<'heap, DateTime>;
 

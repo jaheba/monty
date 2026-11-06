@@ -551,7 +551,18 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, TimeDelta> {
 
 pub(crate) struct PyTimeDeltaImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(
+    comparison,
+    additive,
+    multiplicative,
+    division,
+    unary_numeric,
+    repr,
+    str,
+    bool,
+    hash,
+    format
+))]
 impl<'heap> PyAttrs<'heap> for PyTimeDeltaImpl {
     type Receiver = HeapObjectRead<'heap, TimeDelta>;
 

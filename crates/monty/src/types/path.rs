@@ -621,7 +621,7 @@ impl HeapItem for Path {
 
 pub(crate) struct PyPathImpl;
 
-#[pyattrs]
+#[pyattrs(protocols(comparison, repr, str, hash, format, bytes, truediv, rtruediv))]
 impl<'heap> PyAttrs<'heap> for PyPathImpl {
     type Receiver = HeapObjectRead<'heap, Path>;
 

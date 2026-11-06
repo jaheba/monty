@@ -1,38 +1,59 @@
-//! Static attribute definitions for builtin types.
+//! Binding and receiver adaptation for builtin attribute tables.
+//!
+//! Each PyAttrs table registers type-specific methods and shared special-method
+//! adapters together. Lookup and enumeration use that same table.
+//! MethodCall adapters borrow an existing PyValue view,
+//! while call_unbound owns and validates an explicit first positional receiver.
+//!
+//! Native subtypes can share storage without sharing descriptor semantics:
+//! `dict.__repr__`(counter) uses dict's adapter, and `int.__repr__`(True) must see 1.
+//! Keep those defining-type rules separate from ordinary instance dispatch.
 
 use crate::{
     args::ArgValues,
+    builtin_protocols,
     bytecode::{CallResult, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunResult},
-    heap::{DropGuard, DropWithContext, HeapData},
+    heap::{DropGuard, DropWithContext, HeapData, HeapReadOutput},
     intern::StaticStrings,
     py_class::PyClass,
     py_value::PyValue,
-    types::{PyTrait, Type, date, datetime},
+    types::{PyTrait, Type, date, datetime, str::allocate_string, tuple},
     value::{EitherStr, Value},
 };
 
 /// The receiver is the bound class object, including when called through an instance.
 pub(crate) type ClassMethodCall = for<'h> fn(PyClass<'h>, ArgValues, &mut VM<'h>) -> RunResult<CallResult>;
+/// Borrows a receiver whose owning Value remains guarded by the caller.
+/// The adapter consumes ArgValues and must release unused arguments on every exit path.
 pub(crate) type MethodCall = for<'h> fn(&mut PyValue<'h>, ArgValues, &mut VM<'h>) -> RunResult<CallResult>;
 
 /// Python attribute definitions and the native view passed to their methods.
 pub(crate) trait PyAttrs<'h> {
+    /// Native view selected by the macro, such as PyStr or a typed heap capability.
     type Receiver;
+    /// Complete attribute table, including any shared special-method adapters.
     const ATTRS: &'static [(StaticStrings, AttrDef)];
 }
 
+/// Binding behavior attached to one Python-visible name.
+/// Function-pointer adapters preserve the native receiver's concrete borrow requirements.
 #[derive(Clone, Copy)]
 pub(crate) enum AttrDef {
+    /// Uses the instance, or takes an explicit receiver when accessed through its defining type.
     Method(MethodCall),
+    /// Binds the class automatically, including calls made through an instance.
     ClassMethod(ClassMethodCall),
+    /// Produces an attribute value without method binding; the result is owned by the caller.
     Value(fn(&mut VM<'_>) -> Value),
 }
 
 /// Calls an instance method through a type, taking the receiver from the first positional argument.
 ///
-/// Validates the receiver against the defining type and adapts supported native subtypes.
+/// Validates the receiver against the defining type before invoking its adapter.
+/// The remaining arguments are transferred to the adapter; receiver cleanup stays here.
+/// Supported native subtypes use the defining descriptor's receiver adaptations.
 pub(crate) fn call_unbound(
     owner: Type,
     attr: &EitherStr,
@@ -69,6 +90,14 @@ pub(crate) fn call_unbound(
     }
     let ((receiver, args), vm) = pending.into_parts();
     defer_drop!(receiver, vm);
+    // bool is an int subtype, but an int descriptor must not select bool-specific results.
+    // For example, int.__repr__(True) is '1' and int.__and__(True, True) returns int.
+    if owner == Type::Int
+        && let Value::Bool(value) = receiver
+    {
+        let integer = Value::Int(i64::from(*value));
+        return call(&mut integer.py_value(vm), args, vm);
+    }
     if receiver_type == owner {
         call(&mut receiver.py_value(vm), args, vm)
     } else {
@@ -78,7 +107,9 @@ pub(crate) fn call_unbound(
 
 /// Calls a base type's method on a validated native subtype receiver.
 ///
-/// Reuses compatible payloads or projects a date from a datetime when the base adapter requires it.
+/// Dict subtypes reuse their payload with the defining type's adapter. Named tuples
+/// use tuple operations, except repr must omit field names. Date descriptors project
+/// a date from datetime when their concrete native receiver requires it.
 fn call_unbound_subtype(
     owner: Type,
     attr: &EitherStr,
@@ -87,8 +118,23 @@ fn call_unbound_subtype(
     args: ArgValues,
     vm: &mut VM<'_>,
 ) -> RunResult<CallResult> {
+    // The named-tuple adapter formats field names, while tuple.__repr__ requests tuple syntax.
+    // Keep arguments guarded across the fallible item copy before transferring them to the call.
+    if owner == Type::Tuple && attr.as_str(vm.interns) == "__repr__" {
+        let mut pending = DropGuard::new(args, vm);
+        let vm = pending.ctx();
+        let Some(HeapReadOutput::NamedTuple(tuple)) = this.read_heap(vm) else {
+            unreachable!()
+        };
+        let items = tuple.cloned_items(vm)?;
+        let plain = tuple::allocate_tuple(items.into_iter().collect(), vm.heap);
+        let (args, vm) = pending.into_parts();
+        defer_drop!(plain, vm);
+        return call(&mut plain.py_value(vm), args, vm);
+    }
     if owner == Type::Dict {
-        // Dict variants share the native Dict representation.
+        // Dict variants share storage, so pass the original object to the defining adapter.
+        // Copying it would hide mutations made by repr or equality callbacks.
         return call(&mut this.py_value(vm), args, vm);
     }
     let Value::Ref(id) = this else {
@@ -103,7 +149,37 @@ fn call_unbound_subtype(
         unreachable!("date's native subclass is datetime")
     };
     let (year, month, day, ..) = datetime::to_components(datetime).expect("datetime has valid civil components");
-    // Date descriptors read only the date portion, even when datetime overrides
+    // These date descriptors inspect the original subtype rather than a projected Date.
+    // CPython declines datetime arithmetic, while repr keeps its class name and omits time.
+    match attr.static_string(vm.interns) {
+        Some(
+            StaticStrings::DunderAdd | StaticStrings::DunderRadd | StaticStrings::DunderSub | StaticStrings::DunderRsub,
+        ) => {
+            args.get_one_arg(attr.as_str(vm.interns), vm.heap)?.drop_with(vm);
+            return Ok(CallResult::Value(Value::NotImplemented));
+        }
+        Some(StaticStrings::DunderRepr) => {
+            args.check_zero_args("__repr__", vm.heap)?;
+            return Ok(CallResult::Value(allocate_string(
+                format!("datetime.datetime({year}, {month}, {day})"),
+                vm.heap,
+            )));
+        }
+        Some(StaticStrings::DunderStr) => {
+            args.check_zero_args("__str__", vm.heap)?;
+            // date.__str__ calls the receiver's isoformat(), including datetime's T separator.
+            return this.py_value(vm).py_call_attr(
+                vm,
+                &EitherStr::Interned(vm.interns.intern_static(StaticStrings::Isoformat)),
+                ArgValues::Empty,
+            );
+        }
+        Some(StaticStrings::DunderFormat) => {
+            return builtin_protocols::format(&mut this.py_value(vm), args, vm);
+        }
+        _ => {}
+    }
+    // The remaining date descriptors read only the date portion, even when datetime overrides
     // the same method name. Project it rather than passing a mismatched heap handle.
     let date = date::from_ymd(year, i32::from(month), i32::from(day)).expect("datetime date is valid");
     let date_receiver = Value::Ref(vm.heap.allocate(HeapData::Date(date)));
@@ -140,7 +216,7 @@ fn call_unbound_subtype(
 
 #[cfg(test)]
 mod tests {
-    use std::mem::discriminant;
+    use std::{collections::HashSet, mem::discriminant};
 
     use monty_macros::pyattrs;
     use monty_types::{PrintWriter, ResourceTracker};
@@ -274,6 +350,16 @@ mod tests {
     fn tables_and_lookups_agree() {
         let interns = Interns::new("");
         for owner in [
+            Type::Int,
+            Type::Bool,
+            Type::Float,
+            Type::Range,
+            Type::DictValues,
+            Type::Iterator,
+            Type::ListIterator,
+            Type::NoneType,
+            Type::Ellipsis,
+            Type::NotImplementedType,
             Type::Dict,
             Type::DefaultDict,
             Type::Counter,
@@ -320,7 +406,9 @@ mod tests {
                     .lookup_attr(&EitherStr::Heap("missing_builtin_method".into()), &interns)
                     .is_none()
             );
+            let mut names = HashSet::new();
             for &(name, definition) in owner.attrs() {
+                assert!(names.insert(name), "duplicate attribute {name:?} on {owner:?}");
                 let spelling: &str = name.into();
                 let attr = EitherStr::Heap(spelling.to_owned());
                 let found = owner
@@ -329,7 +417,7 @@ mod tests {
                 assert_eq!(discriminant(&definition), discriminant(&found));
             }
         }
-        assert!(Type::Int.attrs().is_empty());
+        assert!(!Type::Int.attrs().is_empty());
         assert!(
             Type::Int
                 .lookup_attr(&EitherStr::Heap("upper".into()), &interns)
