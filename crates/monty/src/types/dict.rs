@@ -1613,6 +1613,8 @@ pub(crate) fn dict_or<'h>(left: &HeapRead<'h, Dict>, right: &Value, vm: &mut VM<
     dict_or_impl(left, right, true, vm)
 }
 
+/// Implements the defining dict union descriptor, whose result ignores native subtype factories.
+/// The ordinary operator helper preserves defaultdict metadata when its override is selected.
 pub(crate) fn dict_or_plain<'h>(left: &HeapRead<'h, Dict>, right: &Value, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
     dict_or_impl(left, right, false, vm)
 }
@@ -2479,7 +2481,9 @@ impl<'heap> PyAttrs<'heap> for PyCounterImpl {
     }
 }
 
-/// Uses the live dict payload while bypassing Counter/defaultdict repr wrappers.
+/// Formats the original mapping with dict syntax, bypassing native subtype repr wrappers.
+/// Element repr callbacks can add or remove entries; write_map_repr observes that live payload.
+/// The borrowed handle retains the original identity for recursion detection and callback mutation.
 struct MappingRepr<'a, 'h>(&'a HeapObjectRead<'h, Dict>);
 
 impl PyObjectIdentity for MappingRepr<'_, '_> {
@@ -2499,6 +2503,8 @@ impl<'h> PyTrait<'h> for MappingRepr<'_, 'h> {
         Ok(None)
     }
     fn py_repr_fmt(&self, f: &mut impl Write, vm: &mut VM<'h>, ids: &mut LazyHeapSet) -> RunResult<()> {
+        // PyTrait::py_repr starts an empty cycle set. Seed the receiver as PyValue's
+        // ordinary repr path does, so references back to that mapping format as {...}.
         ids.insert(self.0.id());
         let result = self.0.write_map_repr(f, vm, ids);
         ids.remove(&self.0.id());
@@ -2507,6 +2513,8 @@ impl<'h> PyTrait<'h> for MappingRepr<'_, 'h> {
 }
 
 impl<'h> HeapObjectRead<'h, Dict> {
+    /// Applies `dict.__repr__` to this exact object without copying or retagging its payload.
+    /// The adapter changes formatting only; Counter/defaultdict identity and contents stay live.
     pub(crate) fn plain_repr(&self, vm: &mut VM<'h>) -> RunResult<Value> {
         MappingRepr(self).py_repr(vm)
     }

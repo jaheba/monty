@@ -1,4 +1,19 @@
-//! Explicit calls to native protocols, independent of operator fallback dispatch.
+//! Python-visible adapters for explicit calls to native special methods.
+//!
+//! `Type::lookup_attr` checks a type's generated `PyAttrs` table before these
+//! shared registrations. `Type::attrs` combines both tables at compile time.
+//! The same adapter serves `value.__add__(other)` and `int.__add__(value, other)`;
+//! `py_attrs::call_unbound` validates and removes the latter's explicit receiver.
+//!
+//! Operators still use `PyTrait` directly. An explicit method call must preserve
+//! its one-sided result: `int.__add__(1, 2.0)` returns `NotImplemented`, while
+//! `1 + 2.0` can try the float implementation. Sequence descriptors instead raise
+//! their operand errors. The adapters below supply those calling rules without
+//! changing native operator dispatch or allocating Python bound-method objects.
+//!
+//! Keep registration lists explicit: a `PyTrait` default does not establish that
+//! CPython exposes that method on the corresponding type. Initialization and
+//! standalone method objects are outside these tables.
 
 use crate::{
     args::ArgValues,
@@ -15,6 +30,8 @@ use crate::{
     value::{EitherStr, Value},
 };
 
+/// Adapts zero-argument native hooks whose optional result represents a declined operation.
+/// Registration determines availability; the macro does not add a hook to every native type.
 macro_rules! unary {
     ($($name:ident => $method:ident),* $(,)?) => {$ (
         fn $name<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
@@ -30,8 +47,12 @@ unary! {
     ceil => py_ceil_impl, trunc => py_trunc_impl,
 }
 
+/// One native implementation, before reflected dispatch or an operator's final TypeError.
 type BinaryOperation<'h> = fn(&PyValue<'h>, &Value, &mut VM<'h>) -> RunResult<Option<Value>>;
 
+/// Applies descriptor operand rules, then calls one native binary implementation.
+/// The additional paths cover accepted native representations and reflected methods;
+/// returning `NotImplemented` remains observable to the Python caller.
 fn binary_call<'h>(
     this: &mut PyValue<'h>,
     args: ArgValues,
@@ -47,6 +68,8 @@ fn binary_call<'h>(
     if matches!(lhs_type, Type::Int | Type::Bool) && !matches!(rhs_type, Type::Int | Type::Bool) {
         return Ok(CallResult::Value(Value::NotImplemented));
     }
+    // Float helpers need a numeric value even when the operand is an interned or heap big integer.
+    // Conversion can raise OverflowError before the arithmetic helper runs.
     let converted = if lhs_type == Type::Float && matches!(rhs_type, Type::Int | Type::Bool) {
         Some(Value::Float(
             other.py_value(vm).py_float_impl(vm)?.expect("integer float conversion"),
@@ -66,6 +89,8 @@ fn binary_call<'h>(
         None
     };
     let operand = repeat.as_ref().or(converted.as_ref()).unwrap_or(other);
+    // These reflected operations are symmetric within their accepted native types.
+    // Calling a reflected method explicitly cannot rely on the VM's operator loop to supply them.
     let mut result = match name {
         "rand" if matches!(lhs_type, Type::Int | Type::Bool) => this.py_and_impl(operand, vm)?,
         "ror" if matches!(lhs_type, Type::Int | Type::Bool) => this.py_or_impl(operand, vm)?,
@@ -92,6 +117,8 @@ fn binary_call<'h>(
             operand.py_value(vm).py_mul_impl(value, vm)?
         };
     }
+    // Timedelta's native helpers implement the left-hand forms. Swapping two timedeltas
+    // supplies the reflected forms without broadening their accepted operand types.
     if result.is_none()
         && matches!(name, "rsub" | "rtruediv" | "rfloordiv" | "rmod" | "rdivmod")
         && lhs_type == Type::TimeDelta
@@ -108,6 +135,7 @@ fn binary_call<'h>(
             _ => unreachable!(),
         };
     }
+    // The left set operand determines whether a reflected result is mutable or frozen.
     if result.is_none() && matches!(lhs_type, Type::Set | Type::FrozenSet) {
         let value = this.to_owned_value(vm);
         defer_drop!(value, vm);
@@ -119,6 +147,8 @@ fn binary_call<'h>(
             _ => None,
         };
     }
+    // Defaultdict's reflected union preserves factory metadata through the native dict union helper.
+    // Plain dict and Counter's inherited descriptor have separate adapters below.
     if result.is_none() && name == "ror" && matches!(lhs_type, Type::Dict | Type::DefaultDict | Type::Counter) {
         let value = this.to_owned_value(vm);
         defer_drop!(value, vm);
@@ -126,6 +156,8 @@ fn binary_call<'h>(
             result = dict::dict_or(&left, value, vm)?;
         }
     }
+    // A sequence's __add__ raises here; its descriptor does not return NotImplemented
+    // and leave the caller to reproduce the operator's final error.
     if result.is_none() && sequence && name == "add" {
         return Err(ExcType::binary_type_error(
             "+",
@@ -137,6 +169,8 @@ fn binary_call<'h>(
     Ok(CallResult::Value(result.unwrap_or(Value::NotImplemented)))
 }
 
+/// Gives each registered binary name an adapter while sharing operand validation.
+/// `modulo` is a Rust helper name only; Python sees `__mod__`.
 macro_rules! binary {
     ($($name:ident => $method:ident),* $(,)?) => {$ (
         fn $name<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
@@ -155,12 +189,16 @@ binary! {
     rshift => py_rshift_impl, rrshift => py_rrshift_impl,
 }
 
+/// Reuses native in-place mutation and returns the original receiver on success.
+/// A false result becomes NotImplemented; an explicit call does not try binary fallback.
 macro_rules! inplace {
     ($($name:ident => $method:ident),* $(,)?) => {$ (
         fn $name<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
             let other = args.get_one_arg(concat!("__", stringify!($name), "__"), vm.heap)?;
             defer_drop!(other, vm);
             let value = this.to_owned_value(vm);
+            // Mutation may raise after changing the receiver. Retain its owned reference
+            // on success and release it on every error or declined-operation path.
             let mut pending = DropGuard::new(value, vm);
             let (value, vm) = pending.as_parts_mut();
             if value.$method(other, vm)? {
@@ -176,11 +214,14 @@ inplace! {
     iand => py_iand_impl, ior => py_ior_impl, ixor => py_ixor_impl,
 }
 
+/// Runs repr through PyValue so the root container participates in cycle detection.
 fn repr<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__repr__", vm.heap)?;
     this.py_repr(vm).map(CallResult::Value)
 }
 
+/// Preserves each type's string conversion, including `object.__str__`'s repr fallback.
+/// Container fallback starts at PyValue to seed the cycle set before formatting children.
 fn str<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__str__", vm.heap)?;
     match this {
@@ -196,11 +237,14 @@ fn str<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResul
     .map(CallResult::Value)
 }
 
+/// Uses native truth testing, including Python 3.14's error for NotImplemented.
+/// Register only types exposing `__bool__`; a length-based truth test alone is insufficient.
 fn bool<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__bool__", vm.heap)?;
     this.py_bool(vm).map(|value| CallResult::Value(Value::Bool(value)))
 }
 
+/// Returns the native floating-point conversion without int/string constructor fallbacks.
 fn float<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__float__", vm.heap)?;
     Ok(CallResult::Value(
@@ -208,6 +252,8 @@ fn float<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunRes
     ))
 }
 
+/// Passes the optional precision value to the native hook without coercing it here.
+/// Each numeric type retains its own validation and return type.
 fn round<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let digits = args.get_zero_one_arg("__round__", vm.heap)?;
     defer_drop!(digits, vm);
@@ -217,6 +263,9 @@ fn round<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunRes
     ))
 }
 
+/// Adapts pow/rpow with an optional modulus; an explicit None means no modulus.
+/// Integer descriptors accept integer operands, while float reflected power first
+/// converts its numeric base. Native implementations retain modulus validation.
 macro_rules! power {
     ($name:ident, $method:ident) => {
         fn $name<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
@@ -228,6 +277,7 @@ macro_rules! power {
             if matches!(lhs_type, Type::Int | Type::Bool) && !matches!(rhs_type, Type::Int | Type::Bool) {
                 return Ok(CallResult::Value(Value::NotImplemented));
             }
+            // None is accepted as the omitted third argument, including for float power.
             let modulus = modulus.as_ref().filter(|value| !matches!(value, Value::None));
             let mut result = this.$method(other, modulus, vm)?;
             if result.is_none()
@@ -237,6 +287,8 @@ macro_rules! power {
             {
                 let receiver = this.to_owned_value(vm);
                 defer_drop!(receiver, vm);
+                // Native reflected hooks may defer same-kind arithmetic to operator dispatch.
+                // Supply that arithmetic for this explicit call, preserving float base conversion.
                 let base = if lhs_type == Type::Float {
                     Value::Float(other.py_value(vm).py_float_impl(vm)?.expect("numeric conversion"))
                 } else {
@@ -252,18 +304,24 @@ macro_rules! power {
 power!(pow, py_pow_impl);
 power!(rpow, py_rpow_impl);
 
+/// Shares the builtin hash conversion and signed hash representation.
+/// These are Monty's native hash values, which need not equal CPython's hashes.
 fn hash<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__hash__", vm.heap)?;
     let value = this.to_owned_value(vm);
     BuiltinsFunctions::Hash.call(vm, ArgValues::One(value))
 }
 
+/// Uses the formatter shared by format(), f-strings, and str.format().
+/// The special method requires its spec argument even though format(value) can omit it.
 fn format<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let spec = args.get_one_arg("__format__", vm.heap)?;
     let value = this.to_owned_value(vm);
     BuiltinsFunctions::Format.call(vm, ArgValues::Two(value, spec))
 }
 
+/// Returns bytes unchanged or encodes a sandbox Path's POSIX spelling as UTF-8.
+/// Path conversion reads no host filesystem or host locale state.
 fn bytes<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__bytes__", vm.heap)?;
     let value = match this {
@@ -274,6 +332,8 @@ fn bytes<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunRes
     Ok(CallResult::Value(value))
 }
 
+/// Obtains a native iterator while keeping the receiver alive across iterator creation.
+/// The temporary owned value bridges helpers that still accept Value rather than PyValue.
 fn iter<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__iter__", vm.heap)?;
     let value = this.to_owned_value(vm);
@@ -281,12 +341,16 @@ fn iter<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResu
     value.py_iter(vm)
 }
 
+/// Preserves builtin next()'s exhaustion and suspension behavior.
+/// An unread file may suspend for a host buffer load; directly calling py_next would miss that path.
 fn next<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__next__", vm.heap)?;
     let value = this.to_owned_value(vm);
     builtin_next(vm, ArgValues::One(value))
 }
 
+/// Returns an iterator over the existing reversed() builtin's eager snapshot.
+/// Iterator wrapping changes the return shape, not the snapshot's timing or mutation behavior.
 fn reversed<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__reversed__", vm.heap)?;
     let value = this.to_owned_value(vm);
@@ -296,6 +360,8 @@ fn reversed<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> Run
     reversed.into_py_iter(vm)
 }
 
+/// Transfers the key and replacement into native assignment, returning None on success.
+/// Native assignment owns their cleanup, including when index conversion or mutation fails.
 fn setitem<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let (key, item) = args.get_two_args("__setitem__", vm.heap)?;
     let value = this.to_owned_value(vm);
@@ -305,6 +371,8 @@ fn setitem<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunR
     Ok(CallResult::Value(Value::None))
 }
 
+/// Deletes a list index/slice, a deque index, or a mapping key using native storage.
+/// Missing dict keys raise KeyError; Counter's missing-key exception is registered separately.
 fn delitem<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let key = args.get_one_arg("__delitem__", vm.heap)?;
     defer_drop!(key, vm);
@@ -320,12 +388,16 @@ fn delitem<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunR
     Ok(CallResult::Value(Value::None))
 }
 
+/// Applies dict's representation to the original mapping, including native subtypes.
+/// Using the live payload lets element `__repr__` callbacks change the entries still to be printed.
 fn dict_repr<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__repr__", vm.heap)?;
     let PyValue::Dict(dict) = this else { unreachable!() };
     dict.plain_repr(vm).map(CallResult::Value)
 }
 
+/// Compares real mapping entries, bypassing Counter's multiset equality.
+/// Zero counts remain entries when `dict.__eq__` or `dict.__ne__` is called on a Counter.
 fn dict_equality<'h>(this: &mut PyValue<'h>, args: ArgValues, negate: bool, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let other = args.get_one_arg(if negate { "__ne__" } else { "__eq__" }, vm.heap)?;
     defer_drop!(other, vm);
@@ -337,20 +409,26 @@ fn dict_equality<'h>(this: &mut PyValue<'h>, args: ArgValues, negate: bool, vm: 
     Ok(CallResult::Value(result))
 }
 
+/// Selects plain mapping equality for the defining dict descriptor.
 fn dict_eq<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     dict_equality(this, args, false, vm)
 }
 
+/// Negates a handled mapping comparison while preserving NotImplemented for other types.
 fn dict_ne<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     dict_equality(this, args, true, vm)
 }
 
+/// Keeps dict ordering unsupported even when the receiver is a Counter.
+/// The inherited dict descriptor must not dispatch to Counter's ordering override.
 fn dict_order<'h>(_: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let other = args.get_one_arg("comparison", vm.heap)?;
     other.drop_with(vm);
     Ok(CallResult::Value(Value::NotImplemented))
 }
 
+/// Builds a plain dict result for `dict.__or__`, regardless of native receiver subtype.
+/// Counter and defaultdict register their own union implementations.
 fn dict_or<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let other = args.get_one_arg("__or__", vm.heap)?;
     defer_drop!(other, vm);
@@ -360,6 +438,8 @@ fn dict_or<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunR
     ))
 }
 
+/// Uses dict.update semantics and returns the same receiver.
+/// Calling `dict.__ior__` on a Counter must replace counts rather than apply multiset union.
 fn dict_ior<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let other = args.get_one_arg("__ior__", vm.heap)?;
     let name = EitherStr::Heap("update".to_owned());
@@ -371,6 +451,8 @@ fn dict_ior<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> Run
     Ok(CallResult::Value(this.to_owned_value(vm)))
 }
 
+/// Applies the inherited dict reflected-union descriptor with reversed mapping order.
+/// The result is plain dict, including when Counter inherits this method.
 fn dict_ror<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let other = args.get_one_arg("__ror__", vm.heap)?;
     defer_drop!(other, vm);
@@ -383,6 +465,8 @@ fn dict_ror<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> Run
     Ok(CallResult::Value(result.unwrap_or(Value::NotImplemented)))
 }
 
+/// Implements Counter's missing-key deletion rule: an absent key is a no-op.
+/// Calling `dict.__delitem__` on that same Counter still raises KeyError.
 fn counter_delitem<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let key = args.get_one_arg("__delitem__", vm.heap)?;
     defer_drop!(key, vm);
@@ -391,11 +475,15 @@ fn counter_delitem<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>)
     Ok(CallResult::Value(Value::None))
 }
 
+/// Returns the native complex receiver with a counted reference.
+/// Decimal's conversion has its own generated registration and does not use this identity adapter.
 fn complex<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__complex__", vm.heap)?;
     Ok(CallResult::Value(this.to_owned_value(vm)))
 }
 
+/// Adapts native length for types without a type-specific wrapper, such as range and dict_values.
+/// A registered length must exist and fit the signed Python index range.
 fn len<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     args.check_zero_args("__len__", vm.heap)?;
     let len = this.py_len(vm).expect("registered length");
@@ -404,6 +492,7 @@ fn len<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResul
     )))
 }
 
+/// Uses range's native membership implementation without the operator's iterator fallback.
 fn contains<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let item = args.get_one_arg("__contains__", vm.heap)?;
     defer_drop!(item, vm);
@@ -413,12 +502,17 @@ fn contains<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> Run
     ))
 }
 
+/// Preserves integer/slice range keys and integer/name regex group keys.
+/// Other collection types register their own wrappers, including defaultdict's missing-key hook.
 fn getitem<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let key = args.get_one_arg("__getitem__", vm.heap)?;
     defer_drop!(key, vm);
     this.py_getitem(key, vm).map(CallResult::Value)
 }
 
+/// Preserves one-sided comparison results rather than applying reflected comparison.
+/// Equality can fall back to object identity; ordering distinguishes an unordered NaN
+/// from an unsupported operand pair, returning False and NotImplemented respectively.
 fn compare<'h>(this: &mut PyValue<'h>, args: ArgValues, op: CmpOperator, vm: &mut VM<'h>) -> RunResult<CallResult> {
     let other = args.get_one_arg("comparison", vm.heap)?;
     defer_drop!(other, vm);
@@ -436,6 +530,7 @@ fn compare<'h>(this: &mut PyValue<'h>, args: ArgValues, op: CmpOperator, vm: &mu
     } else {
         let value = this.to_owned_value(vm);
         defer_drop!(value, vm);
+        // Set inclusion and Counter ordering cannot be represented by a total Ordering.
         if let Some(result) = value.py_cmp_op(other, op, vm)? {
             Some(result)
         } else {
@@ -463,6 +558,7 @@ fn compare<'h>(this: &mut PyValue<'h>, args: ArgValues, op: CmpOperator, vm: &mu
     };
     Ok(CallResult::Value(result.map_or(Value::NotImplemented, Value::Bool)))
 }
+/// Binds Python's six comparison names to the shared one-sided comparison adapter.
 macro_rules! comparison {
     ($($name:ident => $op:ident),* $(,)?) => {$ (
         fn $name<'h>(this: &mut PyValue<'h>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<CallResult> {
@@ -472,7 +568,9 @@ macro_rules! comparison {
 }
 comparison! { eq => Eq, ne => NotEq, lt => Lt, le => LtE, gt => Gt, ge => GtE }
 
-/// Joins native methods and protocol entries at compile time, without allocating during lookup.
+/// Joins generated methods and shared protocols into a static enumeration table.
+/// N must equal a.len() + b.len(); Type::attrs computes it from both input slices.
+/// Inputs must have disjoint names: joining preserves their order and does not deduplicate.
 pub(crate) const fn join<const N: usize>(
     a: &[(StaticStrings, AttrDef)],
     b: &[(StaticStrings, AttrDef)],
@@ -491,6 +589,8 @@ pub(crate) const fn join<const N: usize>(
     result
 }
 
+/// Looks up only shared protocols; Type::lookup_attr checks generated methods first.
+/// Receiver validation and binding happen at the call site, not during lookup.
 pub(crate) fn lookup(owner: Type, name: StaticStrings) -> Option<AttrDef> {
     attrs(owner)
         .iter()
@@ -498,6 +598,8 @@ pub(crate) fn lookup(owner: Type, name: StaticStrings) -> Option<AttrDef> {
         .map(|(_, definition)| *definition)
 }
 
+/// Maps registration aliases to Python names and adapters.
+/// Aliases such as dict_eq select defining-type behavior while retaining the Python name `__eq__`.
 macro_rules! entries {
     (@entry abs) => { (StaticStrings::DunderAbs, AttrDef::Method(abs)) };
     (@entry add) => { (StaticStrings::DunderAdd, AttrDef::Method(add)) };
@@ -577,8 +679,13 @@ macro_rules! entries {
     ($($name:ident),* $(,)?) => { &[$(entries!(@entry $name)),*] };
 }
 
+/// Lists shared protocol methods actually exposed by each native Python type.
+/// Omit methods already supplied by that type's generated PyAttrs table: Type::attrs
+/// concatenates the slices, and table-consistency tests reject duplicate names.
+/// A type's truthiness, iterability, or metaclass operations do not imply a method registration.
 pub(crate) const fn attrs(owner: Type) -> &'static [(StaticStrings, AttrDef)] {
     match owner {
+        // Numeric types share adapters but expose different conversions and binary operations.
         Type::Int => entries!(
             repr, str, bool, float, round, hash, format, neg, pos, abs, invert, index, int, floor, ceil, trunc, add,
             radd, sub, rsub, mul, rmul, truediv, rtruediv, floordiv, rfloordiv, mod, rmod, divmod, rdivmod, and, rand,
@@ -609,6 +716,7 @@ pub(crate) const fn attrs(owner: Type) -> &'static [(StaticStrings, AttrDef)] {
         ),
         Type::Tuple => entries!(repr, str, hash, format, iter, add, mul, rmul, eq, ne, lt, le, gt, ge),
         Type::NamedTuple => entries!(repr, str, hash, format, iter, add, mul, rmul, eq, ne, lt, le, gt, ge),
+        // The defining dict descriptors must bypass Counter's native overrides.
         Type::Dict => entries!(
             dict_repr, str, format, iter, reversed, setitem, delitem, dict_or, dict_ror, dict_ior, dict_eq, dict_ne,
             dict_lt, dict_le, dict_gt, dict_ge
@@ -616,6 +724,7 @@ pub(crate) const fn attrs(owner: Type) -> &'static [(StaticStrings, AttrDef)] {
         Type::DefaultDict => entries!(
             repr, str, format, iter, reversed, setitem, delitem, or, ror, ior, eq, ne, lt, le, gt, ge
         ),
+        // Counter inherits dict.__ror__, but overrides deletion, comparison, and multiset arithmetic.
         Type::Counter => entries!(
             repr,
             str,
@@ -658,6 +767,7 @@ pub(crate) const fn attrs(owner: Type) -> &'static [(StaticStrings, AttrDef)] {
         Type::DictItems => entries!(
             repr, str, format, iter, reversed, sub, rsub, and, rand, or, ror, xor, rxor, eq, ne, lt, le, gt, ge
         ),
+        // Values views have identity comparison; only key/item views expose set algebra.
         Type::DictValues => entries!(repr, str, hash, format, iter, reversed, len, eq, ne, lt, le, gt, ge),
         Type::Range => entries!(
             repr, str, bool, hash, format, iter, reversed, len, contains, getitem, eq, ne, lt, le, gt, ge
@@ -696,6 +806,8 @@ pub(crate) const fn attrs(owner: Type) -> &'static [(StaticStrings, AttrDef)] {
         Type::Blake2b => entries!(repr, str, hash, format, eq, ne, lt, le, gt, ge),
         Type::Blake2s => entries!(repr, str, hash, format, eq, ne, lt, le, gt, ge),
         Type::LruCacheWrapper => entries!(repr, str, hash, format, eq, ne, lt, le, gt, ge),
+        // Native iterator kinds share these object/iterator methods. Do not infer a __len__
+        // from an internal size hint: iterator hints are not Python length protocols.
         _ if owner.is_iterator() => attrs(Type::Iterator),
         _ => &[],
     }

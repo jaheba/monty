@@ -644,9 +644,13 @@ impl Type {
 
     /// Returns the native method and protocol definitions for this builtin type.
     ///
+    /// Joins each generated per-type table with its shared native protocol entries.
+    /// Arrays are built at compile time, so enumeration never allocates or binds receivers.
     /// Types without registered methods or protocols return an empty slice.
     #[cfg_attr(not(test), expect(dead_code, reason = "retained for builtin attribute enumeration"))]
     pub(crate) const fn attrs(self) -> &'static [(StaticStrings, AttrDef)] {
+        // Each arm has a concrete owner and lengths, allowing the joined array to stay static.
+        // Keep the two name sets disjoint; lookup has precedence, but enumeration retains every entry.
         macro_rules! combined {
             ($native:expr, $owner:expr) => {{
                 const NATIVE: &[(StaticStrings, AttrDef)] = $native;
@@ -772,7 +776,8 @@ impl Type {
     /// Looks up a generated attribute or a shared native protocol on this builtin type.
     ///
     /// Returns the definition without binding a receiver or evaluating a value factory.
-    /// Names absent from the table return `None`; dynamic namespaces are handled separately.
+    /// Generated entries take precedence over shared protocols; absent names return None.
+    /// This lookup does not consult module or user-class namespaces; call sites handle those fallbacks.
     pub(crate) fn lookup_attr(self, attr: &EitherStr, interns: &Interns) -> Option<AttrDef> {
         let name = attr.static_string(interns)?;
         match self {
@@ -819,6 +824,8 @@ impl Type {
     }
 
     /// Calls registered methods on existing native views, binding class methods to their owner.
+    /// A table miss preserves dynamic attribute handling for modules, user objects, and stored callables.
+    /// Protocol adapters return their own result; this path does not add operator fallback.
     pub(crate) fn call_attr<'h>(
         self,
         obj: &mut PyValue<'h>,

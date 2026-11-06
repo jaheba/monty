@@ -116,7 +116,10 @@ macro_rules! define_py_value {
         }
 
         impl<'h> PyValue<'h> {
-            /// Clones the value behind this view for helpers that still take owned Values.
+            /// Obtains an owned Value for helpers that have not migrated to PyValue receivers.
+            /// Heap handles increment the existing object's reference count; storage and identity
+            /// are preserved. The caller must return that Value or release it with DropWithContext.
+            /// This does not transfer ownership of the borrowed view's original receiver.
             pub(crate) fn to_owned_value(&self, vm: &mut VM<'h>) -> Value {
                 match self {
                     Self::Str(PyStr::Interned(id)) => Value::InternString(*id),

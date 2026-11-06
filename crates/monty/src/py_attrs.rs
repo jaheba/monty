@@ -1,4 +1,13 @@
-//! Static attribute definitions for builtin types.
+//! Binding and receiver adaptation for builtin attribute tables.
+//!
+//! Generated PyAttrs registrations describe type-specific methods. Shared special
+//! methods are registered in builtin_protocols; Type combines both sources for
+//! lookup and enumeration. MethodCall adapters borrow an existing PyValue view,
+//! while call_unbound owns and validates an explicit first positional receiver.
+//!
+//! Native subtypes can share storage without sharing descriptor semantics:
+//! `dict.__repr__`(counter) uses dict's adapter, and `int.__repr__`(True) must see 1.
+//! Keep those defining-type rules separate from ordinary instance dispatch.
 
 use crate::{
     args::ArgValues,
@@ -15,24 +24,35 @@ use crate::{
 
 /// The receiver is the bound class object, including when called through an instance.
 pub(crate) type ClassMethodCall = for<'h> fn(PyClass<'h>, ArgValues, &mut VM<'h>) -> RunResult<CallResult>;
+/// Borrows a receiver whose owning Value remains guarded by the caller.
+/// The adapter consumes ArgValues and must release unused arguments on every exit path.
 pub(crate) type MethodCall = for<'h> fn(&mut PyValue<'h>, ArgValues, &mut VM<'h>) -> RunResult<CallResult>;
 
 /// Python attribute definitions and the native view passed to their methods.
 pub(crate) trait PyAttrs<'h> {
+    /// Native view selected by the macro, such as PyStr or a typed heap capability.
     type Receiver;
+    /// Generated entries only; Type::attrs adds the shared protocol registrations.
     const ATTRS: &'static [(StaticStrings, AttrDef)];
 }
 
+/// Binding behavior attached to one Python-visible name.
+/// Function-pointer adapters preserve the native receiver's concrete borrow requirements.
 #[derive(Clone, Copy)]
 pub(crate) enum AttrDef {
+    /// Uses the instance, or takes an explicit receiver when accessed through its defining type.
     Method(MethodCall),
+    /// Binds the class automatically, including calls made through an instance.
     ClassMethod(ClassMethodCall),
+    /// Produces an attribute value without method binding; the result is owned by the caller.
     Value(fn(&mut VM<'_>) -> Value),
 }
 
 /// Calls an instance method through a type, taking the receiver from the first positional argument.
 ///
-/// Validates the receiver against the defining type and adapts supported native subtypes.
+/// Validates the receiver against the defining type before invoking its adapter.
+/// The remaining arguments are transferred to the adapter; receiver cleanup stays here.
+/// Supported native subtypes use the defining descriptor's receiver adaptations.
 pub(crate) fn call_unbound(
     owner: Type,
     attr: &EitherStr,
@@ -69,6 +89,8 @@ pub(crate) fn call_unbound(
     }
     let ((receiver, args), vm) = pending.into_parts();
     defer_drop!(receiver, vm);
+    // bool is an int subtype, but an int descriptor must not select bool-specific results.
+    // For example, int.__repr__(True) is '1' and int.__and__(True, True) returns int.
     if owner == Type::Int
         && let Value::Bool(value) = receiver
     {
@@ -84,7 +106,9 @@ pub(crate) fn call_unbound(
 
 /// Calls a base type's method on a validated native subtype receiver.
 ///
-/// Reuses compatible payloads or projects a date from a datetime when the base adapter requires it.
+/// Dict subtypes reuse their payload with the defining type's adapter. Named tuples
+/// use tuple operations, except repr must omit field names. Date descriptors project
+/// a date from datetime when their concrete native receiver requires it.
 fn call_unbound_subtype(
     owner: Type,
     attr: &EitherStr,
@@ -93,6 +117,8 @@ fn call_unbound_subtype(
     args: ArgValues,
     vm: &mut VM<'_>,
 ) -> RunResult<CallResult> {
+    // The named-tuple adapter formats field names, while tuple.__repr__ requests tuple syntax.
+    // Keep arguments guarded across the fallible item copy before transferring them to the call.
     if owner == Type::Tuple && attr.as_str(vm.interns) == "__repr__" {
         let mut pending = DropGuard::new(args, vm);
         let vm = pending.ctx();
@@ -106,7 +132,8 @@ fn call_unbound_subtype(
         return call(&mut plain.py_value(vm), args, vm);
     }
     if owner == Type::Dict {
-        // Dict variants share the native Dict representation.
+        // Dict variants share storage, so pass the original object to the defining adapter.
+        // Copying it would hide mutations made by repr or equality callbacks.
         return call(&mut this.py_value(vm), args, vm);
     }
     let Value::Ref(id) = this else {

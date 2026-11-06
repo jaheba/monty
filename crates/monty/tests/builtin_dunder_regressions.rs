@@ -5,6 +5,8 @@ use monty_types::{CompileOptions, MontyObject, PrintWriter, ResourceLimits, Reso
 
 fn run_assertions(code: &str) {
     let mut run = MontyRun::new(code.to_owned(), "test.py", vec![], CompileOptions::default()).unwrap();
+    // Empty-sequence repetition must validate large counts rather than loop over them.
+    // Bound execution so a regression in that path fails the test instead of hanging the suite.
     let limits = ResourceLimits::default().max_feed_duration(Duration::from_secs(2));
     assert_eq!(
         run.run(vec![], ResourceTracker::new(limits), PrintWriter::Stdout)

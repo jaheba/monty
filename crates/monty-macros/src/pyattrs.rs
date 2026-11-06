@@ -388,6 +388,8 @@ pub(crate) fn expand(mut input: ItemImpl) -> syn::Result<TokenStream> {
                                 .unwrap_or_default()
                         })
                         .collect::<String>();
+                    // Splitting snake case removes the outer underscores. Restore the static
+                    // registry's Dunder prefix so foo and __foo__ remain distinct Python names.
                     if spelling.starts_with("__") && spelling.ends_with("__") {
                         static_name.insert_str(0, "Dunder");
                     }

@@ -1263,10 +1263,13 @@ impl<'heap> PyAttrs<'heap> for PyDequeImpl {
 }
 
 impl<'h> HeapObjectRead<'h, Deque> {
+    /// Removes one indexed element using deque's native negative-index and bounds rules.
+    /// Slices are rejected by index conversion; successful deletion invalidates active iterators.
     pub(crate) fn delete_item(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<()> {
         let index = self.resolve_index(key, vm)?;
         let deque = self.get_mut(vm.heap);
         let removed = deque.items.remove(index).expect("validated index");
+        // Unlike indexed replacement, removing an element changes the iterator traversal state.
         deque.bump_state();
         removed.drop_with(vm);
         Ok(())

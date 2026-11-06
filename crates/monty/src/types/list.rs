@@ -134,6 +134,9 @@ impl List {
 }
 
 impl<'h> HeapReadMut<'h, List> {
+    /// Implements explicit `list.__delitem__` for integer/`__index__` keys and slices.
+    /// Selected slice indices are removed from right to left; zero steps fail before mutation.
+    /// Index callbacks may resize the receiver, so bounds use its length after conversion.
     pub(crate) fn delete_item(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<()> {
         if let Some(HeapReadOutput::Slice(slice)) = key.read_heap(vm) {
             let (start, stop, step) = slice.get(vm.heap).indices(self.get(vm.heap).len())?;
@@ -146,12 +149,16 @@ impl<'h> HeapReadMut<'h, List> {
             } else {
                 start
             };
+            // Positive slices start at their last selected index; negative slices already
+            // traverse backwards. Both can then remove without shifting an unvisited index.
             let stride = if step > 0 { -step } else { step };
             let bound = if step > 0 { start - 1 } else { stop };
             while index > bound
                 && index >= 0
                 && index < i64::try_from(self.get(vm.heap).len()).expect("list length fits i64")
             {
+                // Each removal mutates immediately; a resource-limit error can leave a slice
+                // partially deleted, so no later step may assume the original length.
                 vm.heap.tracker.check_memory_time()?;
                 let removed = self
                     .get_mut(vm.heap)
