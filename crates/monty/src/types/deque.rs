@@ -961,6 +961,35 @@ impl<'heap> PyAttrs<'heap> for PyDequeImpl {
     type Receiver = HeapObjectRead<'heap, Deque>;
 
     #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, Deque>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        args.check_zero_args("__len__", vm.heap)?;
+
+        let len = this.py_len(vm).expect("registered length protocol");
+        Ok(Value::Int(
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?,
+        ))
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(this: &HeapObjectRead<'h, Deque>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__contains__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        Ok(Value::Bool(
+            this.py_contains_impl(item, vm)?
+                .expect("registered containment protocol"),
+        ))
+    }
+
+    #[pymethod]
+    fn __getitem__<'h>(this: &HeapObjectRead<'h, Deque>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__getitem__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        this.py_getitem(item, vm)
+    }
+
+    #[pymethod]
     fn append<'h>(this: &mut HeapObjectRead<'h, Deque>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
         {
             let item = args.get_one_arg("deque.append", vm.heap)?;
@@ -1230,5 +1259,16 @@ impl<'heap> PyAttrs<'heap> for PyDequeImpl {
             }
         }
         Ok(Value::Int(total))
+    }
+}
+
+impl<'h> HeapObjectRead<'h, Deque> {
+    pub(crate) fn delete_item(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<()> {
+        let index = self.resolve_index(key, vm)?;
+        let deque = self.get_mut(vm.heap);
+        let removed = deque.items.remove(index).expect("validated index");
+        deque.bump_state();
+        removed.drop_with(vm);
+        Ok(())
     }
 }

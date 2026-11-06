@@ -1049,6 +1049,110 @@ pub enum StaticStrings {
     /// `__args__` of a `types.GenericAlias`.
     #[strum(serialize = "__args__")]
     DunderArgs,
+    #[strum(serialize = "__abs__")]
+    DunderAbs,
+    #[strum(serialize = "__add__")]
+    DunderAdd,
+    #[strum(serialize = "__and__")]
+    DunderAnd,
+    #[strum(serialize = "__bool__")]
+    DunderBool,
+    #[strum(serialize = "__bytes__")]
+    DunderBytes,
+    #[strum(serialize = "__divmod__")]
+    DunderDivmod,
+    #[strum(serialize = "__floordiv__")]
+    DunderFloordiv,
+    #[strum(serialize = "__ge__")]
+    DunderGe,
+    #[strum(serialize = "__gt__")]
+    DunderGt,
+    #[strum(serialize = "__iadd__")]
+    DunderIadd,
+    #[strum(serialize = "__iand__")]
+    DunderIand,
+    #[strum(serialize = "__imul__")]
+    DunderImul,
+    #[strum(serialize = "__index__")]
+    DunderIndex,
+    #[strum(serialize = "__invert__")]
+    DunderInvert,
+    #[strum(serialize = "__ior__")]
+    DunderIor,
+    #[strum(serialize = "__isub__")]
+    DunderIsub,
+    #[strum(serialize = "__iter__")]
+    DunderIter,
+    #[strum(serialize = "__ixor__")]
+    DunderIxor,
+    #[strum(serialize = "__le__")]
+    DunderLe,
+    #[strum(serialize = "__lshift__")]
+    DunderLshift,
+    #[strum(serialize = "__lt__")]
+    DunderLt,
+    #[strum(serialize = "__mod__")]
+    DunderMod,
+    #[strum(serialize = "__mul__")]
+    DunderMul,
+    #[strum(serialize = "__ne__")]
+    DunderNe,
+    #[strum(serialize = "__neg__")]
+    DunderNeg,
+    #[strum(serialize = "__next__")]
+    DunderNext,
+    #[strum(serialize = "__or__")]
+    DunderOr,
+    #[strum(serialize = "__pos__")]
+    DunderPos,
+    #[strum(serialize = "__pow__")]
+    DunderPow,
+    #[strum(serialize = "__radd__")]
+    DunderRadd,
+    #[strum(serialize = "__rand__")]
+    DunderRand,
+    #[strum(serialize = "__rdivmod__")]
+    DunderRdivmod,
+    #[strum(serialize = "__reversed__")]
+    DunderReversed,
+    #[strum(serialize = "__rfloordiv__")]
+    DunderRfloordiv,
+    #[strum(serialize = "__rlshift__")]
+    DunderRlshift,
+    #[strum(serialize = "__rmod__")]
+    DunderRmod,
+    #[strum(serialize = "__rmul__")]
+    DunderRmul,
+    #[strum(serialize = "__ror__")]
+    DunderRor,
+    #[strum(serialize = "__rpow__")]
+    DunderRpow,
+    #[strum(serialize = "__rrshift__")]
+    DunderRrshift,
+    #[strum(serialize = "__rshift__")]
+    DunderRshift,
+    #[strum(serialize = "__rsub__")]
+    DunderRsub,
+    #[strum(serialize = "__rtruediv__")]
+    DunderRtruediv,
+    #[strum(serialize = "__rxor__")]
+    DunderRxor,
+    #[strum(serialize = "__setitem__")]
+    DunderSetitem,
+    #[strum(serialize = "__str__")]
+    DunderStr,
+    #[strum(serialize = "__sub__")]
+    DunderSub,
+    #[strum(serialize = "__truediv__")]
+    DunderTruediv,
+    #[strum(serialize = "__xor__")]
+    DunderXor,
+    #[strum(serialize = "__len__")]
+    DunderLen,
+    #[strum(serialize = "__contains__")]
+    DunderContains,
+    #[strum(serialize = "__getitem__")]
+    DunderGetitem,
     /// `__cause__` of an exception, set by `raise ... from`.
     #[strum(serialize = "__cause__")]
     DunderCause,

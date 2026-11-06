@@ -134,6 +134,52 @@ impl List {
 }
 
 impl<'h> HeapReadMut<'h, List> {
+    pub(crate) fn delete_item(&self, key: &Value, vm: &mut VM<'h>) -> RunResult<()> {
+        if let Some(HeapReadOutput::Slice(slice)) = key.read_heap(vm) {
+            let (start, stop, step) = slice.get(vm.heap).indices(self.get(vm.heap).len())?;
+            if step > 0 && start >= stop {
+                return Ok(());
+            }
+            // Remove in descending index order so earlier indices remain valid.
+            let mut index = if step > 0 && start < stop {
+                start + ((stop - start - 1) / step) * step
+            } else {
+                start
+            };
+            let stride = if step > 0 { -step } else { step };
+            let bound = if step > 0 { start - 1 } else { stop };
+            while index > bound
+                && index >= 0
+                && index < i64::try_from(self.get(vm.heap).len()).expect("list length fits i64")
+            {
+                vm.heap.tracker.check_memory_time()?;
+                let removed = self
+                    .get_mut(vm.heap)
+                    .items
+                    .remove(usize::try_from(index).expect("nonnegative index"));
+                removed.drop_with(vm);
+                index = match index.checked_add(stride) {
+                    Some(next) => next,
+                    None => break,
+                };
+            }
+            return Ok(());
+        }
+        let index = key.as_index(vm, Type::List)?;
+        // __index__ can mutate the list, so inspect its length after the callback.
+        let len = i64::try_from(self.get(vm.heap).len()).expect("list length fits i64");
+        let index = if index < 0 { index + len } else { index };
+        if index < 0 || index >= len {
+            return Err(ExcType::list_assignment_index_error());
+        }
+        let removed = self
+            .get_mut(vm.heap)
+            .items
+            .remove(usize::try_from(index).expect("validated index"));
+        removed.drop_with(vm);
+        Ok(())
+    }
+
     /// Collects replacements before assignment to support self-assignment and avoid
     /// partial writes on iterator failure. Bounds are normalized after collection
     /// because the iterator may have resized the target.
@@ -1014,6 +1060,35 @@ pub(crate) struct PyListImpl;
 #[pyattrs]
 impl<'heap> PyAttrs<'heap> for PyListImpl {
     type Receiver = HeapReadMut<'heap, List>;
+
+    #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        args.check_zero_args("__len__", vm.heap)?;
+
+        let len = this.py_len(vm).expect("registered length protocol");
+        Ok(Value::Int(
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?,
+        ))
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__contains__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        Ok(Value::Bool(
+            this.py_contains_impl(item, vm)?
+                .expect("registered containment protocol"),
+        ))
+    }
+
+    #[pymethod]
+    fn __getitem__<'h>(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__getitem__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        this.py_getitem(item, vm)
+    }
 
     #[pymethod]
     fn append<'h>(list: &HeapReadMut<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

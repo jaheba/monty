@@ -5,11 +5,11 @@ use crate::{
     bytecode::{CallResult, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunResult},
-    heap::{DropGuard, DropWithContext, HeapData},
+    heap::{DropGuard, DropWithContext, HeapData, HeapReadOutput},
     intern::StaticStrings,
     py_class::PyClass,
     py_value::PyValue,
-    types::{PyTrait, Type, date, datetime},
+    types::{PyTrait, Type, date, datetime, tuple},
     value::{EitherStr, Value},
 };
 
@@ -69,6 +69,12 @@ pub(crate) fn call_unbound(
     }
     let ((receiver, args), vm) = pending.into_parts();
     defer_drop!(receiver, vm);
+    if owner == Type::Int
+        && let Value::Bool(value) = receiver
+    {
+        let integer = Value::Int(i64::from(*value));
+        return call(&mut integer.py_value(vm), args, vm);
+    }
     if receiver_type == owner {
         call(&mut receiver.py_value(vm), args, vm)
     } else {
@@ -87,6 +93,18 @@ fn call_unbound_subtype(
     args: ArgValues,
     vm: &mut VM<'_>,
 ) -> RunResult<CallResult> {
+    if owner == Type::Tuple && attr.as_str(vm.interns) == "__repr__" {
+        let mut pending = DropGuard::new(args, vm);
+        let vm = pending.ctx();
+        let Some(HeapReadOutput::NamedTuple(tuple)) = this.read_heap(vm) else {
+            unreachable!()
+        };
+        let items = tuple.cloned_items(vm)?;
+        let plain = tuple::allocate_tuple(items.into_iter().collect(), vm.heap);
+        let (args, vm) = pending.into_parts();
+        defer_drop!(plain, vm);
+        return call(&mut plain.py_value(vm), args, vm);
+    }
     if owner == Type::Dict {
         // Dict variants share the native Dict representation.
         return call(&mut this.py_value(vm), args, vm);
@@ -140,13 +158,14 @@ fn call_unbound_subtype(
 
 #[cfg(test)]
 mod tests {
-    use std::mem::discriminant;
+    use std::{collections::HashSet, mem::discriminant};
 
     use monty_macros::pyattrs;
     use monty_types::{PrintWriter, ResourceTracker};
 
     use super::*;
     use crate::{
+        builtin_protocols,
         heap::{Heap as ObjectHeap, HeapData, HeapReader},
         intern::Interns,
         run::{Program, SessionTables},
@@ -223,7 +242,10 @@ mod tests {
         const SORT: Option<AttrDef> = list::PyListImpl::lookup_attr(StaticStrings::Sort);
         const LIST_TABLE: &[(StaticStrings, AttrDef)] = Type::List.attrs();
         assert!(matches!(SORT, Some(AttrDef::Method(_))));
-        assert_eq!(LIST_TABLE.len(), <list::PyListImpl as PyAttrs<'static>>::ATTRS.len());
+        assert_eq!(
+            LIST_TABLE.len(),
+            <list::PyListImpl as PyAttrs<'static>>::ATTRS.len() + builtin_protocols::attrs(Type::List).len()
+        );
 
         let mut heap = ObjectHeap::new(16, ResourceTracker::default());
         let list_id = heap.allocate(HeapData::List(List::new(vec![Value::Int(2), Value::Int(1)])));
@@ -274,6 +296,16 @@ mod tests {
     fn tables_and_lookups_agree() {
         let interns = Interns::new("");
         for owner in [
+            Type::Int,
+            Type::Bool,
+            Type::Float,
+            Type::Range,
+            Type::DictValues,
+            Type::Iterator,
+            Type::ListIterator,
+            Type::NoneType,
+            Type::Ellipsis,
+            Type::NotImplementedType,
             Type::Dict,
             Type::DefaultDict,
             Type::Counter,
@@ -320,7 +352,9 @@ mod tests {
                     .lookup_attr(&EitherStr::Heap("missing_builtin_method".into()), &interns)
                     .is_none()
             );
+            let mut names = HashSet::new();
             for &(name, definition) in owner.attrs() {
+                assert!(names.insert(name), "duplicate attribute {name:?} on {owner:?}");
                 let spelling: &str = name.into();
                 let attr = EitherStr::Heap(spelling.to_owned());
                 let found = owner
@@ -329,7 +363,7 @@ mod tests {
                 assert_eq!(discriminant(&definition), discriminant(&found));
             }
         }
-        assert!(Type::Int.attrs().is_empty());
+        assert!(!Type::Int.attrs().is_empty());
         assert!(
             Type::Int
                 .lookup_attr(&EitherStr::Heap("upper".into()), &interns)

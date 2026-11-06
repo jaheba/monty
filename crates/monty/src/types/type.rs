@@ -4,6 +4,7 @@ use num_bigint::BigInt;
 
 use crate::{
     args::{ArgValues, FromArgs},
+    builtin_protocols,
     builtins::{Builtins, BuiltinsFunctions, iter::builtin_iter, object_setattr::builtin_object_setattr},
     bytecode::{CallResult, VM},
     defer_drop,
@@ -641,56 +642,134 @@ impl Type {
         PyClass::Builtin(BuiltinType::try_from(self).expect("registered builtin type"))
     }
 
-    /// Returns the generated attribute definitions for this builtin type.
+    /// Returns the native method and protocol definitions for this builtin type.
     ///
-    /// Types without a registered table return an empty slice.
+    /// Types without registered methods or protocols return an empty slice.
     #[cfg_attr(not(test), expect(dead_code, reason = "retained for builtin attribute enumeration"))]
     pub(crate) const fn attrs(self) -> &'static [(StaticStrings, AttrDef)] {
+        macro_rules! combined {
+            ($native:expr, $owner:expr) => {{
+                const NATIVE: &[(StaticStrings, AttrDef)] = $native;
+                const EXTRA: &[(StaticStrings, AttrDef)] = crate::builtin_protocols::attrs($owner);
+                const ALL: [(StaticStrings, AttrDef); NATIVE.len() + EXTRA.len()] =
+                    crate::builtin_protocols::join(NATIVE, EXTRA);
+                &ALL
+            }};
+        }
         match self {
-            Self::LruCacheWrapper => <super::lru_cache::PyLruCacheImpl as PyAttrs<'static>>::ATTRS,
-            Self::NamedTuple => <super::namedtuple::PyNamedTupleImpl as PyAttrs<'static>>::ATTRS,
-            Self::Bytes => <super::bytes::PyBytes<'static> as PyAttrs<'static>>::ATTRS,
-            Self::Path => <super::path::PyPathImpl as PyAttrs<'static>>::ATTRS,
-            Self::Random => <super::random::PyRandomImpl as PyAttrs<'static>>::ATTRS,
+            Self::LruCacheWrapper => combined!(
+                <super::lru_cache::PyLruCacheImpl as PyAttrs<'static>>::ATTRS,
+                Type::LruCacheWrapper
+            ),
+            Self::NamedTuple => combined!(
+                <super::namedtuple::PyNamedTupleImpl as PyAttrs<'static>>::ATTRS,
+                Type::NamedTuple
+            ),
+            Self::Bytes => combined!(<super::bytes::PyBytes<'static> as PyAttrs<'static>>::ATTRS, Type::Bytes),
+            Self::Path => combined!(<super::path::PyPathImpl as PyAttrs<'static>>::ATTRS, Type::Path),
+            Self::Random => combined!(<super::random::PyRandomImpl as PyAttrs<'static>>::ATTRS, Type::Random),
             Self::HashlibHash | Self::Blake2b | Self::Blake2s => {
-                <super::hashlib::PyHashImpl as PyAttrs<'static>>::ATTRS
+                combined!(
+                    <super::hashlib::PyHashImpl as PyAttrs<'static>>::ATTRS,
+                    Type::HashlibHash
+                )
             }
-            Self::HashlibHashXof => <super::hashlib::PyHashXofImpl as PyAttrs<'static>>::ATTRS,
-            Self::CsvWriter => <super::csv::PyCsvWriterImpl as PyAttrs<'static>>::ATTRS,
-            Self::CsvDictWriter => <super::csv::PyCsvDictWriterImpl as PyAttrs<'static>>::ATTRS,
-            Self::DirEntry => <super::dir_scan::PyDirEntryImpl as PyAttrs<'static>>::ATTRS,
-            Self::ScandirIterator => <super::dir_scan::PyScandirImpl as PyAttrs<'static>>::ATTRS,
-            Self::Dict => <super::dict::PyDictImpl as PyAttrs<'static>>::ATTRS,
-            Self::DefaultDict => <super::dict::PyDefaultDictImpl as PyAttrs<'static>>::ATTRS,
-            Self::Counter => <super::dict::PyCounterImpl as PyAttrs<'static>>::ATTRS,
-            Self::Set => <super::set::PySetImpl as PyAttrs<'static>>::ATTRS,
-            Self::FrozenSet => <super::set::PyFrozenSetImpl as PyAttrs<'static>>::ATTRS,
-            Self::DictKeys => <super::dict_view::PyDictKeysViewImpl as PyAttrs<'static>>::ATTRS,
-            Self::DictItems => <super::dict_view::PyDictItemsViewImpl as PyAttrs<'static>>::ATTRS,
-            Self::DateTime => <super::datetime::PyDateTimeImpl as PyAttrs<'static>>::ATTRS,
-            Self::Deque => <super::deque::PyDequeImpl as PyAttrs<'static>>::ATTRS,
+            Self::HashlibHashXof => combined!(
+                <super::hashlib::PyHashXofImpl as PyAttrs<'static>>::ATTRS,
+                Type::HashlibHashXof
+            ),
+            Self::CsvWriter => combined!(
+                <super::csv::PyCsvWriterImpl as PyAttrs<'static>>::ATTRS,
+                Type::CsvWriter
+            ),
+            Self::CsvDictWriter => combined!(
+                <super::csv::PyCsvDictWriterImpl as PyAttrs<'static>>::ATTRS,
+                Type::CsvDictWriter
+            ),
+            Self::DirEntry => combined!(
+                <super::dir_scan::PyDirEntryImpl as PyAttrs<'static>>::ATTRS,
+                Type::DirEntry
+            ),
+            Self::ScandirIterator => combined!(
+                <super::dir_scan::PyScandirImpl as PyAttrs<'static>>::ATTRS,
+                Type::ScandirIterator
+            ),
+            Self::Dict => combined!(<super::dict::PyDictImpl as PyAttrs<'static>>::ATTRS, Type::Dict),
+            Self::DefaultDict => combined!(
+                <super::dict::PyDefaultDictImpl as PyAttrs<'static>>::ATTRS,
+                Type::DefaultDict
+            ),
+            Self::Counter => combined!(<super::dict::PyCounterImpl as PyAttrs<'static>>::ATTRS, Type::Counter),
+            Self::Set => combined!(<super::set::PySetImpl as PyAttrs<'static>>::ATTRS, Type::Set),
+            Self::FrozenSet => combined!(
+                <super::set::PyFrozenSetImpl as PyAttrs<'static>>::ATTRS,
+                Type::FrozenSet
+            ),
+            Self::DictKeys => combined!(
+                <super::dict_view::PyDictKeysViewImpl as PyAttrs<'static>>::ATTRS,
+                Type::DictKeys
+            ),
+            Self::DictItems => combined!(
+                <super::dict_view::PyDictItemsViewImpl as PyAttrs<'static>>::ATTRS,
+                Type::DictItems
+            ),
+            Self::DateTime => combined!(
+                <super::datetime::PyDateTimeImpl as PyAttrs<'static>>::ATTRS,
+                Type::DateTime
+            ),
+            Self::Deque => combined!(<super::deque::PyDequeImpl as PyAttrs<'static>>::ATTRS, Type::Deque),
             Self::TextIOWrapper | Self::BufferedReader | Self::BufferedWriter | Self::BufferedRandom => {
-                <super::file::PyFileImpl as PyAttrs<'static>>::ATTRS
+                combined!(
+                    <super::file::PyFileImpl as PyAttrs<'static>>::ATTRS,
+                    Type::TextIOWrapper
+                )
             }
-            Self::Decimal => <super::decimal::py::PyDecimalImpl as PyAttrs<'static>>::ATTRS,
-            Self::DecimalContext => <super::decimal::py_context::PyContextImpl as PyAttrs<'static>>::ATTRS,
-            Self::DecimalSignalDict => <super::decimal::py_context::PySignalDictImpl as PyAttrs<'static>>::ATTRS,
-            Self::ForwardRef => <super::forward_ref::PyForwardRefImpl as PyAttrs<'static>>::ATTRS,
-            Self::Str => <super::str::PyStr<'static> as PyAttrs<'static>>::ATTRS,
-            Self::List => <super::list::PyListImpl as PyAttrs<'static>>::ATTRS,
-            Self::Tuple => <super::tuple::PyTupleImpl as PyAttrs<'static>>::ATTRS,
-            Self::Complex => <super::complex::PyComplexImpl as PyAttrs<'static>>::ATTRS,
-            Self::Date => <super::date::PyDateImpl as PyAttrs<'static>>::ATTRS,
-            Self::Time => <super::time::PyTimeImpl as PyAttrs<'static>>::ATTRS,
-            Self::TimeDelta => <super::timedelta::PyTimeDeltaImpl as PyAttrs<'static>>::ATTRS,
-            Self::TimeZone => <super::timezone::PyTimeZoneImpl as PyAttrs<'static>>::ATTRS,
-            Self::RePattern => <super::re_pattern::PyRePatternImpl as PyAttrs<'static>>::ATTRS,
-            Self::ReMatch => <super::re_match::PyReMatchImpl as PyAttrs<'static>>::ATTRS,
-            _ => &[],
+            Self::Decimal => combined!(
+                <super::decimal::py::PyDecimalImpl as PyAttrs<'static>>::ATTRS,
+                Type::Decimal
+            ),
+            Self::DecimalContext => combined!(
+                <super::decimal::py_context::PyContextImpl as PyAttrs<'static>>::ATTRS,
+                Type::DecimalContext
+            ),
+            Self::DecimalSignalDict => combined!(
+                <super::decimal::py_context::PySignalDictImpl as PyAttrs<'static>>::ATTRS,
+                Type::DecimalSignalDict
+            ),
+            Self::ForwardRef => combined!(
+                <super::forward_ref::PyForwardRefImpl as PyAttrs<'static>>::ATTRS,
+                Type::ForwardRef
+            ),
+            Self::Str => combined!(<super::str::PyStr<'static> as PyAttrs<'static>>::ATTRS, Type::Str),
+            Self::List => combined!(<super::list::PyListImpl as PyAttrs<'static>>::ATTRS, Type::List),
+            Self::Tuple => combined!(<super::tuple::PyTupleImpl as PyAttrs<'static>>::ATTRS, Type::Tuple),
+            Self::Complex => combined!(
+                <super::complex::PyComplexImpl as PyAttrs<'static>>::ATTRS,
+                Type::Complex
+            ),
+            Self::Date => combined!(<super::date::PyDateImpl as PyAttrs<'static>>::ATTRS, Type::Date),
+            Self::Time => combined!(<super::time::PyTimeImpl as PyAttrs<'static>>::ATTRS, Type::Time),
+            Self::TimeDelta => combined!(
+                <super::timedelta::PyTimeDeltaImpl as PyAttrs<'static>>::ATTRS,
+                Type::TimeDelta
+            ),
+            Self::TimeZone => combined!(
+                <super::timezone::PyTimeZoneImpl as PyAttrs<'static>>::ATTRS,
+                Type::TimeZone
+            ),
+            Self::RePattern => combined!(
+                <super::re_pattern::PyRePatternImpl as PyAttrs<'static>>::ATTRS,
+                Type::RePattern
+            ),
+            Self::ReMatch => combined!(
+                <super::re_match::PyReMatchImpl as PyAttrs<'static>>::ATTRS,
+                Type::ReMatch
+            ),
+            _ => builtin_protocols::attrs(self),
         }
     }
 
-    /// Looks up a name in this builtin type's generated attribute table.
+    /// Looks up a generated attribute or a shared native protocol on this builtin type.
     ///
     /// Returns the definition without binding a receiver or evaluating a value factory.
     /// Names absent from the table return `None`; dynamic namespaces are handled separately.
@@ -736,6 +815,7 @@ impl Type {
             Self::ReMatch => super::re_match::PyReMatchImpl::lookup_attr(name),
             _ => None,
         }
+        .or_else(|| builtin_protocols::lookup(self, name))
     }
 
     /// Calls registered methods on existing native views, binding class methods to their owner.

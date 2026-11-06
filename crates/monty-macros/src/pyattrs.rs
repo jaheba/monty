@@ -378,7 +378,7 @@ pub(crate) fn expand(mut input: ItemImpl) -> syn::Result<TokenStream> {
                     validate(method, kind, mode, &native)?;
                     let name = &method.sig.ident;
                     let spelling = name.to_string().trim_start_matches("r#").to_owned();
-                    let static_name = spelling
+                    let mut static_name = spelling
                         .split('_')
                         .map(|part| {
                             let mut chars = part.chars();
@@ -388,6 +388,9 @@ pub(crate) fn expand(mut input: ItemImpl) -> syn::Result<TokenStream> {
                                 .unwrap_or_default()
                         })
                         .collect::<String>();
+                    if spelling.starts_with("__") && spelling.ends_with("__") {
+                        static_name.insert_str(0, "Dunder");
+                    }
                     if static_name.is_empty() || !names.insert(static_name.clone()) {
                         return Err(syn::Error::new_spanned(
                             name,
@@ -465,6 +468,43 @@ mod tests {
 
     fn error(input: ItemImpl) -> String {
         expand(input).unwrap_err().to_string()
+    }
+
+    #[test]
+    fn dunder_names_use_the_dunder_static_string_prefix() {
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PyListImpl {
+                type Receiver = HeapObjectRead<'h, List>;
+
+                #[pymethod]
+                fn __len__(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+                    todo!()
+                }
+            }
+        };
+        let output = expand(input).unwrap().to_string();
+        assert!(output.contains("StaticStrings :: DunderLen"));
+        assert!(output.contains(":: __len__"));
+    }
+
+    #[test]
+    fn dunder_aliases_cannot_register_the_same_static_name_twice() {
+        let input: ItemImpl = parse_quote! {
+            impl<'h> PyAttrs<'h> for PyListImpl {
+                type Receiver = HeapObjectRead<'h, List>;
+
+                #[pymethod]
+                fn __len__(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+                    todo!()
+                }
+
+                #[pymethod]
+                fn dunder_len(this: &HeapObjectRead<'h, List>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+                    todo!()
+                }
+            }
+        };
+        assert!(error(input).contains("duplicate or empty Python attribute name"));
     }
 
     #[test]

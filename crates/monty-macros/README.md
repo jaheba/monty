@@ -168,7 +168,12 @@ Its generated adapter supplies the registered static name, so callers only pass 
 `#[pyvalue]` registers `AttrDef::Value` with `(&mut VM) -> Value`.
 Names map from Rust snake case to `StaticStrings` variants: `sort` becomes `Sort`, `total_seconds` becomes
 `TotalSeconds`, and `r#match` becomes `Match`.
+Dunder names use the `Dunder` prefix: `__len__` becomes `DunderLen`.
 Declaration order determines table order.
+
+Shared native protocol adapters are registered in `monty/src/builtin_protocols.rs`.
+`Type::attrs()` joins those entries with the generated per-type table at compile time;
+lookup gives the per-type implementation precedence.
 
 Functions keep their visibility, lifetime parameters, documentation, and bodies.
 Unannotated helper functions are preserved without registration.

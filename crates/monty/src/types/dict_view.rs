@@ -7,7 +7,7 @@ use crate::{
     args::ArgValues,
     bytecode::{CallResult, VM},
     defer_drop, defer_drop_mut,
-    exception_private::{RunError, RunResult},
+    exception_private::{ExcType, ExcTypeExt, RunError, RunResult},
     heap::{ContainsHeap, DropGuard, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapRead, HeapReadOutput},
     py_attrs::PyAttrs,
     types::{
@@ -873,6 +873,31 @@ impl<'heap> PyAttrs<'heap> for PyDictItemsViewImpl {
     type Receiver = HeapObjectRead<'heap, DictItemsView>;
 
     #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, DictItemsView>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        args.check_zero_args("__len__", vm.heap)?;
+
+        let len = this.py_len(vm).expect("registered length protocol");
+        Ok(Value::Int(
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?,
+        ))
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(
+        this: &HeapObjectRead<'h, DictItemsView>,
+        args: ArgValues,
+        vm: &mut VM<'h>,
+    ) -> RunResult<Value> {
+        let item = args.get_one_arg("__contains__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        Ok(Value::Bool(
+            this.py_contains_impl(item, vm)?
+                .expect("registered containment protocol"),
+        ))
+    }
+
+    #[pymethod]
     fn isdisjoint<'h>(
         this: &mut HeapObjectRead<'h, DictItemsView>,
         args: ArgValues,
@@ -891,6 +916,27 @@ pub(crate) struct PyDictKeysViewImpl;
 #[pyattrs]
 impl<'heap> PyAttrs<'heap> for PyDictKeysViewImpl {
     type Receiver = HeapObjectRead<'heap, DictKeysView>;
+
+    #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, DictKeysView>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        args.check_zero_args("__len__", vm.heap)?;
+
+        let len = this.py_len(vm).expect("registered length protocol");
+        Ok(Value::Int(
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?,
+        ))
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(this: &HeapObjectRead<'h, DictKeysView>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__contains__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        Ok(Value::Bool(
+            this.py_contains_impl(item, vm)?
+                .expect("registered containment protocol"),
+        ))
+    }
 
     #[pymethod]
     fn isdisjoint<'h>(

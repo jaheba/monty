@@ -1836,6 +1836,27 @@ impl<'heap> PyAttrs<'heap> for PyFrozenSetImpl {
     type Receiver = HeapObjectRead<'heap, FrozenSet>;
 
     #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, FrozenSet>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        args.check_zero_args("__len__", vm.heap)?;
+
+        let len = this.py_len(vm).expect("registered length protocol");
+        Ok(Value::Int(
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?,
+        ))
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(this: &HeapObjectRead<'h, FrozenSet>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__contains__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        Ok(Value::Bool(
+            this.py_contains_impl(item, vm)?
+                .expect("registered containment protocol"),
+        ))
+    }
+
+    #[pymethod]
     fn copy<'h>(this: &mut HeapObjectRead<'h, FrozenSet>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
         {
             args.check_zero_args("frozenset.copy", vm.heap)?;
@@ -1918,6 +1939,27 @@ pub(crate) struct PySetImpl;
 #[pyattrs]
 impl<'heap> PyAttrs<'heap> for PySetImpl {
     type Receiver = HeapObjectRead<'heap, Set>;
+
+    #[pymethod]
+    fn __len__<'h>(this: &HeapObjectRead<'h, Set>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        args.check_zero_args("__len__", vm.heap)?;
+
+        let len = this.py_len(vm).expect("registered length protocol");
+        Ok(Value::Int(
+            i64::try_from(len).map_err(|_| ExcType::overflow_c_ssize_t())?,
+        ))
+    }
+
+    #[pymethod]
+    fn __contains__<'h>(this: &HeapObjectRead<'h, Set>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {
+        let item = args.get_one_arg("__contains__", vm.heap)?;
+        defer_drop!(item, vm);
+
+        Ok(Value::Bool(
+            this.py_contains_impl(item, vm)?
+                .expect("registered containment protocol"),
+        ))
+    }
 
     #[pymethod]
     fn add<'h>(this: &mut HeapObjectRead<'h, Set>, args: ArgValues, vm: &mut VM<'h>) -> RunResult<Value> {

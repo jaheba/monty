@@ -115,7 +115,33 @@ macro_rules! define_py_value {
             }
         }
 
-        impl PyValue<'_> {
+        impl<'h> PyValue<'h> {
+            /// Clones the value behind this view for helpers that still take owned Values.
+            pub(crate) fn to_owned_value(&self, vm: &mut VM<'h>) -> Value {
+                match self {
+                    Self::Str(PyStr::Interned(id)) => Value::InternString(*id),
+                    Self::Str(PyStr::Inline(text)) => Value::InlineString(*text),
+                    Self::Str(PyStr::Heap(value)) => value.clone_value(vm.heap),
+                    Self::Bytes(PyBytes::Interned(id)) => Value::InternBytes(*id),
+                    Self::Bytes(PyBytes::Heap(value)) => value.clone_value(vm.heap),
+                    Self::Int(PyInt::Small(value)) => Value::Int(*value),
+                    Self::Int(PyInt::Interned(id)) => Value::InternLongInt(*id),
+                    Self::Int(PyInt::Heap(value)) => value.clone_value(vm.heap),
+                    Self::Undefined => Value::Undefined,
+                    Self::Ellipsis => Value::Ellipsis,
+                    Self::NotImplemented => Value::NotImplemented,
+                    Self::None => Value::None,
+                    Self::Bool(value) => Value::Bool(*value),
+                    Self::Float(value) => Value::Float(*value),
+                    Self::Builtin(value) => Value::Builtin(*value),
+                    Self::ModuleFunction(value) => Value::ModuleFunction(*value),
+                    Self::DefFunction(value) => Value::DefFunction(*value),
+                    Self::Marker(value) => Value::Marker(*value),
+                    Self::Property(value) => Value::Property(*value),
+                    $(Self::$variant(value) => value.clone_value(vm.heap),)*
+                }
+            }
+
             /// Identifies heap reprs needing cycle tracking; scalar views cannot contain cycles.
             fn repr_heap_id(&self) -> Option<HeapId> {
                 match self {
