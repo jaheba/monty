@@ -491,12 +491,16 @@ fn normalize_path(mut path: String) -> String {
 impl Path {
     /// Resolves a known attribute by its `StaticStrings` variant.
     ///
-    /// Returns `Some(value)` for recognized property names (`name`, `parent`,
-    /// `stem`, `suffix`, `suffixes`, `parts`), or `None` if the variant doesn't
+    /// Returns `Some(value)` for recognized properties, or `None` if the variant doesn't
     /// correspond to a Path attribute. Used by `py_getattr` to share logic between
     /// the interned fast path and the heap string slow path.
     pub(crate) fn getattr_by_static(&self, ss: StaticStrings, heap: &Heap) -> Option<Value> {
         let v = match ss {
+            // Sandbox paths are POSIX: no drive, and the normalized anchor is the root.
+            StaticStrings::Anchor | StaticStrings::Root => {
+                allocate_string(if self.is_absolute() { "/" } else { "" }, heap)
+            }
+            StaticStrings::Drive => allocate_string("", heap),
             StaticStrings::Name => allocate_string(self.name(), heap),
             StaticStrings::Parent => {
                 if let Some(parent) = self.parent() {
@@ -706,6 +710,9 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Path> {
         // Slow path: heap-allocated strings need string comparison
         let attr_str = attr.as_str(vm.interns);
         let ss = match attr_str {
+            "anchor" => StaticStrings::Anchor,
+            "drive" => StaticStrings::Drive,
+            "root" => StaticStrings::Root,
             "name" => StaticStrings::Name,
             "parent" => StaticStrings::Parent,
             "stem" => StaticStrings::Stem,

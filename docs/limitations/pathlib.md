@@ -24,14 +24,18 @@ is **not** implemented: the sandbox has no home directory.
 
 ## Pure (no I/O) methods and attributes
 
-Implemented: `name`, `parent`, `stem`, `suffix`, `suffixes`, `parts`,
+Implemented: `anchor`, `drive`, `root`, `name`, `parent`, `stem`, `suffix`, `suffixes`, `parts`,
 `is_absolute()`, `joinpath(*other)`, `with_name(name)`, `with_stem(stem)`,
 `with_suffix(suffix)`, `as_posix()`, `__fspath__()`.
 
 The `/` operator works in both directions (`Path("a") / "b"`,
 `Path("a") / Path("b")`, `"a" / Path("b")`).
 
-Not implemented: `anchor`, `drive`, `root`, `relative_to`, `is_reserved`,
+`drive` is always empty. `anchor` and `root` are `/` for absolute paths and empty for relative paths.
+The existing normalization collapses a leading `//` to `/` and converts backslashes to slashes;
+CPython's `PurePosixPath` preserves exactly two leading slashes and treats backslashes literally.
+
+Not implemented: `relative_to`, `is_reserved`,
 `match`, `full_match`, `with_segments`.
 
 ## I/O methods (yield to host)

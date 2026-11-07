@@ -585,6 +585,8 @@ pub enum StaticStrings {
     Altsep,
     /// `time.altzone` constant.
     Altzone,
+    /// `Path.anchor` property.
+    Anchor,
     /// `typing.Annotated` marker.
     #[strum(serialize = "Annotated")]
     Annotated,
@@ -997,6 +999,8 @@ pub enum StaticStrings {
     DotallFlag,
     /// `doublequote` dialect attribute and `csv` format parameter.
     Doublequote,
+    /// `Path.drive` property.
+    Drive,
     /// `itertools.dropwhile()` function.
     Dropwhile,
     /// Kwarg name `dst` — `os.rename(dst=...)`, `os.replace(dst=...)`.
@@ -2154,6 +2158,8 @@ pub enum StaticStrings {
     Rjust,
     /// `Path.rmdir()` and `os.rmdir()` — yields a host call.
     Rmdir,
+    /// `Path.root` property.
+    Root,
     /// `deque.rotate()` method.
     Rotate,
     /// `decimal.ROUND_05UP` rounding mode.
