@@ -1017,11 +1017,23 @@ impl SegmentPattern {
     /// Whether `name` matches the whole pattern.
     #[must_use]
     pub fn matches(&self, name: &str) -> bool {
+        match self.try_matches(name, |_| Ok::<(), Infallible>(())) {
+            Ok(result) => result,
+            Err(never) => match never {},
+        }
+    }
+
+    /// Matches with a caller-supplied checkpoint for each step, including wildcard backtracking.
+    /// Pure path operations have no filesystem name limit, so they must be able to interrupt a long match.
+    pub fn try_matches<E>(&self, name: &str, mut checkpoint: impl FnMut(usize) -> Result<(), E>) -> Result<bool, E> {
         // `t` is a byte offset into `name`, always on a character boundary.
         let (mut p, mut t) = (0, 0);
+        let mut steps = 0;
         // The last `*` seen and the text position it is currently absorbing up to.
         let mut star: Option<(usize, usize)> = None;
         while let Some(c) = name[t..].chars().next() {
+            checkpoint(steps)?;
+            steps += 1;
             match self.tokens.get(p) {
                 Some(Token::Star) => {
                     star = Some((p, t));
@@ -1039,11 +1051,11 @@ impl SegmentPattern {
                         t = star_t + absorbed;
                         star = Some((star_p, t));
                     }
-                    None => return false,
+                    None => return Ok(false),
                 },
             }
         }
-        self.tokens[p..].iter().all(|token| *token == Token::Star)
+        Ok(self.tokens[p..].iter().all(|token| *token == Token::Star))
     }
 
     /// Whether a single-character token accepts `c`.

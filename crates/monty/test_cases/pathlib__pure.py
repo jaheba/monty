@@ -254,3 +254,81 @@ try:
     assert False, 'expected TypeError'
 except TypeError as e:
     assert str(e) == "PurePath.is_relative_to() got an unexpected keyword argument 'walk_up'"
+
+# === Path.match ===
+for name, pattern, expected in [
+    ('a/b.py', '*.py', True),
+    ('a/b.py', 'a/*.py', True),
+    ('a/b.py', 'b/*.py', False),
+    ('a/b.py', '*.txt', False),
+    ('a/b.py', '**/*.py', True),
+    ('a/b/c.py', 'a/**/*.py', True),
+    ('a/b/c/d.py', 'a/**/*.py', False),
+    ('a.py', '**/*.py', False),
+    ('/a/b.py', 'a/*.py', True),
+    ('/a/b.py', '/a/*.py', True),
+    ('/a/b.py', '/*.py', False),
+    ('/a', '*/*', False),
+    ('/', '*', False),
+    ('/', '/', True),
+    ('.', '*', False),
+    ('a', './a/', True),
+    ('.hidden', '*', True),
+    ('a/.hidden', 'a/*', True),
+    ('a/é.py', 'a/?.py', True),
+    ('a/文.py', '*.py', True),
+    ('a\nb', '*', True),
+    ('a3', 'a[0-9]', True),
+    ('aZ', 'a[!0-9]', True),
+    ('a-', 'a[z-a-]', True),
+    ('a[', 'a[', True),
+]:
+    assert Path(name).match(pattern) is expected
+    assert Path(name).match(path_pattern=Path(pattern)) is expected
+
+assert Path('A/B.PY').match('a/*.py') is False
+assert Path('A/B.PY').match('a/*.py', case_sensitive=False) is True
+assert Path('A/B.PY').match('a/*.py', case_sensitive=True) is False
+assert Path('a/é.py').match('A/É.PY', case_sensitive=0) is True
+assert Path('a/é.py').match('A/É.PY', case_sensitive=1) is False
+for letter in ['İ', 'ı', 'ſ', 'K']:
+    assert Path(letter).match('[a-z]', case_sensitive=False) is True
+
+for pattern in ['', '.', Path('')]:
+    try:
+        Path('a').match(pattern)
+        assert False, 'expected ValueError'
+    except ValueError as e:
+        assert str(e) == 'empty pattern'
+
+try:
+    Path('a').match()
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == "PurePath.match() missing 1 required positional argument: 'path_pattern'"
+try:
+    Path('a').match('a', False)
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == 'PurePath.match() takes 2 positional arguments but 3 were given'
+try:
+    Path('a').match(pattern='a')
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == "PurePath.match() got an unexpected keyword argument 'pattern'"
+try:
+    Path('a').match(b'a')
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == ("argument should be a str or an os.PathLike object where __fspath__ returns a str, not 'bytes'")
+try:
+    Path('a').match('*', case_sensitive=[])
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == "unhashable type: 'list'"
+try:
+    Path('a').match('*', case_sensitive=NotImplemented)
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == 'NotImplemented should not be used in a boolean context'
+assert Path('a').match('a/b', case_sensitive=NotImplemented) is False

@@ -33,6 +33,8 @@ use crate::{
     value::{EitherStr, Value},
 };
 
+mod pattern;
+
 /// Python `pathlib.Path` object representing a filesystem path.
 ///
 /// Stores a normalized POSIX path string. Windows-style paths are converted
@@ -679,6 +681,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Path> {
         // Pure methods (no I/O)
         let value = match method {
             StaticStrings::Cwd => class_cwd(vm, args),
+            StaticStrings::Match => pattern::path_match(&self.get(vm.heap).clone(), args, vm),
             StaticStrings::Glob => {
                 let PathGlobArgs {
                     pattern,

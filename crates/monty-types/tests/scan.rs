@@ -102,6 +102,26 @@ fn pathological_segment_patterns_are_linear() {
     assert!(!SegmentPattern::new(&pattern, true).matches(&name));
 }
 
+/// Pure matching can interrupt both ordinary scanning and repeated wildcard backtracking.
+#[test]
+fn segment_match_checkpoints_interrupt_backtracking() {
+    for pattern in ["*", "*aaaaab"] {
+        let matcher = SegmentPattern::new(pattern, true);
+        let mut calls = 0;
+        let result = matcher.try_matches("a".repeat(100).as_str(), |step| {
+            assert_eq!(step, calls);
+            calls += 1;
+            if step == 32 { Err("budget exhausted") } else { Ok(()) }
+        });
+        assert_eq!(result, Err("budget exhausted"));
+        assert_eq!(calls, 33);
+    }
+    assert_eq!(
+        SegmentPattern::new("*.py", true).try_matches("main.py", |_| Ok::<(), ()>(())),
+        Ok(true)
+    );
+}
+
 /// An unterminated `[` makes every later `[` literal without rescanning for a `]`.
 #[test]
 fn unterminated_brackets_compile_linearly() {
