@@ -109,7 +109,7 @@ guaranteed algorithm, and `tomllib` and `fnmatch` their whole three- and four-na
 The absent names are missing from the module namespace rather than stubbed, so they fail type checking as well as
 raising `AttributeError` at runtime.
 
-Notably absent: `enum`, `contextlib`, `io`, `string`, `struct`, `operator`,
+Notably absent: `enum`, `contextlib`, `io`, `struct`, `operator`,
 `inspect`, `logging`, `traceback`, `uuid`, `urllib`.
 Some of those are absent by design — `socket`, `subprocess`, `multiprocessing`, `threading` and `ctypes` would breach
 the sandbox — and others are simply not implemented yet.
