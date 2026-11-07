@@ -52,13 +52,8 @@ pub(super) fn path_match(path: &Path, args: ArgValues, vm: &mut VM<'_>) -> RunRe
     };
 
     for (part, pattern_part) in parts.iter().rev().zip(pattern_parts.iter().rev()) {
-        // A wildcard cannot consume the root separator, even though it is a pathlib component.
-        if *part == "/" || *pattern_part == "/" {
-            if part != pattern_part {
-                return Ok(Value::Bool(false));
-            }
-        } else if !SegmentPattern::new(pattern_part, case_sensitive)
-            .try_matches(part, |step| vm.heap.tracker.check_time_every(step))?
+        if !SegmentPattern::new(pattern_part, case_sensitive)
+            .try_matches_component(part, |step| vm.heap.tracker.check_time_every(step))?
         {
             return Ok(Value::Bool(false));
         }

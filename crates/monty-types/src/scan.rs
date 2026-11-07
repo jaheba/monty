@@ -1025,7 +1025,26 @@ impl SegmentPattern {
 
     /// Matches with a caller-supplied checkpoint for each step, including wildcard backtracking.
     /// Pure path operations have no filesystem name limit, so they must be able to interrupt a long match.
-    pub fn try_matches<E>(&self, name: &str, mut checkpoint: impl FnMut(usize) -> Result<(), E>) -> Result<bool, E> {
+    pub fn try_matches<E>(&self, name: &str, checkpoint: impl FnMut(usize) -> Result<(), E>) -> Result<bool, E> {
+        self.try_matches_inner(name, false, checkpoint)
+    }
+
+    /// Matches pathlib components: `*` and `?` exclude `/`, but a negated class can match the root.
+    pub fn try_matches_component<E>(
+        &self,
+        name: &str,
+        checkpoint: impl FnMut(usize) -> Result<(), E>,
+    ) -> Result<bool, E> {
+        self.try_matches_inner(name, true, checkpoint)
+    }
+
+    /// Shares checkpointed backtracking while preserving fnmatch's unrestricted separator behavior.
+    fn try_matches_inner<E>(
+        &self,
+        name: &str,
+        component: bool,
+        mut checkpoint: impl FnMut(usize) -> Result<(), E>,
+    ) -> Result<bool, E> {
         // `t` is a byte offset into `name`, always on a character boundary.
         let (mut p, mut t) = (0, 0);
         let mut steps = 0;
@@ -1033,20 +1052,28 @@ impl SegmentPattern {
         let mut star: Option<(usize, usize)> = None;
         while let Some(c) = name[t..].chars().next() {
             checkpoint(steps)?;
-            steps += 1;
+            // Keep periodic checkpoint polls working even on a long 32-bit match.
+            steps = steps.wrapping_add(1);
             match self.tokens.get(p) {
                 Some(Token::Star) => {
                     star = Some((p, t));
                     p += 1;
                 }
-                Some(token) if self.token_matches(token, c) => {
+                Some(token) if self.token_matches(token, c, component) => {
                     p += 1;
                     t += c.len_utf8();
                 }
                 _ => match star {
                     Some((star_p, star_t)) => {
                         // The star was recorded before a character at `star_t`, so one is there.
-                        let absorbed = name[star_t..].chars().next().map_or(1, char::len_utf8);
+                        let next = name[star_t..]
+                            .chars()
+                            .next()
+                            .expect("star was recorded before a character");
+                        if component && next == '/' {
+                            return Ok(false);
+                        }
+                        let absorbed = next.len_utf8();
                         p = star_p + 1;
                         t = star_t + absorbed;
                         star = Some((star_p, t));
@@ -1064,7 +1091,7 @@ impl SegmentPattern {
     /// folds a class's ranges both ways, so the variants tried are `c`, its
     /// lowercase, that lowercase's uppercase (`K` → `k` → `K`, for `[A-Z]`) and
     /// its uppercase's lowercase (`ſ` → `S` → `s`, for `[a-z]`).
-    fn token_matches(&self, token: &Token, c: char) -> bool {
+    fn token_matches(&self, token: &Token, c: char, component: bool) -> bool {
         let variants = if self.case_sensitive {
             [c, c, c, c]
         } else {
@@ -1075,7 +1102,7 @@ impl SegmentPattern {
             Token::Char(expected) => variants
                 .iter()
                 .any(|v| *v == *expected || (!self.case_sensitive && simple_lower(*expected) == simple_lower(*v))),
-            Token::Any => true,
+            Token::Any => !component || c != '/',
             Token::Star => false,
             Token::Class { negated, items } => {
                 let hit = variants
