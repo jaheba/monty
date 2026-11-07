@@ -35,7 +35,7 @@ The `/` operator works in both directions (`Path("a") / "b"`,
 custom `os.PathLike` objects are not supported.
 Path normalization also applies to the pattern: backslashes become `/` and a leading `//` becomes `/`,
 unlike CPython's POSIX paths.
-The `case_sensitive` argument is hashed and truth-tested once per call;
+A non-`None` `case_sensitive` is hashed and truth-tested once after the path-length checks succeed;
 CPython's compiled-pattern cache can repeat hashing and skip truth tests on cache hits.
 
 Not implemented: `anchor`, `drive`, `root`, `relative_to`, `is_reserved`,
