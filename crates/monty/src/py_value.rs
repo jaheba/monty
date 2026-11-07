@@ -7,6 +7,7 @@ use std::{
     fmt::{self, Write},
 };
 
+use monty_types::PrintStream;
 use num_bigint::BigInt;
 
 use crate::{
@@ -23,7 +24,7 @@ use crate::{
     heap_data::heap_payloads,
     identity::Identity,
     intern::{FunctionId, StaticStrings},
-    modules::{ModuleFunctions, collections::defaultdict::defaultdict_missing},
+    modules::{ModuleFunctions, collections::defaultdict::defaultdict_missing, sys},
     types::{
         BuiltinType, GenericAlias, LazyHeapSet, LongInt, Property, PyTrait, Type, Union, allocate_string,
         bytes::PyBytes,
@@ -776,6 +777,10 @@ impl<'h> PyTrait<'h> for PyValue<'h> {
         forward_py_value!(self, |value| value.py_call_attr(vm, attr, args), {
             Self::Bool(_) if attr.static_string(vm.interns) == Some(StaticStrings::FromBytes) => {
                 from_bytes(Type::Bool, args, vm).map(CallResult::Value)
+            }
+            Self::Marker(marker) if matches!(marker.0, StaticStrings::Stdout | StaticStrings::Stderr) => {
+                let stream = if marker.0 == StaticStrings::Stdout { PrintStream::Stdout } else { PrintStream::Stderr };
+                sys::stream::call(stream, attr, args, vm)
             }
             Self::Module(value) => value.py_call_attr(vm, attr, args),
             Self::Builtin(Builtins::Type(ty)) => Type::from(*ty).call_class_method(attr, args, vm),

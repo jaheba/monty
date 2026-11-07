@@ -59,11 +59,11 @@ access raises `AttributeError`.
     counted by `len()`. They describe the GIL and thread-context machinery
     Monty does not have, so they raise `AttributeError`; the 18-element
     sequence itself matches CPython's.
-- `sys.stdout` / `sys.stderr` — opaque marker objects with no methods. They
-    cannot be written to via `.write()`, and `sys.stdout.flush()` and the rest
-    raise `AttributeError`. They are useful only as `print(..., file=...)`,
-    which routes output to that stream through the host print callback (see
-    [print.md](print.md)).
+- `sys.stdout` / `sys.stderr` — stream markers routed through the host print callback (see [print.md](print.md)).
+    `flush()` is a no-op: buffering and delivery follow the host's print callback configuration.
+    Methods other than `write()` and `flush()` raise `AttributeError`, including `close()`, `fileno()` and `isatty()`.
+    The methods cannot be read as values or retrieved through `getattr`, like other builtin methods
+    (see [builtins.md](builtins.md)).
 
 ## Not implemented
 

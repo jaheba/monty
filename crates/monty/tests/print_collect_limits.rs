@@ -41,6 +41,21 @@ fn inline_print_separators_and_endings_are_preserved() {
     assert_eq!(output, "a--bEND");
 }
 
+/// Direct writes retain the host collector's UTF-8 byte cap rather than their character return count.
+#[test]
+fn stream_write_respects_collect_limit() {
+    let mut output = String::new();
+    let error = monty_run("import sys\nsys.stdout.write('éé')\n")
+        .run(
+            vec![],
+            ResourceTracker::default(),
+            PrintWriter::CollectString(&mut output, Some(3)),
+        )
+        .unwrap_err();
+    assert_eq!(error.exc_type(), ExcType::MemoryError);
+    assert_eq!(output, "");
+}
+
 #[test]
 fn collect_string_respects_max_bytes() {
     let mut ex = monty_run(print_loop_code());

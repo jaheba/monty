@@ -26,8 +26,7 @@ pub const COLLECT_STREAMS_ENTRY_OVERHEAD: usize = 64;
 
 /// Identifies the output stream for a single print fragment.
 ///
-/// `print()` writes to `Stdout` unless it is given `file=sys.stderr`, which is
-/// the only way sandboxed code can reach `Stderr`.
+/// `print()` defaults to `Stdout`; `file=sys.stderr` and `sys.stderr.write()` select `Stderr`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PrintStream {
     /// Standard output, the default for a `print()` call with no `file=`.
@@ -110,7 +109,7 @@ impl PrintWriter<'_> {
         }
     }
 
-    /// Called once for each formatted argument passed to `print()`.
+    /// Writes one formatted `print()` argument or one standard-stream `write()` payload.
     ///
     /// This method writes only the given argument's text, without adding
     /// separators or a trailing newline. Separators (spaces) and the final

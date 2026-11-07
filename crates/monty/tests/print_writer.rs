@@ -346,6 +346,46 @@ fn run_and_capture_streams(code: &str) -> Vec<(PrintStream, String)> {
     streams.into_entries()
 }
 
+/// Direct stream writes preserve labels and use character counts without adding a newline.
+#[test]
+fn stream_write_routes_and_counts_characters() {
+    let output = run_and_capture_streams(
+        "import sys\nassert sys.stdout.write('é文😀') == 3\nassert sys.stderr.write('err') == 3\nsys.stdout.flush()\nsys.stdout.write('!')\n",
+    );
+    assert_eq!(
+        output,
+        vec![
+            (PrintStream::Stdout, "é文😀".to_owned()),
+            (PrintStream::Stderr, "err".to_owned()),
+            (PrintStream::Stdout, "!".to_owned()),
+        ]
+    );
+}
+
+/// Method argument errors use native TextIOWrapper wording before any output is written.
+#[test]
+fn stream_write_argument_errors() {
+    for (call, expected) in [
+        ("write()", "TextIOWrapper.write() takes exactly one argument (0 given)"),
+        (
+            "write('a', 'b')",
+            "TextIOWrapper.write() takes exactly one argument (2 given)",
+        ),
+        ("write(text='a')", "TextIOWrapper.write() takes no keyword arguments"),
+        ("write(1)", "write() argument must be str, not int"),
+        ("write(None)", "write() argument must be str, not None"),
+        ("write(b'a')", "write() argument must be str, not bytes"),
+        ("flush(1)", "TextIOWrapper.flush() takes no arguments (1 given)"),
+        ("flush(x=1)", "TextIOWrapper.flush() takes no keyword arguments"),
+    ] {
+        let code = format!("import sys\nsys.stdout.{call}\n");
+        let mut run = MontyRun::new(code, "test.py", vec![], CompileOptions::default()).unwrap();
+        let error = run.run_no_limits(vec![]).unwrap_err();
+        assert_eq!(error.exc_type(), ExcType::TypeError);
+        assert_eq!(error.message(), Some(expected));
+    }
+}
+
 #[test]
 fn print_file_stderr_is_labelled_stderr() {
     assert_eq!(
