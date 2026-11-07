@@ -1,3 +1,20 @@
+# === Unicode decimal digits in the string form ===
+for text in ['١٢', '۱۲', '१२', '１２', '߁߂', '𝟙𝟚']:
+    assert complex(text) == 12 + 0j
+assert complex('١e٢+٢.٥j') == 100 + 2.5j
+assert complex('\u2003(١_٢-٣j)\u2003') == 12 - 3j
+for text in ['²', '①', 'Ⅻ', '١\u2003٢', '\x1c١٢', '\x00١']:
+    try:
+        complex(text)
+        assert False, 'expected ValueError'
+    except ValueError as exc:
+        assert str(exc) == 'complex() arg is a malformed string'
+try:
+    complex('١__٢j')
+    assert False, 'expected ValueError'
+except ValueError as exc:
+    assert str(exc) == "could not convert string to complex: '١__٢j'"
+
 # === Literals and construction ===
 assert 1j == complex(0, 1)
 assert 2.5j == complex(0, 2.5)

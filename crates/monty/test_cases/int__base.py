@@ -1,3 +1,31 @@
+# === Unicode decimal digits in string inputs ===
+for text in ['١٢', '۱۲', '१२', '１２', '߁߂', '𝟙𝟚']:
+    assert int(text) == 12
+    assert int(text, 16) == 18
+    assert int(text, 0) == 12
+    raw = text.encode()
+    try:
+        int(raw)
+        assert False, 'expected ValueError'
+    except ValueError as exc:
+        assert str(exc) == f'invalid literal for int() with base 10: {raw!r}'
+assert int('  -١_٢\u2003') == -12
+assert int('٠x١f', 0) == 31
+assert int('٠b١٠', 2) == 2
+assert int('٠b١٠', 16) == 2832
+assert int('١' * 30) == 111111111111111111111111111111
+for text in ['²', '①', 'Ⅻ', '١__٢', '١e٢', '١.٥', '١\u2003٢', '\x1c١٢', '𝟎xＦ']:
+    try:
+        int(text)
+        assert False, 'expected ValueError'
+    except ValueError as exc:
+        assert str(exc) == f'invalid literal for int() with base 10: {text!r}'
+try:
+    int('٠١', 0)
+    assert False, 'expected ValueError'
+except ValueError as exc:
+    assert str(exc) == "invalid literal for int() with base 0: '٠١'"
+
 # === int() with explicit base ===
 assert int('ff', 16) == 255
 assert int('ff', base=16) == 255

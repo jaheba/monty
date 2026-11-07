@@ -24,6 +24,7 @@ use crate::{
         LazyHeapSet, PyTrait, Type,
         str::{StringRepr, allocate_string},
         r#type::strip_underscores,
+        unicode_type::decimal_to_ascii,
     },
     value::{EitherStr, Value, eq_f64},
 };
@@ -467,10 +468,13 @@ pub(crate) fn class_from_number(vm: &mut VM<'_>, args: ArgValues) -> RunResult<V
 /// which is why a misplaced one gets a different message from other errors.
 fn parse(text: &str) -> RunResult<Complex> {
     let malformed = || ExcType::value_error("complex() arg is a malformed string");
+    let original = text;
+    let normalized = decimal_to_ascii(text);
+    let text = normalized.as_ref();
     let stripped;
     let text = if text.contains('_') {
         stripped = strip_underscores(text).ok_or_else(|| {
-            ExcType::value_error(format!("could not convert string to complex: {}", StringRepr(text)))
+            ExcType::value_error(format!("could not convert string to complex: {}", StringRepr(original)))
         })?;
         stripped.as_str()
     } else {
