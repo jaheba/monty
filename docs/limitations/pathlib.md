@@ -48,7 +48,7 @@ CPython's POSIX paths preserve both, so containment and relative results can dif
 custom `os.PathLike` objects are not supported.
 Path normalization also applies to the pattern: backslashes become `/` and a leading `//` becomes `/`,
 unlike CPython's POSIX paths.
-The `case_sensitive` argument is hashed and truth-tested once per call;
+A non-`None` `case_sensitive` is hashed and truth-tested once after the path-length checks succeed;
 CPython's compiled-pattern cache can repeat hashing and skip truth tests on cache hits.
 
 Not implemented: `is_reserved`, `full_match`, `with_segments`.
