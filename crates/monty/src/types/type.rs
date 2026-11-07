@@ -24,7 +24,7 @@ use crate::{
         complex, date, datetime, decimal,
         dict::{DictKind, dict_fromkeys},
         instance::class_name,
-        long_int::INT_MAX_STR_DIGITS,
+        long_int::{INT_MAX_STR_DIGITS, bytes::from_bytes},
         path,
         str::{StringRepr, allocate_string},
         time,
@@ -643,6 +643,9 @@ impl Type {
     /// result called, so `list.__name__()` raises `'str' object is not callable`.
     pub(crate) fn call_class_method(self, attr: &EitherStr, args: ArgValues, vm: &mut VM<'_>) -> RunResult<CallResult> {
         match (self, attr.static_string(vm.interns)) {
+            (Self::Int | Self::Bool, Some(StaticStrings::FromBytes)) => {
+                from_bytes(self, args, vm).map(CallResult::Value)
+            }
             // Type-level `dict.fromkeys(...)`, so the result is a plain dict.
             (Self::Dict, Some(StaticStrings::Fromkeys)) => {
                 dict_fromkeys(args, DictKind::plain(), vm).map(CallResult::Value)

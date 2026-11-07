@@ -27,7 +27,7 @@ use crate::{
     types::{
         BuiltinType, GenericAlias, LazyHeapSet, LongInt, Property, PyTrait, Type, Union, allocate_string,
         bytes::PyBytes,
-        long_int::{PyInt, arithmetic::float_binary},
+        long_int::{PyInt, arithmetic::float_binary, bytes::from_bytes},
         numeric::{round_digits, round_float},
         py_trait::PyObjectIdentity,
         str::PyStr,
@@ -774,6 +774,9 @@ impl<'h> PyTrait<'h> for PyValue<'h> {
 
     fn py_call_attr(&mut self, vm: &mut VM<'h>, attr: &EitherStr, args: ArgValues) -> RunResult<CallResult> {
         forward_py_value!(self, |value| value.py_call_attr(vm, attr, args), {
+            Self::Bool(_) if attr.static_string(vm.interns) == Some(StaticStrings::FromBytes) => {
+                from_bytes(Type::Bool, args, vm).map(CallResult::Value)
+            }
             Self::Module(value) => value.py_call_attr(vm, attr, args),
             Self::Builtin(Builtins::Type(ty)) => Type::from(*ty).call_class_method(attr, args, vm),
             Self::DefFunction(func_id) => {

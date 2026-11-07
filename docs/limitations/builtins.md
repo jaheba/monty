@@ -39,8 +39,8 @@ These raise `NameError`:
     `list[int].__class__` raise `AttributeError`; only instances of Monty classes
     carry it (see [classes.md](classes.md)). Use `type(x)`.
 - **Builtin methods are call-only** — reading one without calling it raises
-    `AttributeError`, so `[1].append`, `'a'.upper`, `{}.get`, `dict.fromkeys`
-    and `list.__class_getitem__` cannot be assigned, passed as a callback or
+    `AttributeError`, so `[1].append`, `'a'.upper`, `{}.get`, `dict.fromkeys`,
+    `int.from_bytes` and `list.__class_getitem__` cannot be assigned, passed as a callback or
     reached through `getattr`. Call them directly (`list.__class_getitem__(int)`).
 - **Large integer literal identity** — separate occurrences of the same literal outside the `i64` range are not
     deduplicated, so `a = 18446744073709551616; b = 18446744073709551616; a is b` is `False` where CPython may reuse a
@@ -161,6 +161,10 @@ These raise `NameError`:
     `OverflowError: cannot fit 'int' into an index-sized integer`.
 - **`slice`** — `start`, `stop` and `step` are readable, but `slice.indices(length)` is not implemented and
     raises `AttributeError: 'slice' object has no attribute 'indices'`.
+- **`int.from_bytes`** invokes user `__bytes__`, `__index__` and iterator methods synchronously;
+    these methods cannot suspend for host functions or OS calls (see [classes.md](classes.md)).
+    An unread file cannot be loaded while consuming its iterator (see [open.md](open.md)).
+    Iterable length hints are ignored, including side effects and exceptions from `__len__` or `__length_hint__`.
 - **`isinstance(obj, T)`** — `T` must be a built-in type (`int`, `str`,
     `list`, ...), a built-in exception class, a sandbox-defined class (see
     [classes.md](classes.md)), a `|` union of those (see [typing.md](typing.md)),
