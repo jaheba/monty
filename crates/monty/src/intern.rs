@@ -1966,6 +1966,8 @@ pub enum StaticStrings {
     PathClass,
     /// Module name for `import pathlib`.
     Pathlib,
+    /// `Path.match(path_pattern=...)` keyword.
+    PathPattern,
     /// Kwarg name `paths` — `os.path.commonpath(paths=...)`.
     Paths,
     /// `os.pathsep` / `os.path.pathsep` constant name.
