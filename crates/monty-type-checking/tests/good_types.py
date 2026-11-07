@@ -838,3 +838,13 @@ forward.evaluate(format=annotationlib.Format.STRING)
 annotationlib.get_annotations(annotated, format=annotationlib.Format.STRING)
 assert_type(annotationlib.get_annotations(annotated), dict[str, Any])
 assert_type(get_type_hints(annotated, format=annotationlib.Format.FORWARDREF), dict[str, Any])
+
+# === Callable predicate and ASCII representation ===
+callable_result: bool = callable(annotated)
+assert_type(ascii('é'), str)
+
+
+def call_if_callable(value: object) -> object:
+    if callable(value):
+        return value()
+    return value
