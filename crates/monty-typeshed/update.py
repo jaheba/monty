@@ -74,6 +74,9 @@ ALLOWED_CLASSES = {
     'slice',
     # property is used by pathlib.Path
     'property',
+    # Preserve method decorators used by builtin/stdlib stubs so their signatures resolve.
+    'classmethod',
+    'staticmethod',
     # Exception hierarchy (from crates/monty/src/exception_private.rs)
     'BaseException',
     'Exception',

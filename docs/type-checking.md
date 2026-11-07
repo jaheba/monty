@@ -175,6 +175,10 @@ Hosts can supply modules such as `abc` and `enum` that the checker resolves but 
 The checker retains its own stubs and never requests host stubs for vendored typeshed modules, including `__future__`
 and `__main__`, or for `ty_extensions`.
 See [modules](limitations/modules.md#modules-the-type-checker-resolves-but-the-runtime-does-not).
+
+The vendored stubs retain `classmethod` and `staticmethod` definitions to resolve decorated methods such as
+`Path.cwd()` and `str.maketrans()`.
+Runtime decorator support is listed in [the builtin limitations](limitations/builtins.md).
 The runtime side of a host module is the entry's `module`; see
 [importing host modules](host-functions.md#importing-host-modules).
 
