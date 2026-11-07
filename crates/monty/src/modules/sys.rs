@@ -17,6 +17,8 @@
 
 use smallvec::SmallVec;
 
+pub(crate) mod stream;
+
 #[cfg(feature = "test-hooks")]
 use crate::{
     args::ArgValues,

@@ -2124,8 +2124,7 @@ impl EitherStr {
 /// Marker values for special objects that exist but have minimal functionality.
 ///
 /// These are used for:
-/// - System objects like `sys.stdout` and `sys.stderr` that need to exist but don't
-///   provide functionality in the sandboxed environment
+/// - Standard-stream markers whose methods route to the host print writer
 /// - Typing constructs from the `typing` module that are imported for type hints but
 ///   don't need runtime functionality
 /// - Stateless sentinels such as `dataclasses.MISSING`, compared only by identity
