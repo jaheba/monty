@@ -2,6 +2,8 @@
 //! `unicode_type_data.rs` (CPython's `unicodectype.c` in miniature) so results, and the Unicode
 //! version, follow the target CPython rather than Rust std.
 
+use std::borrow::Cow;
+
 use super::unicode_type_data::{
     ALPHA, CASE_IGNORABLE, CASED, DECIMAL, DIGIT, EXTENDED, EXTENDED_CASE, ID_CONTINUE, ID_START, INDEX1, INDEX2,
     LOWER, NUMERIC, PRINTABLE, RECORDS, SHIFT, SPACE, TITLE, TypeRecord, UPPER,
@@ -50,6 +52,21 @@ pub(super) fn casefold(s: &str) -> String {
 /// includes the ASCII separators `\x1c`–`\x1f`.
 pub(super) fn is_space(c: char) -> bool {
     type_record(c).is_space()
+}
+
+/// Numeric string constructors accept Unicode decimal digits, but not other numeric characters.
+pub(super) fn decimal_to_ascii(text: &str) -> Cow<'_, str> {
+    if text.is_ascii() {
+        return Cow::Borrowed(text);
+    }
+
+    let mut normalized = String::with_capacity(text.len());
+    for character in text.chars() {
+        normalized.push(decimal_value(character).map_or(character, |digit| {
+            char::from_digit(digit, 10).expect("decimal digits have values below ten")
+        }));
+    }
+    Cow::Owned(normalized)
 }
 
 /// The value of a Unicode decimal digit (`unicodedata.decimal`), `None` for other characters.

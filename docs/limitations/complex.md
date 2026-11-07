@@ -10,11 +10,8 @@ The divergences are the ones the rest of the numeric tower already has.
 ## Construction
 
 - **`complex(obj)` on a class instance** never calls `__complex__`, `__float__` or `__index__`;
-    it raises `TypeError: complex() argument must be a string or a number, not X`, as `float()` and `int()` do
+    it raises `TypeError: complex() argument must be a string or a number, not X`
     (see [classes.md](classes.md)).
-- **Non-ASCII digits in the string form** are rejected: `complex('١j')` raises
-    `ValueError: complex() arg is a malformed string`, where CPython accepts any Unicode decimal digit.
-    This is the same restriction as `int()` and `float()` (see [builtins.md](builtins.md)).
 
 ## Members
 

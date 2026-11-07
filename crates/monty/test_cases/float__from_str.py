@@ -1,5 +1,24 @@
 # `float(str)` and `float(bytes)`: the forms CPython's parser accepts and the ones it rejects.
 
+# === Unicode decimal digits apply to strings, not encoded bytes ===
+for text in ['١٢', '۱۲', '१२', '１２', '߁߂', '𝟙𝟚']:
+    assert float(text) == 12.0
+    raw = text.encode()
+    try:
+        float(raw)
+        assert False, 'expected ValueError'
+    except ValueError as exc:
+        assert str(exc) == f'could not convert string to float: {raw!r}'
+assert float('\u2003-١_٢.٥\u2003') == -12.5
+assert float('١e٢') == 100.0
+assert float('.٥') == 0.5
+for text in ['²', '①', 'Ⅻ', '١__٢', '١\u2003٢', '\x1c١٢', '\x00١']:
+    try:
+        float(text)
+        assert False, 'expected ValueError'
+    except ValueError as exc:
+        assert str(exc) == f'could not convert string to float: {text!r}'
+
 # === Plain numbers and whitespace ===
 assert float('1.5') == 1.5
 assert float('  -2.25\t') == -2.25

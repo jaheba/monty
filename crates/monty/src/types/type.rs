@@ -30,6 +30,7 @@ use crate::{
         time,
         timedelta::{self, DAY_MICROSECONDS, MAX_TIMEDELTA_DAYS, MIN_TIMEDELTA_DAYS},
         timezone::{self, MAX_TIMEZONE_CONSTANT_SECONDS},
+        unicode_type::decimal_to_ascii,
     },
     value::{EitherStr, Value},
 };
@@ -920,7 +921,7 @@ impl Type {
 /// - The special values `inf`, `-inf`, `infinity`, and `nan` (case-insensitive)
 /// - Underscore digit separators, strictly between two digits (`1_000.5`, `1e1_0`)
 pub(crate) fn parse_f64_from_str(value: &str) -> RunResult<f64> {
-    parse_f64(value).ok_or_else(|| value_error_could_not_convert_string_to_float(StringRepr(value)))
+    parse_f64(&decimal_to_ascii(value)).ok_or_else(|| value_error_could_not_convert_string_to_float(StringRepr(value)))
 }
 
 /// Parses ASCII bytes without accepting Unicode digits or whitespace encoded as UTF-8.
@@ -1071,9 +1072,9 @@ fn parse_int_from_str(value: &str, base: u32, heap: &Heap) -> RunResult<Value> {
     {
         return Ok(Value::Int(int));
     }
-    let trimmed = value.trim();
-    // Preserve the allocation-free path for whitespace-padded i64 values
-    // without retrying unchanged inputs that already failed above.
+    let normalized = decimal_to_ascii(value.trim());
+    let trimmed = normalized.as_ref();
+    // Retry after trimming or decimal normalization; unchanged inputs already failed above.
     if base == 10
         && trimmed.len() != value.len()
         && let Ok(int) = trimmed.parse::<i64>()
