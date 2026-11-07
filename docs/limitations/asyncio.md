@@ -165,11 +165,9 @@ asyncio.gather(boom())  # CPython prints `boom ran`, Monty runs nothing
 Awaiting the gather later still runs the children, and a gather that has already failed re-raises its cached
 exception on every later await.
 
-Neither does Monty report the exception CPython loses track of here.
 CPython prints `_GatheringFuture exception was never retrieved`, a `future:` line and the traceback to stderr when a
 gather holding an unretrieved exception is collected.
-In Monty that gather never ran, and no sandboxed code can write to stderr in any case — `print()` rejects its `file`
-argument.
+Monty emits no such diagnostic when the gather is collected.
 
 ### Nesting `gather` inside `gather` is bounded by `max_memory`
 
