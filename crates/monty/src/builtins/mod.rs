@@ -6,7 +6,9 @@
 mod abs;
 mod all;
 mod any;
+mod ascii;
 mod bin;
+mod callable;
 mod chr;
 mod divmod;
 mod enumerate;
@@ -142,7 +144,9 @@ impl BuiltinsFunctionsExt for BuiltinsFunctions {
             Self::Abs => abs::builtin_abs(vm, args),
             Self::All => all::builtin_all(vm, args),
             Self::Any => any::builtin_any(vm, args),
+            Self::Ascii => ascii::builtin_ascii(vm, args),
             Self::Bin => bin::builtin_bin(vm, args),
+            Self::Callable => callable::builtin_callable(vm, args),
             Self::Chr => chr::builtin_chr(vm, args),
             Self::Divmod => divmod::builtin_divmod(vm, args),
             Self::Enumerate => enumerate::builtin_enumerate(vm, args),

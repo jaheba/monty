@@ -6,7 +6,7 @@ Python.
 
 ## Implemented builtin functions
 
-`abs`, `all`, `any`, `bin`, `chr`, `divmod`, `enumerate`, `eval`, `exec`, `filter`,
+`abs`, `all`, `any`, `ascii`, `bin`, `callable`, `chr`, `divmod`, `enumerate`, `eval`, `exec`, `filter`,
 `format`, `getattr`, `hasattr`, `hash`, `hex`, `id`, `isinstance`, `iter`, `len`,
 `locals`, `map`, `max`, `min`, `next`, `oct`, `open`, `ord`, `pow`, `print`, `repr`,
 `reversed`, `round`, `setattr`, `sorted`, `sum`, `type`, `zip`.
@@ -27,13 +27,18 @@ These raise `NameError`:
 - **Interactive**: `input`, `breakpoint`, `help`.
 - **Decorators / descriptors**: `classmethod`, `staticmethod`, `property`,
     `super`. (`@property` on functions is not recognized; use a method.)
-- **Construction / coercion**: `bytearray`, `memoryview`, `object`, `ascii`.
-- **Other**: `callable`, `delattr`, `issubclass`, `aiter`, `anext`.
+- **Construction / coercion**: `bytearray`, `memoryview`, `object`.
+- **Other**: `delattr`, `issubclass`, `aiter`, `anext`.
 
 `super()` is the biggest practical omission: with no class inheritance either
 (see [classes.md](classes.md)), there is no inheritance mechanism at all.
 
 ## Behavioural divergences
+
+- **`callable()` on host proxies** returns `True` for host classes and instances because their call slot delegates
+    to the host; the host may refuse the actual call.
+- **`ascii()`** uses the same synchronous `__repr__` dispatch as `repr()`;
+    a user `__repr__` cannot suspend for host functions or OS calls (see [classes.md](classes.md)).
 
 - **No `__class__` on builtin values** — `[].__class__`, `list.__class__` and
     `list[int].__class__` raise `AttributeError`; only instances of Monty classes

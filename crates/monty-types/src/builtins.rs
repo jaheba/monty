@@ -36,13 +36,13 @@ pub enum BuiltinsFunctions {
     All,
     // Anext,
     Any,
-    // Ascii,
+    // Ascii - appended below
     Bin,
     // bool - handled by Type enum
     // Breakpoint,
     // bytearray - handled by Type enum
     // bytes - handled by Type enum
-    // Callable,
+    // Callable - appended below
     Chr,
     // Classmethod,
     // Compile,
@@ -119,4 +119,8 @@ pub enum BuiltinsFunctions {
     Exec,
     /// `locals()`, appended after [`Self::Exec`].
     Locals,
+    /// `callable(obj, /)`, appended to preserve existing bytecode operands.
+    Callable,
+    /// `ascii(obj, /)`, appended to preserve existing bytecode operands.
+    Ascii,
 }
