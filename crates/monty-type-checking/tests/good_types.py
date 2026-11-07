@@ -24,6 +24,8 @@ import annotationlib
 assert_type(Path.cwd(), Path)
 assert_type(str.maketrans('ab', 'AB'), dict[int, int])
 assert_type(dict.fromkeys(['a'], 1), dict[str, int])
+assert_type(Path.home(), Path)
+assert_type(Path('~/file').expanduser(), Path)
 
 # === Type checking helper functions ===
 

@@ -840,6 +840,99 @@ os.getenv('PATH')
     assert_eq!(args[1], MontyObject::none());
 }
 
+/// Path home helpers use only the HOME supplied by the OS handler, retaining POSIX semantics.
+#[test]
+fn path_home_uses_virtual_home() {
+    for expression in ["Path.home()", "Path('ignored').home()", "Path('~').expanduser()"] {
+        for (home, expected) in [("/sandbox/user/", "/sandbox/user"), ("relative", "relative"), ("", "/")] {
+            let code = format!("from pathlib import Path\nstr({expression})");
+            let (function, args, result) = run_oscall_with_result(&code, MontyObject::string(home));
+            assert_eq!(function, "os.getenv");
+            assert_eq!(args, vec![MontyObject::string("HOME"), MontyObject::none()]);
+            assert_eq!(result, MontyObject::string(expected));
+        }
+    }
+    let (_, _, result) = run_oscall_with_result(
+        "from pathlib import Path\nstr(Path('~/folder/../file').expanduser())",
+        MontyObject::string("/sandbox/user/"),
+    );
+    assert_eq!(result, MontyObject::string("/sandbox/user/folder/../file"));
+}
+
+/// Missing HOME cannot fall back to the host environment or its user database.
+#[test]
+fn path_home_missing_or_invalid_reply() {
+    for expression in ["Path.home()", "Path('~/file').expanduser()"] {
+        let code = format!("from pathlib import Path\n{expression}");
+        for home in [
+            MontyObject::none(),
+            MontyObject::string("~"),
+            MontyObject::string("~alice"),
+        ] {
+            let progress = host_runner(&code)
+                .start(vec![], ResourceTracker::default(), PrintWriter::Disabled)
+                .unwrap();
+            let RunProgress::OsCall(call) = progress else {
+                panic!("expected HOME lookup")
+            };
+            let error = call.resume(home, PrintWriter::Disabled).unwrap_err();
+            assert_eq!(error.exc_type(), ExcType::RuntimeError);
+            assert_eq!(error.message(), Some("Could not determine home directory."));
+        }
+    }
+    let progress = host_runner("from pathlib import Path\nPath.home()")
+        .start(vec![], ResourceTracker::default(), PrintWriter::Disabled)
+        .unwrap();
+    let RunProgress::OsCall(call) = progress else {
+        panic!("expected HOME lookup")
+    };
+    let error = call.resume(MontyObject::int(123), PrintWriter::Disabled).unwrap_err();
+    assert_eq!(error.exc_type(), ExcType::RuntimeError);
+    assert_eq!(
+        error.message(),
+        Some("invalid return type: Path.home requires the host to return str or None, got int")
+    );
+}
+
+/// The pending HOME conversion survives a snapshot while the OS handler is suspended.
+#[test]
+fn path_home_lookup_snapshot() {
+    for (expression, expected) in [
+        ("Path.home()", "/virtual/home"),
+        ("Path('~/file').expanduser()", "/virtual/home/file"),
+    ] {
+        let code = format!("from pathlib import Path\nstr({expression})");
+        let progress = host_runner(&code)
+            .start(vec![], ResourceTracker::default(), PrintWriter::Disabled)
+            .unwrap();
+        let bytes = dump("test.py", None, &[], SessionRef::Running(&progress)).unwrap();
+        let Session::Running(restored) = Dump::load(&bytes).unwrap().state else {
+            panic!("expected suspended HOME lookup")
+        };
+        for progress in [progress, *restored] {
+            let RunProgress::OsCall(call) = progress else {
+                panic!("expected HOME lookup")
+            };
+            let result = call
+                .resume(MontyObject::string("/virtual/home"), PrintWriter::Disabled)
+                .unwrap()
+                .into_complete()
+                .unwrap();
+            assert_eq!(result, MontyObject::string(expected));
+        }
+    }
+}
+
+/// No user database lookup is emitted for named-user forms.
+#[test]
+fn path_expanduser_rejects_named_users() {
+    let error = host_runner("from pathlib import Path\nPath('~alice/file').expanduser()")
+        .run_no_limits(vec![])
+        .unwrap_err();
+    assert_eq!(error.exc_type(), ExcType::RuntimeError);
+    assert_eq!(error.message(), Some("Could not determine home directory."));
+}
+
 #[test]
 fn os_getenv_with_default() {
     let code = r"

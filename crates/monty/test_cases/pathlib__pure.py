@@ -158,6 +158,45 @@ assert str(Path('/a/b/..')) == '/a/b/..'
 assert str(Path('/a/./b/../c')) == '/a/b/../c'
 assert str(Path('/a///b')) == '/a/b'
 
+# === Home expansion validates arguments before contacting the host ===
+plain = Path('folder/~/file')
+assert plain.expanduser() is plain
+assert str(Path('').expanduser()) == '.'
+
+
+def call_class_home(*args, **kwargs):
+    return Path.home(*args, **kwargs)
+
+
+def call_instance_home(*args, **kwargs):
+    return Path('folder').home(*args, **kwargs)
+
+
+def call_expanduser(*args, **kwargs):
+    return Path('~').expanduser(*args, **kwargs)
+
+
+for method, name, receiver in [
+    (call_class_home, 'Path.home', 'cls'),
+    (call_instance_home, 'Path.home', 'cls'),
+    (call_expanduser, 'Path.expanduser', 'self'),
+]:
+    try:
+        method(1)
+        assert False, 'expected TypeError'
+    except TypeError as exc:
+        assert str(exc) == f'{name}() takes 1 positional argument but 2 were given'
+    try:
+        method(**{receiver: None})
+        assert False, 'expected TypeError'
+    except TypeError as exc:
+        assert str(exc) == f"{name}() got multiple values for argument '{receiver}'"
+    try:
+        method(unexpected=1)
+        assert False, 'expected TypeError'
+    except TypeError as exc:
+        assert str(exc) == f"{name}() got an unexpected keyword argument 'unexpected'"
+
 # === repr ===
 r = repr(Path('/usr/bin'))
 assert r == "PosixPath('/usr/bin')", f'repr should be PosixPath, got {r}'
