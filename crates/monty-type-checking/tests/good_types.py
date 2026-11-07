@@ -24,6 +24,9 @@ import annotationlib
 assert_type(Path.cwd(), Path)
 assert_type(str.maketrans('ab', 'AB'), dict[int, int])
 assert_type(dict.fromkeys(['a'], 1), dict[str, int])
+assert_type('text'.translate({ord('t'): 'T'}), str)
+assert_type(str.maketrans('ab', 'AB', 'b'), dict[int, int | None])
+assert_type(str.maketrans({'a': 'A'}), dict[int, str])
 
 # === Type checking helper functions ===
 

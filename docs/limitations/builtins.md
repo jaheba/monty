@@ -35,6 +35,13 @@ These raise `NameError`:
 
 ## Behavioural divergences
 
+- **`str.translate(table)`** looks up each input character separately.
+    CPython's ASCII optimization can cache a lookup or repeat it when switching to a Unicode result,
+    so a custom table's `__getitem__` may run a different number of times.
+    A user-defined `__getitem__` can suspend for host functions or OS calls.
+    A mapping to a surrogate code point (U+D800–U+DFFF) raises `ValueError`, as with `chr()`;
+    Monty strings cannot represent lone surrogates.
+
 - **No `__class__` on builtin values** — `[].__class__`, `list.__class__` and
     `list[int].__class__` raise `AttributeError`; only instances of Monty classes
     carry it (see [classes.md](classes.md)). Use `type(x)`.

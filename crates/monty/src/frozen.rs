@@ -18,7 +18,7 @@ use crate::{
     name_map::NameMap,
     parse::parse_with_interner,
     prepare::prepare_with_existing_names,
-    types::{forward_ref, generic_alias, iter, lru_cache},
+    types::{forward_ref, generic_alias, iter, lru_cache, str::translate},
 };
 
 /// Identifies an internal implementation with one authoritative source definition.
@@ -46,6 +46,12 @@ pub(crate) enum FrozenFunction {
     /// Evaluate and cache a class's `__annotations__` from its `__annotate__`.
     #[serde(rename = "type.__annotations__")]
     ClassAnnotations,
+    /// Character translation with suspendable table lookups.
+    #[serde(rename = "str.translate")]
+    StrTranslate,
+    /// Translation-table construction from strings or a dictionary.
+    #[serde(rename = "str.maketrans")]
+    StrMaketrans,
 }
 
 impl FrozenFunction {
@@ -87,6 +93,8 @@ impl FrozenFunction {
             Self::GetAnnotations => typing::GET_ANNOTATIONS_SOURCE,
             Self::ForwardRefEvaluate => forward_ref::EVALUATE_SOURCE,
             Self::ClassAnnotations => annotations::CLASS_ANNOTATIONS_SOURCE,
+            Self::StrTranslate => translate::TRANSLATE_SOURCE,
+            Self::StrMaketrans => translate::MAKETRANS_SOURCE,
         }
     }
 }
@@ -112,6 +120,8 @@ pub(crate) enum FrozenFunctions {
     TypeRepr,
     /// Check the result returned by a user `__iter__` method.
     ValidateIterator,
+    /// Look up a translation-table entry without forcing a user method into synchronous reentry.
+    TranslateLookup,
 }
 
 /// Dispatches private helpers using the same argument ownership rules as public natives.
@@ -127,5 +137,6 @@ pub(crate) fn call_helper(function: FrozenFunctions, args: ArgValues, vm: &mut V
         FrozenFunctions::Store => lru_cache::call_store(args, vm).map(CallResult::Value),
         FrozenFunctions::TypeRepr => typing::call_type_repr(args, vm).map(CallResult::Value),
         FrozenFunctions::ValidateIterator => iter::call_validate_iterator(args, vm).map(CallResult::Value),
+        FrozenFunctions::TranslateLookup => translate::call_lookup(args, vm),
     }
 }

@@ -26,7 +26,7 @@ use crate::{
         instance::class_name,
         long_int::INT_MAX_STR_DIGITS,
         path,
-        str::{StringRepr, allocate_string},
+        str::{StringRepr, allocate_string, translate},
         time,
         timedelta::{self, DAY_MICROSECONDS, MAX_TIMEDELTA_DAYS, MIN_TIMEDELTA_DAYS},
         timezone::{self, MAX_TIMEZONE_CONSTANT_SECONDS},
@@ -643,6 +643,7 @@ impl Type {
     /// result called, so `list.__name__()` raises `'str' object is not callable`.
     pub(crate) fn call_class_method(self, attr: &EitherStr, args: ArgValues, vm: &mut VM<'_>) -> RunResult<CallResult> {
         match (self, attr.static_string(vm.interns)) {
+            (Self::Str, Some(StaticStrings::Maketrans)) => translate::maketrans(args, vm),
             // Type-level `dict.fromkeys(...)`, so the result is a plain dict.
             (Self::Dict, Some(StaticStrings::Fromkeys)) => {
                 dict_fromkeys(args, DictKind::plain(), vm).map(CallResult::Value)

@@ -1690,6 +1690,8 @@ pub enum StaticStrings {
     Major,
     /// `os.makedirs()` function.
     Makedirs,
+    /// `str.maketrans()` staticmethod.
+    Maketrans,
     /// `sys.float_info.mant_dig` field.
     MantDig,
     /// `map01` parameter of `base64.b32decode()`.

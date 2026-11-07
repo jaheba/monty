@@ -215,6 +215,48 @@ fn complete_external_reduce(mut progress: RunProgress) -> MontyObject {
     progress.into_complete().expect("expected Complete")
 }
 
+/// A translation table can suspend for a host lookup and retain both text and mapping across a dump.
+#[test]
+fn external_function_in_str_translate_suspends() {
+    let code = "\
+class Table:
+    def __getitem__(self, key):
+        return lookup(key)
+
+'文語'.translate(Table())
+";
+    let runner = MontyRun::new(
+        code.to_owned(),
+        "test.py",
+        vec!["lookup".to_owned()],
+        CompileOptions::default(),
+    )
+    .unwrap();
+    let progress = runner
+        .start(
+            vec![MontyObject::function("lookup".to_owned(), None)],
+            ResourceTracker::default(),
+            PrintWriter::Disabled,
+        )
+        .unwrap();
+    let bytes = dump("test.py", None, &[], SessionRef::Running(&progress)).unwrap();
+    let Session::Running(restored) = Dump::load(&bytes).unwrap().state else {
+        panic!("expected suspended translation")
+    };
+
+    for mut progress in [progress, *restored] {
+        for (codepoint, replacement) in [(25991, MontyObject::string("translated")), (35486, MontyObject::none())] {
+            let RunProgress::FunctionCall(call) = progress else {
+                panic!("expected mapping lookup")
+            };
+            assert_eq!(call.function_name, "lookup");
+            assert_eq!(call.args.args().collect::<Vec<_>>(), vec![MontyObject::int(codepoint)]);
+            progress = call.resume(replacement, PrintWriter::Disabled).unwrap();
+        }
+        assert_eq!(progress.into_complete().unwrap(), MontyObject::string("translated"));
+    }
+}
+
 /// Nested caches around a host callable resume and store through ordinary frozen frames.
 #[test]
 fn external_function_in_cache_suspends() {
