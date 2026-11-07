@@ -638,6 +638,15 @@ fn assert_timeout_in_builtin(code: &str, label: &str) {
     );
 }
 
+/// Pure path patterns can backtrack quadratically without returning to the bytecode loop.
+#[test]
+fn timeout_in_path_match() {
+    assert_timeout_in_builtin(
+        "from pathlib import Path\nPath('a' * 50000).match('*' + 'a' * 5000 + 'b')",
+        "Path.match",
+    );
+}
+
 /// Test that `sum(range(huge))` respects the time limit.
 ///
 /// `sum()` iterates via `for_next()`, which polls the time limit every 64th step.

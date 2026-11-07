@@ -389,3 +389,9 @@ try:
 except TypeError as e:
     assert str(e) == 'NotImplemented should not be used in a boolean context'
 assert Path('a').match('a/b', case_sensitive=NotImplemented) is False
+
+# Negated classes can match the root separator even though * and ? cannot consume it.
+for pattern in ['[!a]', '[!z-a]', '*[!a]*', '[!a]*', '*[!a]', '/']:
+    assert Path('/').match(pattern) is True
+for pattern in ['*', '?', '**', '?[!a]', '/[!a]', '/[!a]*', '*/[!a]', '/*', '/?']:
+    assert Path('/').match(pattern) is False
