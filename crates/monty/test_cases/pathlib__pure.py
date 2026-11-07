@@ -4,6 +4,42 @@
 # === Path constructor ===
 from pathlib import Path
 
+# === Virtual POSIX file URIs ===
+for text, expected in [
+    ('/', 'file:///'),
+    ('/a b/é文😀', 'file:///a%20b/%C3%A9%E6%96%87%F0%9F%98%80'),
+    ('/a?b#c%/d:e', 'file:///a%3Fb%23c%25/d%3Ae'),
+    ('/~user/_.-A0', 'file:///~user/_.-A0'),
+    ('/a\x00b', 'file:///a%00b'),
+]:
+    assert Path(text).as_uri() == expected
+for text in ['', '.', 'relative', 'C:/file']:
+    try:
+        Path(text).as_uri()
+        assert False, 'expected ValueError'
+    except ValueError as exc:
+        assert str(exc) == "relative paths can't be expressed as file URIs"
+try:
+    Path('/').as_uri(1)
+    assert False, 'expected TypeError'
+except TypeError as exc:
+    assert str(exc) == 'Path.as_uri() takes 1 positional argument but 2 were given'
+try:
+    Path('/').as_uri(self=None)
+    assert False, 'expected TypeError'
+except TypeError as exc:
+    assert str(exc) == "Path.as_uri() got multiple values for argument 'self'"
+try:
+    Path('/').as_uri(unexpected=1)
+    assert False, 'expected TypeError'
+except TypeError as exc:
+    assert str(exc) == "Path.as_uri() got an unexpected keyword argument 'unexpected'"
+try:
+    Path.cwd(cls=None)
+    assert False, 'expected TypeError'
+except TypeError as exc:
+    assert str(exc) == "Path.cwd() got multiple values for argument 'cls'"
+
 p = Path('/usr/local/bin/python')
 assert str(p) == '/usr/local/bin/python'
 

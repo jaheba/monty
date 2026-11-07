@@ -5,12 +5,12 @@ use monty_types::{
     unstable::{self, MontyNode},
 };
 
-use super::Path;
+use super::{Path, check_no_args};
 use crate::{
     args::ArgValues,
     bytecode::{CallResult, VM},
-    exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
-    heap::{DropWithContext, HeapObjectRead},
+    exception_private::{ExcType, RunError, RunResult, SimpleException},
+    heap::HeapObjectRead,
     modules::os_path::posix,
     os_dispatch::{PreConversionEffect, invalid_reply},
 };
@@ -37,26 +37,6 @@ pub(super) fn expanduser<'h>(
     } else {
         Err(no_home())
     }
-}
-
-/// Python's zero-argument methods count the bound receiver and report keyword conflicts first.
-fn check_no_args(args: ArgValues, name: &str, receiver: &str, vm: &mut VM<'_>) -> RunResult<()> {
-    if matches!(args, ArgValues::Empty) {
-        return Ok(());
-    }
-
-    let (pos, kwargs) = args.into_parts();
-    let given = pos.len() + 1;
-    let first_kwarg = kwargs.first_key(vm.heap, vm.interns);
-    pos.drop_with(vm);
-    kwargs.drop_with(vm);
-    Err(match first_kwarg? {
-        Some(key) if key == receiver => {
-            ExcType::type_error(format!("{name}() got multiple values for argument '{receiver}'"))
-        }
-        Some(key) => ExcType::type_error_unexpected_keyword(name, &key),
-        None => ExcType::type_error(format!("{name}() takes 1 positional argument but {given} were given")),
-    })
 }
 
 /// Requests the same virtual HOME used by os.path, never the process environment directly.

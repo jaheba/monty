@@ -611,6 +611,8 @@ pub enum StaticStrings {
     Argv,
     /// `Path.as_posix()` method, answered without host I/O.
     AsPosix,
+    /// `Path.as_uri()` method.
+    AsUri,
     /// `re.ASCII` flag
     #[strum(serialize = "ASCII")]
     AsciiFlag,

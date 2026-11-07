@@ -5,6 +5,7 @@
 //! while filesystem methods yield external function calls for the host to resolve.
 
 pub(crate) mod home;
+mod uri;
 
 use std::{
     cell::Cell,
@@ -318,23 +319,29 @@ impl Path {
 /// A pure-Python classmethod in CPython, so its arity errors count `cls`:
 /// one stray positional is `takes 1 positional argument but 2 were given`.
 pub(crate) fn class_cwd(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value> {
-    if !matches!(args, ArgValues::Empty) {
-        let (pos, kwargs) = args.into_parts();
-        let given = pos.len();
-        let first_kwarg = kwargs.first_key(vm.heap, vm.interns);
-        pos.drop_with(vm);
-        kwargs.drop_with(vm);
-        // CPython reports a stray keyword before the positional count.
-        return Err(match first_kwarg? {
-            Some(key) => ExcType::type_error_unexpected_keyword("Path.cwd", &key),
-            None => ExcType::type_error(format!(
-                "Path.cwd() takes 1 positional argument but {} were given",
-                given + 1
-            )),
-        });
-    }
+    check_no_args(args, "Path.cwd", "cls", vm)?;
     let path = Path::new(vm.env.cwd.to_string());
     Ok(Value::Ref(vm.heap.allocate(HeapData::Path(path))))
+}
+
+/// Python's zero-argument methods count the bound receiver and report keyword conflicts first.
+fn check_no_args(args: ArgValues, name: &str, receiver: &str, vm: &mut VM<'_>) -> RunResult<()> {
+    if matches!(args, ArgValues::Empty) {
+        return Ok(());
+    }
+
+    let (pos, kwargs) = args.into_parts();
+    let given = pos.len() + 1;
+    let first_kwarg = kwargs.first_key(vm.heap, vm.interns);
+    pos.drop_with(vm);
+    kwargs.drop_with(vm);
+    Err(match first_kwarg? {
+        Some(key) if key == receiver => {
+            ExcType::type_error(format!("{name}() got multiple values for argument '{receiver}'"))
+        }
+        Some(key) => ExcType::type_error_unexpected_keyword(name, &key),
+        None => ExcType::type_error(format!("{name}() takes 1 positional argument but {given} were given")),
+    })
 }
 
 /// `Path.glob(pattern, *, case_sensitive=None, recurse_symlinks=False)`.
@@ -677,6 +684,11 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Path> {
             StaticStrings::AsPosix | StaticStrings::Fspath => {
                 args.check_zero_args(method.into(), vm.heap)?;
                 Ok(allocate_string(self.get(vm.heap).as_posix(), vm.heap))
+            }
+            StaticStrings::AsUri => {
+                check_no_args(args, "Path.as_uri", "self", vm)?;
+                let uri = uri::as_uri(self.get(vm.heap))?;
+                Ok(allocate_string(uri, vm.heap))
             }
             StaticStrings::Open => {
                 // `Path.open(mode='r', ...)` is `open(self, mode, ...)` with

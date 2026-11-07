@@ -26,6 +26,7 @@ assert_type(str.maketrans('ab', 'AB'), dict[int, int])
 assert_type(dict.fromkeys(['a'], 1), dict[str, int])
 assert_type(Path.home(), Path)
 assert_type(Path('~/file').expanduser(), Path)
+assert_type(Path('/file').as_uri(), str)
 
 # === Type checking helper functions ===
 

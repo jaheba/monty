@@ -32,7 +32,12 @@ Paths without a leading tilde return unchanged without a host call.
 
 Implemented: `name`, `parent`, `stem`, `suffix`, `suffixes`, `parts`,
 `is_absolute()`, `joinpath(*other)`, `with_name(name)`, `with_stem(stem)`,
-`with_suffix(suffix)`, `as_posix()`, `__fspath__()`.
+`with_suffix(suffix)`, `as_posix()`, `as_uri()`, `__fspath__()`.
+
+`as_uri()` requires an absolute path and percent-encodes its UTF-8 bytes.
+The URI uses the sandbox's virtual POSIX path.
+Backslashes and a leading `//` are normalized before conversion, as with path construction;
+CPython's POSIX paths preserve those spellings.
 
 The `/` operator works in both directions (`Path("a") / "b"`,
 `Path("a") / Path("b")`, `"a" / Path("b")`).
