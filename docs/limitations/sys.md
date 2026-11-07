@@ -25,8 +25,9 @@ access raises `AttributeError`.
 - `sys.builtin_module_names` — every module Monty can import, since they are
     all compiled into the interpreter. CPython lists only its C modules, so the
     tuple differs: it includes `json`, `re`, `typing` and the other modules that
-    are pure Python in CPython, and omits `builtins`, `time` and everything else
+    are pure Python in CPython, and omits `builtins` and everything else
     Monty does not implement. See [modules.md](modules.md) for the module list.
+    The tuple includes both import names `os.path` and `posixpath` for that module.
 - `sys.maxsize` — `2**63 - 1` on every target, including 32-bit wasm where the
     real container ceiling is lower. Resource limits bind long before either.
 - `sys.maxunicode` — `1114111` (`U+10FFFF`), as in CPython.
