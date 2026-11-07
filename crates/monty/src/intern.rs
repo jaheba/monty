@@ -616,6 +616,12 @@ pub enum StaticStrings {
     /// `re.ASCII` flag
     #[strum(serialize = "ASCII")]
     AsciiFlag,
+    /// `string.ascii_letters` constant.
+    AsciiLetters,
+    /// `string.ascii_lowercase` constant.
+    AsciiLowercase,
+    /// `string.ascii_uppercase` constant.
+    AsciiUppercase,
     /// `time.asctime()` function.
     Asctime,
     /// `math.asin()` function.
@@ -746,6 +752,8 @@ pub enum StaticStrings {
     Capitalize,
     /// Kwarg name `capitals` — `decimal.Context()`.
     Capitals,
+    /// `string.capwords()` function.
+    Capwords,
     /// Kwarg name `case_sensitive` — `Path.glob(case_sensitive=...)`.
     CaseSensitive,
     /// `str.casefold()` method.
@@ -1422,6 +1430,8 @@ pub enum StaticStrings {
     Hex,
     /// `hexdigest()` method of a hash object.
     Hexdigest,
+    /// `string.hexdigits` constant.
+    Hexdigits,
     /// `binascii.hexlify()` function.
     #[strum(serialize = "hexlify")]
     Hexlify,
@@ -1901,6 +1911,8 @@ pub enum StaticStrings {
     Obj,
     /// Kwarg name `object` — `str(object=...)`, `itertools.repeat(object=...)`.
     Object,
+    /// `string.octdigits` constant.
+    Octdigits,
     /// `timezone(offset=...)` constructor kwarg.
     Offset,
     /// Kwarg name `old` — `str.replace(old=...)`, `bytes.replace(old=...)`.
@@ -2036,6 +2048,8 @@ pub enum StaticStrings {
     Prec,
     /// `sys.prefix` attribute.
     Prefix,
+    /// `string.printable` constant.
+    Printable,
     /// `time.process_time()` function.
     ProcessTime,
     /// `time.process_time_ns()` function.
@@ -2047,6 +2061,8 @@ pub enum StaticStrings {
     /// `typing.Protocol` marker.
     #[strum(serialize = "Protocol")]
     Protocol,
+    /// `string.punctuation` constant.
+    Punctuation,
     /// `sys.pycache_prefix` attribute.
     PycachePrefix,
     /// `sys.flags.quiet` field.
@@ -2405,7 +2421,7 @@ pub enum StaticStrings {
     /// `strict_mode` parameter of `binascii.a2b_base64()`.
     #[strum(serialize = "strict_mode")]
     StrictMode,
-    /// `match.string`
+    /// `re.Match.string` and the `string` module name.
     #[strum(serialize = "string")]
     StringAttr,
     /// `annotationlib.Format.STRING` member.
@@ -2672,6 +2688,8 @@ pub enum StaticStrings {
     Weibullvariate,
     /// `weights` parameter of `random.choices()`.
     Weights,
+    /// `string.whitespace` constant.
+    Whitespace,
     /// `Path.with_name()` method, answered without host I/O.
     WithName,
     /// `Path.with_stem()` method, answered without host I/O.

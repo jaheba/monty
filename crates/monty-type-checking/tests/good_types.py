@@ -10,6 +10,7 @@ import json
 import os
 import random
 import re
+import string
 import sys
 import tomllib
 from collections.abc import Iterator
@@ -848,3 +849,10 @@ def call_if_callable(value: object) -> object:
     if callable(value):
         return value()
     return value
+
+
+# === string ===
+assert_type(string.ascii_letters, LiteralString)
+assert_type(string.printable, LiteralString)
+assert_type(string.capwords('hello world'), str)
+assert_type(string.capwords('one-two', sep='-'), str)
