@@ -49,6 +49,24 @@ assert Path('/usr/local/bin').parts == ('/', 'usr', 'local', 'bin')
 assert Path('usr/local').parts == ('usr', 'local')
 assert Path('/').parts == ('/',)
 
+# === POSIX anchor properties ===
+for text in ['', '.', '..', 'folder/file', 'C:/folder', 'é/文']:
+    path = Path(text)
+    assert path.anchor == ''
+    assert path.root == ''
+    assert path.drive == ''
+
+for text in ['/', '/folder/file', '/./folder', '///folder', '/é/文']:
+    path = Path(text)
+    assert path.anchor == '/'
+    assert path.root == '/'
+    assert path.drive == ''
+
+# Dynamically built attribute names also reach the property dispatcher.
+for attribute, expected in [('anchor', '/'), ('root', '/'), ('drive', '')]:
+    dynamic_name = ''.join(list(attribute))
+    assert getattr(Path('/folder'), dynamic_name) == expected
+
 # === is_absolute method ===
 assert Path('/usr/bin').is_absolute() == True
 assert Path('usr/bin').is_absolute() == False

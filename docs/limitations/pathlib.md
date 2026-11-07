@@ -24,12 +24,14 @@ is **not** implemented: the sandbox has no home directory.
 
 ## Pure (no I/O) methods and attributes
 
-Implemented: `name`, `parent`, `stem`, `suffix`, `suffixes`, `parts`,
+Implemented: `anchor`, `drive`, `root`, `name`, `parent`, `stem`, `suffix`, `suffixes`, `parts`,
 `is_absolute()`, `joinpath(*other)`, `with_name(name)`, `with_stem(stem)`,
 `with_suffix(suffix)`, `as_posix()`, `__fspath__()`.
 
 The `/` operator works in both directions (`Path("a") / "b"`,
 `Path("a") / Path("b")`, `"a" / Path("b")`).
+
+`drive` is always empty. `anchor` and `root` are `/` for absolute paths and empty for relative paths.
 
 `relative_to(other, *, walk_up=False)` and `is_relative_to(other)` accept `str`, Monty `Path` and `os.DirEntry` operands.
 Custom `os.PathLike` operands are not supported.
@@ -43,8 +45,7 @@ unlike CPython's POSIX paths.
 The `case_sensitive` argument is hashed and truth-tested once per call;
 CPython's compiled-pattern cache can repeat hashing and skip truth tests on cache hits.
 
-Not implemented: `anchor`, `drive`, `root`, `is_reserved`,
-`full_match`, `with_segments`.
+Not implemented: `is_reserved`, `full_match`, `with_segments`.
 
 ## I/O methods (yield to host)
 
