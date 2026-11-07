@@ -70,6 +70,7 @@ assert tuple(name for name in sys.builtin_module_names if name != 'gc') == (
     're',
     'string',
     'sys',
+    'textwrap',
     'typing',
     'unicodedata',
 )

@@ -12,6 +12,7 @@ import random
 import re
 import string
 import sys
+import textwrap
 import tomllib
 from collections.abc import Iterator
 from dataclasses import dataclass
@@ -27,6 +28,9 @@ assert_type(str.maketrans('ab', 'AB'), dict[int, int])
 assert_type(dict.fromkeys(['a'], 1), dict[str, int])
 assert_type(Path.home(), Path)
 assert_type(Path('~/file').expanduser(), Path)
+assert_type(textwrap.dedent('  text'), str)
+assert_type(textwrap.indent('text', '> '), str)
+assert_type(textwrap.indent('text', '> ', lambda line: line.endswith('\n')), str)
 
 # === Type checking helper functions ===
 

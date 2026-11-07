@@ -40,6 +40,7 @@ pub(crate) mod random;
 pub(crate) mod re;
 pub(crate) mod string;
 pub(crate) mod sys;
+pub(crate) mod textwrap;
 pub(crate) mod time;
 pub(crate) mod tomllib;
 pub(crate) mod typing;
@@ -110,6 +111,8 @@ pub(crate) enum StandardLib {
     Annotationlib,
     /// ASCII character classes and word capitalization.
     String,
+    /// Line indentation helpers.
+    Textwrap,
     /// The `gc` module exposing a single `collect()` for tests. Only present
     /// under the `test-hooks` feature so production sandboxes never see it.
     ///
@@ -149,6 +152,7 @@ impl StandardLib {
             StaticStrings::Fnmatch => Some(Self::Fnmatch),
             StaticStrings::StringAttr => Some(Self::String),
             StaticStrings::Annotationlib => Some(Self::Annotationlib),
+            StaticStrings::Textwrap => Some(Self::Textwrap),
             #[cfg(feature = "test-hooks")]
             StaticStrings::Gc => Some(Self::Gc),
             _ => None,
@@ -194,6 +198,7 @@ impl StandardLib {
             Self::Fnmatch => fnmatch::create_module(vm),
             Self::Annotationlib => annotationlib::create_module(vm),
             Self::String => string::create_module(vm),
+            Self::Textwrap => textwrap::create_module(vm),
             #[cfg(feature = "test-hooks")]
             Self::Gc => gc::create_module(vm),
         }
@@ -233,6 +238,7 @@ pub(crate) enum ModuleFunctions {
     Typing(typing::TypingFunctions),
     Annotationlib(annotationlib::AnnotationlibFunctions),
     String(string::StringFunctions),
+    Textwrap(textwrap::TextwrapFunctions),
     /// `gc` module functions — only present under the `test-hooks` feature.
     /// See [`gc`] for why it is gated; as in [`StandardLib`], the gated block
     /// goes last and new variants are appended ahead of it.
@@ -275,6 +281,7 @@ impl fmt::Display for ModuleFunctions {
             Self::Typing(func) => write!(f, "{func}"),
             Self::Annotationlib(func) => write!(f, "{func}"),
             Self::String(func) => write!(f, "{func}"),
+            Self::Textwrap(func) => write!(f, "{func}"),
             #[cfg(feature = "test-hooks")]
             Self::Gc(func) => write!(f, "{func}"),
             #[cfg(feature = "test-hooks")]
@@ -316,6 +323,7 @@ impl ModuleFunctions {
             Self::Typing(functions) => typing::call(vm, functions, args),
             Self::Annotationlib(functions) => annotationlib::call(vm, functions, args),
             Self::String(functions) => string::call(vm, functions, args),
+            Self::Textwrap(functions) => textwrap::call(vm, functions, args),
             #[cfg(feature = "test-hooks")]
             Self::Gc(functions) => gc::call(vm, functions, args).map(CallResult::Value),
             #[cfg(feature = "test-hooks")]

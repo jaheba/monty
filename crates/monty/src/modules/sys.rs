@@ -76,6 +76,7 @@ const BUILTIN_MODULE_NAMES: &[StaticStrings] = &[
     StaticStrings::Re,
     StaticStrings::StringAttr,
     StaticStrings::Sys,
+    StaticStrings::Textwrap,
     StaticStrings::Typing,
     StaticStrings::Unicodedata,
 ];

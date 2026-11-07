@@ -14,7 +14,7 @@ use crate::{
     bytecode::{CallResult, Compiler, VM},
     exception_private::RunResult,
     intern::{CompileInterns, FunctionId, Interns},
-    modules::{functools, string, typing},
+    modules::{functools, string, textwrap, typing},
     name_map::NameMap,
     parse::parse_with_interner,
     prepare::prepare_with_existing_names,
@@ -49,6 +49,12 @@ pub(crate) enum FrozenFunction {
     /// Word capitalization through the source object's string methods.
     #[serde(rename = "string.capwords")]
     StringCapwords,
+    /// Common indentation removal, with Python string protocols.
+    #[serde(rename = "textwrap.dedent")]
+    TextwrapDedent,
+    /// Line prefixing with a suspendable predicate.
+    #[serde(rename = "textwrap.indent")]
+    TextwrapIndent,
 }
 
 impl FrozenFunction {
@@ -91,6 +97,8 @@ impl FrozenFunction {
             Self::ForwardRefEvaluate => forward_ref::EVALUATE_SOURCE,
             Self::ClassAnnotations => annotations::CLASS_ANNOTATIONS_SOURCE,
             Self::StringCapwords => string::CAPWORDS_SOURCE,
+            Self::TextwrapDedent => textwrap::DEDENT_SOURCE,
+            Self::TextwrapIndent => textwrap::INDENT_SOURCE,
         }
     }
 }

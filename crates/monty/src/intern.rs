@@ -920,6 +920,8 @@ pub enum StaticStrings {
     /// `base64.decodebytes()` function.
     #[strum(serialize = "decodebytes")]
     Decodebytes,
+    /// `textwrap.dedent()` function.
+    Dedent,
     /// `copy.deepcopy()`. The module name and `copy.copy()` reuse [`Self::Copy`].
     Deepcopy,
     /// Kwarg name `default` — `os.getenv(default=...)`.
@@ -1475,7 +1477,7 @@ pub enum StaticStrings {
     /// `binascii.Incomplete` exception class.
     #[strum(serialize = "Incomplete")]
     IncompleteClass,
-    /// `json.dumps(indent=...)` keyword.
+    /// `json.dumps(indent=...)` keyword and `textwrap.indent()` function.
     Indent,
     /// `index()` method, shared by `str`, `bytes`, `list`, `tuple` and `deque`.
     Index,
@@ -2046,6 +2048,8 @@ pub enum StaticStrings {
     Pow,
     /// Kwarg name `prec` — `decimal.Context()`.
     Prec,
+    /// Optional callback in `textwrap.indent()`.
+    Predicate,
     /// `sys.prefix` attribute.
     Prefix,
     /// `string.printable` constant.
@@ -2486,6 +2490,10 @@ pub enum StaticStrings {
     TeeType,
     /// `file.tell()` method.
     Tell,
+    /// Text argument of the `textwrap` helpers.
+    Text,
+    /// Module name for `import textwrap`.
+    Textwrap,
     /// Kwarg name `third` — `Decimal.fma()`.
     Third,
     /// `time.thread_time()` function.
