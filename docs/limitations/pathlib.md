@@ -19,8 +19,14 @@ Bytes paths are rejected with `TypeError`.
 
 `Path.cwd()`, on the class or any instance, returns the sandbox's virtual working directory without a host
 round-trip; the host sets it per feed and relative paths are resolved against
-it before any I/O method reaches the host (see [os.md](os.md)). `Path.home()`
-is **not** implemented: the sandbox has no home directory.
+it before any I/O method reaches the host (see [os.md](os.md)).
+
+`Path.home()` and `Path('~/...').expanduser()` ask the host for `os.getenv('HOME')`.
+The host controls that value; neither method reads the process environment or a user database directly.
+Missing `HOME`, an unresolved tilde, and named-user forms such as `~alice` raise
+`RuntimeError: Could not determine home directory.`
+CPython can resolve these through its host user database, which Monty does not expose.
+Paths without a leading tilde return unchanged without a host call.
 
 ## Pure (no I/O) methods and attributes
 
@@ -60,7 +66,7 @@ Both methods use the same host rename operation, so overwrite behavior depends o
 
 Not implemented: `touch`, `chmod`, `lchmod`, `owner`,
 `group`, `symlink_to`, `hardlink_to`, `link_to`, `readlink`, `lstat`,
-`samefile`, `expanduser`.
+`samefile`.
 
 ## `glob()`, `rglob()` and `walk()`
 

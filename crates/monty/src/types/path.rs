@@ -4,6 +4,8 @@
 //! (require `OsAccess` implementation). Pure methods are handled directly by the VM,
 //! while filesystem methods yield external function calls for the host to resolve.
 
+pub(crate) mod home;
+
 use std::{
     cell::Cell,
     collections::hash_map::DefaultHasher,
@@ -603,6 +605,8 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Path> {
         // Pure methods (no I/O)
         let value = match method {
             StaticStrings::Cwd => class_cwd(vm, args),
+            StaticStrings::Home => return home::class_home(vm, args),
+            StaticStrings::Expanduser => return home::expanduser(self, vm, args),
             StaticStrings::Glob => {
                 let PathGlobArgs {
                     pattern,

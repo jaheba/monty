@@ -44,7 +44,7 @@ use crate::{
         random::RandomRetry,
         time::ClockReading,
     },
-    types::{Path, Type, dir_scan::ScanEffect, file::FileName, random::RandomTarget},
+    types::{Path, Type, dir_scan::ScanEffect, file::FileName, path::home, random::RandomTarget},
     value::Value,
     virtual_path::posix_join,
 };
@@ -214,6 +214,8 @@ pub(crate) enum PreConversionEffect {
         /// Whether the argument was `bytes`, so the result is too.
         is_bytes: bool,
     },
+    /// `Path.home` / `Path.expanduser`: build a virtual Path from the host's HOME reply.
+    PathExpandUser { tail: String, is_home: bool },
 }
 
 impl PreConversionEffect {
@@ -243,6 +245,7 @@ impl PreConversionEffect {
                 second,
             } => samefile_second_reply(&value, &first, &first_identity, &second, &vm.env.cwd),
             Self::ExpandUser { tail, is_bytes } => expand_user_reply(&value, &tail, is_bytes),
+            Self::PathExpandUser { tail, is_home } => home::reply(&value, &tail, is_home),
             Self::ExpandVars { path, is_bytes } => expand_vars_reply(&value, &path, is_bytes, &vm.heap.tracker),
         };
         reply.map(Reshaped::Value)
@@ -264,6 +267,8 @@ impl PreConversionEffect {
             Self::SamefileFirst { .. } | Self::SamefileSecond { .. } => "os.path.samefile",
             Self::ExpandUser { .. } => "os.path.expanduser",
             Self::ExpandVars { .. } => "os.path.expandvars",
+            Self::PathExpandUser { is_home: true, .. } => "Path.home",
+            Self::PathExpandUser { is_home: false, .. } => "Path.expanduser",
         }
     }
 }

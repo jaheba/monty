@@ -1419,6 +1419,8 @@ pub enum StaticStrings {
     /// `hexstr` parameter of `binascii.unhexlify()`.
     #[strum(serialize = "hexstr")]
     Hexstr,
+    /// `Path.home()` classmethod.
+    Home,
     /// `sys.hexversion` attribute.
     Hexversion,
     /// `hi` in the bisect module.
