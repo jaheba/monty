@@ -81,6 +81,7 @@ nav:
       - random: 'limitations/random.md'
       - re: 'limitations/re.md'
       - sys: 'limitations/sys.md'
+      - textwrap: 'limitations/textwrap.md'
       - time: 'limitations/time.md'
       - tomllib: 'limitations/tomllib.md'
       - unicodedata: 'limitations/unicodedata.md'

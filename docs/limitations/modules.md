@@ -45,6 +45,7 @@ in the next feed, and after a dump (see [random.md](random.md)).
 | `random`        | [random.md](random.md)               |
 | `re`            | [re.md](re.md)                       |
 | `sys`           | [sys.md](sys.md)                     |
+| `textwrap`      | [textwrap.md](textwrap.md)           |
 | `time`          | [time.md](time.md)                   |
 | `tomllib`       | [tomllib.md](tomllib.md)             |
 | `typing`        | [typing.md](typing.md)               |

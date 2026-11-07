@@ -11,6 +11,7 @@ import os
 import random
 import re
 import sys
+import textwrap
 import tomllib
 from collections.abc import Iterator
 from dataclasses import dataclass
@@ -19,6 +20,10 @@ from pathlib import Path
 from typing import Any, LiteralString, TextIO, assert_type, get_type_hints
 
 import annotationlib
+
+assert_type(textwrap.dedent('  text'), str)
+assert_type(textwrap.indent('text', '> '), str)
+assert_type(textwrap.indent('text', '> ', lambda line: line.endswith('\n')), str)
 
 # === Type checking helper functions ===
 

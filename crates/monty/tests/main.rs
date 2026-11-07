@@ -215,6 +215,41 @@ fn complete_external_reduce(mut progress: RunProgress) -> MontyObject {
     progress.into_complete().expect("expected Complete")
 }
 
+/// An indentation predicate can suspend on each line and resume from a captured snapshot.
+#[test]
+fn external_function_in_textwrap_indent_suspends() {
+    let runner = MontyRun::new(
+        "from textwrap import indent\nindent('one\\ntwo', '> ', select)".to_owned(),
+        "test.py",
+        vec!["select".to_owned()],
+        CompileOptions::default(),
+    )
+    .unwrap();
+    let progress = runner
+        .start(
+            vec![MontyObject::function("select".to_owned(), None)],
+            ResourceTracker::default(),
+            PrintWriter::Disabled,
+        )
+        .unwrap();
+    let bytes = dump("test.py", None, &[], SessionRef::Running(&progress)).unwrap();
+    let Session::Running(restored) = Dump::load(&bytes).unwrap().state else {
+        panic!("expected running dump")
+    };
+
+    for mut progress in [progress, *restored] {
+        for (line, selected) in [("one\n", true), ("two", false)] {
+            let RunProgress::FunctionCall(call) = progress else {
+                panic!("expected indentation predicate")
+            };
+            assert_eq!(call.function_name, "select");
+            assert_eq!(call.args.args().collect::<Vec<_>>(), vec![MontyObject::string(line)]);
+            progress = call.resume(MontyObject::bool(selected), PrintWriter::Disabled).unwrap();
+        }
+        assert_eq!(progress.into_complete().unwrap(), MontyObject::string("> one\ntwo"));
+    }
+}
+
 /// Nested caches around a host callable resume and store through ordinary frozen frames.
 #[test]
 fn external_function_in_cache_suspends() {

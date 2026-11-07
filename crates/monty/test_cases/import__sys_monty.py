@@ -69,6 +69,7 @@ assert tuple(name for name in sys.builtin_module_names if name != 'gc') == (
     'random',
     're',
     'sys',
+    'textwrap',
     'typing',
     'unicodedata',
 )

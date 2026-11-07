@@ -14,7 +14,7 @@ use crate::{
     bytecode::{CallResult, Compiler, VM},
     exception_private::RunResult,
     intern::{CompileInterns, FunctionId, Interns},
-    modules::{functools, typing},
+    modules::{functools, textwrap, typing},
     name_map::NameMap,
     parse::parse_with_interner,
     prepare::prepare_with_existing_names,
@@ -46,6 +46,12 @@ pub(crate) enum FrozenFunction {
     /// Evaluate and cache a class's `__annotations__` from its `__annotate__`.
     #[serde(rename = "type.__annotations__")]
     ClassAnnotations,
+    /// Common indentation removal, with Python string protocols.
+    #[serde(rename = "textwrap.dedent")]
+    TextwrapDedent,
+    /// Line prefixing with a suspendable predicate.
+    #[serde(rename = "textwrap.indent")]
+    TextwrapIndent,
 }
 
 impl FrozenFunction {
@@ -87,6 +93,8 @@ impl FrozenFunction {
             Self::GetAnnotations => typing::GET_ANNOTATIONS_SOURCE,
             Self::ForwardRefEvaluate => forward_ref::EVALUATE_SOURCE,
             Self::ClassAnnotations => annotations::CLASS_ANNOTATIONS_SOURCE,
+            Self::TextwrapDedent => textwrap::DEDENT_SOURCE,
+            Self::TextwrapIndent => textwrap::INDENT_SOURCE,
         }
     }
 }
