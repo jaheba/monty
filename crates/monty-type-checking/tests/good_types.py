@@ -20,6 +20,8 @@ from typing import Any, LiteralString, TextIO, assert_type, get_type_hints
 
 import annotationlib
 
+assert_type(slice(None).indices(10), tuple[int, int, int])
+
 # === Type checking helper functions ===
 
 

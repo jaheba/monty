@@ -156,3 +156,67 @@ assert b'hello'[::I64_MIN] == b'o'
 assert [0, 1, 2, 3, 4][::I64_MIN] == [4]
 assert (0, 1, 2, 3, 4)[::I64_MIN] == (4,)
 assert list(range(10)[::I64_MIN]) == [9]
+
+# === Public indices() normalization ===
+for start, stop, step, length, expected in [
+    (None, None, None, 5, (0, 5, 1)),
+    (None, None, -1, 5, (4, -1, -1)),
+    (None, -1, -1, 5, (4, 4, -1)),
+    (-20, 20, 2, 5, (0, 5, 2)),
+    (20, -20, -2, 5, (4, -1, -2)),
+    (None, None, 1, 0, (0, 0, 1)),
+    (None, None, -1, 0, (-1, -1, -1)),
+    (-5, None, -2, 10, (5, -1, -2)),
+    (0, None, -1, 10, (0, -1, -1)),
+    (None, None, I64_MIN, 5, (4, -1, I64_MIN)),
+    (None, None, None, True, (0, 1, 1)),
+    (None, None, None, 2**40, (0, 2**40, 1)),
+    (None, None, None, 2**63, (0, 2**63, 1)),
+    (None, None, -1, 2**100, (2**100 - 1, -1, -1)),
+    (-5, None, -2, 2**100, (2**100 - 5, -1, -2)),
+    (None, -1, -1, 2**100, (2**100 - 1, 2**100 - 1, -1)),
+    (2, -3, 2, 2**100, (2, 2**100 - 3, 2)),
+]:
+    assert slice(start, stop, step).indices(length) == expected
+
+
+class Length:
+    def __index__(self):
+        return 2**100
+
+
+assert slice(None).indices(Length()) == (0, 2**100, 1)
+
+for length in [-1, -(2**100)]:
+    for step in [None, 0, -1]:
+        try:
+            slice(None, None, step).indices(length)
+            assert False, 'expected ValueError'
+        except ValueError as exc:
+            assert str(exc) == 'length should not be negative'
+try:
+    slice(None, None, 0).indices(5)
+    assert False, 'expected ValueError'
+except ValueError as exc:
+    assert str(exc) == 'slice step cannot be zero'
+for value, name in [(None, 'NoneType'), (1.5, 'float'), ('5', 'str')]:
+    try:
+        slice(None).indices(value)
+        assert False, 'expected TypeError'
+    except TypeError as exc:
+        assert str(exc) == f"'{name}' object cannot be interpreted as an integer"
+try:
+    slice(None).indices()
+    assert False, 'expected TypeError'
+except TypeError as exc:
+    assert str(exc) == 'slice.indices() takes exactly one argument (0 given)'
+try:
+    slice(None).indices(1, 2)
+    assert False, 'expected TypeError'
+except TypeError as exc:
+    assert str(exc) == 'slice.indices() takes exactly one argument (2 given)'
+try:
+    slice(None).indices(length=1)
+    assert False, 'expected TypeError'
+except TypeError as exc:
+    assert str(exc) == 'slice.indices() takes no keyword arguments'
