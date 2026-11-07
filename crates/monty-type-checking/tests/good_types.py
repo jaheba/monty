@@ -34,6 +34,7 @@ assert_type(textwrap.indent('text', '> ', lambda line: line.endswith('\n')), str
 assert_type('text'.translate({ord('t'): 'T'}), str)
 assert_type(str.maketrans('ab', 'AB', 'b'), dict[int, int | None])
 assert_type(str.maketrans({'a': 'A'}), dict[int, str])
+assert_type(slice(None).indices(10), tuple[int, int, int])
 
 # === Type checking helper functions ===
 

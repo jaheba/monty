@@ -4,11 +4,15 @@
 //! Each field is optional (None in Python), where None means "use the default for that field".
 
 use std::{
+    borrow::Cow,
     collections::hash_map::DefaultHasher,
     fmt,
     fmt::Write,
     hash::{Hash, Hasher},
 };
+
+use num_bigint::BigInt;
+use num_traits::{Signed, ToPrimitive};
 
 use super::LazyHeapSet;
 use crate::{
@@ -17,9 +21,9 @@ use crate::{
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::HashValue,
-    heap::{HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
+    heap::{DropWithContext, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
     intern::StaticStrings,
-    types::{PyTrait, Type},
+    types::{LongInt, PyTrait, Type, allocate_tuple},
     value::{EitherStr, Value},
 };
 
@@ -131,6 +135,32 @@ impl Slice {
 
             Ok((start, stop, step))
         }
+    }
+
+    /// Public lengths can exceed an actual sequence's addressable size.
+    fn big_indices(&self, length: &BigInt) -> RunResult<(BigInt, BigInt, i64)> {
+        if length.is_negative() {
+            return Err(ExcType::value_error("length should not be negative"));
+        }
+        let step = self.step.unwrap_or(1);
+        if step == 0 {
+            return Err(ExcType::value_error_slice_step_zero());
+        }
+
+        let lower = BigInt::from(if step < 0 { -1 } else { 0 });
+        let upper = if step < 0 { length - 1 } else { length.clone() };
+        let normalize = |index: Option<i64>, default: &BigInt| {
+            index.map_or_else(
+                || default.clone(),
+                |index| {
+                    let value = if index < 0 { length + index } else { BigInt::from(index) };
+                    value.clamp(lower.clone(), upper.clone())
+                },
+            )
+        };
+        let start = normalize(self.start, if step < 0 { &upper } else { &lower });
+        let stop = normalize(self.stop, if step < 0 { &lower } else { &upper });
+        Ok((start, stop, step))
     }
 }
 
@@ -271,6 +301,45 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Slice> {
         f.write_str(", ")?;
         format_option_i64(f, self.get(vm.heap).step)?;
         Ok(f.write_char(')')?)
+    }
+
+    fn py_call_attr(&mut self, vm: &mut VM<'h>, attr: &EitherStr, args: ArgValues) -> RunResult<CallResult> {
+        if attr.static_string(vm.interns) != Some(StaticStrings::Indices) {
+            args.drop_with(vm);
+            return Err(ExcType::attribute_error(Type::Slice, attr.as_str(vm.interns)));
+        }
+        let length = args
+            .reject_kwargs("slice.indices", vm.heap)?
+            .get_one_arg("slice.indices", vm.heap)?;
+        defer_drop!(length, vm);
+        let length = length.py_index(vm)?;
+        defer_drop!(length, vm);
+
+        let small_length = match length {
+            Value::Int(value) => Some(*value),
+            Value::Bool(value) => Some(i64::from(*value)),
+            _ => length.as_long_int(vm).and_then(ToPrimitive::to_i64),
+        };
+        if small_length.is_some_and(|length| length < 0) {
+            return Err(ExcType::value_error("length should not be negative"));
+        }
+        let values = if let Some(length) = small_length.and_then(|length| usize::try_from(length).ok()) {
+            let (start, stop, step) = self.get(vm.heap).indices(length)?;
+            [Value::Int(start), Value::Int(stop), Value::Int(step)]
+        } else {
+            // A positive i64 may still exceed usize on a 32-bit worker.
+            let length = small_length.map_or_else(
+                || Cow::Borrowed(length.as_long_int(vm).expect("py_index returned an integer")),
+                |length| Cow::Owned(BigInt::from(length)),
+            );
+            let (start, stop, step) = self.get(vm.heap).big_indices(&length)?;
+            [
+                LongInt::new(start).into_value(vm.heap),
+                LongInt::new(stop).into_value(vm.heap),
+                Value::Int(step),
+            ]
+        };
+        Ok(CallResult::Value(allocate_tuple(values.into_iter().collect(), vm.heap)))
     }
 
     fn py_getattr(&self, attr: &EitherStr, vm: &mut VM<'h>) -> RunResult<Option<CallResult>> {

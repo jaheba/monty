@@ -170,12 +170,14 @@ These raise `NameError`:
     all work. A count above `i64` (`bytes(2**70)`) raises the same shape of `TypeError`
     (`cannot convert 'int' object to bytes`), not CPython's
     `OverflowError: cannot fit 'int' into an index-sized integer`.
-- **`slice`** — `start`, `stop` and `step` are readable, but `slice.indices(length)` is not implemented and
-    raises `AttributeError: 'slice' object has no attribute 'indices'`.
 - **`int.from_bytes`** invokes user `__bytes__`, `__index__` and iterator methods synchronously;
     these methods cannot suspend for host functions or OS calls (see [classes.md](classes.md)).
     An unread file cannot be loaded while consuming its iterator (see [open.md](open.md)).
     Iterable length hints are ignored, including side effects and exceptions from `__len__` or `__length_hint__`.
+- **`slice`** — components are converted through `__index__` at construction and clamped to the `i64` range.
+    CPython retains the original component objects and converts them when used.
+    `slice.indices(length)` accepts arbitrary-size non-negative integer lengths, but uses those stored components.
+    A user `__index__` runs synchronously and cannot suspend for host functions or OS calls.
 - **`isinstance(obj, T)`** — `T` must be a built-in type (`int`, `str`,
     `list`, ...), a built-in exception class, a sandbox-defined class (see
     [classes.md](classes.md)), a `|` union of those (see [typing.md](typing.md)),
