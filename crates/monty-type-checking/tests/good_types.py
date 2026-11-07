@@ -20,6 +20,11 @@ from typing import Any, LiteralString, TextIO, assert_type, get_type_hints
 
 import annotationlib
 
+# Decorator definitions keep existing class/static method signatures from degrading to Unknown.
+assert_type(Path.cwd(), Path)
+assert_type(str.maketrans('ab', 'AB'), dict[int, int])
+assert_type(dict.fromkeys(['a'], 1), dict[str, int])
+
 # === Type checking helper functions ===
 
 

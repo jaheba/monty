@@ -55,6 +55,7 @@ from _typeshed import (
     SupportsWrite,
 )
 from typing_extensions import (
+    Concatenate,
     Literal,
     LiteralString,
     ParamSpec,
@@ -121,6 +122,49 @@ class object:
     def __init_subclass__(cls) -> None: ...
     @classmethod
     def __subclasshook__(cls, subclass: type, /) -> bool: ...
+
+@disjoint_base
+class staticmethod(Generic[_P, _R_co]):
+    @property
+    def __func__(self) -> Callable[_P, _R_co]: ...
+    @property
+    def __isabstractmethod__(self) -> bool: ...
+    def __init__(self, f: Callable[_P, _R_co], /) -> None: ...
+    @overload
+    def __get__(self, instance: None, owner: type, /) -> Callable[_P, _R_co]: ...
+    @overload
+    def __get__(self, instance: _T, owner: type[_T] | None = None, /) -> Callable[_P, _R_co]: ...
+    if sys.version_info >= (3, 10):
+        __name__: str
+        __qualname__: str
+
+        @property
+        def __wrapped__(self) -> Callable[_P, _R_co]: ...
+        def __call__(self, *args: _P.args, **kwargs: _P.kwargs) -> _R_co: ...
+    if sys.version_info >= (3, 14):
+        def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+        __annotate__: AnnotateFunc | None
+
+@disjoint_base
+class classmethod(Generic[_T, _P, _R_co]):
+    @property
+    def __func__(self) -> Callable[Concatenate[type[_T], _P], _R_co]: ...
+    @property
+    def __isabstractmethod__(self) -> bool: ...
+    def __init__(self, f: Callable[Concatenate[type[_T], _P], _R_co], /) -> None: ...
+    @overload
+    def __get__(self, instance: _T, owner: type[_T] | None = None, /) -> Callable[_P, _R_co]: ...
+    @overload
+    def __get__(self, instance: None, owner: type[_T], /) -> Callable[_P, _R_co]: ...
+    if sys.version_info >= (3, 10):
+        __name__: str
+        __qualname__: str
+
+        @property
+        def __wrapped__(self) -> Callable[Concatenate[type[_T], _P], _R_co]: ...
+    if sys.version_info >= (3, 14):
+        def __class_getitem__(cls, item: Any, /) -> GenericAlias: ...
+        __annotate__: AnnotateFunc | None
 
 @disjoint_base
 class type:

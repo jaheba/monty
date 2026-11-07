@@ -11,6 +11,10 @@ unsupported builtin or stdlib module should fail type checking up front, not
 pass the checker and then fail at runtime. This crate vendors only the stubs
 for what Monty supports, with unsupported functions and classes filtered out.
 
+Stub dependencies such as `classmethod` and `staticmethod` are retained so supported methods keep their signatures.
+These definitions serve the type checker; runtime decorator support is documented in
+[the builtin limitations](../../docs/limitations/builtins.md).
+
 Originally derived from ruff's
 [`ty_vendored`](https://github.com/astral-sh/ruff/tree/main/crates/ty_vendored)
 crate.
