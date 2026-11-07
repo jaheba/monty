@@ -143,3 +143,114 @@ assert str(Path('/a///b')) == '/a/b'
 # === repr ===
 r = repr(Path('/usr/bin'))
 assert r == "PosixPath('/usr/bin')", f'repr should be PosixPath, got {r}'
+
+# === Lexical relative paths ===
+for left, right, expected in [
+    ('a/b', 'a', 'b'),
+    ('a', 'a', '.'),
+    ('a/b', '.', 'a/b'),
+    ('a/b', '', 'a/b'),
+    ('.', '.', '.'),
+    ('/a/b', '/a', 'b'),
+    ('/a', '/', 'a'),
+    ('/', '/', '.'),
+    ('a/../b', 'a', '../b'),
+    ('../a', '..', 'a'),
+    ('../a/../b', '../a', '../b'),
+    ('a/./b', './a/', 'b'),
+    ('a/é/文', 'a/é', '文'),
+]:
+    path = Path(left)
+    assert path.is_relative_to(right) is True
+    assert path.is_relative_to(other=Path(right)) is True
+    result = path.relative_to(right)
+    assert isinstance(result, Path)
+    assert str(result) == expected
+    assert str(path.relative_to(other=Path(right), walk_up=True)) == expected
+
+for left, right, expected in [
+    ('.', 'a', '..'),
+    ('a', 'a/b', '..'),
+    ('a/b', 'a/c', '../b'),
+    ('a/b', 'c/d', '../../a/b'),
+    ('/a/b', '/ab', '../a/b'),
+    ('/a', '/a/b/c', '../..'),
+    ('/', '/a/b', '../..'),
+    ('../a', '../b', '../a'),
+]:
+    path = Path(left)
+    assert path.is_relative_to(right) is False
+    assert str(path.relative_to(right, walk_up=True)) == expected
+    try:
+        path.relative_to(right)
+        assert False, 'expected ValueError'
+    except ValueError as e:
+        assert str(e) == f'{str(path)!r} is not in the subpath of {str(Path(right))!r}'
+
+for left, right in [('a', '/a'), ('/a', 'a'), ('.', '/'), ('/', '.')]:
+    assert Path(left).is_relative_to(right) is False
+    try:
+        Path(left).relative_to(right, walk_up=True)
+        assert False, 'expected ValueError'
+    except ValueError as e:
+        assert str(e) == f'{left!r} and {right!r} have different anchors'
+
+for left, right in [('a', '..'), ('a/b', 'a/..'), ('a/b', 'a/../c'), ('/a', '../b')]:
+    try:
+        Path(left).relative_to(right, walk_up=True)
+        assert False, 'expected ValueError'
+    except ValueError as e:
+        assert str(e) == f"'..' segment in {right!r} cannot be walked"
+
+for method in ['relative_to', 'is_relative_to']:
+    for operand in [1, b'a', None, ['a']]:
+        try:
+            if method == 'relative_to':
+                Path('a/b').relative_to(operand)
+            else:
+                Path('a/b').is_relative_to(operand)
+            assert False, 'expected TypeError'
+        except TypeError as e:
+            assert str(e) == (
+                'argument should be a str or an os.PathLike object where __fspath__ returns a str, '
+                f"not '{type(operand).__name__}'"
+            )
+
+# Missing, excess, duplicate and unexpected arguments use the pure-Python signature.
+assert str(Path('a/b').relative_to('a', walk_up=NotImplemented)) == 'b'
+try:
+    Path('a/b').relative_to('c', walk_up=NotImplemented)
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == 'NotImplemented should not be used in a boolean context'
+
+try:
+    Path('a').relative_to()
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == "PurePath.relative_to() missing 1 required positional argument: 'other'"
+try:
+    Path('a').relative_to('a', True)
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == 'PurePath.relative_to() takes 2 positional arguments but 3 were given'
+try:
+    Path('a').relative_to('a', other='b')
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == "PurePath.relative_to() got multiple values for argument 'other'"
+try:
+    Path('a').is_relative_to()
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == "PurePath.is_relative_to() missing 1 required positional argument: 'other'"
+try:
+    Path('a').is_relative_to('a', 'b')
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == 'PurePath.is_relative_to() takes 2 positional arguments but 3 were given'
+try:
+    Path('a').is_relative_to('a', walk_up=True)
+    assert False, 'expected TypeError'
+except TypeError as e:
+    assert str(e) == "PurePath.is_relative_to() got an unexpected keyword argument 'walk_up'"

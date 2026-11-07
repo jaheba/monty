@@ -9,9 +9,10 @@ use std::{
     collections::hash_map::DefaultHasher,
     fmt::Write,
     hash::{Hash, Hasher},
+    iter::repeat_n,
 };
 
-use monty_types::MontyPath;
+use monty_types::{MontyPath, StringRepr};
 use smallvec::SmallVec;
 
 use crate::{
@@ -186,6 +187,49 @@ impl Path {
         self.path.starts_with('/')
     }
 
+    /// Tests lexical containment by components, without resolving `..` or symlinks.
+    pub fn is_relative_to(&self, other: &Self) -> bool {
+        self.is_absolute() == other.is_absolute() && self.parts().starts_with(&other.parts())
+    }
+
+    /// Builds a relative path, rejecting any `..` component that would have to be walked upwards.
+    pub fn relative_to(&self, other: &Self, walk_up: bool) -> RunResult<String> {
+        let parts = self.parts();
+        let other_parts = other.parts();
+        let same_anchor = self.is_absolute() == other.is_absolute();
+        let common = parts.iter().zip(&other_parts).take_while(|(a, b)| a == b).count();
+
+        if !(walk_up || same_anchor && common == other_parts.len()) {
+            return Err(ExcType::value_error(format!(
+                "{} is not in the subpath of {}",
+                StringRepr(self.as_str()),
+                StringRepr(other.as_str())
+            )));
+        }
+
+        // A shared `..` prefix is valid; crossing one assumes filesystem semantics we cannot infer lexically.
+        if other_parts[common..].contains(&"..") {
+            return Err(ExcType::value_error(format!(
+                "'..' segment in {} cannot be walked",
+                StringRepr(other.as_str())
+            )));
+        }
+
+        if !same_anchor {
+            return Err(ExcType::value_error(format!(
+                "{} and {} have different anchors",
+                StringRepr(self.as_str()),
+                StringRepr(other.as_str())
+            )));
+        }
+
+        let result = repeat_n("..", other_parts.len() - common)
+            .chain(parts[common..].iter().copied())
+            .collect::<Vec<_>>()
+            .join("/");
+        Ok(if result.is_empty() { ".".to_owned() } else { result })
+    }
+
     /// Joins this path with another path component.
     ///
     /// If `other` is an absolute path, it replaces `self` entirely.
@@ -345,6 +389,38 @@ struct PathGlobArgs {
     case_sensitive: Value,
     #[from_args(kw_only, default = LaxBool::new(false))]
     recurse_symlinks: LaxBool,
+}
+
+/// Pure-Python signatures include the bound receiver in arity errors.
+#[derive(FromArgs)]
+#[from_args(name = "PurePath.relative_to", style = def)]
+struct PathRelativeToArgs {
+    #[from_args(pos_only)]
+    receiver: Value,
+    other: Value,
+    #[from_args(kw_only, default = Value::Bool(false))]
+    walk_up: Value,
+}
+
+/// `Path.is_relative_to(other)` accepts the same path operands as construction.
+#[derive(FromArgs)]
+#[from_args(name = "PurePath.is_relative_to", style = def)]
+struct PathIsRelativeToArgs {
+    #[from_args(pos_only)]
+    receiver: Value,
+    other: Value,
+}
+
+/// Converts string and native path operands, preserving pathlib's argument-error wording.
+fn relative_path_operand(other: &Value, vm: &VM<'_>) -> RunResult<Path> {
+    value_as_path_str(other, vm.heap, vm.interns)
+        .map(|text| Path::new(text.to_owned()))
+        .ok_or_else(|| {
+            ExcType::type_error(format!(
+                "argument should be a str or an os.PathLike object where __fspath__ returns a str, not '{}'",
+                other.py_type_name(vm)
+            ))
+        })
 }
 
 /// `Path.rglob(pattern, *, case_sensitive=None, recurse_symlinks=False)`.
@@ -633,6 +709,29 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Path> {
             StaticStrings::IsAbsolute => {
                 args.check_zero_args("is_absolute", vm.heap)?;
                 Ok(Value::Bool(self.get(vm.heap).is_absolute()))
+            }
+            StaticStrings::RelativeTo => {
+                let PathRelativeToArgs {
+                    receiver,
+                    other,
+                    walk_up,
+                } = PathRelativeToArgs::from_args(args.prepend(Value::None), vm)?;
+                receiver.drop_with(vm);
+                defer_drop!(other, vm);
+                defer_drop!(walk_up, vm);
+                let other = relative_path_operand(other, vm)?;
+                // CPython never tests walk_up's truth value when the path is already contained.
+                let walk_up = !self.get(vm.heap).is_relative_to(&other) && walk_up.py_bool(vm)?;
+                let result = self.get(vm.heap).relative_to(&other, walk_up)?;
+                Ok(Value::Ref(vm.heap.allocate(HeapData::Path(Path::new(result)))))
+            }
+            StaticStrings::IsRelativeTo => {
+                let PathIsRelativeToArgs { receiver, other } =
+                    PathIsRelativeToArgs::from_args(args.prepend(Value::None), vm)?;
+                receiver.drop_with(vm);
+                defer_drop!(other, vm);
+                let other = relative_path_operand(other, vm)?;
+                Ok(Value::Bool(self.get(vm.heap).is_relative_to(&other)))
             }
             StaticStrings::Joinpath => {
                 let pos_args = args.into_pos_only("joinpath", vm.heap)?;

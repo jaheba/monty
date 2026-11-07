@@ -31,7 +31,12 @@ Implemented: `name`, `parent`, `stem`, `suffix`, `suffixes`, `parts`,
 The `/` operator works in both directions (`Path("a") / "b"`,
 `Path("a") / Path("b")`, `"a" / Path("b")`).
 
-Not implemented: `anchor`, `drive`, `root`, `relative_to`, `is_reserved`,
+`relative_to(other, *, walk_up=False)` and `is_relative_to(other)` accept `str`, Monty `Path` and `os.DirEntry` operands.
+Custom `os.PathLike` operands are not supported.
+Like path construction, they normalize backslashes to `/` and collapse a leading `//` to `/`;
+CPython's POSIX paths preserve both, so containment and relative results can differ for those spellings.
+
+Not implemented: `anchor`, `drive`, `root`, `is_reserved`,
 `match`, `full_match`, `with_segments`.
 
 ## I/O methods (yield to host)

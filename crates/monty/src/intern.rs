@@ -1507,6 +1507,8 @@ pub enum StaticStrings {
     /// `unicodedata.is_normalized()` function.
     #[strum(serialize = "is_normalized")]
     IsNormalized,
+    /// `Path.is_relative_to()` lexical containment test.
+    IsRelativeTo,
     /// `Path.is_symlink()` method — yields a host call.
     IsSymlink,
     /// `os.path.isabs()` function.
@@ -2107,6 +2109,8 @@ pub enum StaticStrings {
     Reduce,
     /// Kwarg name `rel_tol` — `math.isclose(rel_tol=...)`.
     RelTol,
+    /// `Path.relative_to()` lexical relative path.
+    RelativeTo,
     /// `sys.version_info.releaselevel` field.
     Releaselevel,
     /// `os.path.relpath()` function.
@@ -2637,6 +2641,8 @@ pub enum StaticStrings {
     Vonmisesvariate,
     /// `os.walk()` / `Path.walk()` — yields a host scan.
     Walk,
+    /// `Path.relative_to(walk_up=...)` keyword.
+    WalkUp,
     /// `sys.flags.warn_default_encoding` field.
     WarnDefaultEncoding,
     /// `@dataclass(weakref_slot=...)`.
