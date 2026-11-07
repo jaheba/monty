@@ -10,6 +10,7 @@ import json
 import os
 import random
 import re
+import string
 import sys
 import tomllib
 from collections.abc import Iterator
@@ -831,3 +832,9 @@ forward.evaluate(format=annotationlib.Format.STRING)
 annotationlib.get_annotations(annotated, format=annotationlib.Format.STRING)
 assert_type(annotationlib.get_annotations(annotated), dict[str, Any])
 assert_type(get_type_hints(annotated, format=annotationlib.Format.FORWARDREF), dict[str, Any])
+
+# === string ===
+assert_type(string.ascii_letters, LiteralString)
+assert_type(string.printable, LiteralString)
+assert_type(string.capwords('hello world'), str)
+assert_type(string.capwords('one-two', sep='-'), str)

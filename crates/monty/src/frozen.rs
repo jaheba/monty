@@ -14,7 +14,7 @@ use crate::{
     bytecode::{CallResult, Compiler, VM},
     exception_private::RunResult,
     intern::{CompileInterns, FunctionId, Interns},
-    modules::{functools, typing},
+    modules::{functools, string, typing},
     name_map::NameMap,
     parse::parse_with_interner,
     prepare::prepare_with_existing_names,
@@ -46,6 +46,9 @@ pub(crate) enum FrozenFunction {
     /// Evaluate and cache a class's `__annotations__` from its `__annotate__`.
     #[serde(rename = "type.__annotations__")]
     ClassAnnotations,
+    /// Word capitalization through the source object's string methods.
+    #[serde(rename = "string.capwords")]
+    StringCapwords,
 }
 
 impl FrozenFunction {
@@ -87,6 +90,7 @@ impl FrozenFunction {
             Self::GetAnnotations => typing::GET_ANNOTATIONS_SOURCE,
             Self::ForwardRefEvaluate => forward_ref::EVALUATE_SOURCE,
             Self::ClassAnnotations => annotations::CLASS_ANNOTATIONS_SOURCE,
+            Self::StringCapwords => string::CAPWORDS_SOURCE,
         }
     }
 }
