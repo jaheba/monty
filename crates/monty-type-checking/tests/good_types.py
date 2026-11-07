@@ -31,6 +31,9 @@ assert_type(Path('~/file').expanduser(), Path)
 assert_type(textwrap.dedent('  text'), str)
 assert_type(textwrap.indent('text', '> '), str)
 assert_type(textwrap.indent('text', '> ', lambda line: line.endswith('\n')), str)
+assert_type('text'.translate({ord('t'): 'T'}), str)
+assert_type(str.maketrans('ab', 'AB', 'b'), dict[int, int | None])
+assert_type(str.maketrans({'a': 'A'}), dict[int, str])
 
 # === Type checking helper functions ===
 

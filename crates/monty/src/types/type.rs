@@ -26,7 +26,7 @@ use crate::{
         instance::class_name,
         long_int::{INT_MAX_STR_DIGITS, bytes::from_bytes},
         path,
-        str::{StringRepr, allocate_string},
+        str::{StringRepr, allocate_string, translate},
         time,
         timedelta::{self, DAY_MICROSECONDS, MAX_TIMEDELTA_DAYS, MIN_TIMEDELTA_DAYS},
         timezone::{self, MAX_TIMEZONE_CONSTANT_SECONDS},
@@ -646,6 +646,7 @@ impl Type {
             (Self::Int | Self::Bool, Some(StaticStrings::FromBytes)) => {
                 from_bytes(self, args, vm).map(CallResult::Value)
             }
+            (Self::Str, Some(StaticStrings::Maketrans)) => translate::maketrans(args, vm),
             // Type-level `dict.fromkeys(...)`, so the result is a plain dict.
             (Self::Dict, Some(StaticStrings::Fromkeys)) => {
                 dict_fromkeys(args, DictKind::plain(), vm).map(CallResult::Value)

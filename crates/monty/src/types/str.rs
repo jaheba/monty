@@ -1,5 +1,7 @@
 use std::{cell::Cell, fmt::Write, ops, str};
 
+pub(crate) mod translate;
+
 use monty_types::{ResourceError, ResourceTracker};
 pub use monty_types::{StringRepr, string_repr_fmt};
 use smallvec::smallvec;
@@ -286,6 +288,12 @@ impl<'h> PyTrait<'h> for PyStr<'h> {
     }
 
     fn py_call_attr(&mut self, vm: &mut VM<'h>, attr: &EitherStr, args: ArgValues) -> RunResult<CallResult> {
+        match attr.static_string(vm.interns) {
+            Some(StaticStrings::Translate) => return translate::translate(self, args, vm),
+            Some(StaticStrings::Maketrans) => return translate::maketrans(args, vm),
+            _ => {}
+        }
+
         match self {
             Self::Interned(id) => {
                 let Some(method) = attr.static_string(vm.interns) else {

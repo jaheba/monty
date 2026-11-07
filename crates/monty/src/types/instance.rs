@@ -96,6 +96,18 @@ pub(crate) struct BoundMethod {
 }
 
 impl<'h> HeapObjectRead<'h, Instance> {
+    /// Class-only subscription for callers that can preserve suspension in an ordinary VM frame.
+    pub(crate) fn call_getitem(&self, key: Value, vm: &mut VM<'h>) -> RunResult<CallResult> {
+        let class_id = self.get(vm.heap).class();
+        if let Some(member) = class_member(class_id, "__getitem__", vm) {
+            defer_drop!(member, vm);
+            call_member_bound(member, self.id(), ArgValues::One(key), vm)
+        } else {
+            key.drop_with(vm);
+            Err(ExcType::type_error_not_sub(&self.py_type_name(vm)))
+        }
+    }
+
     /// Dispatches class-only `__iter__` for the frozen wrapper to validate after any suspension.
     pub(crate) fn call_iter(&self, vm: &mut VM<'h>) -> RunResult<CallResult> {
         let class_id = self.get(vm.heap).class();

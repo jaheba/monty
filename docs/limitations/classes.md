@@ -105,10 +105,11 @@ order and error wording, but with these divergences:
     function raises rather than yielding to the host. An exception raised by
     `__eq__` terminates the run instead of being catchable by a `try` around the
     comparison.
-- **Arithmetic, conversion, rounding and subscript dunders cannot suspend.**
+- **Arithmetic, conversion, rounding and subscript operations run their dunders synchronously.**
     `__neg__`, `__pos__`, `__abs__`, `__invert__`, `__int__`, `__float__`, `__round__`, `__floor__`, `__ceil__`,
     `__trunc__`, binary numeric dunders (including reflected forms), `__getitem__` and `__setitem__` run synchronously.
     An external or OS call raises `NotImplementedError` rather than yielding to the host.
+    `str.translate(table)` invokes a user table's `__getitem__` through ordinary VM frames, so it can suspend.
     `__call__` uses the ordinary suspendable call path.
 - **Ordering dunders are still not dispatched**; see the entry above.
     Instances are always truthy (no `__bool__`/`__len__` dispatch).
