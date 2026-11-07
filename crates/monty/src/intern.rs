@@ -720,6 +720,9 @@ pub enum StaticStrings {
     BuiltinModuleNames,
     /// `sys.byteorder` attribute.
     Byteorder,
+    /// `int.from_bytes(bytes=...)` argument.
+    #[strum(serialize = "bytes")]
+    BytesArg,
     /// `bytes_per_sep` parameter of `binascii.hexlify()`.
     #[strum(serialize = "bytes_per_sep")]
     BytesPerSep,
@@ -1299,6 +1302,8 @@ pub enum StaticStrings {
     Fp,
     /// `math.frexp()` function.
     Frexp,
+    /// `int.from_bytes()` classmethod.
+    FromBytes,
     /// `chain.from_iterable` — the one attribute an `itertools` type carries.
     #[strum(serialize = "from_iterable")]
     FromIterable,
@@ -2303,6 +2308,8 @@ pub enum StaticStrings {
     Sigma,
     /// `DecimalTuple.sign` field.
     Sign,
+    /// `int.from_bytes(signed=...)` argument.
+    Signed,
     /// `math.sin()` function.
     Sin,
     /// `math.sinh()` function.

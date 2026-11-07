@@ -463,6 +463,18 @@ fn time_limit_covers_csv_streaming_writerows() {
     }
 }
 
+/// A native byte drain must poll the clock even when its source never executes Python bytecode.
+#[test]
+fn time_limit_stops_from_bytes_infinite_input() {
+    let code = "import itertools\nint.from_bytes(itertools.repeat(1))\n";
+    let mut run = MontyRun::new(code.to_owned(), "test.py", vec![], CompileOptions::default()).unwrap();
+    let limits = ResourceLimits::default().max_feed_duration(Duration::from_millis(50));
+    let error = run
+        .run(vec![], ResourceTracker::new(limits), PrintWriter::Stdout)
+        .unwrap_err();
+    assert_eq!(error.exc_type(), ExcType::TimeoutError);
+}
+
 /// A field with no special character is scanned as one run: too few rows for the
 /// per-row poll and a single run per field would otherwise never read the clock. The
 /// turn's closing check raises either way, so the elapsed time is what proves the poll:
