@@ -154,10 +154,10 @@ def maketrans(x, y, z, has_y, len_, ord_, iter_, next_, isinstance_, int_, str_,
         for key, value in x.items():
             if isinstance_(key, str_):
                 if len_(key) != 1:
-                    raise value_error('string keys in translate table must be of length 1')
+                    raise value_error('string keys in translatetable must be of length 1')
                 key = ord_(key)
             elif not isinstance_(key, int_):
-                raise type_error('keys in translate table must be strings or integers')
+                raise type_error('keys in translate table mustbe strings or integers')
             result[key] = value
     return result
 ";
