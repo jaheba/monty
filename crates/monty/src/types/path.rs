@@ -11,7 +11,7 @@ use std::{
     hash::{Hash, Hasher},
 };
 
-use monty_types::MontyPath;
+use monty_types::{MontyPath, ResourceTracker};
 use smallvec::SmallVec;
 
 use crate::{
@@ -24,6 +24,7 @@ use crate::{
     heap::{DropWithContext, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
     intern::{Interns, StaticStrings},
     os_dispatch::{build_path_os_call, is_path_os_method, value_as_path_str},
+    resource_checks::collect_checked,
     types::{
         LazyHeapSet, List, PyTrait, Type, allocate_tuple,
         dir_scan::{glob_call, walk_call},
@@ -186,6 +187,16 @@ impl Path {
     #[must_use]
     pub fn is_absolute(&self) -> bool {
         self.path.starts_with('/')
+    }
+
+    /// Collects components while bounding native traversal and temporary storage.
+    fn checked_parts(&self, tracker: &ResourceTracker) -> RunResult<Vec<&str>> {
+        if self.path == "." {
+            return Ok(Vec::new());
+        }
+        let anchor = self.is_absolute().then_some("/");
+        let components = self.path.split('/').filter(|part| !part.is_empty());
+        Ok(collect_checked(anchor.into_iter().chain(components), tracker)?)
     }
 
     /// Joins this path with another path component.
