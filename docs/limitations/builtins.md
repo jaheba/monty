@@ -35,6 +35,9 @@ These raise `NameError`:
 
 ## Behavioural divergences
 
+- **`int.bit_length` and `int.bit_count`** are available only as instance calls, including on booleans.
+    Calls such as `int.bit_length(5)` and reading a method as a value raise `AttributeError`.
+
 - **`int.to_bytes`** invokes a user length's `__index__` and `signed`'s truth conversion synchronously;
     those methods cannot suspend for host functions or OS calls (see [classes.md](classes.md)).
     Only instance calls such as `(65).to_bytes()` are supported; `int.to_bytes(65)` raises `AttributeError`.

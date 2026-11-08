@@ -716,6 +716,10 @@ pub enum StaticStrings {
     BisectLeft,
     /// `bisect_right` in the bisect module.
     BisectRight,
+    /// `int.bit_count()` method.
+    BitCount,
+    /// `int.bit_length()` method.
+    BitLength,
     /// `hashlib.blake2b` type and hash name.
     Blake2b,
     /// `hashlib.blake2s` type and hash name.

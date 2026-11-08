@@ -781,6 +781,15 @@ impl<'h> PyTrait<'h> for PyValue<'h> {
             Self::Bool(value) if attr.static_string(vm.interns) == Some(StaticStrings::ToBytes) => {
                 PyInt::Small(i64::from(*value)).py_call_attr(vm, attr, args)
             }
+            Self::Bool(value) if matches!(attr.static_string(vm.interns), Some(StaticStrings::BitLength | StaticStrings::BitCount)) => {
+                let name = if attr.static_string(vm.interns) == Some(StaticStrings::BitLength) {
+                    "bool.bit_length"
+                } else {
+                    "bool.bit_count"
+                };
+                args.check_zero_args(name, vm.heap)?;
+                Ok(CallResult::Value(Value::Int(i64::from(*value))))
+            }
             Self::Marker(marker) if matches!(marker.0, StaticStrings::Stdout | StaticStrings::Stderr) => {
                 let stream = if marker.0 == StaticStrings::Stdout { PrintStream::Stdout } else { PrintStream::Stderr };
                 sys::stream::call(stream, attr, args, vm)
