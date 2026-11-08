@@ -37,6 +37,8 @@ Path normalization also applies to the pattern: backslashes become `/` and a lea
 unlike CPython's POSIX paths.
 A non-`None` `case_sensitive` is hashed and truth-tested once after the path-length checks succeed;
 CPython's compiled-pattern cache can repeat hashing and skip truth tests on cache hits.
+`case_sensitive=None` remains case-sensitive on Windows, because Monty uses POSIX path rules.
+Explicit case-insensitive matching uses Unicode 16 case groups on every host.
 
 Not implemented: `anchor`, `drive`, `root`, `relative_to`, `is_reserved`,
 `full_match`, `with_segments`.

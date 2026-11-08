@@ -84,6 +84,21 @@ fn case_insensitive_segments_fold_one_character_at_a_time() {
         ("[a-z]", "ſ", true),
         ("s", "ſ", true),
         ("[A-Z]", "ß", false),
+        ("ı", "I", true),
+        ("ſ", "S", true),
+        ("ς", "Σ", true),
+        ("Σ", "ς", true),
+        ("µ", "Μ", true),
+        ("Μ", "µ", true),
+        ("ﬅ", "ﬆ", true),
+        ("[ǅ]", "Ǆ", true),
+        ("[!ǅ]", "ǆ", false),
+        ("[ᾈ-ᾏ]", "ᾀ", true),
+        ("[\u{212a}-ℬ]", "k", true),
+        ("[!µ]", "Μ", false),
+        // Unicode 17 case pairs remain unrelated under CPython 3.14's Unicode 16 tables.
+        ("\u{a7ce}", "\u{a7cf}", false),
+        ("\u{16ea0}", "\u{16ebb}", false),
     ];
     for (pattern, name, expected) in cases {
         assert_eq!(
