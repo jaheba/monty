@@ -11,6 +11,7 @@ use crate::{
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunResult},
     resource_checks::{check_repeat_size, try_vec_with_capacity},
+    string_builder::BytesBuilder,
     types::{PyTrait, bytes::allocate_bytes},
     value::Value,
 };
@@ -85,21 +86,27 @@ fn encode(
         };
     }
 
-    let minimal = if signed {
-        number.to_signed_bytes_le()
-    } else {
-        number.to_bytes_le().1
+    // Choose byte order before padding to avoid reversing an attacker-sized result.
+    let minimal = match (little_endian, signed) {
+        (true, true) => number.to_signed_bytes_le(),
+        (false, true) => number.to_signed_bytes_be(),
+        (true, false) => number.to_bytes_le().1,
+        (false, false) => number.to_bytes_be().1,
     };
     if minimal.len() > length {
         return Err(ExcType::overflow_error("int too big to convert"));
     }
-    // Include the minimal representation in current usage before approving the padded buffer.
     check_repeat_size(length, 1, tracker)?;
-    let mut bytes = try_vec_with_capacity(length)?;
-    bytes.extend_from_slice(&minimal);
-    bytes.resize(length, if negative { 0xff } else { 0 });
-    if !little_endian {
-        bytes.reverse();
+    let buffer = try_vec_with_capacity(length)?;
+    let mut bytes = BytesBuilder::from_existing(buffer, tracker);
+    let padding = length - minimal.len();
+    let fill = if negative { 0xff } else { 0 };
+    if little_endian {
+        bytes.push_slice(&minimal)?;
+        bytes.push_repeated(fill, padding)?;
+    } else {
+        bytes.push_repeated(fill, padding)?;
+        bytes.push_slice(&minimal)?;
     }
-    Ok(bytes)
+    Ok(bytes.finish())
 }
