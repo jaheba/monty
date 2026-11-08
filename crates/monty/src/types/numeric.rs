@@ -1,10 +1,35 @@
-//! Rounding helpers shared by immediate and heap-allocated numbers.
+//! Numeric conversion and rounding for immediate and heap-allocated numbers.
 
 use num_bigint::BigInt;
 use num_integer::Integer;
 use num_traits::Pow;
 
 use crate::{bytecode::VM, exception_private::RunResult, heap::Heap, types::LongInt, value::Value};
+
+/// Formats the IEEE-754 fields directly, preserving signed zero and subnormal exponents.
+pub(crate) fn float_hex(value: f64) -> String {
+    if value.is_nan() {
+        return "nan".to_owned();
+    }
+    let sign = if value.is_sign_negative() { "-" } else { "" };
+    if value.is_infinite() {
+        return format!("{sign}inf");
+    }
+    if value == 0.0 {
+        return format!("{sign}0x0.0p+0");
+    }
+
+    let bits = value.to_bits();
+    let raw_exponent = i32::try_from((bits >> 52) & 0x7ff).expect("11-bit field");
+    let fraction = bits & ((1_u64 << 52) - 1);
+    // Subnormals have no implicit leading one and retain the minimum normal exponent.
+    let (leading, exponent) = if raw_exponent == 0 {
+        (0, -1022)
+    } else {
+        (1, raw_exponent - 1023)
+    };
+    format!("{sign}0x{leading}.{fraction:013x}p{exponent:+}")
+}
 
 /// Resolves numeric rounding precision through `__index__`, clamping huge integers.
 /// User `__round__` methods receive the original argument instead of using this helper.

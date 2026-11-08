@@ -35,6 +35,8 @@ These raise `NameError`:
 
 ## Behavioural divergences
 
+- **`float.hex()`** supports instance calls; `float.hex(x)` raises `AttributeError`.
+    `float.fromhex` is not implemented.
 - **No `__class__` on builtin values** — `[].__class__`, `list.__class__` and
     `list[int].__class__` raise `AttributeError`; only instances of Monty classes
     carry it (see [classes.md](classes.md)). Use `type(x)`.
