@@ -34,6 +34,7 @@ pub mod lru_cache;
 pub mod module;
 pub mod namedtuple;
 pub(crate) mod native;
+pub(crate) mod native_type_def;
 pub(crate) mod numeric;
 pub mod partial;
 pub mod path;

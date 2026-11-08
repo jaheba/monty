@@ -7,6 +7,71 @@ use monty_types::{
     unstable::{self, MontyNode},
 };
 
+/// Local native definitions must work through aliases and preserve shared payload type identities.
+#[test]
+fn local_native_type_definitions() {
+    let code = r"
+from collections import Counter, defaultdict
+
+constructors = [list, dict, defaultdict, Counter]
+assert list((1, 2)) == constructors[0]((1, 2)) == [1, 2]
+assert dict(a=1) == constructors[1](a=1) == {'a': 1}
+
+dd = constructors[2](list, [('a', [1])])
+counter = constructors[3]('aba')
+assert type(dd) is defaultdict
+assert dd['missing'] == []
+assert type(counter) is Counter
+assert counter == {'a': 2, 'b': 1}
+assert defaultdict.__bases__ == Counter.__bases__ == (dict,)
+assert defaultdict.__mro__ == (defaultdict, dict, object)
+assert Counter.__mro__ == (Counter, dict, object)
+
+shared = []
+d = constructors[1].fromkeys(['a', 'b'], shared)
+assert type(d) is dict
+assert d['a'] is d['b'] is shared
+dd_keys = constructors[2].fromkeys(['a', 'b'], shared)
+assert type(dd_keys) is defaultdict
+assert dd_keys.default_factory is None
+assert dd_keys['a'] is shared
+try:
+    constructors[3].fromkeys(['a'], shared)
+except NotImplementedError:
+    pass
+else:
+    assert False
+
+for ctor, name in [(list, 'list'), (dict, 'dict')]:
+    assert ctor.__name__ == name
+    assert ctor.__bases__ == (object,)
+    assert ctor.__mro__ == (ctor, object)
+    assert ctor.__init__ is object.__init__
+    assert ctor[int].__origin__ is ctor
+    assert ctor.__class_getitem__(int).__origin__ is ctor
+
+    try:
+        ctor.__name__([shared])
+    except TypeError:
+        pass
+    else:
+        assert False
+
+    try:
+        ctor.missing([shared])
+    except AttributeError:
+        pass
+    else:
+        assert False
+
+assert constructors[0]((3, 4)) == [3, 4]
+assert constructors[1](a=2) == {'a': 2}
+True
+";
+    let mut runner = MontyRun::new(code.to_owned(), "test.py", vec![], CompileOptions::default()).unwrap();
+    assert_eq!(runner.run_no_limits(vec![]).unwrap(), MontyObject::bool(true));
+}
+
 /// Test we can reuse exec without borrow checker issues.
 #[test]
 fn repeat_exec() {

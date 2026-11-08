@@ -24,6 +24,7 @@ use crate::{
     intern::{Interns, StaticStrings, StringId},
     modules::{
         collections::{
+            self,
             counter::{
                 CounterCmp, CounterOp, counter_binary_op, counter_compare, counter_elements, counter_inplace_op,
                 counter_most_common, counter_order, counter_total, counter_unary_op, counter_update_method,
@@ -35,6 +36,7 @@ use crate::{
     types::{
         Type, TypeRef,
         hash_table::{Live, PyHashTable, Slot, TableCursor, TableEntry, TableProbe, TableScan, TableSource, TableWalk},
+        native_type_def::NativeTypeDef,
     },
     value::{EitherStr, VALUE_SIZE, Value, eq_bigint, eq_bytes, eq_f64, eq_i64, eq_str},
 };
@@ -88,6 +90,55 @@ pub(crate) struct Dict {
     /// diverges on missing-key access, `type`/`repr`, and the
     /// `default_factory` attribute.
     kind: DictKind,
+}
+
+impl NativeTypeDef for Dict {
+    const NAME: &'static str = "dict";
+    const BUILTIN_NAME: Option<&'static str> = Some(Self::NAME);
+
+    fn construct(vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult> {
+        Self::init(vm, args).map(CallResult::Value)
+    }
+
+    fn class_method(attr: &EitherStr, args: ArgValues, vm: &mut VM<'_>) -> Result<RunResult<CallResult>, ArgValues> {
+        if attr.static_string(vm.interns) == Some(StaticStrings::Fromkeys) {
+            Ok(dict_fromkeys(args, DictKind::plain(), vm).map(CallResult::Value))
+        } else {
+            Err(args)
+        }
+    }
+}
+
+/// Defines `defaultdict` while instances share the `Dict` payload.
+pub(crate) struct DefaultDictType;
+
+impl NativeTypeDef for DefaultDictType {
+    const NAME: &'static str = "collections.defaultdict";
+    const BASES: &'static [Type] = &[Type::Dict];
+
+    fn construct(vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult> {
+        collections::defaultdict_init(vm, args).map(CallResult::Value)
+    }
+
+    fn class_method(attr: &EitherStr, args: ArgValues, vm: &mut VM<'_>) -> Result<RunResult<CallResult>, ArgValues> {
+        collections::defaultdict_class_method(attr, args, vm)
+    }
+}
+
+/// Defines `Counter` without changing the shared dictionary storage.
+pub(crate) struct CounterType;
+
+impl NativeTypeDef for CounterType {
+    const NAME: &'static str = "Counter";
+    const BASES: &'static [Type] = &[Type::Dict];
+
+    fn construct(vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult> {
+        collections::counter_init(vm, args).map(CallResult::Value)
+    }
+
+    fn class_method(attr: &EitherStr, args: ArgValues, vm: &mut VM<'_>) -> Result<RunResult<CallResult>, ArgValues> {
+        collections::counter_class_method(attr, args, vm)
+    }
 }
 
 /// Distinguishes a plain `dict` from a `collections.defaultdict` or `Counter`.
@@ -1994,19 +2045,6 @@ impl<'de> serde::Deserialize<'de> for Dict {
             contains_refs: fields.contains_refs,
             kind: fields.kind,
         })
-    }
-}
-
-/// `dict.fromkeys(...)` called on the type, so the result is a plain dict.
-pub(crate) fn dict_class_method(
-    attr: &EitherStr,
-    args: ArgValues,
-    vm: &mut VM<'_>,
-) -> Result<RunResult<CallResult>, ArgValues> {
-    if attr.static_string(vm.interns) == Some(StaticStrings::Fromkeys) {
-        Ok(dict_fromkeys(args, DictKind::plain(), vm).map(CallResult::Value))
-    } else {
-        Err(args)
     }
 }
 

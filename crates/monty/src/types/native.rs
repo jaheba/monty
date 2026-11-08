@@ -1,9 +1,8 @@
 //! The native type table: one [`TypeDef`] entry per Rust-defined Python type.
 //!
-//! [`native_types!`] generates the fieldless [`Type`] enum and a static
-//! [`TypeDef`] per variant from a single table, so adding a native type is one
-//! entry plus its constructor. Facts that used to live in scattered `match`es —
-//! names, bases, constructors, class attributes, behaviour flags — live here.
+//! [`native_types!`] generates the fieldless [`Type`] enum and its runtime table.
+//! Entries can supply metadata inline or register a local [`NativeTypeDef`]
+//! implementation. Capability flags remain in the table during migration.
 //!
 //! Variant names are the dump contract (dumps store them as strings) and the
 //! order is the `id()` contract: [`Type::legacy_index`] maps it onto the indices
@@ -22,10 +21,12 @@ use crate::{
     builtins::{iter::builtin_iter, object::object_class_attr, type_::builtin_type},
     bytecode::{CallResult, VM},
     exception_private::{ExcType, RunResult, exc_new},
-    modules::{collections, csv, hashlib, itertools},
+    modules::{csv, hashlib, itertools},
     types::{
         Bytes, Deque, Dict, ForwardRef, FrozenSet, List, Partial, Path, Random, Range, Set, Slice, Str, TimeZone,
-        Tuple, bytes, complex, date, datetime, decimal, dict, path, time, timedelta, timezone,
+        Tuple, bytes, complex, date, datetime, decimal, dict,
+        native_type_def::NativeTypeDef,
+        path, time, timedelta, timezone,
         r#type::{bool_init, float_init, int_init, union_init},
     },
     value::{EitherStr, Value},
@@ -33,8 +34,7 @@ use crate::{
 
 /// Facts about one native type, read through [`Type::def`].
 ///
-/// Built only by the `const fn` builder methods inside [`native_types!`]; every
-/// field defaults to "absent" so an entry names just what differs.
+/// Built by [`native_types!`] from inline entries or local trait implementations.
 #[expect(clippy::struct_excessive_bools, reason = "independent facts, each read on its own")]
 pub(crate) struct TypeDef {
     /// CPython's `tp_name`: qualified for module types (`datetime.date`), so it
@@ -88,6 +88,17 @@ pub(crate) enum Constructor {
 }
 
 impl TypeDef {
+    /// Erases a local implementation into the existing indexed runtime table.
+    const fn from_impl<T: NativeTypeDef>() -> Self {
+        Self {
+            builtin: T::BUILTIN_NAME,
+            ctor: Constructor::Call(T::construct),
+            class_attr: Some(T::class_attr),
+            class_method: Some(T::class_method),
+            ..Self::new(T::NAME, T::BASES)
+        }
+    }
+
     /// An entry with `name` and `bases` and everything else absent.
     const fn new(name: &'static str, bases: &'static [Type]) -> Self {
         Self {
@@ -183,14 +194,18 @@ impl TypeDef {
 
 /// Generates [`Type`], its [`TypeDef`] table and the name lookups from one list.
 ///
-/// Each entry is `Variant("tp_name", Base | Base)` followed by builder calls;
-/// omitted bases mean `object`. Doc comments on an entry document the variant.
+/// Entries accept `Variant("tp_name", Base | Base)` or `Variant(RustType)`,
+/// followed by builder calls. Omitted inline bases mean `object`.
 macro_rules! native_types {
     (@bases) => { &[Type::Object] };
     (@bases $($base:ident)|+) => { &[$(Type::$base),+] };
+    (@def $name:literal $(, $($base:ident)|+)?) => {
+        TypeDef::new($name, native_types!(@bases $($($base)|+)?))
+    };
+    (@def $implementation:ty) => { TypeDef::from_impl::<$implementation>() };
     ($(
         $(#[doc = $doc:literal])*
-        $variant:ident($name:literal $(, $($base:ident)|+)?) $(.$method:ident($($arg:expr),*))*
+        $variant:ident($($definition:tt)*) $(.$method:ident($($arg:expr),*))*
     ),* $(,)?) => {
         /// A Rust-defined Python type: builtins, stdlib types and exception classes.
         ///
@@ -215,7 +230,7 @@ macro_rules! native_types {
         /// One entry per [`Type`], indexed by discriminant; a `const` so other
         /// tables can be computed from it at compile time.
         const TYPE_DEFS_CONST: [TypeDef; Type::ALL.len()] = [
-            $(TypeDef::new($name, native_types!(@bases $($($base)|+)?))$(.$method($($arg),*))*,)*
+            $(native_types!(@def $($definition)*)$(.$method($($arg),*))*,)*
         ];
 
         /// The runtime copy of [`TYPE_DEFS_CONST`], read by [`Type::def`].
@@ -486,12 +501,10 @@ native_types! {
         .sequence_repeat()
         .ctor(Constructor::Value(Bytes::init))
         .class_method(bytes::bytes_class_method),
-    List("list")
-        .builtin()
+    List(List)
         .basetype()
         .class_getitem()
-        .sequence_repeat()
-        .ctor(Constructor::Value(List::init)),
+        .sequence_repeat(),
     Tuple("tuple")
         .builtin()
         .basetype()
@@ -500,25 +513,18 @@ native_types! {
         .ctor(Constructor::Value(Tuple::init)),
     NamedTuple("namedtuple", Tuple)
         .sequence_repeat(),
-    Dict("dict")
-        .builtin()
+    Dict(Dict)
         .basetype()
-        .class_getitem()
-        .ctor(Constructor::Value(Dict::init))
-        .class_method(dict::dict_class_method),
+        .class_getitem(),
     /// `collections.defaultdict` — a `dict` with a `default_factory` (stored as
     /// a `DictKind` on the `Dict`, not a separate heap type).
-    DefaultDict("collections.defaultdict", Dict)
+    DefaultDict(dict::DefaultDictType)
         .basetype()
-        .class_getitem()
-        .ctor(Constructor::Value(collections::defaultdict_init))
-        .class_method(collections::defaultdict_class_method),
+        .class_getitem(),
     /// `collections.Counter` — a `dict` subclass (also a `DictKind`).
-    Counter("Counter", Dict)
+    Counter(dict::CounterType)
         .basetype()
-        .class_getitem()
-        .ctor(Constructor::Value(collections::counter_init))
-        .class_method(collections::counter_class_method),
+        .class_getitem(),
     DictKeys("dict_keys"),
     DictItems("dict_items"),
     DictValues("dict_values"),

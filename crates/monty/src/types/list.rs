@@ -24,6 +24,7 @@ use crate::{
     sorting::parse_and_sort,
     types::{
         LazyHeapSet, Type, TypeRef,
+        native_type_def::NativeTypeDef,
         slice::{normalize_sequence_index, slice_collect_iterator, value_to_i64_bound},
     },
     value::{EitherStr, VALUE_SIZE, Value},
@@ -71,6 +72,15 @@ pub(crate) struct List {
     /// in `collect_child_ids` and `py_dec_ref_ids` when no refs are present.
     #[serde(rename = "C")]
     contains_refs: bool,
+}
+
+impl NativeTypeDef for List {
+    const NAME: &'static str = "list";
+    const BUILTIN_NAME: Option<&'static str> = Some(Self::NAME);
+
+    fn construct(vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult> {
+        Self::init(vm, args).map(CallResult::Value)
+    }
 }
 
 impl List {
