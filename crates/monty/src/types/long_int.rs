@@ -10,6 +10,7 @@
 
 pub(crate) mod arithmetic;
 pub(crate) mod bytes;
+mod to_bytes;
 
 use std::{
     borrow::Cow,
@@ -235,11 +236,13 @@ impl<'h> PyTrait<'h> for PyInt<'h> {
     }
 
     fn py_call_attr(&mut self, vm: &mut VM<'h>, attr: &EitherStr, args: ArgValues) -> RunResult<CallResult> {
-        if attr.static_string(vm.interns) == Some(StaticStrings::FromBytes) {
-            bytes::from_bytes(Type::Int, args, vm).map(CallResult::Value)
-        } else {
-            args.drop_with(vm);
-            Err(ExcType::attribute_error(Type::Int, attr.as_str(vm.interns)))
+        match attr.static_string(vm.interns) {
+            Some(StaticStrings::FromBytes) => bytes::from_bytes(Type::Int, args, vm).map(CallResult::Value),
+            Some(StaticStrings::ToBytes) => to_bytes::call(self, args, vm).map(CallResult::Value),
+            _ => {
+                args.drop_with(vm);
+                Err(ExcType::attribute_error(Type::Int, attr.as_str(vm.interns)))
+            }
         }
     }
 

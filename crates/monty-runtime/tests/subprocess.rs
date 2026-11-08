@@ -1436,6 +1436,23 @@ fn large_allocations_are_rejected_before_the_hard_limit() {
     child.shutdown();
 }
 
+/// Requested padding is checked before the worker allocates the output buffer.
+#[test]
+fn int_to_bytes_preflights_requested_output() {
+    for code in [
+        "(0).to_bytes(10_000_000)",
+        "(1).to_bytes(10_000_000)",
+        "(-1).to_bytes(10_000_000, signed=True)",
+    ] {
+        let mut child = ChildProc::spawn();
+        child.create_repl_with(configure_with_max_memory(1024 * 1024));
+        let (_, event) = child.feed(code);
+        assert_eq!(expect_error(event).exc_type, "MemoryError", "{code}");
+        assert_eq!(child.feed_complete("1 + 1"), MontyObject::int(2), "{code}");
+        child.shutdown();
+    }
+}
+
 /// `DictWriter.writerows()` on a file keeps one list per row until its single
 /// write, so wide `fieldnames` over many sparse dicts amplify the input: each
 /// row's list is preflighted against the usage so far.

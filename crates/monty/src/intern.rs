@@ -2334,7 +2334,7 @@ pub enum StaticStrings {
     Sigma,
     /// `DecimalTuple.sign` field.
     Sign,
-    /// `int.from_bytes(signed=...)` argument.
+    /// `signed` argument of integer byte conversions.
     Signed,
     /// `math.sin()` function.
     Sin,
@@ -2546,6 +2546,8 @@ pub enum StaticStrings {
     TmYear,
     /// `struct_time.tm_zone` field.
     TmZone,
+    /// `int.to_bytes()` method.
+    ToBytes,
     /// `date.today()` / `datetime.today()` classmethod.
     Today,
     /// `tomllib.TOMLDecodeError` exception.

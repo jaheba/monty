@@ -35,6 +35,10 @@ These raise `NameError`:
 
 ## Behavioural divergences
 
+- **`int.to_bytes`** invokes a user length's `__index__` and `signed`'s truth conversion synchronously;
+    those methods cannot suspend for host functions or OS calls (see [classes.md](classes.md)).
+    Only instance calls such as `(65).to_bytes()` are supported; `int.to_bytes(65)` raises `AttributeError`.
+
 - **`callable()` on host proxies** returns `True` for host classes and instances because their call slot delegates
     to the host; the host may refuse the actual call.
 

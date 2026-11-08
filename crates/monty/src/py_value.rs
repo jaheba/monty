@@ -778,6 +778,9 @@ impl<'h> PyTrait<'h> for PyValue<'h> {
             Self::Bool(_) if attr.static_string(vm.interns) == Some(StaticStrings::FromBytes) => {
                 from_bytes(Type::Bool, args, vm).map(CallResult::Value)
             }
+            Self::Bool(value) if attr.static_string(vm.interns) == Some(StaticStrings::ToBytes) => {
+                PyInt::Small(i64::from(*value)).py_call_attr(vm, attr, args)
+            }
             Self::Marker(marker) if matches!(marker.0, StaticStrings::Stdout | StaticStrings::Stderr) => {
                 let stream = if marker.0 == StaticStrings::Stdout { PrintStream::Stdout } else { PrintStream::Stderr };
                 sys::stream::call(stream, attr, args, vm)
