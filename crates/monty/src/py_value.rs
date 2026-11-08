@@ -794,6 +794,15 @@ impl<'h> PyTrait<'h> for PyValue<'h> {
                 let stream = if marker.0 == StaticStrings::Stdout { PrintStream::Stdout } else { PrintStream::Stderr };
                 sys::stream::call(stream, attr, args, vm)
             }
+            Self::Bool(_) if attr.static_string(vm.interns) == Some(StaticStrings::IsInteger) => {
+                args.check_zero_args("int.is_integer", vm.heap)?;
+                Ok(CallResult::Value(Value::Bool(true)))
+            }
+            Self::Float(value) if attr.static_string(vm.interns) == Some(StaticStrings::IsInteger) => {
+                args.check_zero_args("float.is_integer", vm.heap)?;
+                // Non-finite inputs have a NaN fractional part, so also return false.
+                Ok(CallResult::Value(Value::Bool(value.fract() == 0.0)))
+            }
             Self::Module(value) => value.py_call_attr(vm, attr, args),
             Self::Builtin(Builtins::Type(ty)) => Type::from(*ty).call_class_method(attr, args, vm),
             Self::DefFunction(func_id) => {

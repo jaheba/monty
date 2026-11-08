@@ -238,6 +238,10 @@ impl<'h> PyTrait<'h> for PyInt<'h> {
 
     fn py_call_attr(&mut self, vm: &mut VM<'h>, attr: &EitherStr, args: ArgValues) -> RunResult<CallResult> {
         match attr.static_string(vm.interns) {
+            Some(StaticStrings::IsInteger) => {
+                args.check_zero_args("int.is_integer", vm.heap)?;
+                Ok(CallResult::Value(Value::Bool(true)))
+            }
             Some(StaticStrings::FromBytes) => bytes::from_bytes(Type::Int, args, vm).map(CallResult::Value),
             Some(StaticStrings::ToBytes) => to_bytes::call(self, args, vm).map(CallResult::Value),
             Some(method @ (StaticStrings::BitLength | StaticStrings::BitCount)) => {

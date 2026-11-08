@@ -1570,6 +1570,9 @@ pub enum StaticStrings {
     Isidentifier,
     /// `math.isinf()` function.
     Isinf,
+    /// `is_integer()` method, shared by `int` and `float`.
+    #[strum(serialize = "is_integer")]
+    IsInteger,
     /// `os.path.isjunction()` function.
     Isjunction,
     /// `itertools.islice()` function.
