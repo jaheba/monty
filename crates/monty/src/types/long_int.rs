@@ -9,6 +9,7 @@
 //! having freestanding functions scattered across the codebase.
 
 pub(crate) mod arithmetic;
+mod bits;
 
 use std::{
     borrow::Cow,
@@ -26,12 +27,13 @@ use smallvec::smallvec;
 
 use self::arithmetic::IntArithmetic;
 use crate::{
-    bytecode::VM,
+    args::ArgValues,
+    bytecode::{CallResult, VM},
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::{HashValue, hash_python_long_int},
-    heap::{Heap, HeapData, HeapObjectRead},
+    heap::{DropWithContext, Heap, HeapData, HeapObjectRead},
     identity::Identity,
-    intern::LongIntId,
+    intern::{LongIntId, StaticStrings},
     resource_checks::{check_div_size, check_lshift_size, check_mult_size, check_pow_size},
     types::{
         LazyHeapSet, PyTrait, Type,
@@ -40,7 +42,7 @@ use crate::{
         str::allocate_string,
         tuple::allocate_tuple,
     },
-    value::{Value, eq_bigint, float_pow_value},
+    value::{EitherStr, Value, eq_bigint, float_pow_value},
 };
 
 /// Maximum number of decimal digits allowed for integer-string conversion.
@@ -230,6 +232,15 @@ impl<'h> PyTrait<'h> for PyInt<'h> {
 
     fn py_type(&self, _vm: &VM<'h>) -> Type {
         Type::Int
+    }
+
+    fn py_call_attr(&mut self, vm: &mut VM<'h>, attr: &EitherStr, args: ArgValues) -> RunResult<CallResult> {
+        if let Some(method @ (StaticStrings::BitLength | StaticStrings::BitCount)) = attr.static_string(vm.interns) {
+            bits::call(self, method, args, vm).map(CallResult::Value)
+        } else {
+            args.drop_with(vm);
+            Err(ExcType::attribute_error(Type::Int, attr.as_str(vm.interns)))
+        }
     }
 
     fn py_len(&self, _vm: &VM<'h>) -> Option<usize> {
