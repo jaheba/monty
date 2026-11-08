@@ -28,6 +28,7 @@ use crate::{
     heap::{DropWithContext, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
     intern::{Interns, StaticStrings},
     os_dispatch::{build_path_os_call, is_path_os_method, value_as_path_str},
+    string_builder::StringBuilder,
     types::{
         LazyHeapSet, List, PyTrait, Type, allocate_tuple,
         dir_scan::{glob_call, walk_call},
@@ -505,8 +506,21 @@ fn extract_path_string<'a>(val: &'a Value, vm: &'a VM<'_>) -> RunResult<&'a str>
 }
 
 fn fold_joinpath(mut path: Path, parts: &[Value], vm: &VM<'_>) -> RunResult<Path> {
-    for part in parts {
-        path = Path::new(path.joinpath(extract_path_string(part, vm)?));
+    for (index, part) in parts.iter().enumerate() {
+        vm.heap.tracker.check_time_every(index)?;
+        let part = extract_path_string(part, vm)?;
+        if part.starts_with('/') || path.path.is_empty() || path.path == "." {
+            path = Path::new(part.to_owned());
+        } else {
+            let separator = !path.path.ends_with('/');
+            // Repeated references to one segment can amplify a small argument list into a huge path.
+            let mut builder = StringBuilder::from_existing(path.path, &vm.heap.tracker);
+            if separator {
+                builder.push('/')?;
+            }
+            builder.push_str(part)?;
+            path = Path::new(builder.finish_raw()?);
+        }
     }
     Ok(path)
 }
