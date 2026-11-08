@@ -32,7 +32,7 @@ Paths without a leading tilde return unchanged without a host call.
 
 Implemented: `anchor`, `drive`, `root`, `name`, `parent`, `stem`, `suffix`, `suffixes`, `parts`,
 `is_absolute()`, `joinpath(*other)`, `with_name(name)`, `with_stem(stem)`,
-`with_suffix(suffix)`, `as_posix()`, `as_uri()`, `__fspath__()`.
+`with_suffix(suffix)`, `with_segments(*pathsegments)`, `as_posix()`, `as_uri()`, `__fspath__()`.
 
 `as_uri()` requires an absolute path and percent-encodes its UTF-8 bytes.
 The URI uses the sandbox's virtual POSIX path.
@@ -56,7 +56,7 @@ unlike CPython's POSIX paths.
 A non-`None` `case_sensitive` is hashed and truth-tested once after the path-length checks succeed;
 CPython's compiled-pattern cache can repeat hashing and skip truth tests on cache hits.
 
-Not implemented: `is_reserved`, `full_match`, `with_segments`.
+Not implemented: `is_reserved`, `full_match`.
 
 ## I/O methods (yield to host)
 

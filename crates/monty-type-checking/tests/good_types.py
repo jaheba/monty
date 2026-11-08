@@ -36,6 +36,7 @@ assert_type('text'.translate({ord('t'): 'T'}), str)
 assert_type(str.maketrans('ab', 'AB', 'b'), dict[int, int | None])
 assert_type(str.maketrans({'a': 'A'}), dict[int, str])
 assert_type(slice(None).indices(10), tuple[int, int, int])
+assert_type(Path('/old').with_segments('new', 'file'), Path)
 
 # === Type checking helper functions ===
 

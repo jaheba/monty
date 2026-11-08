@@ -2106,7 +2106,11 @@ fn timeout_in_a85decode_ignorechars() {
 
 #[test]
 fn timeout_in_path_segment_joins() {
-    for expression in ["Path(*parts)", "Path('.').joinpath(*parts)"] {
+    for expression in [
+        "Path(*parts)",
+        "Path('.').with_segments(*parts)",
+        "Path('.').joinpath(*parts)",
+    ] {
         let code = format!("from pathlib import Path\nparts = ['x'] * 100_000\n{expression}");
         assert_timeout_in_builtin(&code, expression);
     }

@@ -1456,7 +1456,11 @@ fn int_to_bytes_preflights_requested_output() {
 /// Accumulated path growth is refused before the worker reaches its hard ceiling.
 #[test]
 fn path_segments_preflight_accumulated_output() {
-    for expression in ["Path(*parts)", "Path('.').joinpath(*parts)"] {
+    for expression in [
+        "Path(*parts)",
+        "Path('.').with_segments(*parts)",
+        "Path('.').joinpath(*parts)",
+    ] {
         let code = format!("from pathlib import Path\nparts = ['x' * 1000] * 10_000\n{expression}");
         let mut child = ChildProc::spawn();
         child.create_repl_with(configure_with_max_memory(1024 * 1024));

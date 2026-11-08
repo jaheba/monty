@@ -6,6 +6,7 @@
 
 pub(crate) mod home;
 mod uri;
+mod segments;
 
 use std::{
     cell::Cell,
@@ -349,10 +350,10 @@ impl Path {
             }
             [single] => {
                 // Single argument, just convert to Path
-                Self::new(extract_path_string(single, vm)?.to_owned())
+                Self::new(extract_path_segment(single, vm)?.to_owned())
             }
             [first_arg, rest @ ..] => {
-                let base = Self::new(extract_path_string(first_arg, vm)?.to_owned());
+                let base = Self::new(extract_path_segment(first_arg, vm)?.to_owned());
                 fold_joinpath(base, rest, vm)?
             }
         };
@@ -505,10 +506,20 @@ fn extract_path_string<'a>(val: &'a Value, vm: &'a VM<'_>) -> RunResult<&'a str>
         .ok_or_else(|| ExcType::type_error(format!("expected str or Path, got {}", val.py_type_name(vm))))
 }
 
+/// Constructor and join operands share pathlib's path-like conversion errors.
+fn extract_path_segment<'a>(value: &'a Value, vm: &'a VM<'_>) -> RunResult<&'a str> {
+    value_as_path_str(value, vm.heap, vm.interns).ok_or_else(|| {
+        ExcType::type_error(format!(
+            "argument should be a str or an os.PathLike object where __fspath__ returns a str, not '{}'",
+            value.py_type_name(vm)
+        ))
+    })
+}
+
 fn fold_joinpath(mut path: Path, parts: &[Value], vm: &VM<'_>) -> RunResult<Path> {
     for (index, part) in parts.iter().enumerate() {
         vm.heap.tracker.check_time_every(index)?;
-        let part = extract_path_string(part, vm)?;
+        let part = extract_path_segment(part, vm)?;
         if part.starts_with('/') || path.path.is_empty() || path.path == "." {
             path = Path::new(part.to_owned());
         } else {
@@ -711,6 +722,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Path> {
             StaticStrings::Match => pattern::path_match(&self.get(vm.heap).clone(), args, vm),
             StaticStrings::Home => return home::class_home(vm, args),
             StaticStrings::Expanduser => return home::expanduser(self, vm, args),
+            StaticStrings::WithSegments => segments::call(args, vm),
             StaticStrings::Glob => {
                 let PathGlobArgs {
                     pattern,
