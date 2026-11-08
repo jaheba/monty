@@ -26,12 +26,13 @@ use smallvec::smallvec;
 
 use self::arithmetic::IntArithmetic;
 use crate::{
-    bytecode::VM,
+    args::ArgValues,
+    bytecode::{CallResult, VM},
     exception_private::{ExcType, ExcTypeExt, RunResult},
     hash::{HashValue, hash_python_long_int},
-    heap::{Heap, HeapData, HeapObjectRead},
+    heap::{DropWithContext, Heap, HeapData, HeapObjectRead, HeapReader},
     identity::Identity,
-    intern::LongIntId,
+    intern::{LongIntId, StaticStrings},
     resource_checks::{check_div_size, check_lshift_size, check_mult_size, check_pow_size},
     types::{
         LazyHeapSet, PyTrait, Type,
@@ -40,7 +41,7 @@ use crate::{
         str::allocate_string,
         tuple::allocate_tuple,
     },
-    value::{Value, eq_bigint, float_pow_value},
+    value::{EitherStr, Value, eq_bigint, float_pow_value},
 };
 
 /// Maximum number of decimal digits allowed for integer-string conversion.
@@ -179,6 +180,15 @@ impl<'h> PyInt<'h> {
             Self::Heap(value) => big(value.get(vm.heap).inner()),
         }
     }
+
+    /// Retains the logical integer without copying heap-allocated digits.
+    pub(crate) fn clone_value(&self, heap: &HeapReader<'h>) -> Value {
+        match self {
+            Self::Small(value) => Value::Int(*value),
+            Self::Interned(id) => Value::InternLongInt(*id),
+            Self::Heap(value) => value.clone_value(heap),
+        }
+    }
 }
 
 /// Keeps storage selection here; a heap integer forwards to its concrete protocol.
@@ -230,6 +240,19 @@ impl<'h> PyTrait<'h> for PyInt<'h> {
 
     fn py_type(&self, _vm: &VM<'h>) -> Type {
         Type::Int
+    }
+
+    fn py_call_attr(&mut self, vm: &mut VM<'h>, attr: &EitherStr, args: ArgValues) -> RunResult<CallResult> {
+        if attr.static_string(vm.interns) == Some(StaticStrings::AsIntegerRatio) {
+            args.check_zero_args("int.as_integer_ratio", vm.heap)?;
+            Ok(CallResult::Value(allocate_tuple(
+                smallvec![self.clone_value(vm.heap), Value::Int(1)],
+                vm.heap,
+            )))
+        } else {
+            args.drop_with(vm);
+            Err(ExcType::attribute_error(Type::Int, attr.as_str(vm.interns)))
+        }
     }
 
     fn py_len(&self, _vm: &VM<'h>) -> Option<usize> {
@@ -316,11 +339,7 @@ impl<'h> PyTrait<'h> for PyInt<'h> {
 
     #[inline(always)]
     fn py_pos_impl(&self, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        Ok(Some(match self {
-            Self::Small(value) => Value::Int(*value),
-            Self::Interned(id) => Value::InternLongInt(*id),
-            Self::Heap(value) => value.clone_value(vm.heap),
-        }))
+        Ok(Some(self.clone_value(vm.heap)))
     }
 
     #[inline(always)]
