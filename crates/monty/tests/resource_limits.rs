@@ -650,6 +650,34 @@ build(5) == build(5)
 }
 
 #[test]
+fn timeout_in_int_to_bytes_padding() {
+    for expression in [
+        "len((1).to_bytes(16 * 1024 * 1024, 'big'))",
+        "len((-1).to_bytes(16 * 1024 * 1024, 'little', signed=True))",
+    ] {
+        let mut repl = MontyRepl::new("test.py", ResourceTracker::default(), CompileOptions::default());
+        let full_encoding = fastest_of_attempts(|| {
+            let start = ThreadTime::now();
+            repl.feed_run(expression, vec![], PrintWriter::Stdout).unwrap();
+            start.elapsed()
+        });
+        let interrupted = fastest_of_attempts(|| {
+            repl.tracker_mut().set_max_feed_duration(full_encoding / 10);
+            let start = ThreadTime::now();
+            let exc = repl
+                .feed_run(expression, vec![], PrintWriter::Stdout)
+                .expect_err("integer padding must hit the time limit");
+            assert_eq!(exc.exc_type(), ExcType::TimeoutError);
+            start.elapsed()
+        });
+        assert!(
+            interrupted < full_encoding / 2,
+            "{expression} should interrupt during padding; full encoding {full_encoding:?}, interrupted {interrupted:?}"
+        );
+    }
+}
+
+#[test]
 fn timeout_in_sum_builtin() {
     assert_timeout_in_builtin("sum(range(10**18))", "sum(range(10**18))");
 }
