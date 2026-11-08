@@ -38,6 +38,10 @@ Custom OS handlers can use `monty_types::normalize_virtual_path` after validatin
 It shares the mounts' lexical POSIX normalization; see [filesystem callbacks](../filesystem.md#working-directory)
 for validation order and access checks.
 
+Custom scan handlers can use `monty_types::scan::SegmentPattern` for component matching.
+Its `try_new`, `try_matches` and `try_matches_component` methods accept a checkpoint callback that can stop
+compilation or matching with the caller's error type.
+
 Build inputs with [`MontyObject`](../api/rust/monty-types.md#montyobject) constructors and inspect them with `as_ref()`.
 The builders on [`CallArgs`](../api/rust/monty-types.md#callargs) and [`NamedValues`](../api/rust/monty-types.md#namedvalues)
 accept owned values; their iterators return [`ObjectRef`](../api/rust/monty-types.md#objectref) views.

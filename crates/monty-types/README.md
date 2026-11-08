@@ -26,6 +26,9 @@ implementation**.
   provides the lexical POSIX normalization shared by the interpreter, mounts, and `OsFunctionCall::to_args()` callbacks.
   It borrows canonical paths and resolves relative inputs from `/`.
   Validate NUL bytes and path limits before calling it; it does not confine filesystem access.
+- `scan::SegmentPattern` — component matching shared by directory scans and pure path operations.
+  `try_new`, `try_matches` and `try_matches_component` accept a checkpoint callback that can interrupt compilation
+  or matching, including wildcard backtracking and character-class scans.
 - `ResourceTracker` / `ResourceLimits` — the resource tracker the
   interpreter uses to enforce time/memory/recursion limits, plus the
   `max_suspensions` budget hosts enforce themselves.
