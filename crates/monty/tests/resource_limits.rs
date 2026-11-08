@@ -654,6 +654,19 @@ fn timeout_in_sum_builtin() {
     assert_timeout_in_builtin("sum(range(10**18))", "sum(range(10**18))");
 }
 
+#[test]
+fn timeout_in_path_uri_escape() {
+    let start = ThreadTime::now();
+    assert_timeout_in_builtin(
+        "from pathlib import Path\npath = Path('/' + 'é' * 10_000_000)\nlen(path.as_uri())",
+        "Path.as_uri percent encoding",
+    );
+    assert!(
+        start.elapsed() < Duration::from_millis(500),
+        "URI encoding should interrupt before completing the whole path"
+    );
+}
+
 /// Math aggregations must interrupt infinite iterators while inside one native call.
 #[test]
 fn timeout_in_math_aggregations() {

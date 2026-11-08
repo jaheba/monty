@@ -687,7 +687,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Path> {
             }
             StaticStrings::AsUri => {
                 check_no_args(args, "Path.as_uri", "self", vm)?;
-                let uri = uri::as_uri(self.get(vm.heap))?;
+                let uri = uri::as_uri(self.get(vm.heap), &vm.heap.tracker)?;
                 Ok(allocate_string(uri, vm.heap))
             }
             StaticStrings::Open => {
