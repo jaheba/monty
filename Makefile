@@ -260,8 +260,12 @@ generate-unicode-type: ## Regenerate the str character-property tables from the 
 	uv run scripts/gen_unicode_type.py
 
 .PHONY: check-unicode-type
-check-unicode-type: generate-unicode-type ## Verify the checked-in str character-property tables match the current CPython
-	git diff --exit-code crates/monty/src/types/unicode_type_data.rs
+check-unicode-type: generate-unicode-type generate-scan-case ## Verify the checked-in Unicode tables match the current CPython
+	git diff --exit-code crates/monty/src/types/unicode_type_data.rs crates/monty-types/src/scan/case_data.rs
+
+.PHONY: generate-scan-case
+generate-scan-case: ## Regenerate exceptional regex case groups from CPython 3.14
+	uv run scripts/gen_scan_case.py
 
 .PHONY: update-typeshed
 update-typeshed: ## Update vendored typeshed from upstream

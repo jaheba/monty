@@ -15,6 +15,8 @@
 //! the sandbox uses as they are. [`collect_scan`] is the implementation hosts
 //! can share; it replies with matches unless they outnumber the entries read.
 
+mod case_data;
+
 use std::{
     borrow::Cow,
     collections::{BTreeMap, HashMap, HashSet},
@@ -22,6 +24,8 @@ use std::{
     rc::Rc,
     sync::Arc,
 };
+
+use unicode_general_category::{GeneralCategory, get_general_category};
 
 use crate::{
     graph::{MontyGraph, MontyNode, NodeId},
@@ -1116,10 +1120,7 @@ impl SegmentPattern {
 
     /// Whether a single-character token accepts `c`.
     ///
-    /// Case-insensitively, `re.IGNORECASE` compares lowercased characters and
-    /// folds a class's ranges both ways, so the variants tried are `c`, its
-    /// lowercase, that lowercase's uppercase (`K` → `k` → `K`, for `[A-Z]`) and
-    /// its uppercase's lowercase (`ſ` → `S` → `s`, for `[a-z]`).
+    /// Case-insensitive matching tests every regex-equivalent character against literals and ranges.
     fn token_matches<E>(
         &self,
         token: &Token,
@@ -1130,13 +1131,10 @@ impl SegmentPattern {
         let variants = if self.case_sensitive {
             [c, c, c, c]
         } else {
-            let lower = simple_lower(c);
-            [c, lower, simple_upper(lower), simple_lower(simple_upper(c))]
+            case_variants(c)
         };
         Ok(match token {
-            Token::Char(expected) => variants
-                .iter()
-                .any(|v| *v == *expected || (!self.case_sensitive && simple_lower(*expected) == simple_lower(*v))),
+            Token::Char(expected) => variants.contains(expected),
             Token::Any => !component || c != '/',
             Token::Star => false,
             Token::Class { negated, items } => {
@@ -1153,6 +1151,24 @@ impl SegmentPattern {
             }
         })
     }
+}
+
+/// Regex equivalence includes titlecase letters, compatibility symbols and several lowercase variants.
+fn case_variants(c: char) -> [char; 4] {
+    if let Some(variants) = case_data::variants(c) {
+        return variants;
+    }
+    if !assigned_in_unicode_16(c) {
+        return [c; 4];
+    }
+    let lower = simple_lower(c);
+    [c, lower, simple_upper(lower), simple_lower(simple_upper(c))]
+        .map(|variant| if assigned_in_unicode_16(variant) { variant } else { c })
+}
+
+/// Rust may know newer case pairs than CPython 3.14; the category table is pinned to Unicode 16.
+fn assigned_in_unicode_16(c: char) -> bool {
+    c.is_ascii() || get_general_category(c) != GeneralCategory::Unassigned
 }
 
 /// Parses a `[...]` class whose body starts at `start`, returning the token and

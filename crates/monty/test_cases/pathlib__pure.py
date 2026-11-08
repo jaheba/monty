@@ -420,6 +420,12 @@ assert Path('a/é.py').match('A/É.PY', case_sensitive=1) is False
 for letter in ['İ', 'ı', 'ſ', 'K']:
     assert Path(letter).match('[a-z]', case_sensitive=False) is True
 
+assert Path('reports/Σ.TXT').match('ς.txt', case_sensitive=False) is True
+assert Path('data/I.json').match('ı.JSON', case_sensitive=False) is True
+assert Path('data/Μ.txt').match('[µ].txt', case_sensitive=False) is True
+assert Path('data/ǆ.txt').match('[!ǅ].txt', case_sensitive=False) is False
+assert Path('data/ᾀ.txt').match('[ᾈ-ᾏ].txt', case_sensitive=False) is True
+
 for pattern in ['', '.', Path('')]:
     try:
         Path('a').match(pattern)
