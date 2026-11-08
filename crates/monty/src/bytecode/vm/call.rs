@@ -391,6 +391,23 @@ impl<'h> VM<'h> {
         }
     }
 
+    /// Direct descriptor calls and unpacked bound calls use different CPython error owners.
+    #[inline]
+    pub(crate) fn call_attr(&mut self, obj: Value, name_id: StringId, args: ArgValues) -> Result<CallResult, RunError> {
+        if matches!(&obj, Value::Bool(_)) {
+            let owner = match self.interns.get_str(name_id) {
+                "bit_length" => Some("int.bit_length"),
+                "bit_count" => Some("int.bit_count"),
+                _ => None,
+            };
+            if let Some(owner) = owner {
+                args.check_zero_args(owner, self.heap)?;
+                return self.call_bound_attr(obj, name_id, ArgValues::Empty);
+            }
+        }
+        self.call_bound_attr(obj, name_id, args)
+    }
+
     /// Calls an attribute on an object.
     ///
     /// Logical dispatch hides interned versus heap storage and preserves suspendable
@@ -405,7 +422,7 @@ impl<'h> VM<'h> {
     /// override only need a single trait impl, not parallel `StaticStrings::Foo`
     /// arms in their `py_call_attr` body. New dunder methods plug into the
     /// dispatch table here without touching individual types.
-    pub(crate) fn call_attr(&mut self, obj: Value, name_id: StringId, args: ArgValues) -> Result<CallResult, RunError> {
+    fn call_bound_attr(&mut self, obj: Value, name_id: StringId, args: ArgValues) -> Result<CallResult, RunError> {
         let this = self;
         let attr = EitherStr::Interned(name_id);
 
@@ -633,7 +650,7 @@ impl<'h> VM<'h> {
 
         // Call the method (args_tuple guard drops at scope exit)
         let ((obj, _), this) = pending.into_parts();
-        this.call_attr(obj, name_id, args)
+        this.call_bound_attr(obj, name_id, args)
     }
 
     /// Extracts arguments from a tuple for `CallFunctionExtended`.

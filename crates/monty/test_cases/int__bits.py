@@ -49,3 +49,27 @@ for number in [0, False, True, -(2**63), 2**100, -(2**100)]:
             assert False, 'expected TypeError'
         except TypeError as exc:
             assert str(exc) == f'{owner}.bit_count() {message}'
+
+
+# Direct descriptor calls report int; unpacked calls above bind the bool receiver first.
+for number in [False, True]:
+    try:
+        number.bit_length([1])
+        assert False, 'expected TypeError'
+    except TypeError as exc:
+        assert str(exc) == 'int.bit_length() takes no arguments (1 given)'
+    try:
+        number.bit_length(other=[1])
+        assert False, 'expected TypeError'
+    except TypeError as exc:
+        assert str(exc) == 'int.bit_length() takes no keyword arguments'
+    try:
+        number.bit_count([1])
+        assert False, 'expected TypeError'
+    except TypeError as exc:
+        assert str(exc) == 'int.bit_count() takes no arguments (1 given)'
+    try:
+        number.bit_count(other=[1])
+        assert False, 'expected TypeError'
+    except TypeError as exc:
+        assert str(exc) == 'int.bit_count() takes no keyword arguments'
