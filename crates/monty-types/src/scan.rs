@@ -1059,7 +1059,13 @@ impl SegmentPattern {
                     star = Some((p, t));
                     p += 1;
                 }
-                Some(token) if self.token_matches(token, c, component) => {
+                Some(token)
+                    if self.token_matches(token, c, component, || {
+                        checkpoint(steps)?;
+                        steps = steps.wrapping_add(1);
+                        Ok(())
+                    })? =>
+                {
                     p += 1;
                     t += c.len_utf8();
                 }
@@ -1091,26 +1097,38 @@ impl SegmentPattern {
     /// folds a class's ranges both ways, so the variants tried are `c`, its
     /// lowercase, that lowercase's uppercase (`K` → `k` → `K`, for `[A-Z]`) and
     /// its uppercase's lowercase (`ſ` → `S` → `s`, for `[a-z]`).
-    fn token_matches(&self, token: &Token, c: char, component: bool) -> bool {
+    fn token_matches<E>(
+        &self,
+        token: &Token,
+        c: char,
+        component: bool,
+        mut checkpoint: impl FnMut() -> Result<(), E>,
+    ) -> Result<bool, E> {
         let variants = if self.case_sensitive {
             [c, c, c, c]
         } else {
             let lower = simple_lower(c);
             [c, lower, simple_upper(lower), simple_lower(simple_upper(c))]
         };
-        match token {
+        Ok(match token {
             Token::Char(expected) => variants
                 .iter()
                 .any(|v| *v == *expected || (!self.case_sensitive && simple_lower(*expected) == simple_lower(*v))),
             Token::Any => !component || c != '/',
             Token::Star => false,
             Token::Class { negated, items } => {
-                let hit = variants
-                    .iter()
-                    .any(|v| items.iter().any(|(low, high)| (*low..=*high).contains(v)));
-                hit != *negated
+                // One character can search an arbitrarily large class before the outer match advances.
+                for variant in variants {
+                    for (low, high) in items {
+                        checkpoint()?;
+                        if (*low..=*high).contains(&variant) {
+                            return Ok(!*negated);
+                        }
+                    }
+                }
+                *negated
             }
-        }
+        })
     }
 }
 

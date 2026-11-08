@@ -122,6 +122,21 @@ fn segment_match_checkpoints_interrupt_backtracking() {
     );
 }
 
+/// A class search is interruptible even when matching one character.
+#[test]
+fn segment_match_checkpoints_interrupt_a_large_class() {
+    let pattern = format!("[{}]", "b".repeat(1_000));
+    let matcher = SegmentPattern::new(&pattern, true);
+    let mut calls = 0;
+    let result = matcher.try_matches("a", |step| {
+        assert_eq!(step, calls);
+        calls += 1;
+        if step == 32 { Err("budget exhausted") } else { Ok(()) }
+    });
+    assert_eq!(result, Err("budget exhausted"));
+    assert_eq!(calls, 33);
+}
+
 /// An unterminated `[` makes every later `[` literal without rescanning for a `]`.
 #[test]
 fn unterminated_brackets_compile_linearly() {
