@@ -774,6 +774,9 @@ impl<'h> PyTrait<'h> for PyValue<'h> {
 
     fn py_call_attr(&mut self, vm: &mut VM<'h>, attr: &EitherStr, args: ArgValues) -> RunResult<CallResult> {
         forward_py_value!(self, |value| value.py_call_attr(vm, attr, args), {
+            Self::Bool(value) if attr.static_string(vm.interns) == Some(StaticStrings::ToBytes) => {
+                PyInt::Small(i64::from(*value)).py_call_attr(vm, attr, args)
+            }
             Self::Module(value) => value.py_call_attr(vm, attr, args),
             Self::Builtin(Builtins::Type(ty)) => Type::from(*ty).call_class_method(attr, args, vm),
             Self::DefFunction(func_id) => {
