@@ -24,7 +24,8 @@ pub(super) fn builtin_ascii(vm: &mut VM<'_>, args: ArgValues) -> RunResult<Value
 
     // Each input character expands to at most ten ASCII bytes, so growth is bounded by the tracked repr.
     let mut escaped = String::with_capacity(text.len());
-    for c in text.chars() {
+    for (index, c) in text.chars().enumerate() {
+        vm.heap.tracker.check_time_every(index)?;
         if c.is_ascii() {
             escaped.push(c);
         } else {

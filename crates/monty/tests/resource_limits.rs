@@ -675,6 +675,19 @@ fn timeout_in_sum_builtin() {
     assert_timeout_in_builtin("sum(range(10**18))", "sum(range(10**18))");
 }
 
+#[test]
+fn timeout_in_ascii_escape() {
+    let start = ThreadTime::now();
+    assert_timeout_in_builtin(
+        "text = 'é' * 20_000_000\nclass Text:\n    def __repr__(self):\n        return text\nlen(ascii(Text()))",
+        "ascii escaping a cached representation",
+    );
+    assert!(
+        start.elapsed() < Duration::from_millis(500),
+        "ascii should interrupt escaping before completing the whole representation"
+    );
+}
+
 /// Math aggregations must interrupt infinite iterators while inside one native call.
 #[test]
 fn timeout_in_math_aggregations() {
