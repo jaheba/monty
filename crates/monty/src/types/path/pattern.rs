@@ -2,13 +2,12 @@
 
 use monty_types::scan::SegmentPattern;
 
-use super::Path;
+use super::{Path, extract_path_segment};
 use crate::{
     args::{ArgValues, FromArgs},
     bytecode::VM,
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunResult},
-    os_dispatch::value_as_path_str,
     types::PyTrait,
     value::Value,
 };
@@ -24,14 +23,7 @@ pub(super) fn path_match(path: &Path, args: ArgValues, vm: &mut VM<'_>) -> RunRe
     defer_drop!(path_pattern, vm);
     defer_drop!(case_sensitive, vm);
 
-    let pattern = value_as_path_str(path_pattern, vm.heap, vm.interns)
-        .map(|text| Path::new(text.to_owned()))
-        .ok_or_else(|| {
-            ExcType::type_error(format!(
-                "argument should be a str or an os.PathLike object where __fspath__ returns a str, not '{}'",
-                path_pattern.py_type_name(vm)
-            ))
-        })?;
+    let pattern = Path::new(extract_path_segment(path_pattern, vm)?.to_owned());
     let parts = path.parts();
     let pattern_parts = pattern.parts();
     if pattern_parts.is_empty() {
@@ -51,7 +43,8 @@ pub(super) fn path_match(path: &Path, args: ArgValues, vm: &mut VM<'_>) -> RunRe
         case_sensitive.py_bool(vm)?
     };
 
-    for (part, pattern_part) in parts.iter().rev().zip(pattern_parts.iter().rev()) {
+    for (index, (part, pattern_part)) in parts.iter().rev().zip(pattern_parts.iter().rev()).enumerate() {
+        vm.heap.tracker.check_time_every(index)?;
         if !SegmentPattern::new(pattern_part, case_sensitive)
             .try_matches_component(part, |step| vm.heap.tracker.check_time_every(step))?
         {

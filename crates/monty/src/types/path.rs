@@ -5,8 +5,8 @@
 //! while filesystem methods yield external function calls for the host to resolve.
 
 pub(crate) mod home;
-mod uri;
 mod segments;
+mod uri;
 
 use std::{
     cell::Cell,
@@ -426,14 +426,7 @@ struct PathIsRelativeToArgs {
 
 /// Converts string and native path operands, preserving pathlib's argument-error wording.
 fn relative_path_operand(other: &Value, vm: &VM<'_>) -> RunResult<Path> {
-    value_as_path_str(other, vm.heap, vm.interns)
-        .map(|text| Path::new(text.to_owned()))
-        .ok_or_else(|| {
-            ExcType::type_error(format!(
-                "argument should be a str or an os.PathLike object where __fspath__ returns a str, not '{}'",
-                other.py_type_name(vm)
-            ))
-        })
+    extract_path_segment(other, vm).map(|text| Path::new(text.to_owned()))
 }
 
 /// `Path.rglob(pattern, *, case_sensitive=None, recurse_symlinks=False)`.

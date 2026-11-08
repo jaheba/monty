@@ -2105,6 +2105,14 @@ fn timeout_in_a85decode_ignorechars() {
 }
 
 #[test]
+fn timeout_in_path_match_many_components() {
+    assert_timeout_in_builtin(
+        "from pathlib import Path\ntext = 'a/' * 300_000 + 'a'\nPath(text).match(text)",
+        "Path.match with short components",
+    );
+}
+
+#[test]
 fn timeout_in_path_segment_joins() {
     for expression in [
         "Path(*parts)",
