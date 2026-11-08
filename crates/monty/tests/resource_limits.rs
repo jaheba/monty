@@ -2083,6 +2083,14 @@ fn timeout_in_a85decode_ignorechars() {
     );
 }
 
+#[test]
+fn timeout_in_path_segment_joins() {
+    for expression in ["Path(*parts)", "Path('.').joinpath(*parts)"] {
+        let code = format!("from pathlib import Path\nparts = ['x'] * 100_000\n{expression}");
+        assert_timeout_in_builtin(&code, expression);
+    }
+}
+
 /// A refused unpacked call must release the kwargs it never passed on.
 ///
 /// `f(*args, **kwargs)` owns the kwargs dict until the argument pack is built,

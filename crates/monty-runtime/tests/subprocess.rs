@@ -1436,6 +1436,20 @@ fn large_allocations_are_rejected_before_the_hard_limit() {
     child.shutdown();
 }
 
+/// Accumulated path growth is refused before the worker reaches its hard ceiling.
+#[test]
+fn path_segments_preflight_accumulated_output() {
+    for expression in ["Path(*parts)", "Path('.').joinpath(*parts)"] {
+        let code = format!("from pathlib import Path\nparts = ['x' * 1000] * 10_000\n{expression}");
+        let mut child = ChildProc::spawn();
+        child.create_repl_with(configure_with_max_memory(1024 * 1024));
+        let (_, event) = child.feed(&code);
+        assert_eq!(expect_error(event).exc_type, "MemoryError", "{expression}");
+        assert_eq!(child.feed_complete("1 + 1"), MontyObject::int(2), "{expression}");
+        child.shutdown();
+    }
+}
+
 /// `DictWriter.writerows()` on a file keeps one list per row until its single
 /// write, so wide `fieldnames` over many sparse dicts amplify the input: each
 /// row's list is preflighted against the usage so far.
