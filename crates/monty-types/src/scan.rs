@@ -984,13 +984,36 @@ impl SegmentPattern {
     /// Compiles a segment pattern the way `fnmatch._translate` reads it.
     #[must_use]
     pub fn new(pattern: &str, case_sensitive: bool) -> Self {
-        let chars: Vec<char> = pattern.chars().collect();
+        match Self::try_new(pattern, case_sensitive, |_| Ok::<(), Infallible>(())) {
+            Ok(pattern) => pattern,
+            Err(never) => match never {},
+        }
+    }
+
+    /// Compiles with checkpoints while reading characters, finding class boundaries and building tokens.
+    pub fn try_new<E>(
+        pattern: &str,
+        case_sensitive: bool,
+        mut checkpoint: impl FnMut(usize) -> Result<(), E>,
+    ) -> Result<Self, E> {
+        let mut steps = 0_usize;
+        let mut step = || {
+            checkpoint(steps)?;
+            steps = steps.wrapping_add(1);
+            Ok(())
+        };
+        let mut chars = Vec::new();
+        for c in pattern.chars() {
+            step()?;
+            chars.push(c);
+        }
         let mut tokens = Vec::new();
         let mut i = 0;
         // Once a `[` finds no `]` ahead, no later `[` can either; skipping their
         // scans keeps a run of unterminated brackets linear.
         let mut unterminated = false;
         while let Some(&c) = chars.get(i) {
+            step()?;
             i += 1;
             match c {
                 '*' => {
@@ -1000,7 +1023,7 @@ impl SegmentPattern {
                 }
                 '?' => tokens.push(Token::Any),
                 '[' if !unterminated => {
-                    if let Some((token, end)) = parse_class(&chars, i) {
+                    if let Some((token, end)) = parse_class(&chars, i, &mut step)? {
                         tokens.push(token);
                         i = end;
                     } else {
@@ -1011,7 +1034,7 @@ impl SegmentPattern {
                 c => tokens.push(Token::Char(c)),
             }
         }
-        Self { tokens, case_sensitive }
+        Ok(Self { tokens, case_sensitive })
     }
 
     /// Whether `name` matches the whole pattern.
@@ -1138,7 +1161,11 @@ impl SegmentPattern {
 /// A leading `!` negates and a `]` straight after `[` or `[!` is literal. Each
 /// `a-b` is a range — reversed ranges match nothing — and a `-` that cannot
 /// start one is literal, which reproduces `fnmatch`'s chunking.
-fn parse_class(chars: &[char], start: usize) -> Option<(Token, usize)> {
+fn parse_class<E>(
+    chars: &[char],
+    start: usize,
+    mut checkpoint: impl FnMut() -> Result<(), E>,
+) -> Result<Option<(Token, usize)>, E> {
     let mut end = start;
     if chars.get(end) == Some(&'!') {
         end += 1;
@@ -1147,10 +1174,11 @@ fn parse_class(chars: &[char], start: usize) -> Option<(Token, usize)> {
         end += 1;
     }
     while chars.get(end).is_some_and(|c| *c != ']') {
+        checkpoint()?;
         end += 1;
     }
     if end >= chars.len() {
-        return None;
+        return Ok(None);
     }
     let (negated, body) = match &chars[start..end] {
         ['!', body @ ..] => (true, body),
@@ -1159,6 +1187,7 @@ fn parse_class(chars: &[char], start: usize) -> Option<(Token, usize)> {
     let mut items = Vec::new();
     let mut k = 0;
     while let Some(&c) = body.get(k) {
+        checkpoint()?;
         if let (Some('-'), Some(&high)) = (body.get(k + 1), body.get(k + 2)) {
             items.push((c, high));
             k += 3;
@@ -1167,7 +1196,7 @@ fn parse_class(chars: &[char], start: usize) -> Option<(Token, usize)> {
             k += 1;
         }
     }
-    Some((Token::Class { negated, items }, end + 1))
+    Ok(Some((Token::Class { negated, items }, end + 1)))
 }
 
 /// Single-character lowercase, as `re.IGNORECASE` compares. Unicode's one

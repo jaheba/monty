@@ -137,6 +137,30 @@ fn segment_match_checkpoints_interrupt_a_large_class() {
     assert_eq!(calls, 33);
 }
 
+/// Compilation can stop during character collection, token construction and both class passes.
+#[test]
+fn segment_compilation_checkpoints_cover_every_pass() {
+    let literal = "a".repeat(1_000);
+    let class = format!("[{}]", "b".repeat(1_000));
+    for (pattern, limit) in [
+        (literal.as_str(), 32),
+        (literal.as_str(), 1_032),
+        (class.as_str(), 1_034),
+        (class.as_str(), 2_034),
+    ] {
+        let mut calls = 0;
+        let result = SegmentPattern::try_new(pattern, true, |step| {
+            assert_eq!(step, calls);
+            calls += 1;
+            if step == limit { Err("budget exhausted") } else { Ok(()) }
+        });
+        assert!(matches!(result, Err("budget exhausted")));
+        assert_eq!(calls, limit + 1);
+    }
+    let pattern = SegmentPattern::try_new("[a-z]*", true, |_| Ok::<(), ()>(())).unwrap();
+    assert!(pattern.matches("abc"));
+}
+
 /// An unterminated `[` makes every later `[` literal without rescanning for a `]`.
 #[test]
 fn unterminated_brackets_compile_linearly() {
