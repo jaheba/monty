@@ -9,9 +9,9 @@
 //! having freestanding functions scattered across the codebase.
 
 pub(crate) mod arithmetic;
+mod bits;
 pub(crate) mod bytes;
 mod to_bytes;
-mod bits;
 
 use std::{
     borrow::Cow,

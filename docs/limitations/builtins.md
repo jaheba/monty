@@ -38,8 +38,8 @@ These raise `NameError`:
 - **`int.bit_length` and `int.bit_count`** are available only as instance calls, including on booleans.
     Calls such as `int.bit_length(5)` and reading a method as a value raise `AttributeError`.
 
-- **`int.to_bytes`** invokes a user length's `__index__` and `signed`'s truth conversion synchronously;
-    those methods cannot suspend for host functions or OS calls (see [classes.md](classes.md)).
+- **`int.to_bytes`** converts a user length through synchronous `__index__`;
+    it cannot suspend for host functions or OS calls (see [classes.md](classes.md)).
     Only instance calls such as `(65).to_bytes()` are supported; `int.to_bytes(65)` raises `AttributeError`.
 
 - **`callable()` on host proxies** returns `True` for host classes and instances because their call slot delegates
