@@ -67,6 +67,9 @@ These raise `NameError`:
 - **Numeric `is_integer` descriptors** — `int.is_integer(x)` and `float.is_integer(x)` raise `AttributeError`;
     call `x.is_integer()` instead.
 
+- **Numeric ratio descriptors** — `int.as_integer_ratio(x)` and `float.as_integer_ratio(x)` raise `AttributeError`;
+    call `x.as_integer_ratio()` instead.
+
 - **Large integer literal identity** — separate occurrences of the same literal outside the `i64` range are not
     deduplicated, so `a = 18446744073709551616; b = 18446744073709551616; a is b` is `False` where CPython may reuse a
     single constant and return `True`.

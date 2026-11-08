@@ -368,10 +368,10 @@ impl Decimal {
     /// infinities.
     pub(crate) fn as_integer_ratio(&self, ctx: &Ctx<'_>) -> RunResult<(BigInt, BigInt)> {
         if self.is_nan() {
-            return Err(ExcType::value_error("cannot convert NaN to integer ratio"));
+            return Err(ExcType::value_error_integer_ratio_nan());
         }
         if self.is_infinite() {
-            return Err(ExcType::overflow_error("cannot convert Infinity to integer ratio"));
+            return Err(ExcType::overflow_integer_ratio_infinity());
         }
         if self.is_zero() {
             return Ok((BigInt::zero(), BigInt::from(1u8)));

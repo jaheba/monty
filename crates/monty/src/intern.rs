@@ -611,6 +611,9 @@ pub enum StaticStrings {
     Args,
     /// `sys.argv` attribute.
     Argv,
+    /// `as_integer_ratio()` method, shared by `int` and `float`.
+    #[strum(serialize = "as_integer_ratio")]
+    AsIntegerRatio,
     /// `Path.as_posix()` method, answered without host I/O.
     AsPosix,
     /// `Path.as_uri()` method.

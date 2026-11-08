@@ -2098,6 +2098,18 @@ pub(crate) trait ExcTypeExt: Sized {
         SimpleException::new_msg(ExcType::ValueError, "cannot convert float NaN to integer").into()
     }
 
+    /// `float` and `Decimal` reject infinity before building ratio components.
+    #[must_use]
+    fn overflow_integer_ratio_infinity() -> RunError {
+        SimpleException::new_msg(ExcType::OverflowError, "cannot convert Infinity to integer ratio").into()
+    }
+
+    /// NaNs have no rational representation for either `float` or `Decimal`.
+    #[must_use]
+    fn value_error_integer_ratio_nan() -> RunError {
+        SimpleException::new_msg(ExcType::ValueError, "cannot convert NaN to integer ratio").into()
+    }
+
     /// Creates a ValueError for a zero modulus passed to `pow`.
     #[must_use]
     fn value_error_pow_modulus_zero() -> RunError {

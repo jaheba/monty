@@ -1,10 +1,67 @@
-//! Rounding helpers shared by immediate and heap-allocated numbers.
+//! Exact float conversion and rounding shared by numeric types.
 
 use num_bigint::BigInt;
 use num_integer::Integer;
 use num_traits::Pow;
+use smallvec::smallvec;
 
-use crate::{bytecode::VM, exception_private::RunResult, heap::Heap, types::LongInt, value::Value};
+use crate::{
+    bytecode::VM,
+    exception_private::{ExcType, ExcTypeExt, RunResult},
+    heap::Heap,
+    types::{LongInt, allocate_tuple},
+    value::Value,
+};
+
+/// The reduced numerator and denominator each fit at most 1,075 binary digits.
+pub(crate) fn float_integer_ratio(value: f64, heap: &Heap) -> RunResult<Value> {
+    if value.is_nan() {
+        return Err(ExcType::value_error_integer_ratio_nan());
+    }
+    if value.is_infinite() {
+        return Err(ExcType::overflow_integer_ratio_infinity());
+    }
+
+    let (numerator, power) = positive_float_ratio(value.abs());
+    let numerator = if value.is_sign_negative() {
+        -numerator
+    } else {
+        numerator
+    };
+    let denominator = BigInt::from(1u8) << power;
+    Ok(allocate_tuple(
+        smallvec![
+            LongInt::new(numerator).into_value(heap),
+            LongInt::new(denominator).into_value(heap)
+        ],
+        heap,
+    ))
+}
+
+/// Decomposes a finite, nonnegative float as `n / 2**k` in lowest terms.
+pub(crate) fn positive_float_ratio(value: f64) -> (BigInt, u32) {
+    if value == 0.0 {
+        return (BigInt::from(0u8), 0);
+    }
+    let bits = value.to_bits();
+    let exponent = i32::try_from((bits >> 52) & 0x7ff).expect("11-bit field");
+    let fraction = bits & ((1 << 52) - 1);
+    let (mut mantissa, mut exp2) = if exponent == 0 {
+        (fraction, -1074)
+    } else {
+        (fraction | (1 << 52), exponent - 1075)
+    };
+    // Remove the factors of two shared by numerator and denominator.
+    while exp2 < 0 && mantissa & 1 == 0 {
+        mantissa >>= 1;
+        exp2 += 1;
+    }
+    if exp2 >= 0 {
+        (BigInt::from(mantissa) << exp2.unsigned_abs(), 0)
+    } else {
+        (BigInt::from(mantissa), exp2.unsigned_abs())
+    }
+}
 
 /// Resolves numeric rounding precision through `__index__`, clamping huge integers.
 /// User `__round__` methods receive the original argument instead of using this helper.
