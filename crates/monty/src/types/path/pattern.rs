@@ -51,7 +51,8 @@ pub(super) fn path_match(path: &Path, args: ArgValues, vm: &mut VM<'_>) -> RunRe
         case_sensitive.py_bool(vm)?
     };
 
-    for (part, pattern_part) in parts.iter().rev().zip(pattern_parts.iter().rev()) {
+    for (index, (part, pattern_part)) in parts.iter().rev().zip(pattern_parts.iter().rev()).enumerate() {
+        vm.heap.tracker.check_time_every(index)?;
         if !SegmentPattern::new(pattern_part, case_sensitive)
             .try_matches_component(part, |step| vm.heap.tracker.check_time_every(step))?
         {
