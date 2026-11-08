@@ -35,8 +35,8 @@ These raise `NameError`:
 
 ## Behavioural divergences
 
-- **`int.to_bytes`** invokes a user length's `__index__` and `signed`'s truth conversion synchronously;
-    those methods cannot suspend for host functions or OS calls (see [classes.md](classes.md)).
+- **`int.to_bytes`** converts a user length through synchronous `__index__`;
+    it cannot suspend for host functions or OS calls (see [classes.md](classes.md)).
     Only instance calls such as `(65).to_bytes()` are supported; `int.to_bytes(65)` raises `AttributeError`.
 
 - **No `__class__` on builtin values** — `[].__class__`, `list.__class__` and
