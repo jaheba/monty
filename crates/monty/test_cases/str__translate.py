@@ -89,13 +89,13 @@ for mapping in [{'ab': 1}, {'': 1}]:
         str.maketrans(mapping)
         assert False, 'expected ValueError'
     except ValueError as exc:
-        assert str(exc) == 'string keys in translate table must be of length 1'
+        assert str(exc) == 'string keys in translatetable must be of length 1'
 for mapping in [{None: 1}, {1.5: 1}, {b'a': 1}]:
     try:
         str.maketrans(mapping)
         assert False, 'expected TypeError'
     except TypeError as exc:
-        assert str(exc) == 'keys in translate table must be strings or integers'
+        assert str(exc) == 'keys in translate table mustbe strings or integers'
 for value in [None, 'abc', [], 123]:
     try:
         str.maketrans(value)
