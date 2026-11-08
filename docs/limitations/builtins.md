@@ -231,8 +231,7 @@ These raise `NameError`:
     tries to materialise `10**-ndigits` and dies with `MemoryError` where
     Monty returns `0` immediately.
 
-- **`print`** — writes via the host print callback. `file=`, `flush=` are
-    not honoured; `sep=` and `end=` are.
+- **`print`** — see [print.md](print.md) for supported streams, keyword arguments and output delivery.
 
 - **Identity of host-supplied callables** — host functions passed in as inputs
     (`MontyObject::function(...)`) lose their host object identity at the sandbox
