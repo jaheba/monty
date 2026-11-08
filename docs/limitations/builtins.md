@@ -35,6 +35,9 @@ These raise `NameError`:
 
 ## Behavioural divergences
 
+- **`float.hex()`** supports instance calls; `float.hex(x)` raises `AttributeError`.
+    `float.fromhex` is not implemented.
+
 - **`int.bit_length` and `int.bit_count`** are available only as instance calls, including on booleans.
     Calls such as `int.bit_length(5)` and reading a method as a value raise `AttributeError`.
 
