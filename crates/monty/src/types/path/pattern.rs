@@ -24,8 +24,8 @@ pub(super) fn path_match(path: &Path, args: ArgValues, vm: &mut VM<'_>) -> RunRe
     defer_drop!(case_sensitive, vm);
 
     let pattern = Path::new(extract_path_segment(path_pattern, vm)?.to_owned());
-    let parts = path.parts();
-    let pattern_parts = pattern.parts();
+    let parts = path.checked_parts(&vm.heap.tracker)?;
+    let pattern_parts = pattern.checked_parts(&vm.heap.tracker)?;
     if pattern_parts.is_empty() {
         return Err(ExcType::value_error("empty pattern"));
     }
