@@ -2124,6 +2124,14 @@ fn timeout_in_path_segment_joins() {
     }
 }
 
+#[test]
+fn timeout_in_path_pattern_compilation() {
+    assert_timeout_in_builtin(
+        "from pathlib import Path\nPath('x').match('[' + 'ab' * 5_000_000 + ']')",
+        "Path.match pattern compilation",
+    );
+}
+
 /// A refused unpacked call must release the kwargs it never passed on.
 ///
 /// `f(*args, **kwargs)` owns the kwargs dict until the argument pack is built,
