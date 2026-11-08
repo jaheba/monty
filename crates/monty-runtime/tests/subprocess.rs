@@ -1439,7 +1439,11 @@ fn large_allocations_are_rejected_before_the_hard_limit() {
 /// Accumulated path growth is refused before the worker reaches its hard ceiling.
 #[test]
 fn path_segments_preflight_accumulated_output() {
-    for expression in ["Path(*parts)", "Path('.').joinpath(*parts)"] {
+    for expression in [
+        "Path(*parts)",
+        "Path('.').with_segments(*parts)",
+        "Path('.').joinpath(*parts)",
+    ] {
         let code = format!("from pathlib import Path\nparts = ['x' * 1000] * 10_000\n{expression}");
         let mut child = ChildProc::spawn();
         child.create_repl_with(configure_with_max_memory(1024 * 1024));

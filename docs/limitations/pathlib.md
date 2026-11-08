@@ -26,13 +26,13 @@ is **not** implemented: the sandbox has no home directory.
 
 Implemented: `name`, `parent`, `stem`, `suffix`, `suffixes`, `parts`,
 `is_absolute()`, `joinpath(*other)`, `with_name(name)`, `with_stem(stem)`,
-`with_suffix(suffix)`, `as_posix()`, `__fspath__()`.
+`with_suffix(suffix)`, `with_segments(*pathsegments)`, `as_posix()`, `__fspath__()`.
 
 The `/` operator works in both directions (`Path("a") / "b"`,
 `Path("a") / Path("b")`, `"a" / Path("b")`).
 
 Not implemented: `anchor`, `drive`, `root`, `relative_to`, `is_reserved`,
-`match`, `full_match`, `with_segments`.
+`match`, `full_match`.
 
 ## I/O methods (yield to host)
 

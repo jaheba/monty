@@ -20,6 +20,8 @@ from typing import Any, LiteralString, TextIO, assert_type, get_type_hints
 
 import annotationlib
 
+assert_type(Path('/old').with_segments('new', 'file'), Path)
+
 # === Type checking helper functions ===
 
 

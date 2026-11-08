@@ -2651,6 +2651,8 @@ pub enum StaticStrings {
     Weights,
     /// `Path.with_name()` method, answered without host I/O.
     WithName,
+    /// `Path.with_segments()` method.
+    WithSegments,
     /// `Path.with_stem()` method, answered without host I/O.
     WithStem,
     /// `Path.with_suffix()` method, answered without host I/O.

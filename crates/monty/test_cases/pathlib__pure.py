@@ -4,6 +4,39 @@
 # === Path constructor ===
 from pathlib import Path
 
+# === Replacement segments construct a fresh path ===
+original = Path('/ignored')
+assert str(original.with_segments()) == '.'
+assert str(original.with_segments('a', 'b')) == 'a/b'
+assert str(original.with_segments(Path('a'), '/next', 'c')) == '/next/c'
+assert str(original.with_segments('', '', '')) == '.'
+assert str(original.with_segments('é', '文')) == 'é/文'
+assert original.with_segments(original) == original
+assert original.with_segments(original) is not original
+assert str(original) == '/ignored'
+for constructor in [lambda value: Path(value), lambda value: original.joinpath(value)]:
+    try:
+        constructor(None)
+        assert False, 'expected TypeError'
+    except TypeError as exc:
+        assert str(exc) == (
+            "argument should be a str or an os.PathLike object where __fspath__ returns a str, not 'NoneType'"
+        )
+
+for args, kwargs, message in [
+    ((None,), {}, "argument should be a str or an os.PathLike object where __fspath__ returns a str, not 'NoneType'"),
+    ((b'a',), {}, "argument should be a str or an os.PathLike object where __fspath__ returns a str, not 'bytes'"),
+    ((), {'self': None}, "PurePath.with_segments() got multiple values for argument 'self'"),
+    ((None,), {'self': None}, "PurePath.with_segments() got multiple values for argument 'self'"),
+    ((), {'pathsegments': ()}, "PurePath.with_segments() got an unexpected keyword argument 'pathsegments'"),
+    ((), {'x': 1, 'self': None}, "PurePath.with_segments() got an unexpected keyword argument 'x'"),
+]:
+    try:
+        original.with_segments(*args, **kwargs)
+        assert False, 'expected TypeError'
+    except TypeError as exc:
+        assert str(exc) == message
+
 p = Path('/usr/local/bin/python')
 assert str(p) == '/usr/local/bin/python'
 
