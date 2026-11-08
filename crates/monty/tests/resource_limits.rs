@@ -670,6 +670,43 @@ build(5) == build(5)
     assert_timeout_in_builtin(code, "dict comparison over tombstones");
 }
 
+/// Cached paths isolate the native component scans from path construction.
+#[test]
+fn timeout_in_path_relative_components() {
+    for expression in [
+        "p.is_relative_to(p)",
+        "p.relative_to(p)",
+        "p.relative_to('.', walk_up=True)",
+    ] {
+        let mut repl = MontyRepl::new("test.py", ResourceTracker::default(), CompileOptions::default());
+        repl.feed_run(
+            "from pathlib import Path\np = Path('a/' * 500_000)",
+            vec![],
+            PrintWriter::Stdout,
+        )
+        .unwrap();
+
+        let full_scan = fastest_of_attempts(|| {
+            let start = ThreadTime::now();
+            repl.feed_run(expression, vec![], PrintWriter::Stdout).unwrap();
+            start.elapsed()
+        });
+        let interrupted = fastest_of_attempts(|| {
+            repl.tracker_mut().set_max_feed_duration(full_scan / 10);
+            let start = ThreadTime::now();
+            let exc = repl
+                .feed_run(expression, vec![], PrintWriter::Stdout)
+                .expect_err("the native component traversal must hit the time limit");
+            assert_eq!(exc.exc_type(), ExcType::TimeoutError);
+            start.elapsed()
+        });
+        assert!(
+            interrupted < full_scan / 2,
+            "{expression} should interrupt during traversal; full scan {full_scan:?}, interrupted {interrupted:?}"
+        );
+    }
+}
+
 #[test]
 fn timeout_in_sum_builtin() {
     assert_timeout_in_builtin("sum(range(10**18))", "sum(range(10**18))");

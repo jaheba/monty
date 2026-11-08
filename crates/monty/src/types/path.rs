@@ -16,7 +16,7 @@ use std::{
     iter::repeat_n,
 };
 
-use monty_types::{MontyPath, StringRepr};
+use monty_types::{MontyPath, ResourceTracker, StringRepr};
 use smallvec::SmallVec;
 
 use crate::{
@@ -29,6 +29,7 @@ use crate::{
     heap::{DropWithContext, Heap, HeapData, HeapId, HeapItem, HeapObjectRead, HeapReadOutput},
     intern::{Interns, StaticStrings},
     os_dispatch::{build_path_os_call, is_path_os_method, value_as_path_str},
+    resource_checks::collect_checked,
     string_builder::StringBuilder,
     types::{
         LazyHeapSet, List, PyTrait, Type, allocate_tuple,
@@ -194,17 +195,48 @@ impl Path {
         self.path.starts_with('/')
     }
 
+    /// Collects components while bounding native traversal and temporary storage.
+    fn checked_parts(&self, tracker: &ResourceTracker) -> RunResult<Vec<&str>> {
+        if self.path == "." {
+            return Ok(Vec::new());
+        }
+        let anchor = self.is_absolute().then_some("/");
+        let components = self.path.split('/').filter(|part| !part.is_empty());
+        Ok(collect_checked(anchor.into_iter().chain(components), tracker)?)
+    }
+
     /// Tests lexical containment by components, without resolving `..` or symlinks.
-    pub fn is_relative_to(&self, other: &Self) -> bool {
-        self.is_absolute() == other.is_absolute() && self.parts().starts_with(&other.parts())
+    pub fn is_relative_to(&self, other: &Self, tracker: &ResourceTracker) -> RunResult<bool> {
+        if self.is_absolute() != other.is_absolute() {
+            return Ok(false);
+        }
+        let parts = self.checked_parts(tracker)?;
+        let other_parts = other.checked_parts(tracker)?;
+        if parts.len() < other_parts.len() {
+            return Ok(false);
+        }
+        for (index, other_part) in other_parts.iter().enumerate() {
+            tracker.check_time_every(index)?;
+            if parts.get(index) != Some(other_part) {
+                return Ok(false);
+            }
+        }
+        Ok(true)
     }
 
     /// Builds a relative path, rejecting any `..` component that would have to be walked upwards.
-    pub fn relative_to(&self, other: &Self, walk_up: bool) -> RunResult<String> {
-        let parts = self.parts();
-        let other_parts = other.parts();
+    pub fn relative_to(&self, other: &Self, walk_up: bool, tracker: &ResourceTracker) -> RunResult<String> {
+        let parts = self.checked_parts(tracker)?;
+        let other_parts = other.checked_parts(tracker)?;
         let same_anchor = self.is_absolute() == other.is_absolute();
-        let common = parts.iter().zip(&other_parts).take_while(|(a, b)| a == b).count();
+        let mut common = 0;
+        for (index, (part, other_part)) in parts.iter().zip(&other_parts).enumerate() {
+            tracker.check_time_every(index)?;
+            if part != other_part {
+                break;
+            }
+            common += 1;
+        }
 
         if !(walk_up || same_anchor && common == other_parts.len()) {
             return Err(ExcType::value_error(format!(
@@ -215,11 +247,14 @@ impl Path {
         }
 
         // A shared `..` prefix is valid; crossing one assumes filesystem semantics we cannot infer lexically.
-        if other_parts[common..].contains(&"..") {
-            return Err(ExcType::value_error(format!(
-                "'..' segment in {} cannot be walked",
-                StringRepr(other.as_str())
-            )));
+        for (index, part) in other_parts[common..].iter().enumerate() {
+            tracker.check_time_every(index)?;
+            if *part == ".." {
+                return Err(ExcType::value_error(format!(
+                    "'..' segment in {} cannot be walked",
+                    StringRepr(other.as_str())
+                )));
+            }
         }
 
         if !same_anchor {
@@ -230,11 +265,22 @@ impl Path {
             )));
         }
 
-        let result = repeat_n("..", other_parts.len() - common)
+        let mut result = StringBuilder::new(tracker);
+        let upward = other_parts.len() - common;
+        for (index, part) in repeat_n("..", upward)
             .chain(parts[common..].iter().copied())
-            .collect::<Vec<_>>()
-            .join("/");
-        Ok(if result.is_empty() { ".".to_owned() } else { result })
+            .enumerate()
+        {
+            tracker.check_time_every(index)?;
+            if index != 0 {
+                result.push('/')?;
+            }
+            result.push_str(part)?;
+        }
+        if upward == 0 && parts.len() == common {
+            result.push('.')?;
+        }
+        result.finish_raw()
     }
 
     /// Joins this path with another path component.
@@ -426,6 +472,13 @@ struct PathIsRelativeToArgs {
 
 /// Converts string and native path operands, preserving pathlib's argument-error wording.
 fn relative_path_operand(other: &Value, vm: &VM<'_>) -> RunResult<Path> {
+    // Native paths are already normalized; splitting them again can dominate the deadline.
+    if let Value::Ref(id) = other
+        && let HeapReadOutput::Path(path) = vm.heap.read(*id)
+    {
+        return Ok(path.get(vm.heap).clone());
+    }
+
     extract_path_segment(other, vm).map(|text| Path::new(text.to_owned()))
 }
 
@@ -758,8 +811,8 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Path> {
                 defer_drop!(walk_up, vm);
                 let other = relative_path_operand(other, vm)?;
                 // CPython never tests walk_up's truth value when the path is already contained.
-                let walk_up = !self.get(vm.heap).is_relative_to(&other) && walk_up.py_bool(vm)?;
-                let result = self.get(vm.heap).relative_to(&other, walk_up)?;
+                let walk_up = !self.get(vm.heap).is_relative_to(&other, &vm.heap.tracker)? && walk_up.py_bool(vm)?;
+                let result = self.get(vm.heap).relative_to(&other, walk_up, &vm.heap.tracker)?;
                 Ok(Value::Ref(vm.heap.allocate(HeapData::Path(Path::new(result)))))
             }
             StaticStrings::IsRelativeTo => {
@@ -768,7 +821,7 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, Path> {
                 receiver.drop_with(vm);
                 defer_drop!(other, vm);
                 let other = relative_path_operand(other, vm)?;
-                Ok(Value::Bool(self.get(vm.heap).is_relative_to(&other)))
+                Ok(Value::Bool(self.get(vm.heap).is_relative_to(&other, &vm.heap.tracker)?))
             }
             StaticStrings::Joinpath => {
                 let pos_args = args.into_pos_only("joinpath", vm.heap)?;
