@@ -42,6 +42,8 @@ These raise `NameError`:
     `AttributeError`, so `[1].append`, `'a'.upper`, `{}.get`, `dict.fromkeys`
     and `list.__class_getitem__` cannot be assigned, passed as a callback or
     reached through `getattr`. Call them directly (`list.__class_getitem__(int)`).
+- **Numeric `is_integer` descriptors** — `int.is_integer(x)` and `float.is_integer(x)` raise `AttributeError`;
+    call `x.is_integer()` instead.
 - **Large integer literal identity** — separate occurrences of the same literal outside the `i64` range are not
     deduplicated, so `a = 18446744073709551616; b = 18446744073709551616; a is b` is `False` where CPython may reuse a
     single constant and return `True`.
