@@ -650,6 +650,37 @@ build(5) == build(5)
 }
 
 #[test]
+fn timeout_in_path_match_component_collection() {
+    let mut repl = MontyRepl::new("test.py", ResourceTracker::default(), CompileOptions::default());
+    repl.feed_run(
+        "from pathlib import Path\np = Path('a/' * 500_000)\npattern = p / 'extra'",
+        vec![],
+        PrintWriter::Stdout,
+    )
+    .unwrap();
+
+    // A longer pattern returns before matching, isolating its initial component collection.
+    let full_scan = fastest_of_attempts(|| {
+        let start = ThreadTime::now();
+        repl.feed_run("p.match(pattern)", vec![], PrintWriter::Stdout).unwrap();
+        start.elapsed()
+    });
+    let interrupted = fastest_of_attempts(|| {
+        repl.tracker_mut().set_max_feed_duration(full_scan / 10);
+        let start = ThreadTime::now();
+        let exc = repl
+            .feed_run("p.match(pattern)", vec![], PrintWriter::Stdout)
+            .expect_err("component collection must hit the time limit before the early return");
+        assert_eq!(exc.exc_type(), ExcType::TimeoutError);
+        start.elapsed()
+    });
+    assert!(
+        interrupted < full_scan / 2,
+        "Path.match should interrupt collecting components; full scan {full_scan:?}, interrupted {interrupted:?}"
+    );
+}
+
+#[test]
 fn timeout_in_sum_builtin() {
     assert_timeout_in_builtin("sum(range(10**18))", "sum(range(10**18))");
 }
