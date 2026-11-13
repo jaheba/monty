@@ -1,0 +1,151 @@
+
+/Users/jaheba/p/monty/target/release/build/monty-42e70d3ea8b0d92b/out/native_stencils.o:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+0000000000000000 <_monty_stencil_add>:
+       0: f940002a     	ldr	x10, [x1]
+       4: a9442009     	ldp	x9, x8, [x0, #0x40]
+       8: f900240a     	str	x10, [x0, #0x48]
+       c: b4000189     	cbz	x9, 0x3c <ltmp0+0x3c>
+      10: a9412c0a     	ldp	x10, x11, [x0, #0x10]
+      14: 9100096b     	add	x11, x11, #0x2
+      18: eb0b015f     	cmp	x10, x11
+      1c: 54000103     	b.lo	0x3c <ltmp0+0x3c>
+      20: f940000b     	ldr	x11, [x0]
+      24: 8b0a116b     	add	x11, x11, x10, lsl #4
+      28: f85e016c     	ldur	x12, [x11, #-0x20]
+      2c: f85f016d     	ldur	x13, [x11, #-0x10]
+      30: f100059f     	cmp	x12, #0x1
+      34: fa4109a0     	ccmp	x13, #0x1, #0x0, eq
+      38: 54000060     	b.eq	0x44 <ltmp0+0x44>
+      3c: aa0803e0     	mov	x0, x8
+      40: d65f03c0     	ret
+      44: f85f816c     	ldur	x12, [x11, #-0x8]
+      48: f85e816d     	ldur	x13, [x11, #-0x18]
+      4c: ab0c01ac     	adds	x12, x13, x12
+      50: 54ffff66     	b.vs	0x3c <ltmp0+0x3c>
+      54: 52800028     	mov	w8, #0x1                ; =1
+      58: a93e3168     	stp	x8, x12, [x11, #-0x20]
+      5c: d1000548     	sub	x8, x10, #0x1
+      60: f9000808     	str	x8, [x0, #0x10]
+      64: d1000528     	sub	x8, x9, #0x1
+      68: f9002008     	str	x8, [x0, #0x40]
+      6c: a9412022     	ldp	x2, x8, [x1, #0x10]
+      70: aa0803e1     	mov	x1, x8
+      74: d61f0040     	br	x2
+
+00000000000003e8 <_monty_stencil_for_iter>:
+     3e8: a9bc5ff8     	stp	x24, x23, [sp, #-0x40]!
+     3ec: a90157f6     	stp	x22, x21, [sp, #0x10]
+     3f0: a9024ff4     	stp	x20, x19, [sp, #0x20]
+     3f4: a9037bfd     	stp	x29, x30, [sp, #0x30]
+     3f8: 9100c3fd     	add	x29, sp, #0x30
+     3fc: f9400028     	ldr	x8, [x1]
+     400: a9444c14     	ldp	x20, x19, [x0, #0x40]
+     404: f9002408     	str	x8, [x0, #0x48]
+     408: b4000294     	cbz	x20, 0x458 <_monty_stencil_for_iter+0x70>
+     40c: a9412015     	ldp	x21, x8, [x0, #0x10]
+     410: eb0802bf     	cmp	x21, x8
+     414: 54000229     	b.ls	0x458 <_monty_stencil_for_iter+0x70>
+     418: f9400408     	ldr	x8, [x0, #0x8]
+     41c: eb0802bf     	cmp	x21, x8
+     420: 540001c2     	b.hs	0x458 <_monty_stencil_for_iter+0x70>
+     424: f940300a     	ldr	x10, [x0, #0x60]
+     428: f9402808     	ldr	x8, [x0, #0x50]
+     42c: f9400009     	ldr	x9, [x0]
+     430: 8b151136     	add	x22, x9, x21, lsl #4
+     434: a97f0ac9     	ldp	x9, x2, [x22, #-0x10]
+     438: aa0003f7     	mov	x23, x0
+     43c: aa0803e0     	mov	x0, x8
+     440: aa0103f8     	mov	x24, x1
+     444: aa0903e1     	mov	x1, x9
+     448: d63f0140     	blr	x10
+     44c: aa0003e8     	mov	x8, x0
+     450: f100181f     	cmp	x0, #0x6
+     454: 540000e1     	b.ne	0x470 <_monty_stencil_for_iter+0x88>
+     458: aa1303e0     	mov	x0, x19
+     45c: a9437bfd     	ldp	x29, x30, [sp, #0x30]
+     460: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+     464: a94157f6     	ldp	x22, x21, [sp, #0x10]
+     468: a8c45ff8     	ldp	x24, x23, [sp], #0x40
+     46c: d65f03c0     	ret
+     470: aa1703e0     	mov	x0, x23
+     474: aa1803e9     	mov	x9, x24
+     478: f9403aea     	ldr	x10, [x23, #0x70]
+     47c: 9100054a     	add	x10, x10, #0x1
+     480: f9003aea     	str	x10, [x23, #0x70]
+     484: f1000d1f     	cmp	x8, #0x3
+     488: 540000a1     	b.ne	0x49c <_monty_stencil_for_iter+0xb4>
+     48c: 9280000b     	mov	x11, #-0x1              ; =-1
+     490: 52800508     	mov	w8, #0x28               ; =40
+     494: 5280040a     	mov	w10, #0x20              ; =32
+     498: 14000006     	b	0x4b0 <_monty_stencil_for_iter+0xc8>
+     49c: f90002c8     	str	x8, [x22]
+     4a0: f90006c1     	str	x1, [x22, #0x8]
+     4a4: 52800308     	mov	w8, #0x18               ; =24
+     4a8: 5280020a     	mov	w10, #0x10              ; =16
+     4ac: 5280002b     	mov	w11, #0x1               ; =1
+     4b0: 8b0b02ab     	add	x11, x21, x11
+     4b4: d100068c     	sub	x12, x20, #0x1
+     4b8: f900080b     	str	x11, [x0, #0x10]
+     4bc: f900200c     	str	x12, [x0, #0x40]
+     4c0: f86a6922     	ldr	x2, [x9, x10]
+     4c4: f8686921     	ldr	x1, [x9, x8]
+     4c8: a9437bfd     	ldp	x29, x30, [sp, #0x30]
+     4cc: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+     4d0: a94157f6     	ldp	x22, x21, [sp, #0x10]
+     4d4: a8c45ff8     	ldp	x24, x23, [sp], #0x40
+     4d8: d61f0040     	br	x2
+
+0000000000000554 <_monty_stencil_getitem>:
+     554: a9bc5ff8     	stp	x24, x23, [sp, #-0x40]!
+     558: a90157f6     	stp	x22, x21, [sp, #0x10]
+     55c: a9024ff4     	stp	x20, x19, [sp, #0x20]
+     560: a9037bfd     	stp	x29, x30, [sp, #0x30]
+     564: 9100c3fd     	add	x29, sp, #0x30
+     568: aa0003e8     	mov	x8, x0
+     56c: f9400029     	ldr	x9, [x1]
+     570: f9402400     	ldr	x0, [x0, #0x48]
+     574: f9402113     	ldr	x19, [x8, #0x40]
+     578: f9002509     	str	x9, [x8, #0x48]
+     57c: b4000293     	cbz	x19, 0x5cc <_monty_stencil_getitem+0x78>
+     580: a9412514     	ldp	x20, x9, [x8, #0x10]
+     584: 91000929     	add	x9, x9, #0x2
+     588: eb09029f     	cmp	x20, x9
+     58c: 54000203     	b.lo	0x5cc <_monty_stencil_getitem+0x78>
+     590: f9400109     	ldr	x9, [x8]
+     594: 8b141135     	add	x21, x9, x20, lsl #4
+     598: a97e0aa9     	ldp	x9, x2, [x21, #-0x20]
+     59c: a97f12a3     	ldp	x3, x4, [x21, #-0x10]
+     5a0: a9452d0a     	ldp	x10, x11, [x8, #0x50]
+     5a4: aa0803f6     	mov	x22, x8
+     5a8: aa0003f8     	mov	x24, x0
+     5ac: aa0a03e0     	mov	x0, x10
+     5b0: aa0103f7     	mov	x23, x1
+     5b4: aa0903e1     	mov	x1, x9
+     5b8: d63f0160     	blr	x11
+     5bc: aa0003e9     	mov	x9, x0
+     5c0: aa1803e0     	mov	x0, x24
+     5c4: f100193f     	cmp	x9, #0x6
+     5c8: 540000c1     	b.ne	0x5e0 <_monty_stencil_getitem+0x8c>
+     5cc: a9437bfd     	ldp	x29, x30, [sp, #0x30]
+     5d0: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+     5d4: a94157f6     	ldp	x22, x21, [sp, #0x10]
+     5d8: a8c45ff8     	ldp	x24, x23, [sp], #0x40
+     5dc: d65f03c0     	ret
+     5e0: a93e06a9     	stp	x9, x1, [x21, #-0x20]
+     5e4: d1000689     	sub	x9, x20, #0x1
+     5e8: f9000ac9     	str	x9, [x22, #0x10]
+     5ec: f94036c9     	ldr	x9, [x22, #0x68]
+     5f0: 91000529     	add	x9, x9, #0x1
+     5f4: f90036c9     	str	x9, [x22, #0x68]
+     5f8: d1000669     	sub	x9, x19, #0x1
+     5fc: f90022c9     	str	x9, [x22, #0x40]
+     600: a94106e2     	ldp	x2, x1, [x23, #0x10]
+     604: aa1603e0     	mov	x0, x22
+     608: a9437bfd     	ldp	x29, x30, [sp, #0x30]
+     60c: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+     610: a94157f6     	ldp	x22, x21, [sp, #0x10]
+     614: a8c45ff8     	ldp	x24, x23, [sp], #0x40
+     618: d61f0040     	br	x2

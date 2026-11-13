@@ -1,0 +1,3675 @@
+Preparing custom benchmarks: capturing expected output with harness CPython
+Measuring empty-command startup
+match: startup sample 1/5
+match: startup 7.07 ms
+match_typed: startup sample 1/5
+match_typed: startup 6.66 ms
+threaded: startup sample 1/5
+threaded: startup 6.48 ms
+CPython: startup sample 1/5
+CPython: startup 25.3 ms
+CPython: startup sample 2/5
+CPython: startup 26.6 ms
+threaded: startup sample 2/5
+threaded: startup 7.09 ms
+typed: startup sample 1/5
+typed: startup 7.46 ms
+previous_typed: startup sample 1/5
+previous_typed: startup 7.71 ms
+CPython: startup sample 3/5
+CPython: startup 26.3 ms
+previous_typed: startup sample 2/5
+previous_typed: startup 8.08 ms
+previous_typed: startup sample 3/5
+previous_typed: startup 7.48 ms
+typed: startup sample 2/5
+typed: startup 7.82 ms
+match: startup sample 2/5
+match: startup 6.29 ms
+previous_typed: startup sample 4/5
+previous_typed: startup 7.85 ms
+typed: startup sample 3/5
+typed: startup 8.02 ms
+match_typed: startup sample 2/5
+match_typed: startup 6.99 ms
+CPython: startup sample 4/5
+CPython: startup 25.6 ms
+threaded: startup sample 3/5
+threaded: startup 7.21 ms
+CPython: startup sample 5/5
+CPython: startup 24.5 ms
+match_typed: startup sample 3/5
+match_typed: startup 8.02 ms
+match: startup sample 3/5
+match: startup 6.24 ms
+match_typed: startup sample 4/5
+match_typed: startup 6.87 ms
+match: startup sample 4/5
+match: startup 6.83 ms
+match_typed: startup sample 5/5
+match_typed: startup 7.26 ms
+previous_typed: startup sample 5/5
+previous_typed: startup 7.05 ms
+typed: startup sample 4/5
+typed: startup 7.66 ms
+typed: startup sample 5/5
+typed: startup 7.44 ms
+threaded: startup sample 4/5
+threaded: startup 6.28 ms
+threaded: startup sample 5/5
+threaded: startup 7.02 ms
+match: startup sample 5/5
+match: startup 6.94 ms
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+Running one-shot: threaded, typed, previous_typed, match, match_typed, CPython
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+threaded/game_spectral_norm: checking compatibility
+threaded/game_spectral_norm: supported 
+threaded/perf_unpack_sequence: checking compatibility
+threaded/perf_unpack_sequence: supported 
+threaded/policy_scoring_short: checking compatibility
+threaded/policy_scoring_short: supported 
+threaded/policy_scoring_batch: checking compatibility
+threaded/policy_scoring_batch: supported 
+threaded/portfolio_exposure: checking compatibility
+threaded/portfolio_exposure: supported 
+threaded/capacity_planning: checking compatibility
+threaded/capacity_planning: supported 
+threaded/ticket_search: checking compatibility
+threaded/ticket_search: supported 
+threaded/perf_float: checking compatibility
+threaded/perf_float: supported 
+typed/game_spectral_norm: checking compatibility
+typed/game_spectral_norm: supported 
+typed/perf_unpack_sequence: checking compatibility
+typed/perf_unpack_sequence: supported 
+typed/policy_scoring_short: checking compatibility
+typed/policy_scoring_short: supported 
+typed/policy_scoring_batch: checking compatibility
+typed/policy_scoring_batch: supported 
+typed/portfolio_exposure: checking compatibility
+typed/portfolio_exposure: supported 
+typed/capacity_planning: checking compatibility
+typed/capacity_planning: supported 
+typed/ticket_search: checking compatibility
+typed/ticket_search: supported 
+typed/perf_float: checking compatibility
+typed/perf_float: supported 
+previous_typed/game_spectral_norm: checking compatibility
+previous_typed/game_spectral_norm: supported 
+previous_typed/perf_unpack_sequence: checking compatibility
+previous_typed/perf_unpack_sequence: supported 
+previous_typed/policy_scoring_short: checking compatibility
+previous_typed/policy_scoring_short: supported 
+previous_typed/policy_scoring_batch: checking compatibility
+previous_typed/policy_scoring_batch: supported 
+previous_typed/portfolio_exposure: checking compatibility
+previous_typed/portfolio_exposure: supported 
+previous_typed/capacity_planning: checking compatibility
+previous_typed/capacity_planning: supported 
+previous_typed/ticket_search: checking compatibility
+previous_typed/ticket_search: supported 
+previous_typed/perf_float: checking compatibility
+previous_typed/perf_float: supported 
+match/game_spectral_norm: checking compatibility
+match/game_spectral_norm: supported 
+match/perf_unpack_sequence: checking compatibility
+match/perf_unpack_sequence: supported 
+match/policy_scoring_short: checking compatibility
+match/policy_scoring_short: supported 
+match/policy_scoring_batch: checking compatibility
+match/policy_scoring_batch: supported 
+match/portfolio_exposure: checking compatibility
+match/portfolio_exposure: supported 
+match/capacity_planning: checking compatibility
+match/capacity_planning: supported 
+match/ticket_search: checking compatibility
+match/ticket_search: supported 
+match/perf_float: checking compatibility
+match/perf_float: supported 
+match_typed/game_spectral_norm: checking compatibility
+match_typed/game_spectral_norm: supported 
+match_typed/perf_unpack_sequence: checking compatibility
+match_typed/perf_unpack_sequence: supported 
+match_typed/policy_scoring_short: checking compatibility
+match_typed/policy_scoring_short: supported 
+match_typed/policy_scoring_batch: checking compatibility
+match_typed/policy_scoring_batch: supported 
+match_typed/portfolio_exposure: checking compatibility
+match_typed/portfolio_exposure: supported 
+match_typed/capacity_planning: checking compatibility
+match_typed/capacity_planning: supported 
+match_typed/ticket_search: checking compatibility
+match_typed/ticket_search: supported 
+match_typed/perf_float: checking compatibility
+match_typed/perf_float: supported 
+CPython/game_spectral_norm: checking compatibility
+CPython/game_spectral_norm: supported 
+CPython/perf_unpack_sequence: checking compatibility
+CPython/perf_unpack_sequence: supported 
+CPython/policy_scoring_short: checking compatibility
+CPython/policy_scoring_short: supported 
+CPython/policy_scoring_batch: checking compatibility
+CPython/policy_scoring_batch: supported 
+CPython/portfolio_exposure: checking compatibility
+CPython/portfolio_exposure: supported 
+CPython/capacity_planning: checking compatibility
+CPython/capacity_planning: supported 
+CPython/ticket_search: checking compatibility
+CPython/ticket_search: supported 
+CPython/perf_float: checking compatibility
+CPython/perf_float: supported 
+previous_typed/policy_scoring_short: timing sample 1/15
+previous_typed/policy_scoring_short: 0.766 ms
+CPython/policy_scoring_batch: timing sample 1/15
+CPython/policy_scoring_batch: 5.2 ms
+threaded/policy_scoring_short: timing sample 1/15
+threaded/policy_scoring_short: 0.785 ms
+match/ticket_search: timing sample 1/15
+match/ticket_search: 27.5 ms
+CPython/game_spectral_norm: timing sample 1/15
+CPython/game_spectral_norm: 67.7 ms
+CPython/capacity_planning: timing sample 1/15
+CPython/capacity_planning: 9.74 ms
+threaded/ticket_search: timing sample 1/15
+threaded/ticket_search: 26.6 ms
+CPython/capacity_planning: timing sample 2/15
+CPython/capacity_planning: 9.7 ms
+typed/game_spectral_norm: timing sample 1/15
+typed/game_spectral_norm: 238 ms
+threaded/game_spectral_norm: timing sample 1/15
+threaded/game_spectral_norm: 316 ms
+match_typed/policy_scoring_short: timing sample 1/15
+match_typed/policy_scoring_short: 0.743 ms
+threaded/policy_scoring_batch: timing sample 1/15
+threaded/policy_scoring_batch: 8.82 ms
+threaded/ticket_search: timing sample 2/15
+threaded/ticket_search: 27.3 ms
+previous_typed/portfolio_exposure: timing sample 1/15
+previous_typed/portfolio_exposure: 1.72 ms
+threaded/ticket_search: timing sample 3/15
+threaded/ticket_search: 27 ms
+match_typed/perf_float: timing sample 1/15
+match_typed/perf_float: 219 ms
+match_typed/policy_scoring_batch: timing sample 1/15
+match_typed/policy_scoring_batch: 7.12 ms
+previous_typed/ticket_search: timing sample 1/15
+previous_typed/ticket_search: 27.1 ms
+CPython/game_spectral_norm: timing sample 2/15
+CPython/game_spectral_norm: 67.5 ms
+match/perf_float: timing sample 1/15
+match/perf_float: 220 ms
+threaded/policy_scoring_short: timing sample 2/15
+threaded/policy_scoring_short: 0.782 ms
+previous_typed/policy_scoring_batch: timing sample 1/15
+previous_typed/policy_scoring_batch: 6.91 ms
+threaded/game_spectral_norm: timing sample 2/15
+threaded/game_spectral_norm: 316 ms
+match_typed/portfolio_exposure: timing sample 1/15
+match_typed/portfolio_exposure: 1.59 ms
+typed/ticket_search: timing sample 1/15
+typed/ticket_search: 27.4 ms
+previous_typed/perf_unpack_sequence: timing sample 1/15
+previous_typed/perf_unpack_sequence: 7.41 ms
+CPython/perf_float: timing sample 1/15
+CPython/perf_float: 52.1 ms
+match/game_spectral_norm: timing sample 1/15
+match/game_spectral_norm: 311 ms
+threaded/policy_scoring_batch: timing sample 2/15
+threaded/policy_scoring_batch: 8.42 ms
+match_typed/policy_scoring_short: timing sample 2/15
+match_typed/policy_scoring_short: 0.753 ms
+CPython/portfolio_exposure: timing sample 1/15
+CPython/portfolio_exposure: 2.33 ms
+CPython/portfolio_exposure: timing sample 2/15
+CPython/portfolio_exposure: 2.52 ms
+previous_typed/perf_unpack_sequence: timing sample 2/15
+previous_typed/perf_unpack_sequence: 7.4 ms
+match/ticket_search: timing sample 2/15
+match/ticket_search: 27.8 ms
+typed/game_spectral_norm: timing sample 2/15
+typed/game_spectral_norm: 238 ms
+typed/perf_float: timing sample 1/15
+typed/perf_float: 225 ms
+match/ticket_search: timing sample 3/15
+match/ticket_search: 26.9 ms
+threaded/game_spectral_norm: timing sample 3/15
+threaded/game_spectral_norm: 317 ms
+match/perf_unpack_sequence: timing sample 1/15
+match/perf_unpack_sequence: 318 ms
+typed/perf_unpack_sequence: timing sample 1/15
+typed/perf_unpack_sequence: 7.45 ms
+match_typed/game_spectral_norm: timing sample 1/15
+match_typed/game_spectral_norm: 251 ms
+typed/perf_unpack_sequence: timing sample 2/15
+typed/perf_unpack_sequence: 7.17 ms
+previous_typed/policy_scoring_batch: timing sample 2/15
+previous_typed/policy_scoring_batch: 6.67 ms
+typed/portfolio_exposure: timing sample 1/15
+typed/portfolio_exposure: 1.66 ms
+previous_typed/policy_scoring_batch: timing sample 3/15
+previous_typed/policy_scoring_batch: 6.64 ms
+typed/portfolio_exposure: timing sample 2/15
+typed/portfolio_exposure: 1.73 ms
+threaded/perf_float: timing sample 1/15
+threaded/perf_float: 220 ms
+threaded/game_spectral_norm: timing sample 4/15
+threaded/game_spectral_norm: 316 ms
+threaded/ticket_search: timing sample 4/15
+threaded/ticket_search: 27.2 ms
+match_typed/perf_unpack_sequence: timing sample 1/15
+match_typed/perf_unpack_sequence: 7.39 ms
+match/policy_scoring_batch: timing sample 1/15
+match/policy_scoring_batch: 8.58 ms
+typed/ticket_search: timing sample 2/15
+typed/ticket_search: 27.4 ms
+match_typed/perf_float: timing sample 2/15
+match_typed/perf_float: 218 ms
+typed/portfolio_exposure: timing sample 3/15
+typed/portfolio_exposure: 1.67 ms
+previous_typed/portfolio_exposure: timing sample 2/15
+previous_typed/portfolio_exposure: 1.64 ms
+previous_typed/capacity_planning: timing sample 1/15
+previous_typed/capacity_planning: 29.4 ms
+threaded/policy_scoring_batch: timing sample 3/15
+threaded/policy_scoring_batch: 8.58 ms
+typed/policy_scoring_batch: timing sample 1/15
+typed/policy_scoring_batch: 7.13 ms
+typed/capacity_planning: timing sample 1/15
+typed/capacity_planning: 29.2 ms
+threaded/ticket_search: timing sample 5/15
+threaded/ticket_search: 27.1 ms
+typed/ticket_search: timing sample 3/15
+typed/ticket_search: 27.6 ms
+CPython/policy_scoring_short: timing sample 1/15
+CPython/policy_scoring_short: 1.53 ms
+CPython/policy_scoring_short: timing sample 2/15
+CPython/policy_scoring_short: 1.54 ms
+CPython/ticket_search: timing sample 1/15
+CPython/ticket_search: 9.74 ms
+match_typed/capacity_planning: timing sample 1/15
+match_typed/capacity_planning: 29.8 ms
+previous_typed/policy_scoring_short: timing sample 2/15
+previous_typed/policy_scoring_short: 0.821 ms
+threaded/perf_unpack_sequence: timing sample 1/15
+threaded/perf_unpack_sequence: 316 ms
+match_typed/policy_scoring_short: timing sample 3/15
+match_typed/policy_scoring_short: 0.717 ms
+typed/policy_scoring_short: timing sample 1/15
+typed/policy_scoring_short: 0.879 ms
+typed/capacity_planning: timing sample 2/15
+typed/capacity_planning: 29.5 ms
+typed/policy_scoring_batch: timing sample 2/15
+typed/policy_scoring_batch: 7.02 ms
+typed/game_spectral_norm: timing sample 3/15
+typed/game_spectral_norm: 239 ms
+typed/policy_scoring_batch: timing sample 3/15
+typed/policy_scoring_batch: 6.8 ms
+match_typed/policy_scoring_short: timing sample 4/15
+match_typed/policy_scoring_short: 0.78 ms
+CPython/ticket_search: timing sample 2/15
+CPython/ticket_search: 9.81 ms
+match_typed/perf_unpack_sequence: timing sample 2/15
+match_typed/perf_unpack_sequence: 7.14 ms
+previous_typed/ticket_search: timing sample 2/15
+previous_typed/ticket_search: 28 ms
+threaded/game_spectral_norm: timing sample 5/15
+threaded/game_spectral_norm: 318 ms
+previous_typed/perf_float: timing sample 1/15
+previous_typed/perf_float: 222 ms
+previous_typed/perf_unpack_sequence: timing sample 3/15
+previous_typed/perf_unpack_sequence: 7.45 ms
+previous_typed/perf_unpack_sequence: timing sample 4/15
+previous_typed/perf_unpack_sequence: 7.32 ms
+typed/portfolio_exposure: timing sample 4/15
+typed/portfolio_exposure: 1.72 ms
+CPython/policy_scoring_short: timing sample 3/15
+CPython/policy_scoring_short: 1.37 ms
+match_typed/ticket_search: timing sample 1/15
+match_typed/ticket_search: 27 ms
+CPython/ticket_search: timing sample 3/15
+CPython/ticket_search: 9.77 ms
+threaded/perf_float: timing sample 2/15
+threaded/perf_float: 219 ms
+match/policy_scoring_short: timing sample 1/15
+match/policy_scoring_short: 0.897 ms
+threaded/perf_float: timing sample 3/15
+threaded/perf_float: 220 ms
+previous_typed/capacity_planning: timing sample 2/15
+previous_typed/capacity_planning: 29.6 ms
+threaded/ticket_search: timing sample 6/15
+threaded/ticket_search: 27.2 ms
+previous_typed/ticket_search: timing sample 3/15
+previous_typed/ticket_search: 27.2 ms
+match/game_spectral_norm: timing sample 2/15
+match/game_spectral_norm: 312 ms
+previous_typed/perf_float: timing sample 2/15
+previous_typed/perf_float: 223 ms
+threaded/capacity_planning: timing sample 1/15
+threaded/capacity_planning: 29.6 ms
+match/perf_float: timing sample 2/15
+match/perf_float: 218 ms
+previous_typed/policy_scoring_batch: timing sample 4/15
+previous_typed/policy_scoring_batch: 6.88 ms
+CPython/perf_unpack_sequence: timing sample 1/15
+CPython/perf_unpack_sequence: 18.5 ms
+CPython/policy_scoring_batch: timing sample 2/15
+CPython/policy_scoring_batch: 5.09 ms
+previous_typed/portfolio_exposure: timing sample 3/15
+previous_typed/portfolio_exposure: 1.61 ms
+previous_typed/ticket_search: timing sample 4/15
+previous_typed/ticket_search: 26.8 ms
+match/capacity_planning: timing sample 1/15
+match/capacity_planning: 28.7 ms
+threaded/perf_float: timing sample 4/15
+threaded/perf_float: 221 ms
+match_typed/capacity_planning: timing sample 2/15
+match_typed/capacity_planning: 29.9 ms
+match/game_spectral_norm: timing sample 3/15
+match/game_spectral_norm: 312 ms
+match/ticket_search: timing sample 4/15
+match/ticket_search: 27.4 ms
+match_typed/policy_scoring_short: timing sample 5/15
+match_typed/policy_scoring_short: 0.814 ms
+CPython/game_spectral_norm: timing sample 3/15
+CPython/game_spectral_norm: 67.7 ms
+match_typed/policy_scoring_short: timing sample 6/15
+match_typed/policy_scoring_short: 0.815 ms
+match/policy_scoring_batch: timing sample 2/15
+match/policy_scoring_batch: 8.77 ms
+threaded/portfolio_exposure: timing sample 1/15
+threaded/portfolio_exposure: 4.28 ms
+previous_typed/policy_scoring_short: timing sample 3/15
+previous_typed/policy_scoring_short: 0.897 ms
+match_typed/perf_unpack_sequence: timing sample 3/15
+match_typed/perf_unpack_sequence: 7.4 ms
+CPython/policy_scoring_batch: timing sample 3/15
+CPython/policy_scoring_batch: 4.83 ms
+match_typed/portfolio_exposure: timing sample 2/15
+match_typed/portfolio_exposure: 1.71 ms
+CPython/capacity_planning: timing sample 3/15
+CPython/capacity_planning: 9.89 ms
+threaded/policy_scoring_batch: timing sample 4/15
+threaded/policy_scoring_batch: 8.43 ms
+previous_typed/policy_scoring_batch: timing sample 5/15
+previous_typed/policy_scoring_batch: 6.78 ms
+match_typed/perf_unpack_sequence: timing sample 4/15
+match_typed/perf_unpack_sequence: 7.35 ms
+threaded/portfolio_exposure: timing sample 2/15
+threaded/portfolio_exposure: 4.48 ms
+typed/game_spectral_norm: timing sample 4/15
+typed/game_spectral_norm: 238 ms
+CPython/capacity_planning: timing sample 4/15
+CPython/capacity_planning: 9.83 ms
+match/portfolio_exposure: timing sample 1/15
+match/portfolio_exposure: 4.83 ms
+previous_typed/policy_scoring_batch: timing sample 6/15
+previous_typed/policy_scoring_batch: 6.73 ms
+typed/policy_scoring_short: timing sample 2/15
+typed/policy_scoring_short: 0.831 ms
+threaded/portfolio_exposure: timing sample 3/15
+threaded/portfolio_exposure: 4.47 ms
+match_typed/perf_float: timing sample 3/15
+match_typed/perf_float: 220 ms
+typed/perf_float: timing sample 2/15
+typed/perf_float: 222 ms
+previous_typed/perf_unpack_sequence: timing sample 5/15
+previous_typed/perf_unpack_sequence: 7.31 ms
+previous_typed/capacity_planning: timing sample 3/15
+previous_typed/capacity_planning: 28.8 ms
+threaded/policy_scoring_batch: timing sample 5/15
+threaded/policy_scoring_batch: 8.5 ms
+match/perf_unpack_sequence: timing sample 2/15
+match/perf_unpack_sequence: 316 ms
+threaded/portfolio_exposure: timing sample 4/15
+threaded/portfolio_exposure: 4.49 ms
+match/game_spectral_norm: timing sample 4/15
+match/game_spectral_norm: 310 ms
+match_typed/ticket_search: timing sample 2/15
+match_typed/ticket_search: 27.3 ms
+CPython/policy_scoring_short: timing sample 4/15
+CPython/policy_scoring_short: 1.43 ms
+CPython/policy_scoring_batch: timing sample 4/15
+CPython/policy_scoring_batch: 5.26 ms
+match/portfolio_exposure: timing sample 2/15
+match/portfolio_exposure: 4.76 ms
+previous_typed/game_spectral_norm: timing sample 1/15
+previous_typed/game_spectral_norm: 266 ms
+typed/game_spectral_norm: timing sample 5/15
+typed/game_spectral_norm: 237 ms
+threaded/perf_unpack_sequence: timing sample 2/15
+threaded/perf_unpack_sequence: 317 ms
+CPython/game_spectral_norm: timing sample 4/15
+CPython/game_spectral_norm: 68.1 ms
+match/perf_unpack_sequence: timing sample 3/15
+match/perf_unpack_sequence: 318 ms
+match/policy_scoring_short: timing sample 2/15
+match/policy_scoring_short: 0.837 ms
+CPython/capacity_planning: timing sample 5/15
+CPython/capacity_planning: 9.96 ms
+match_typed/ticket_search: timing sample 3/15
+match_typed/ticket_search: 27.2 ms
+previous_typed/policy_scoring_batch: timing sample 7/15
+previous_typed/policy_scoring_batch: 6.84 ms
+previous_typed/portfolio_exposure: timing sample 4/15
+previous_typed/portfolio_exposure: 1.67 ms
+threaded/perf_unpack_sequence: timing sample 3/15
+threaded/perf_unpack_sequence: 320 ms
+threaded/game_spectral_norm: timing sample 6/15
+threaded/game_spectral_norm: 317 ms
+match_typed/portfolio_exposure: timing sample 3/15
+match_typed/portfolio_exposure: 1.65 ms
+CPython/ticket_search: timing sample 4/15
+CPython/ticket_search: 10.1 ms
+match/perf_unpack_sequence: timing sample 4/15
+match/perf_unpack_sequence: 316 ms
+previous_typed/game_spectral_norm: timing sample 2/15
+previous_typed/game_spectral_norm: 266 ms
+previous_typed/portfolio_exposure: timing sample 5/15
+previous_typed/portfolio_exposure: 1.66 ms
+threaded/capacity_planning: timing sample 2/15
+threaded/capacity_planning: 29.4 ms
+typed/portfolio_exposure: timing sample 5/15
+typed/portfolio_exposure: 1.79 ms
+CPython/policy_scoring_short: timing sample 5/15
+CPython/policy_scoring_short: 1.32 ms
+match/policy_scoring_batch: timing sample 3/15
+match/policy_scoring_batch: 8.41 ms
+match_typed/game_spectral_norm: timing sample 2/15
+match_typed/game_spectral_norm: 253 ms
+typed/perf_float: timing sample 3/15
+typed/perf_float: 221 ms
+match/capacity_planning: timing sample 2/15
+match/capacity_planning: 28.9 ms
+threaded/ticket_search: timing sample 7/15
+threaded/ticket_search: 27.9 ms
+CPython/policy_scoring_batch: timing sample 5/15
+CPython/policy_scoring_batch: 5.23 ms
+previous_typed/portfolio_exposure: timing sample 6/15
+previous_typed/portfolio_exposure: 1.75 ms
+typed/perf_float: timing sample 4/15
+typed/perf_float: 223 ms
+match/perf_float: timing sample 3/15
+match/perf_float: 218 ms
+CPython/policy_scoring_short: timing sample 6/15
+CPython/policy_scoring_short: 1.48 ms
+previous_typed/portfolio_exposure: timing sample 7/15
+previous_typed/portfolio_exposure: 1.77 ms
+typed/capacity_planning: timing sample 3/15
+typed/capacity_planning: 29.8 ms
+threaded/ticket_search: timing sample 8/15
+threaded/ticket_search: 26.9 ms
+threaded/game_spectral_norm: timing sample 7/15
+threaded/game_spectral_norm: 315 ms
+match/capacity_planning: timing sample 3/15
+match/capacity_planning: 28.7 ms
+typed/perf_float: timing sample 5/15
+typed/perf_float: 220 ms
+previous_typed/policy_scoring_short: timing sample 4/15
+previous_typed/policy_scoring_short: 0.709 ms
+threaded/capacity_planning: timing sample 3/15
+threaded/capacity_planning: 29.8 ms
+typed/game_spectral_norm: timing sample 6/15
+typed/game_spectral_norm: 239 ms
+previous_typed/policy_scoring_short: timing sample 5/15
+previous_typed/policy_scoring_short: 0.748 ms
+previous_typed/policy_scoring_batch: timing sample 8/15
+previous_typed/policy_scoring_batch: 6.71 ms
+CPython/policy_scoring_batch: timing sample 6/15
+CPython/policy_scoring_batch: 4.9 ms
+CPython/game_spectral_norm: timing sample 5/15
+CPython/game_spectral_norm: 67 ms
+threaded/perf_float: timing sample 5/15
+threaded/perf_float: 221 ms
+typed/policy_scoring_batch: timing sample 4/15
+typed/policy_scoring_batch: 6.97 ms
+match_typed/ticket_search: timing sample 4/15
+match_typed/ticket_search: 26.7 ms
+typed/policy_scoring_batch: timing sample 5/15
+typed/policy_scoring_batch: 7.15 ms
+match_typed/game_spectral_norm: timing sample 3/15
+match_typed/game_spectral_norm: 252 ms
+CPython/policy_scoring_short: timing sample 7/15
+CPython/policy_scoring_short: 1.29 ms
+match_typed/policy_scoring_short: timing sample 7/15
+match_typed/policy_scoring_short: 0.73 ms
+previous_typed/capacity_planning: timing sample 4/15
+previous_typed/capacity_planning: 29.3 ms
+threaded/capacity_planning: timing sample 4/15
+threaded/capacity_planning: 29.6 ms
+previous_typed/policy_scoring_short: timing sample 6/15
+previous_typed/policy_scoring_short: 0.751 ms
+typed/portfolio_exposure: timing sample 6/15
+typed/portfolio_exposure: 1.82 ms
+typed/policy_scoring_batch: timing sample 6/15
+typed/policy_scoring_batch: 6.85 ms
+threaded/policy_scoring_batch: timing sample 6/15
+threaded/policy_scoring_batch: 8.44 ms
+match/policy_scoring_batch: timing sample 4/15
+match/policy_scoring_batch: 8.54 ms
+typed/perf_float: timing sample 6/15
+typed/perf_float: 222 ms
+match/portfolio_exposure: timing sample 3/15
+match/portfolio_exposure: 4.58 ms
+CPython/perf_unpack_sequence: timing sample 2/15
+CPython/perf_unpack_sequence: 18.5 ms
+match_typed/ticket_search: timing sample 5/15
+match_typed/ticket_search: 26.9 ms
+threaded/portfolio_exposure: timing sample 5/15
+threaded/portfolio_exposure: 4.49 ms
+match_typed/policy_scoring_short: timing sample 8/15
+match_typed/policy_scoring_short: 0.73 ms
+threaded/perf_float: timing sample 6/15
+threaded/perf_float: 221 ms
+threaded/perf_float: timing sample 7/15
+threaded/perf_float: 221 ms
+previous_typed/policy_scoring_short: timing sample 7/15
+previous_typed/policy_scoring_short: 0.814 ms
+previous_typed/ticket_search: timing sample 5/15
+previous_typed/ticket_search: 28.2 ms
+threaded/ticket_search: timing sample 9/15
+threaded/ticket_search: 27.7 ms
+CPython/portfolio_exposure: timing sample 3/15
+CPython/portfolio_exposure: 2.55 ms
+match_typed/perf_float: timing sample 4/15
+match_typed/perf_float: 220 ms
+CPython/policy_scoring_batch: timing sample 7/15
+CPython/policy_scoring_batch: 5.14 ms
+match/policy_scoring_batch: timing sample 5/15
+match/policy_scoring_batch: 8.34 ms
+previous_typed/policy_scoring_short: timing sample 8/15
+previous_typed/policy_scoring_short: 0.863 ms
+threaded/policy_scoring_short: timing sample 3/15
+threaded/policy_scoring_short: 0.835 ms
+typed/game_spectral_norm: timing sample 7/15
+typed/game_spectral_norm: 239 ms
+match_typed/game_spectral_norm: timing sample 4/15
+match_typed/game_spectral_norm: 250 ms
+match_typed/policy_scoring_short: timing sample 9/15
+match_typed/policy_scoring_short: 0.833 ms
+match/policy_scoring_batch: timing sample 6/15
+match/policy_scoring_batch: 8.64 ms
+match_typed/perf_unpack_sequence: timing sample 5/15
+match_typed/perf_unpack_sequence: 7.3 ms
+threaded/portfolio_exposure: timing sample 6/15
+threaded/portfolio_exposure: 4.31 ms
+previous_typed/capacity_planning: timing sample 5/15
+previous_typed/capacity_planning: 29 ms
+previous_typed/perf_float: timing sample 3/15
+previous_typed/perf_float: 223 ms
+match_typed/ticket_search: timing sample 6/15
+match_typed/ticket_search: 27.1 ms
+CPython/ticket_search: timing sample 5/15
+CPython/ticket_search: 9.77 ms
+match_typed/game_spectral_norm: timing sample 5/15
+match_typed/game_spectral_norm: 254 ms
+match_typed/policy_scoring_batch: timing sample 2/15
+match_typed/policy_scoring_batch: 6.94 ms
+threaded/game_spectral_norm: timing sample 8/15
+threaded/game_spectral_norm: 316 ms
+previous_typed/portfolio_exposure: timing sample 8/15
+previous_typed/portfolio_exposure: 1.61 ms
+CPython/policy_scoring_batch: timing sample 8/15
+CPython/policy_scoring_batch: 5.29 ms
+match/game_spectral_norm: timing sample 5/15
+match/game_spectral_norm: 310 ms
+threaded/policy_scoring_batch: timing sample 7/15
+threaded/policy_scoring_batch: 8.61 ms
+match_typed/game_spectral_norm: timing sample 6/15
+match_typed/game_spectral_norm: 252 ms
+CPython/perf_unpack_sequence: timing sample 3/15
+CPython/perf_unpack_sequence: 18.8 ms
+match/portfolio_exposure: timing sample 4/15
+match/portfolio_exposure: 4.59 ms
+typed/perf_unpack_sequence: timing sample 3/15
+typed/perf_unpack_sequence: 7.39 ms
+match/policy_scoring_batch: timing sample 7/15
+match/policy_scoring_batch: 8.77 ms
+typed/policy_scoring_short: timing sample 3/15
+typed/policy_scoring_short: 0.744 ms
+CPython/perf_unpack_sequence: timing sample 4/15
+CPython/perf_unpack_sequence: 18.4 ms
+threaded/perf_unpack_sequence: timing sample 4/15
+threaded/perf_unpack_sequence: 318 ms
+typed/ticket_search: timing sample 4/15
+typed/ticket_search: 27.5 ms
+match_typed/ticket_search: timing sample 7/15
+match_typed/ticket_search: 26.7 ms
+previous_typed/capacity_planning: timing sample 6/15
+previous_typed/capacity_planning: 28.9 ms
+CPython/policy_scoring_short: timing sample 8/15
+CPython/policy_scoring_short: 1.32 ms
+typed/policy_scoring_short: timing sample 4/15
+typed/policy_scoring_short: 0.888 ms
+previous_typed/game_spectral_norm: timing sample 3/15
+previous_typed/game_spectral_norm: 268 ms
+match_typed/portfolio_exposure: timing sample 4/15
+match_typed/portfolio_exposure: 1.7 ms
+threaded/portfolio_exposure: timing sample 7/15
+threaded/portfolio_exposure: 4.28 ms
+match_typed/perf_unpack_sequence: timing sample 6/15
+match_typed/perf_unpack_sequence: 7.3 ms
+match_typed/portfolio_exposure: timing sample 5/15
+match_typed/portfolio_exposure: 1.71 ms
+match_typed/portfolio_exposure: timing sample 6/15
+match_typed/portfolio_exposure: 1.7 ms
+CPython/perf_unpack_sequence: timing sample 5/15
+CPython/perf_unpack_sequence: 18.7 ms
+CPython/ticket_search: timing sample 6/15
+CPython/ticket_search: 9.19 ms
+typed/game_spectral_norm: timing sample 8/15
+typed/game_spectral_norm: 238 ms
+previous_typed/game_spectral_norm: timing sample 4/15
+previous_typed/game_spectral_norm: 268 ms
+previous_typed/perf_unpack_sequence: timing sample 6/15
+previous_typed/perf_unpack_sequence: 7.35 ms
+match_typed/portfolio_exposure: timing sample 7/15
+match_typed/portfolio_exposure: 1.62 ms
+CPython/perf_float: timing sample 2/15
+CPython/perf_float: 51.5 ms
+match_typed/ticket_search: timing sample 8/15
+match_typed/ticket_search: 26.8 ms
+match/perf_unpack_sequence: timing sample 5/15
+match/perf_unpack_sequence: 317 ms
+previous_typed/portfolio_exposure: timing sample 9/15
+previous_typed/portfolio_exposure: 1.6 ms
+typed/ticket_search: timing sample 5/15
+typed/ticket_search: 27 ms
+match_typed/policy_scoring_batch: timing sample 3/15
+match_typed/policy_scoring_batch: 7.16 ms
+CPython/game_spectral_norm: timing sample 6/15
+CPython/game_spectral_norm: 67.7 ms
+typed/policy_scoring_short: timing sample 5/15
+typed/policy_scoring_short: 0.803 ms
+CPython/ticket_search: timing sample 7/15
+CPython/ticket_search: 9.45 ms
+previous_typed/perf_float: timing sample 4/15
+previous_typed/perf_float: 223 ms
+typed/perf_float: timing sample 7/15
+typed/perf_float: 222 ms
+typed/capacity_planning: timing sample 4/15
+typed/capacity_planning: 29.7 ms
+threaded/game_spectral_norm: timing sample 9/15
+threaded/game_spectral_norm: 317 ms
+previous_typed/ticket_search: timing sample 6/15
+previous_typed/ticket_search: 26.5 ms
+match_typed/capacity_planning: timing sample 3/15
+match_typed/capacity_planning: 30 ms
+typed/perf_float: timing sample 8/15
+typed/perf_float: 221 ms
+typed/game_spectral_norm: timing sample 9/15
+typed/game_spectral_norm: 238 ms
+match_typed/perf_float: timing sample 5/15
+match_typed/perf_float: 221 ms
+match_typed/capacity_planning: timing sample 4/15
+match_typed/capacity_planning: 29.6 ms
+match_typed/perf_unpack_sequence: timing sample 7/15
+match_typed/perf_unpack_sequence: 7.36 ms
+CPython/perf_unpack_sequence: timing sample 6/15
+CPython/perf_unpack_sequence: 18.7 ms
+CPython/policy_scoring_short: timing sample 9/15
+CPython/policy_scoring_short: 1.61 ms
+CPython/capacity_planning: timing sample 6/15
+CPython/capacity_planning: 9.59 ms
+match/policy_scoring_short: timing sample 3/15
+match/policy_scoring_short: 0.761 ms
+threaded/capacity_planning: timing sample 5/15
+threaded/capacity_planning: 29.7 ms
+match/policy_scoring_short: timing sample 4/15
+match/policy_scoring_short: 0.825 ms
+typed/ticket_search: timing sample 6/15
+typed/ticket_search: 28.4 ms
+match_typed/capacity_planning: timing sample 5/15
+match_typed/capacity_planning: 29.6 ms
+match_typed/perf_float: timing sample 6/15
+match_typed/perf_float: 219 ms
+match/portfolio_exposure: timing sample 5/15
+match/portfolio_exposure: 4.84 ms
+match_typed/policy_scoring_short: timing sample 10/15
+match_typed/policy_scoring_short: 0.728 ms
+previous_typed/policy_scoring_batch: timing sample 9/15
+previous_typed/policy_scoring_batch: 6.7 ms
+previous_typed/perf_unpack_sequence: timing sample 7/15
+previous_typed/perf_unpack_sequence: 7.31 ms
+previous_typed/perf_float: timing sample 5/15
+previous_typed/perf_float: 224 ms
+match/capacity_planning: timing sample 4/15
+match/capacity_planning: 29.1 ms
+match/capacity_planning: timing sample 5/15
+match/capacity_planning: 28.6 ms
+threaded/capacity_planning: timing sample 6/15
+threaded/capacity_planning: 29.3 ms
+CPython/portfolio_exposure: timing sample 4/15
+CPython/portfolio_exposure: 2.4 ms
+typed/capacity_planning: timing sample 5/15
+typed/capacity_planning: 29.8 ms
+match_typed/perf_float: timing sample 7/15
+match_typed/perf_float: 218 ms
+CPython/perf_float: timing sample 3/15
+CPython/perf_float: 51.9 ms
+match_typed/ticket_search: timing sample 9/15
+match_typed/ticket_search: 27.3 ms
+match_typed/game_spectral_norm: timing sample 7/15
+match_typed/game_spectral_norm: 251 ms
+threaded/game_spectral_norm: timing sample 10/15
+threaded/game_spectral_norm: 317 ms
+previous_typed/game_spectral_norm: timing sample 5/15
+previous_typed/game_spectral_norm: 268 ms
+threaded/policy_scoring_short: timing sample 4/15
+threaded/policy_scoring_short: 0.81 ms
+previous_typed/perf_unpack_sequence: timing sample 8/15
+previous_typed/perf_unpack_sequence: 7.23 ms
+match/game_spectral_norm: timing sample 6/15
+match/game_spectral_norm: 312 ms
+match/ticket_search: timing sample 5/15
+match/ticket_search: 26.9 ms
+typed/policy_scoring_batch: timing sample 7/15
+typed/policy_scoring_batch: 6.84 ms
+typed/policy_scoring_short: timing sample 6/15
+typed/policy_scoring_short: 0.845 ms
+match_typed/capacity_planning: timing sample 6/15
+match_typed/capacity_planning: 30.2 ms
+previous_typed/policy_scoring_batch: timing sample 10/15
+previous_typed/policy_scoring_batch: 6.84 ms
+CPython/portfolio_exposure: timing sample 5/15
+CPython/portfolio_exposure: 2.53 ms
+CPython/portfolio_exposure: timing sample 6/15
+CPython/portfolio_exposure: 2.51 ms
+typed/perf_unpack_sequence: timing sample 4/15
+typed/perf_unpack_sequence: 7.31 ms
+threaded/perf_unpack_sequence: timing sample 5/15
+threaded/perf_unpack_sequence: 317 ms
+typed/portfolio_exposure: timing sample 7/15
+typed/portfolio_exposure: 1.81 ms
+threaded/capacity_planning: timing sample 7/15
+threaded/capacity_planning: 29.3 ms
+match/perf_float: timing sample 4/15
+match/perf_float: 216 ms
+previous_typed/perf_unpack_sequence: timing sample 9/15
+previous_typed/perf_unpack_sequence: 7.27 ms
+CPython/perf_unpack_sequence: timing sample 7/15
+CPython/perf_unpack_sequence: 18.4 ms
+CPython/policy_scoring_batch: timing sample 9/15
+CPython/policy_scoring_batch: 4.94 ms
+threaded/ticket_search: timing sample 10/15
+threaded/ticket_search: 27.1 ms
+CPython/portfolio_exposure: timing sample 7/15
+CPython/portfolio_exposure: 2.52 ms
+match_typed/ticket_search: timing sample 10/15
+match_typed/ticket_search: 26.5 ms
+threaded/perf_unpack_sequence: timing sample 6/15
+threaded/perf_unpack_sequence: 319 ms
+match_typed/capacity_planning: timing sample 7/15
+match_typed/capacity_planning: 30 ms
+previous_typed/perf_unpack_sequence: timing sample 10/15
+previous_typed/perf_unpack_sequence: 7.26 ms
+previous_typed/perf_float: timing sample 6/15
+previous_typed/perf_float: 225 ms
+CPython/ticket_search: timing sample 8/15
+CPython/ticket_search: 9.86 ms
+match_typed/ticket_search: timing sample 11/15
+match_typed/ticket_search: 27.1 ms
+match/policy_scoring_short: timing sample 5/15
+match/policy_scoring_short: 0.75 ms
+typed/ticket_search: timing sample 7/15
+typed/ticket_search: 26.6 ms
+match/policy_scoring_short: timing sample 6/15
+match/policy_scoring_short: 0.734 ms
+match_typed/perf_float: timing sample 8/15
+match_typed/perf_float: 217 ms
+typed/ticket_search: timing sample 8/15
+typed/ticket_search: 28 ms
+match/perf_float: timing sample 5/15
+match/perf_float: 219 ms
+match_typed/ticket_search: timing sample 12/15
+match_typed/ticket_search: 26.5 ms
+threaded/policy_scoring_short: timing sample 5/15
+threaded/policy_scoring_short: 0.768 ms
+threaded/ticket_search: timing sample 11/15
+threaded/ticket_search: 27.6 ms
+match_typed/capacity_planning: timing sample 8/15
+match_typed/capacity_planning: 30 ms
+CPython/ticket_search: timing sample 9/15
+CPython/ticket_search: 8.85 ms
+threaded/perf_float: timing sample 8/15
+threaded/perf_float: 221 ms
+CPython/game_spectral_norm: timing sample 7/15
+CPython/game_spectral_norm: 67.3 ms
+CPython/perf_float: timing sample 4/15
+CPython/perf_float: 52.2 ms
+match/game_spectral_norm: timing sample 7/15
+match/game_spectral_norm: 310 ms
+typed/ticket_search: timing sample 9/15
+typed/ticket_search: 27 ms
+match/ticket_search: timing sample 6/15
+match/ticket_search: 27.5 ms
+match_typed/portfolio_exposure: timing sample 8/15
+match_typed/portfolio_exposure: 1.6 ms
+match/policy_scoring_batch: timing sample 8/15
+match/policy_scoring_batch: 8.48 ms
+CPython/game_spectral_norm: timing sample 8/15
+CPython/game_spectral_norm: 67.9 ms
+CPython/perf_float: timing sample 5/15
+CPython/perf_float: 52 ms
+match/game_spectral_norm: timing sample 8/15
+match/game_spectral_norm: 311 ms
+typed/ticket_search: timing sample 10/15
+typed/ticket_search: 26.9 ms
+match_typed/perf_float: timing sample 9/15
+match_typed/perf_float: 216 ms
+previous_typed/policy_scoring_short: timing sample 9/15
+previous_typed/policy_scoring_short: 0.796 ms
+match/policy_scoring_short: timing sample 7/15
+match/policy_scoring_short: 0.86 ms
+typed/policy_scoring_batch: timing sample 8/15
+typed/policy_scoring_batch: 6.85 ms
+previous_typed/policy_scoring_batch: timing sample 11/15
+previous_typed/policy_scoring_batch: 6.71 ms
+typed/policy_scoring_short: timing sample 7/15
+typed/policy_scoring_short: 0.772 ms
+match_typed/capacity_planning: timing sample 9/15
+match_typed/capacity_planning: 29.4 ms
+threaded/portfolio_exposure: timing sample 8/15
+threaded/portfolio_exposure: 4.19 ms
+match/policy_scoring_batch: timing sample 9/15
+match/policy_scoring_batch: 8.51 ms
+match/portfolio_exposure: timing sample 6/15
+match/portfolio_exposure: 4.67 ms
+match_typed/policy_scoring_batch: timing sample 4/15
+match_typed/policy_scoring_batch: 6.85 ms
+match_typed/game_spectral_norm: timing sample 8/15
+match_typed/game_spectral_norm: 251 ms
+threaded/capacity_planning: timing sample 8/15
+threaded/capacity_planning: 30 ms
+previous_typed/policy_scoring_short: timing sample 10/15
+previous_typed/policy_scoring_short: 0.713 ms
+match_typed/perf_unpack_sequence: timing sample 8/15
+match_typed/perf_unpack_sequence: 7.19 ms
+match/portfolio_exposure: timing sample 7/15
+match/portfolio_exposure: 4.7 ms
+CPython/perf_float: timing sample 6/15
+CPython/perf_float: 51.7 ms
+match/ticket_search: timing sample 7/15
+match/ticket_search: 27.4 ms
+match/portfolio_exposure: timing sample 8/15
+match/portfolio_exposure: 4.8 ms
+match/policy_scoring_short: timing sample 8/15
+match/policy_scoring_short: 0.829 ms
+threaded/portfolio_exposure: timing sample 9/15
+threaded/portfolio_exposure: 4.43 ms
+match/capacity_planning: timing sample 6/15
+match/capacity_planning: 29.1 ms
+threaded/game_spectral_norm: timing sample 11/15
+threaded/game_spectral_norm: 317 ms
+threaded/portfolio_exposure: timing sample 10/15
+threaded/portfolio_exposure: 4.23 ms
+typed/portfolio_exposure: timing sample 8/15
+typed/portfolio_exposure: 1.62 ms
+typed/portfolio_exposure: timing sample 9/15
+typed/portfolio_exposure: 1.68 ms
+threaded/game_spectral_norm: timing sample 12/15
+threaded/game_spectral_norm: 317 ms
+typed/policy_scoring_short: timing sample 8/15
+typed/policy_scoring_short: 0.855 ms
+typed/perf_float: timing sample 9/15
+typed/perf_float: 222 ms
+match_typed/policy_scoring_batch: timing sample 5/15
+match_typed/policy_scoring_batch: 6.93 ms
+CPython/ticket_search: timing sample 10/15
+CPython/ticket_search: 9.88 ms
+match/ticket_search: timing sample 8/15
+match/ticket_search: 26.7 ms
+match_typed/perf_unpack_sequence: timing sample 9/15
+match_typed/perf_unpack_sequence: 7.21 ms
+CPython/policy_scoring_short: timing sample 10/15
+CPython/policy_scoring_short: 1.27 ms
+CPython/perf_unpack_sequence: timing sample 8/15
+CPython/perf_unpack_sequence: 18.3 ms
+match/portfolio_exposure: timing sample 9/15
+match/portfolio_exposure: 4.87 ms
+match/perf_float: timing sample 6/15
+match/perf_float: 218 ms
+CPython/perf_float: timing sample 7/15
+CPython/perf_float: 52.3 ms
+CPython/policy_scoring_batch: timing sample 10/15
+CPython/policy_scoring_batch: 5.3 ms
+CPython/portfolio_exposure: timing sample 8/15
+CPython/portfolio_exposure: 2.64 ms
+CPython/perf_float: timing sample 8/15
+CPython/perf_float: 52.4 ms
+typed/ticket_search: timing sample 11/15
+typed/ticket_search: 27.5 ms
+threaded/ticket_search: timing sample 12/15
+threaded/ticket_search: 27.7 ms
+CPython/policy_scoring_batch: timing sample 11/15
+CPython/policy_scoring_batch: 4.97 ms
+typed/perf_unpack_sequence: timing sample 5/15
+typed/perf_unpack_sequence: 7.49 ms
+CPython/capacity_planning: timing sample 7/15
+CPython/capacity_planning: 9.86 ms
+CPython/capacity_planning: timing sample 8/15
+CPython/capacity_planning: 9.86 ms
+typed/portfolio_exposure: timing sample 10/15
+typed/portfolio_exposure: 1.66 ms
+typed/perf_unpack_sequence: timing sample 6/15
+typed/perf_unpack_sequence: 7.27 ms
+previous_typed/portfolio_exposure: timing sample 10/15
+previous_typed/portfolio_exposure: 1.65 ms
+previous_typed/capacity_planning: timing sample 7/15
+previous_typed/capacity_planning: 29.9 ms
+typed/perf_unpack_sequence: timing sample 7/15
+typed/perf_unpack_sequence: 7.22 ms
+match_typed/policy_scoring_short: timing sample 11/15
+match_typed/policy_scoring_short: 0.938 ms
+match/perf_float: timing sample 7/15
+match/perf_float: 217 ms
+typed/policy_scoring_short: timing sample 9/15
+typed/policy_scoring_short: 0.725 ms
+match_typed/perf_unpack_sequence: timing sample 10/15
+match_typed/perf_unpack_sequence: 7.46 ms
+CPython/policy_scoring_short: timing sample 11/15
+CPython/policy_scoring_short: 1.25 ms
+match/capacity_planning: timing sample 7/15
+match/capacity_planning: 28.4 ms
+previous_typed/portfolio_exposure: timing sample 11/15
+previous_typed/portfolio_exposure: 1.59 ms
+CPython/ticket_search: timing sample 11/15
+CPython/ticket_search: 9.71 ms
+previous_typed/portfolio_exposure: timing sample 12/15
+previous_typed/portfolio_exposure: 1.65 ms
+match_typed/policy_scoring_batch: timing sample 6/15
+match_typed/policy_scoring_batch: 7.12 ms
+typed/perf_float: timing sample 10/15
+typed/perf_float: 222 ms
+previous_typed/capacity_planning: timing sample 8/15
+previous_typed/capacity_planning: 29.5 ms
+match/perf_unpack_sequence: timing sample 6/15
+match/perf_unpack_sequence: 325 ms
+match_typed/perf_float: timing sample 10/15
+match_typed/perf_float: 218 ms
+CPython/portfolio_exposure: timing sample 9/15
+CPython/portfolio_exposure: 2.3 ms
+typed/policy_scoring_batch: timing sample 9/15
+typed/policy_scoring_batch: 6.8 ms
+match/portfolio_exposure: timing sample 10/15
+match/portfolio_exposure: 4.75 ms
+match_typed/perf_unpack_sequence: timing sample 11/15
+match_typed/perf_unpack_sequence: 7.25 ms
+typed/policy_scoring_batch: timing sample 10/15
+typed/policy_scoring_batch: 7.01 ms
+threaded/policy_scoring_batch: timing sample 8/15
+threaded/policy_scoring_batch: 8.29 ms
+threaded/policy_scoring_batch: timing sample 9/15
+threaded/policy_scoring_batch: 8.41 ms
+threaded/policy_scoring_short: timing sample 6/15
+threaded/policy_scoring_short: 0.912 ms
+previous_typed/game_spectral_norm: timing sample 6/15
+previous_typed/game_spectral_norm: 268 ms
+match_typed/game_spectral_norm: timing sample 9/15
+match_typed/game_spectral_norm: 251 ms
+typed/policy_scoring_short: timing sample 10/15
+typed/policy_scoring_short: 0.777 ms
+match/game_spectral_norm: timing sample 9/15
+match/game_spectral_norm: 311 ms
+match/capacity_planning: timing sample 8/15
+match/capacity_planning: 28.9 ms
+previous_typed/perf_float: timing sample 7/15
+previous_typed/perf_float: 228 ms
+typed/portfolio_exposure: timing sample 11/15
+typed/portfolio_exposure: 1.63 ms
+match/perf_float: timing sample 8/15
+match/perf_float: 218 ms
+threaded/policy_scoring_short: timing sample 7/15
+threaded/policy_scoring_short: 0.919 ms
+match/perf_unpack_sequence: timing sample 7/15
+match/perf_unpack_sequence: 319 ms
+CPython/perf_unpack_sequence: timing sample 9/15
+CPython/perf_unpack_sequence: 18.6 ms
+typed/perf_unpack_sequence: timing sample 8/15
+typed/perf_unpack_sequence: 7.1 ms
+match/game_spectral_norm: timing sample 10/15
+match/game_spectral_norm: 314 ms
+typed/game_spectral_norm: timing sample 10/15
+typed/game_spectral_norm: 237 ms
+match_typed/policy_scoring_batch: timing sample 7/15
+match_typed/policy_scoring_batch: 6.83 ms
+match/policy_scoring_short: timing sample 9/15
+match/policy_scoring_short: 0.767 ms
+typed/capacity_planning: timing sample 6/15
+typed/capacity_planning: 29.6 ms
+typed/capacity_planning: timing sample 7/15
+typed/capacity_planning: 29.9 ms
+threaded/perf_unpack_sequence: timing sample 7/15
+threaded/perf_unpack_sequence: 319 ms
+previous_typed/perf_unpack_sequence: timing sample 11/15
+previous_typed/perf_unpack_sequence: 7.3 ms
+previous_typed/capacity_planning: timing sample 9/15
+previous_typed/capacity_planning: 29 ms
+typed/policy_scoring_batch: timing sample 11/15
+typed/policy_scoring_batch: 6.98 ms
+typed/perf_unpack_sequence: timing sample 9/15
+typed/perf_unpack_sequence: 7.08 ms
+threaded/perf_float: timing sample 9/15
+threaded/perf_float: 225 ms
+previous_typed/policy_scoring_short: timing sample 11/15
+previous_typed/policy_scoring_short: 0.784 ms
+match_typed/policy_scoring_batch: timing sample 8/15
+match_typed/policy_scoring_batch: 7.14 ms
+match/portfolio_exposure: timing sample 11/15
+match/portfolio_exposure: 4.7 ms
+CPython/policy_scoring_short: timing sample 12/15
+CPython/policy_scoring_short: 1.34 ms
+typed/capacity_planning: timing sample 8/15
+typed/capacity_planning: 29.3 ms
+CPython/game_spectral_norm: timing sample 9/15
+CPython/game_spectral_norm: 67.5 ms
+threaded/game_spectral_norm: timing sample 13/15
+threaded/game_spectral_norm: 317 ms
+typed/policy_scoring_batch: timing sample 12/15
+typed/policy_scoring_batch: 6.82 ms
+match/perf_float: timing sample 9/15
+match/perf_float: 218 ms
+typed/perf_float: timing sample 11/15
+typed/perf_float: 221 ms
+match_typed/capacity_planning: timing sample 10/15
+match_typed/capacity_planning: 29.4 ms
+CPython/perf_unpack_sequence: timing sample 10/15
+CPython/perf_unpack_sequence: 18.7 ms
+match/perf_unpack_sequence: timing sample 8/15
+match/perf_unpack_sequence: 320 ms
+CPython/perf_float: timing sample 9/15
+CPython/perf_float: 52.3 ms
+CPython/portfolio_exposure: timing sample 10/15
+CPython/portfolio_exposure: 2.3 ms
+typed/perf_float: timing sample 12/15
+typed/perf_float: 223 ms
+previous_typed/ticket_search: timing sample 7/15
+previous_typed/ticket_search: 27.5 ms
+typed/capacity_planning: timing sample 9/15
+typed/capacity_planning: 30.3 ms
+previous_typed/policy_scoring_batch: timing sample 12/15
+previous_typed/policy_scoring_batch: 6.69 ms
+CPython/policy_scoring_short: timing sample 13/15
+CPython/policy_scoring_short: 1.36 ms
+match/policy_scoring_batch: timing sample 10/15
+match/policy_scoring_batch: 8.32 ms
+threaded/policy_scoring_short: timing sample 8/15
+threaded/policy_scoring_short: 0.908 ms
+previous_typed/capacity_planning: timing sample 10/15
+previous_typed/capacity_planning: 28.9 ms
+CPython/perf_unpack_sequence: timing sample 11/15
+CPython/perf_unpack_sequence: 18.2 ms
+match_typed/game_spectral_norm: timing sample 10/15
+match_typed/game_spectral_norm: 251 ms
+CPython/capacity_planning: timing sample 9/15
+CPython/capacity_planning: 9.7 ms
+typed/policy_scoring_short: timing sample 11/15
+typed/policy_scoring_short: 0.834 ms
+match/ticket_search: timing sample 9/15
+match/ticket_search: 27 ms
+CPython/perf_float: timing sample 10/15
+CPython/perf_float: 51.4 ms
+CPython/portfolio_exposure: timing sample 11/15
+CPython/portfolio_exposure: 2.61 ms
+threaded/capacity_planning: timing sample 9/15
+threaded/capacity_planning: 29.8 ms
+match_typed/portfolio_exposure: timing sample 9/15
+match_typed/portfolio_exposure: 1.6 ms
+match_typed/game_spectral_norm: timing sample 11/15
+match_typed/game_spectral_norm: 252 ms
+match_typed/portfolio_exposure: timing sample 10/15
+match_typed/portfolio_exposure: 1.75 ms
+match/ticket_search: timing sample 10/15
+match/ticket_search: 27 ms
+match_typed/perf_float: timing sample 11/15
+match_typed/perf_float: 220 ms
+previous_typed/game_spectral_norm: timing sample 7/15
+previous_typed/game_spectral_norm: 275 ms
+threaded/policy_scoring_batch: timing sample 10/15
+threaded/policy_scoring_batch: 8.44 ms
+typed/policy_scoring_batch: timing sample 13/15
+typed/policy_scoring_batch: 6.91 ms
+previous_typed/ticket_search: timing sample 8/15
+previous_typed/ticket_search: 27.4 ms
+match_typed/ticket_search: timing sample 13/15
+match_typed/ticket_search: 27.2 ms
+previous_typed/perf_float: timing sample 8/15
+previous_typed/perf_float: 224 ms
+match_typed/ticket_search: timing sample 14/15
+match_typed/ticket_search: 28 ms
+typed/capacity_planning: timing sample 10/15
+typed/capacity_planning: 29.6 ms
+previous_typed/ticket_search: timing sample 9/15
+previous_typed/ticket_search: 27.2 ms
+previous_typed/portfolio_exposure: timing sample 13/15
+previous_typed/portfolio_exposure: 1.62 ms
+typed/perf_float: timing sample 13/15
+typed/perf_float: 220 ms
+threaded/policy_scoring_short: timing sample 9/15
+threaded/policy_scoring_short: 0.872 ms
+typed/game_spectral_norm: timing sample 11/15
+typed/game_spectral_norm: 238 ms
+previous_typed/game_spectral_norm: timing sample 8/15
+previous_typed/game_spectral_norm: 267 ms
+match/policy_scoring_batch: timing sample 11/15
+match/policy_scoring_batch: 8.57 ms
+CPython/perf_unpack_sequence: timing sample 12/15
+CPython/perf_unpack_sequence: 18.8 ms
+match_typed/capacity_planning: timing sample 11/15
+match_typed/capacity_planning: 29.9 ms
+match_typed/ticket_search: timing sample 15/15
+match_typed/ticket_search: 26.6 ms
+previous_typed/policy_scoring_short: timing sample 12/15
+previous_typed/policy_scoring_short: 0.753 ms
+threaded/portfolio_exposure: timing sample 11/15
+threaded/portfolio_exposure: 4.27 ms
+match_typed/perf_unpack_sequence: timing sample 12/15
+match_typed/perf_unpack_sequence: 7.23 ms
+match/policy_scoring_batch: timing sample 12/15
+match/policy_scoring_batch: 8.73 ms
+previous_typed/capacity_planning: timing sample 11/15
+previous_typed/capacity_planning: 29 ms
+threaded/policy_scoring_short: timing sample 10/15
+threaded/policy_scoring_short: 0.895 ms
+previous_typed/game_spectral_norm: timing sample 9/15
+previous_typed/game_spectral_norm: 267 ms
+threaded/game_spectral_norm: timing sample 14/15
+threaded/game_spectral_norm: 317 ms
+CPython/capacity_planning: timing sample 10/15
+CPython/capacity_planning: 9.7 ms
+CPython/portfolio_exposure: timing sample 12/15
+CPython/portfolio_exposure: 2.62 ms
+match/perf_float: timing sample 10/15
+match/perf_float: 220 ms
+CPython/game_spectral_norm: timing sample 10/15
+CPython/game_spectral_norm: 68.1 ms
+threaded/perf_unpack_sequence: timing sample 8/15
+threaded/perf_unpack_sequence: 322 ms
+match/perf_unpack_sequence: timing sample 9/15
+match/perf_unpack_sequence: 318 ms
+match_typed/perf_float: timing sample 12/15
+match_typed/perf_float: 219 ms
+typed/perf_unpack_sequence: timing sample 10/15
+typed/perf_unpack_sequence: 7.34 ms
+previous_typed/policy_scoring_short: timing sample 13/15
+previous_typed/policy_scoring_short: 0.774 ms
+match/game_spectral_norm: timing sample 11/15
+match/game_spectral_norm: 311 ms
+typed/capacity_planning: timing sample 11/15
+typed/capacity_planning: 29.7 ms
+threaded/capacity_planning: timing sample 10/15
+threaded/capacity_planning: 29.9 ms
+CPython/policy_scoring_short: timing sample 14/15
+CPython/policy_scoring_short: 1.53 ms
+CPython/perf_float: timing sample 11/15
+CPython/perf_float: 51.9 ms
+typed/policy_scoring_short: timing sample 12/15
+typed/policy_scoring_short: 0.731 ms
+match/policy_scoring_short: timing sample 10/15
+match/policy_scoring_short: 0.854 ms
+match_typed/game_spectral_norm: timing sample 12/15
+match_typed/game_spectral_norm: 251 ms
+match_typed/portfolio_exposure: timing sample 11/15
+match_typed/portfolio_exposure: 1.7 ms
+typed/portfolio_exposure: timing sample 12/15
+typed/portfolio_exposure: 1.82 ms
+typed/capacity_planning: timing sample 12/15
+typed/capacity_planning: 29.8 ms
+typed/policy_scoring_batch: timing sample 14/15
+typed/policy_scoring_batch: 7.02 ms
+typed/capacity_planning: timing sample 13/15
+typed/capacity_planning: 29.5 ms
+match/perf_float: timing sample 11/15
+match/perf_float: 218 ms
+match/ticket_search: timing sample 11/15
+match/ticket_search: 27.1 ms
+match_typed/game_spectral_norm: timing sample 13/15
+match_typed/game_spectral_norm: 254 ms
+match_typed/policy_scoring_batch: timing sample 9/15
+match_typed/policy_scoring_batch: 6.97 ms
+threaded/policy_scoring_short: timing sample 11/15
+threaded/policy_scoring_short: 0.79 ms
+typed/capacity_planning: timing sample 14/15
+typed/capacity_planning: 29.7 ms
+match_typed/policy_scoring_batch: timing sample 10/15
+match_typed/policy_scoring_batch: 6.97 ms
+previous_typed/portfolio_exposure: timing sample 14/15
+previous_typed/portfolio_exposure: 1.76 ms
+match/game_spectral_norm: timing sample 12/15
+match/game_spectral_norm: 311 ms
+match/capacity_planning: timing sample 9/15
+match/capacity_planning: 28.5 ms
+typed/ticket_search: timing sample 12/15
+typed/ticket_search: 27.5 ms
+previous_typed/capacity_planning: timing sample 12/15
+previous_typed/capacity_planning: 29.1 ms
+previous_typed/policy_scoring_short: timing sample 14/15
+previous_typed/policy_scoring_short: 0.754 ms
+typed/policy_scoring_batch: timing sample 15/15
+typed/policy_scoring_batch: 6.8 ms
+previous_typed/ticket_search: timing sample 10/15
+previous_typed/ticket_search: 26.9 ms
+match/capacity_planning: timing sample 10/15
+match/capacity_planning: 28.9 ms
+threaded/perf_unpack_sequence: timing sample 9/15
+threaded/perf_unpack_sequence: 319 ms
+match/perf_float: timing sample 12/15
+match/perf_float: 217 ms
+match_typed/policy_scoring_batch: timing sample 11/15
+match_typed/policy_scoring_batch: 7.18 ms
+typed/portfolio_exposure: timing sample 13/15
+typed/portfolio_exposure: 1.61 ms
+threaded/policy_scoring_batch: timing sample 11/15
+threaded/policy_scoring_batch: 8.71 ms
+match/portfolio_exposure: timing sample 12/15
+match/portfolio_exposure: 4.85 ms
+CPython/game_spectral_norm: timing sample 11/15
+CPython/game_spectral_norm: 67.8 ms
+CPython/ticket_search: timing sample 12/15
+CPython/ticket_search: 9 ms
+match_typed/policy_scoring_batch: timing sample 12/15
+match_typed/policy_scoring_batch: 7.1 ms
+CPython/game_spectral_norm: timing sample 12/15
+CPython/game_spectral_norm: 68.5 ms
+CPython/game_spectral_norm: timing sample 13/15
+CPython/game_spectral_norm: 67.5 ms
+typed/ticket_search: timing sample 13/15
+typed/ticket_search: 27 ms
+previous_typed/ticket_search: timing sample 11/15
+previous_typed/ticket_search: 26.7 ms
+match/capacity_planning: timing sample 11/15
+match/capacity_planning: 28.9 ms
+match/perf_unpack_sequence: timing sample 10/15
+match/perf_unpack_sequence: 316 ms
+match_typed/policy_scoring_short: timing sample 12/15
+match_typed/policy_scoring_short: 0.811 ms
+previous_typed/perf_float: timing sample 9/15
+previous_typed/perf_float: 224 ms
+threaded/portfolio_exposure: timing sample 12/15
+threaded/portfolio_exposure: 4.55 ms
+typed/portfolio_exposure: timing sample 14/15
+typed/portfolio_exposure: 1.72 ms
+threaded/policy_scoring_batch: timing sample 12/15
+threaded/policy_scoring_batch: 8.51 ms
+match/capacity_planning: timing sample 12/15
+match/capacity_planning: 29.2 ms
+previous_typed/perf_float: timing sample 10/15
+previous_typed/perf_float: 223 ms
+typed/ticket_search: timing sample 14/15
+typed/ticket_search: 27.3 ms
+previous_typed/perf_float: timing sample 11/15
+previous_typed/perf_float: 219 ms
+typed/policy_scoring_short: timing sample 13/15
+typed/policy_scoring_short: 0.77 ms
+match/ticket_search: timing sample 12/15
+match/ticket_search: 27 ms
+CPython/capacity_planning: timing sample 11/15
+CPython/capacity_planning: 9.86 ms
+threaded/perf_float: timing sample 10/15
+threaded/perf_float: 222 ms
+previous_typed/ticket_search: timing sample 12/15
+previous_typed/ticket_search: 28 ms
+match_typed/capacity_planning: timing sample 12/15
+match_typed/capacity_planning: 29.5 ms
+match/portfolio_exposure: timing sample 13/15
+match/portfolio_exposure: 4.81 ms
+CPython/policy_scoring_batch: timing sample 12/15
+CPython/policy_scoring_batch: 5.02 ms
+threaded/policy_scoring_short: timing sample 12/15
+threaded/policy_scoring_short: 0.874 ms
+CPython/policy_scoring_batch: timing sample 13/15
+CPython/policy_scoring_batch: 5.19 ms
+match/policy_scoring_short: timing sample 11/15
+match/policy_scoring_short: 0.738 ms
+typed/game_spectral_norm: timing sample 12/15
+typed/game_spectral_norm: 238 ms
+match/policy_scoring_short: timing sample 12/15
+match/policy_scoring_short: 0.819 ms
+match/policy_scoring_batch: timing sample 13/15
+match/policy_scoring_batch: 8.43 ms
+previous_typed/perf_float: timing sample 12/15
+previous_typed/perf_float: 223 ms
+previous_typed/policy_scoring_batch: timing sample 13/15
+previous_typed/policy_scoring_batch: 7.24 ms
+CPython/ticket_search: timing sample 13/15
+CPython/ticket_search: 9.63 ms
+match_typed/game_spectral_norm: timing sample 14/15
+match_typed/game_spectral_norm: 252 ms
+threaded/capacity_planning: timing sample 11/15
+threaded/capacity_planning: 29.5 ms
+previous_typed/policy_scoring_batch: timing sample 14/15
+previous_typed/policy_scoring_batch: 7.02 ms
+threaded/perf_float: timing sample 11/15
+threaded/perf_float: 290 ms
+threaded/portfolio_exposure: timing sample 13/15
+threaded/portfolio_exposure: 4.49 ms
+match/game_spectral_norm: timing sample 13/15
+match/game_spectral_norm: 311 ms
+match/ticket_search: timing sample 13/15
+match/ticket_search: 26.7 ms
+CPython/portfolio_exposure: timing sample 13/15
+CPython/portfolio_exposure: 2.38 ms
+match_typed/perf_unpack_sequence: timing sample 13/15
+match_typed/perf_unpack_sequence: 7.26 ms
+previous_typed/perf_float: timing sample 13/15
+previous_typed/perf_float: 222 ms
+match_typed/capacity_planning: timing sample 13/15
+match_typed/capacity_planning: 30 ms
+previous_typed/game_spectral_norm: timing sample 10/15
+previous_typed/game_spectral_norm: 268 ms
+typed/game_spectral_norm: timing sample 13/15
+typed/game_spectral_norm: 241 ms
+threaded/policy_scoring_short: timing sample 13/15
+threaded/policy_scoring_short: 0.851 ms
+threaded/perf_float: timing sample 12/15
+threaded/perf_float: 217 ms
+previous_typed/policy_scoring_batch: timing sample 15/15
+previous_typed/policy_scoring_batch: 6.98 ms
+previous_typed/policy_scoring_short: timing sample 15/15
+previous_typed/policy_scoring_short: 0.839 ms
+previous_typed/ticket_search: timing sample 13/15
+previous_typed/ticket_search: 27.6 ms
+CPython/portfolio_exposure: timing sample 14/15
+CPython/portfolio_exposure: 2.7 ms
+match_typed/portfolio_exposure: timing sample 12/15
+match_typed/portfolio_exposure: 1.67 ms
+match/capacity_planning: timing sample 13/15
+match/capacity_planning: 28.7 ms
+match/game_spectral_norm: timing sample 14/15
+match/game_spectral_norm: 318 ms
+match/capacity_planning: timing sample 14/15
+match/capacity_planning: 28.8 ms
+CPython/perf_unpack_sequence: timing sample 13/15
+CPython/perf_unpack_sequence: 18.6 ms
+previous_typed/perf_unpack_sequence: timing sample 12/15
+previous_typed/perf_unpack_sequence: 7.61 ms
+CPython/capacity_planning: timing sample 12/15
+CPython/capacity_planning: 9.92 ms
+match/policy_scoring_batch: timing sample 14/15
+match/policy_scoring_batch: 8.47 ms
+match/portfolio_exposure: timing sample 14/15
+match/portfolio_exposure: 4.73 ms
+threaded/perf_unpack_sequence: timing sample 10/15
+threaded/perf_unpack_sequence: 319 ms
+threaded/ticket_search: timing sample 13/15
+threaded/ticket_search: 26.5 ms
+CPython/policy_scoring_short: timing sample 15/15
+CPython/policy_scoring_short: 1.34 ms
+typed/perf_unpack_sequence: timing sample 11/15
+typed/perf_unpack_sequence: 7.32 ms
+previous_typed/game_spectral_norm: timing sample 11/15
+previous_typed/game_spectral_norm: 269 ms
+previous_typed/perf_float: timing sample 14/15
+previous_typed/perf_float: 222 ms
+match_typed/policy_scoring_short: timing sample 13/15
+match_typed/policy_scoring_short: 0.715 ms
+match_typed/perf_float: timing sample 13/15
+match_typed/perf_float: 217 ms
+typed/perf_unpack_sequence: timing sample 12/15
+typed/perf_unpack_sequence: 7.56 ms
+match_typed/capacity_planning: timing sample 14/15
+match_typed/capacity_planning: 29.5 ms
+CPython/policy_scoring_batch: timing sample 14/15
+CPython/policy_scoring_batch: 4.86 ms
+previous_typed/ticket_search: timing sample 14/15
+previous_typed/ticket_search: 27.8 ms
+threaded/perf_float: timing sample 13/15
+threaded/perf_float: 222 ms
+typed/game_spectral_norm: timing sample 14/15
+typed/game_spectral_norm: 237 ms
+threaded/policy_scoring_batch: timing sample 13/15
+threaded/policy_scoring_batch: 8.6 ms
+match_typed/perf_unpack_sequence: timing sample 14/15
+match_typed/perf_unpack_sequence: 7.43 ms
+CPython/perf_float: timing sample 12/15
+CPython/perf_float: 51.5 ms
+threaded/perf_unpack_sequence: timing sample 11/15
+threaded/perf_unpack_sequence: 318 ms
+CPython/portfolio_exposure: timing sample 15/15
+CPython/portfolio_exposure: 2.53 ms
+typed/perf_unpack_sequence: timing sample 13/15
+typed/perf_unpack_sequence: 7.41 ms
+threaded/perf_float: timing sample 14/15
+threaded/perf_float: 221 ms
+typed/capacity_planning: timing sample 15/15
+typed/capacity_planning: 29.2 ms
+match_typed/portfolio_exposure: timing sample 13/15
+match_typed/portfolio_exposure: 1.74 ms
+CPython/perf_float: timing sample 13/15
+CPython/perf_float: 51.5 ms
+match_typed/policy_scoring_short: timing sample 14/15
+match_typed/policy_scoring_short: 0.71 ms
+match_typed/policy_scoring_batch: timing sample 13/15
+match_typed/policy_scoring_batch: 7.28 ms
+previous_typed/perf_float: timing sample 15/15
+previous_typed/perf_float: 223 ms
+threaded/ticket_search: timing sample 14/15
+threaded/ticket_search: 26.7 ms
+match/perf_unpack_sequence: timing sample 11/15
+match/perf_unpack_sequence: 319 ms
+match/perf_unpack_sequence: timing sample 12/15
+match/perf_unpack_sequence: 316 ms
+CPython/perf_unpack_sequence: timing sample 14/15
+CPython/perf_unpack_sequence: 18.4 ms
+previous_typed/game_spectral_norm: timing sample 12/15
+previous_typed/game_spectral_norm: 274 ms
+match/perf_unpack_sequence: timing sample 13/15
+match/perf_unpack_sequence: 318 ms
+threaded/portfolio_exposure: timing sample 14/15
+threaded/portfolio_exposure: 4.31 ms
+match_typed/game_spectral_norm: timing sample 15/15
+match_typed/game_spectral_norm: 252 ms
+match/perf_float: timing sample 13/15
+match/perf_float: 218 ms
+typed/policy_scoring_short: timing sample 14/15
+typed/policy_scoring_short: 0.766 ms
+match_typed/portfolio_exposure: timing sample 14/15
+match_typed/portfolio_exposure: 1.65 ms
+previous_typed/portfolio_exposure: timing sample 15/15
+previous_typed/portfolio_exposure: 1.59 ms
+typed/perf_float: timing sample 14/15
+typed/perf_float: 223 ms
+previous_typed/capacity_planning: timing sample 13/15
+previous_typed/capacity_planning: 29.4 ms
+CPython/game_spectral_norm: timing sample 14/15
+CPython/game_spectral_norm: 68.9 ms
+match_typed/perf_float: timing sample 14/15
+match_typed/perf_float: 225 ms
+match_typed/policy_scoring_short: timing sample 15/15
+match_typed/policy_scoring_short: 0.724 ms
+CPython/capacity_planning: timing sample 13/15
+CPython/capacity_planning: 10 ms
+match/policy_scoring_short: timing sample 13/15
+match/policy_scoring_short: 0.764 ms
+match/portfolio_exposure: timing sample 15/15
+match/portfolio_exposure: 4.63 ms
+threaded/perf_unpack_sequence: timing sample 12/15
+threaded/perf_unpack_sequence: 318 ms
+threaded/portfolio_exposure: timing sample 15/15
+threaded/portfolio_exposure: 4.43 ms
+match_typed/policy_scoring_batch: timing sample 14/15
+match_typed/policy_scoring_batch: 7.11 ms
+threaded/capacity_planning: timing sample 12/15
+threaded/capacity_planning: 29.8 ms
+threaded/policy_scoring_batch: timing sample 14/15
+threaded/policy_scoring_batch: 8.61 ms
+previous_typed/game_spectral_norm: timing sample 13/15
+previous_typed/game_spectral_norm: 267 ms
+CPython/capacity_planning: timing sample 14/15
+CPython/capacity_planning: 9.46 ms
+typed/perf_unpack_sequence: timing sample 14/15
+typed/perf_unpack_sequence: 7.46 ms
+threaded/capacity_planning: timing sample 13/15
+threaded/capacity_planning: 29.7 ms
+match/perf_unpack_sequence: timing sample 14/15
+match/perf_unpack_sequence: 317 ms
+threaded/policy_scoring_short: timing sample 14/15
+threaded/policy_scoring_short: 0.847 ms
+threaded/perf_unpack_sequence: timing sample 13/15
+threaded/perf_unpack_sequence: 319 ms
+previous_typed/game_spectral_norm: timing sample 14/15
+previous_typed/game_spectral_norm: 267 ms
+match/game_spectral_norm: timing sample 15/15
+match/game_spectral_norm: 316 ms
+CPython/perf_float: timing sample 14/15
+CPython/perf_float: 52.5 ms
+typed/ticket_search: timing sample 15/15
+typed/ticket_search: 27.7 ms
+match_typed/perf_unpack_sequence: timing sample 15/15
+match_typed/perf_unpack_sequence: 7.28 ms
+typed/perf_float: timing sample 15/15
+typed/perf_float: 218 ms
+match/policy_scoring_short: timing sample 14/15
+match/policy_scoring_short: 0.794 ms
+threaded/capacity_planning: timing sample 14/15
+threaded/capacity_planning: 29.3 ms
+previous_typed/capacity_planning: timing sample 14/15
+previous_typed/capacity_planning: 29.6 ms
+match_typed/perf_float: timing sample 15/15
+match_typed/perf_float: 219 ms
+match_typed/capacity_planning: timing sample 15/15
+match_typed/capacity_planning: 29.9 ms
+previous_typed/perf_unpack_sequence: timing sample 13/15
+previous_typed/perf_unpack_sequence: 7.41 ms
+match/perf_float: timing sample 14/15
+match/perf_float: 216 ms
+threaded/perf_unpack_sequence: timing sample 14/15
+threaded/perf_unpack_sequence: 317 ms
+match_typed/policy_scoring_batch: timing sample 15/15
+match_typed/policy_scoring_batch: 6.77 ms
+typed/portfolio_exposure: timing sample 15/15
+typed/portfolio_exposure: 1.6 ms
+match/policy_scoring_short: timing sample 15/15
+match/policy_scoring_short: 0.763 ms
+threaded/perf_float: timing sample 15/15
+threaded/perf_float: 222 ms
+CPython/capacity_planning: timing sample 15/15
+CPython/capacity_planning: 9.8 ms
+threaded/policy_scoring_batch: timing sample 15/15
+threaded/policy_scoring_batch: 8.44 ms
+threaded/policy_scoring_short: timing sample 15/15
+threaded/policy_scoring_short: 0.908 ms
+match/policy_scoring_batch: timing sample 15/15
+match/policy_scoring_batch: 8.52 ms
+threaded/capacity_planning: timing sample 15/15
+threaded/capacity_planning: 29.6 ms
+match/capacity_planning: timing sample 15/15
+match/capacity_planning: 28.5 ms
+threaded/ticket_search: timing sample 15/15
+threaded/ticket_search: 27.3 ms
+CPython/game_spectral_norm: timing sample 15/15
+CPython/game_spectral_norm: 67.6 ms
+previous_typed/perf_unpack_sequence: timing sample 14/15
+previous_typed/perf_unpack_sequence: 7.26 ms
+previous_typed/game_spectral_norm: timing sample 15/15
+previous_typed/game_spectral_norm: 269 ms
+typed/perf_unpack_sequence: timing sample 15/15
+typed/perf_unpack_sequence: 7.38 ms
+threaded/perf_unpack_sequence: timing sample 15/15
+threaded/perf_unpack_sequence: 315 ms
+CPython/perf_float: timing sample 15/15
+CPython/perf_float: 51.4 ms
+threaded/game_spectral_norm: timing sample 15/15
+threaded/game_spectral_norm: 327 ms
+CPython/ticket_search: timing sample 14/15
+CPython/ticket_search: 9.56 ms
+match_typed/portfolio_exposure: timing sample 15/15
+match_typed/portfolio_exposure: 1.66 ms
+match/perf_float: timing sample 15/15
+match/perf_float: 216 ms
+previous_typed/capacity_planning: timing sample 15/15
+previous_typed/capacity_planning: 30.1 ms
+match/ticket_search: timing sample 14/15
+match/ticket_search: 27.1 ms
+typed/game_spectral_norm: timing sample 15/15
+typed/game_spectral_norm: 239 ms
+previous_typed/ticket_search: timing sample 15/15
+previous_typed/ticket_search: 27.1 ms
+match/ticket_search: timing sample 15/15
+match/ticket_search: 27.5 ms
+previous_typed/perf_unpack_sequence: timing sample 15/15
+previous_typed/perf_unpack_sequence: 7.26 ms
+CPython/policy_scoring_batch: timing sample 15/15
+CPython/policy_scoring_batch: 4.9 ms
+match/perf_unpack_sequence: timing sample 15/15
+match/perf_unpack_sequence: 318 ms
+CPython/perf_unpack_sequence: timing sample 15/15
+CPython/perf_unpack_sequence: 18.5 ms
+CPython/ticket_search: timing sample 15/15
+CPython/ticket_search: 10.4 ms
+typed/policy_scoring_short: timing sample 15/15
+typed/policy_scoring_short: 0.848 ms
+threaded/game_spectral_norm: RSS sample 1/3
+threaded/game_spectral_norm: RSS 10.9 MiB
+threaded/game_spectral_norm: RSS sample 2/3
+threaded/game_spectral_norm: RSS 10.9 MiB
+threaded/game_spectral_norm: RSS sample 3/3
+threaded/game_spectral_norm: RSS 11 MiB
+threaded/perf_unpack_sequence: RSS sample 1/3
+threaded/perf_unpack_sequence: RSS 11.7 MiB
+threaded/perf_unpack_sequence: RSS sample 2/3
+threaded/perf_unpack_sequence: RSS 11.7 MiB
+threaded/perf_unpack_sequence: RSS sample 3/3
+threaded/perf_unpack_sequence: RSS 11.7 MiB
+threaded/policy_scoring_short: RSS sample 1/3
+threaded/policy_scoring_short: RSS 11 MiB
+threaded/policy_scoring_short: RSS sample 2/3
+threaded/policy_scoring_short: RSS 11 MiB
+threaded/policy_scoring_short: RSS sample 3/3
+threaded/policy_scoring_short: RSS 11 MiB
+threaded/policy_scoring_batch: RSS sample 1/3
+threaded/policy_scoring_batch: RSS 13.5 MiB
+threaded/policy_scoring_batch: RSS sample 2/3
+threaded/policy_scoring_batch: RSS 13.5 MiB
+threaded/policy_scoring_batch: RSS sample 3/3
+threaded/policy_scoring_batch: RSS 13.5 MiB
+threaded/portfolio_exposure: RSS sample 1/3
+threaded/portfolio_exposure: RSS 10.8 MiB
+threaded/portfolio_exposure: RSS sample 2/3
+threaded/portfolio_exposure: RSS 10.8 MiB
+threaded/portfolio_exposure: RSS sample 3/3
+threaded/portfolio_exposure: RSS 10.8 MiB
+threaded/capacity_planning: RSS sample 1/3
+threaded/capacity_planning: RSS 14.9 MiB
+threaded/capacity_planning: RSS sample 2/3
+threaded/capacity_planning: RSS 14.8 MiB
+threaded/capacity_planning: RSS sample 3/3
+threaded/capacity_planning: RSS 14.9 MiB
+threaded/ticket_search: RSS sample 1/3
+threaded/ticket_search: RSS 14 MiB
+threaded/ticket_search: RSS sample 2/3
+threaded/ticket_search: RSS 14 MiB
+threaded/ticket_search: RSS sample 3/3
+threaded/ticket_search: RSS 14.2 MiB
+threaded/perf_float: RSS sample 1/3
+threaded/perf_float: RSS 58 MiB
+threaded/perf_float: RSS sample 2/3
+threaded/perf_float: RSS 57.5 MiB
+threaded/perf_float: RSS sample 3/3
+threaded/perf_float: RSS 58.5 MiB
+typed/game_spectral_norm: RSS sample 1/3
+typed/game_spectral_norm: RSS 11 MiB
+typed/game_spectral_norm: RSS sample 2/3
+typed/game_spectral_norm: RSS 11 MiB
+typed/game_spectral_norm: RSS sample 3/3
+typed/game_spectral_norm: RSS 11 MiB
+typed/perf_unpack_sequence: RSS sample 1/3
+typed/perf_unpack_sequence: RSS 12.1 MiB
+typed/perf_unpack_sequence: RSS sample 2/3
+typed/perf_unpack_sequence: RSS 12.1 MiB
+typed/perf_unpack_sequence: RSS sample 3/3
+typed/perf_unpack_sequence: RSS 12.1 MiB
+typed/policy_scoring_short: RSS sample 1/3
+typed/policy_scoring_short: RSS 11.2 MiB
+typed/policy_scoring_short: RSS sample 2/3
+typed/policy_scoring_short: RSS 11.2 MiB
+typed/policy_scoring_short: RSS sample 3/3
+typed/policy_scoring_short: RSS 11.1 MiB
+typed/policy_scoring_batch: RSS sample 1/3
+typed/policy_scoring_batch: RSS 13.7 MiB
+typed/policy_scoring_batch: RSS sample 2/3
+typed/policy_scoring_batch: RSS 13.7 MiB
+typed/policy_scoring_batch: RSS sample 3/3
+typed/policy_scoring_batch: RSS 13.6 MiB
+typed/portfolio_exposure: RSS sample 1/3
+typed/portfolio_exposure: RSS 10.9 MiB
+typed/portfolio_exposure: RSS sample 2/3
+typed/portfolio_exposure: RSS 10.9 MiB
+typed/portfolio_exposure: RSS sample 3/3
+typed/portfolio_exposure: RSS 10.9 MiB
+typed/capacity_planning: RSS sample 1/3
+typed/capacity_planning: RSS 14.9 MiB
+typed/capacity_planning: RSS sample 2/3
+typed/capacity_planning: RSS 14.8 MiB
+typed/capacity_planning: RSS sample 3/3
+typed/capacity_planning: RSS 15 MiB
+typed/ticket_search: RSS sample 1/3
+typed/ticket_search: RSS 14.1 MiB
+typed/ticket_search: RSS sample 2/3
+typed/ticket_search: RSS 14.1 MiB
+typed/ticket_search: RSS sample 3/3
+typed/ticket_search: RSS 14.1 MiB
+typed/perf_float: RSS sample 1/3
+typed/perf_float: RSS 57 MiB
+typed/perf_float: RSS sample 2/3
+typed/perf_float: RSS 58.5 MiB
+typed/perf_float: RSS sample 3/3
+typed/perf_float: RSS 57.8 MiB
+previous_typed/game_spectral_norm: RSS sample 1/3
+previous_typed/game_spectral_norm: RSS 11 MiB
+previous_typed/game_spectral_norm: RSS sample 2/3
+previous_typed/game_spectral_norm: RSS 11 MiB
+previous_typed/game_spectral_norm: RSS sample 3/3
+previous_typed/game_spectral_norm: RSS 11 MiB
+previous_typed/perf_unpack_sequence: RSS sample 1/3
+previous_typed/perf_unpack_sequence: RSS 12.1 MiB
+previous_typed/perf_unpack_sequence: RSS sample 2/3
+previous_typed/perf_unpack_sequence: RSS 12.1 MiB
+previous_typed/perf_unpack_sequence: RSS sample 3/3
+previous_typed/perf_unpack_sequence: RSS 12.1 MiB
+previous_typed/policy_scoring_short: RSS sample 1/3
+previous_typed/policy_scoring_short: RSS 11.1 MiB
+previous_typed/policy_scoring_short: RSS sample 2/3
+previous_typed/policy_scoring_short: RSS 11 MiB
+previous_typed/policy_scoring_short: RSS sample 3/3
+previous_typed/policy_scoring_short: RSS 11 MiB
+previous_typed/policy_scoring_batch: RSS sample 1/3
+previous_typed/policy_scoring_batch: RSS 13.6 MiB
+previous_typed/policy_scoring_batch: RSS sample 2/3
+previous_typed/policy_scoring_batch: RSS 13.6 MiB
+previous_typed/policy_scoring_batch: RSS sample 3/3
+previous_typed/policy_scoring_batch: RSS 13.7 MiB
+previous_typed/portfolio_exposure: RSS sample 1/3
+previous_typed/portfolio_exposure: RSS 10.8 MiB
+previous_typed/portfolio_exposure: RSS sample 2/3
+previous_typed/portfolio_exposure: RSS 10.8 MiB
+previous_typed/portfolio_exposure: RSS sample 3/3
+previous_typed/portfolio_exposure: RSS 10.8 MiB
+previous_typed/capacity_planning: RSS sample 1/3
+previous_typed/capacity_planning: RSS 15.1 MiB
+previous_typed/capacity_planning: RSS sample 2/3
+previous_typed/capacity_planning: RSS 15 MiB
+previous_typed/capacity_planning: RSS sample 3/3
+previous_typed/capacity_planning: RSS 14.9 MiB
+previous_typed/ticket_search: RSS sample 1/3
+previous_typed/ticket_search: RSS 14.2 MiB
+previous_typed/ticket_search: RSS sample 2/3
+previous_typed/ticket_search: RSS 14.1 MiB
+previous_typed/ticket_search: RSS sample 3/3
+previous_typed/ticket_search: RSS 14.1 MiB
+previous_typed/perf_float: RSS sample 1/3
+previous_typed/perf_float: RSS 58.6 MiB
+previous_typed/perf_float: RSS sample 2/3
+previous_typed/perf_float: RSS 57.4 MiB
+previous_typed/perf_float: RSS sample 3/3
+previous_typed/perf_float: RSS 58.9 MiB
+match/game_spectral_norm: RSS sample 1/3
+match/game_spectral_norm: RSS 10.9 MiB
+match/game_spectral_norm: RSS sample 2/3
+match/game_spectral_norm: RSS 10.9 MiB
+match/game_spectral_norm: RSS sample 3/3
+match/game_spectral_norm: RSS 10.9 MiB
+match/perf_unpack_sequence: RSS sample 1/3
+match/perf_unpack_sequence: RSS 11.6 MiB
+match/perf_unpack_sequence: RSS sample 2/3
+match/perf_unpack_sequence: RSS 11.6 MiB
+match/perf_unpack_sequence: RSS sample 3/3
+match/perf_unpack_sequence: RSS 11.6 MiB
+match/policy_scoring_short: RSS sample 1/3
+match/policy_scoring_short: RSS 10.8 MiB
+match/policy_scoring_short: RSS sample 2/3
+match/policy_scoring_short: RSS 10.8 MiB
+match/policy_scoring_short: RSS sample 3/3
+match/policy_scoring_short: RSS 10.8 MiB
+match/policy_scoring_batch: RSS sample 1/3
+match/policy_scoring_batch: RSS 13.3 MiB
+match/policy_scoring_batch: RSS sample 2/3
+match/policy_scoring_batch: RSS 13.4 MiB
+match/policy_scoring_batch: RSS sample 3/3
+match/policy_scoring_batch: RSS 13.3 MiB
+match/portfolio_exposure: RSS sample 1/3
+match/portfolio_exposure: RSS 10.7 MiB
+match/portfolio_exposure: RSS sample 2/3
+match/portfolio_exposure: RSS 10.7 MiB
+match/portfolio_exposure: RSS sample 3/3
+match/portfolio_exposure: RSS 10.6 MiB
+match/capacity_planning: RSS sample 1/3
+match/capacity_planning: RSS 15 MiB
+match/capacity_planning: RSS sample 2/3
+match/capacity_planning: RSS 15 MiB
+match/capacity_planning: RSS sample 3/3
+match/capacity_planning: RSS 14.9 MiB
+match/ticket_search: RSS sample 1/3
+match/ticket_search: RSS 14 MiB
+match/ticket_search: RSS sample 2/3
+match/ticket_search: RSS 14 MiB
+match/ticket_search: RSS sample 3/3
+match/ticket_search: RSS 14.1 MiB
+match/perf_float: RSS sample 1/3
+match/perf_float: RSS 57 MiB
+match/perf_float: RSS sample 2/3
+match/perf_float: RSS 58.6 MiB
+match/perf_float: RSS sample 3/3
+match/perf_float: RSS 58.6 MiB
+match_typed/game_spectral_norm: RSS sample 1/3
+match_typed/game_spectral_norm: RSS 11 MiB
+match_typed/game_spectral_norm: RSS sample 2/3
+match_typed/game_spectral_norm: RSS 11 MiB
+match_typed/game_spectral_norm: RSS sample 3/3
+match_typed/game_spectral_norm: RSS 11 MiB
+match_typed/perf_unpack_sequence: RSS sample 1/3
+match_typed/perf_unpack_sequence: RSS 12 MiB
+match_typed/perf_unpack_sequence: RSS sample 2/3
+match_typed/perf_unpack_sequence: RSS 12 MiB
+match_typed/perf_unpack_sequence: RSS sample 3/3
+match_typed/perf_unpack_sequence: RSS 12 MiB
+match_typed/policy_scoring_short: RSS sample 1/3
+match_typed/policy_scoring_short: RSS 11 MiB
+match_typed/policy_scoring_short: RSS sample 2/3
+match_typed/policy_scoring_short: RSS 11 MiB
+match_typed/policy_scoring_short: RSS sample 3/3
+match_typed/policy_scoring_short: RSS 11 MiB
+match_typed/policy_scoring_batch: RSS sample 1/3
+match_typed/policy_scoring_batch: RSS 13.5 MiB
+match_typed/policy_scoring_batch: RSS sample 2/3
+match_typed/policy_scoring_batch: RSS 13.4 MiB
+match_typed/policy_scoring_batch: RSS sample 3/3
+match_typed/policy_scoring_batch: RSS 13.4 MiB
+match_typed/portfolio_exposure: RSS sample 1/3
+match_typed/portfolio_exposure: RSS 10.8 MiB
+match_typed/portfolio_exposure: RSS sample 2/3
+match_typed/portfolio_exposure: RSS 10.7 MiB
+match_typed/portfolio_exposure: RSS sample 3/3
+match_typed/portfolio_exposure: RSS 10.8 MiB
+match_typed/capacity_planning: RSS sample 1/3
+match_typed/capacity_planning: RSS 14.9 MiB
+match_typed/capacity_planning: RSS sample 2/3
+match_typed/capacity_planning: RSS 15 MiB
+match_typed/capacity_planning: RSS sample 3/3
+match_typed/capacity_planning: RSS 15 MiB
+match_typed/ticket_search: RSS sample 1/3
+match_typed/ticket_search: RSS 14 MiB
+match_typed/ticket_search: RSS sample 2/3
+match_typed/ticket_search: RSS 14.1 MiB
+match_typed/ticket_search: RSS sample 3/3
+match_typed/ticket_search: RSS 14.1 MiB
+match_typed/perf_float: RSS sample 1/3
+match_typed/perf_float: RSS 58.5 MiB
+match_typed/perf_float: RSS sample 2/3
+match_typed/perf_float: RSS 57.1 MiB
+match_typed/perf_float: RSS sample 3/3
+match_typed/perf_float: RSS 57.4 MiB
+CPython/game_spectral_norm: RSS sample 1/3
+CPython/game_spectral_norm: RSS 15.5 MiB
+CPython/game_spectral_norm: RSS sample 2/3
+CPython/game_spectral_norm: RSS 15.7 MiB
+CPython/game_spectral_norm: RSS sample 3/3
+CPython/game_spectral_norm: RSS 15.6 MiB
+CPython/perf_unpack_sequence: RSS sample 1/3
+CPython/perf_unpack_sequence: RSS 19.7 MiB
+CPython/perf_unpack_sequence: RSS sample 2/3
+CPython/perf_unpack_sequence: RSS 19.8 MiB
+CPython/perf_unpack_sequence: RSS sample 3/3
+CPython/perf_unpack_sequence: RSS 19.6 MiB
+CPython/policy_scoring_short: RSS sample 1/3
+CPython/policy_scoring_short: RSS 15.7 MiB
+CPython/policy_scoring_short: RSS sample 2/3
+CPython/policy_scoring_short: RSS 15.6 MiB
+CPython/policy_scoring_short: RSS sample 3/3
+CPython/policy_scoring_short: RSS 15.6 MiB
+CPython/policy_scoring_batch: RSS sample 1/3
+CPython/policy_scoring_batch: RSS 17.6 MiB
+CPython/policy_scoring_batch: RSS sample 2/3
+CPython/policy_scoring_batch: RSS 17.6 MiB
+CPython/policy_scoring_batch: RSS sample 3/3
+CPython/policy_scoring_batch: RSS 17.6 MiB
+CPython/portfolio_exposure: RSS sample 1/3
+CPython/portfolio_exposure: RSS 15.7 MiB
+CPython/portfolio_exposure: RSS sample 2/3
+CPython/portfolio_exposure: RSS 15.7 MiB
+CPython/portfolio_exposure: RSS sample 3/3
+CPython/portfolio_exposure: RSS 15.7 MiB
+CPython/capacity_planning: RSS sample 1/3
+CPython/capacity_planning: RSS 17.6 MiB
+CPython/capacity_planning: RSS sample 2/3
+CPython/capacity_planning: RSS 17.5 MiB
+CPython/capacity_planning: RSS sample 3/3
+CPython/capacity_planning: RSS 17.6 MiB
+CPython/ticket_search: RSS sample 1/3
+CPython/ticket_search: RSS 17.6 MiB
+CPython/ticket_search: RSS sample 2/3
+CPython/ticket_search: RSS 17.5 MiB
+CPython/ticket_search: RSS sample 3/3
+CPython/ticket_search: RSS 17.5 MiB
+CPython/perf_float: RSS sample 1/3
+CPython/perf_float: RSS 32.6 MiB
+CPython/perf_float: RSS sample 2/3
+CPython/perf_float: RSS 32.5 MiB
+CPython/perf_float: RSS sample 3/3
+CPython/perf_float: RSS 32.5 MiB
+threaded/game_spectral_norm: ok, median 317 ms
+threaded/perf_unpack_sequence: ok, median 318 ms
+threaded/policy_scoring_short: ok, median 0.851 ms
+threaded/policy_scoring_batch: ok, median 8.5 ms
+threaded/portfolio_exposure: ok, median 4.43 ms
+threaded/capacity_planning: ok, median 29.6 ms
+threaded/ticket_search: ok, median 27.2 ms
+threaded/perf_float: ok, median 221 ms
+typed/game_spectral_norm: ok, median 238 ms
+typed/perf_unpack_sequence: ok, median 7.34 ms
+typed/policy_scoring_short: ok, median 0.803 ms
+typed/policy_scoring_batch: ok, median 6.91 ms
+typed/portfolio_exposure: ok, median 1.68 ms
+typed/capacity_planning: ok, median 29.7 ms
+typed/ticket_search: ok, median 27.4 ms
+typed/perf_float: ok, median 222 ms
+previous_typed/game_spectral_norm: ok, median 268 ms
+previous_typed/perf_unpack_sequence: ok, median 7.31 ms
+previous_typed/policy_scoring_short: ok, median 0.774 ms
+previous_typed/policy_scoring_batch: ok, median 6.78 ms
+previous_typed/portfolio_exposure: ok, median 1.65 ms
+previous_typed/capacity_planning: ok, median 29.3 ms
+previous_typed/ticket_search: ok, median 27.2 ms
+previous_typed/perf_float: ok, median 223 ms
+match/game_spectral_norm: ok, median 311 ms
+match/perf_unpack_sequence: ok, median 318 ms
+match/policy_scoring_short: ok, median 0.794 ms
+match/policy_scoring_batch: ok, median 8.52 ms
+match/portfolio_exposure: ok, median 4.75 ms
+match/capacity_planning: ok, median 28.8 ms
+match/ticket_search: ok, median 27.1 ms
+match/perf_float: ok, median 218 ms
+match_typed/game_spectral_norm: ok, median 252 ms
+match_typed/perf_unpack_sequence: ok, median 7.3 ms
+match_typed/policy_scoring_short: ok, median 0.743 ms
+match_typed/policy_scoring_batch: ok, median 7.1 ms
+match_typed/portfolio_exposure: ok, median 1.67 ms
+match_typed/capacity_planning: ok, median 29.9 ms
+match_typed/ticket_search: ok, median 27 ms
+match_typed/perf_float: ok, median 219 ms
+CPython/game_spectral_norm: ok, median 67.7 ms
+CPython/perf_unpack_sequence: ok, median 18.5 ms
+CPython/policy_scoring_short: ok, median 1.36 ms
+CPython/policy_scoring_batch: ok, median 5.09 ms
+CPython/portfolio_exposure: ok, median 2.52 ms
+CPython/capacity_planning: ok, median 9.83 ms
+CPython/ticket_search: ok, median 9.74 ms
+CPython/perf_float: ok, median 51.9 ms
+Running repeated: threaded, typed, previous_typed, match, match_typed, CPython
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+threaded/game_spectral_norm: checking compatibility
+threaded/game_spectral_norm: supported 
+threaded/perf_unpack_sequence: checking compatibility
+threaded/perf_unpack_sequence: supported 
+threaded/policy_scoring_short: checking compatibility
+threaded/policy_scoring_short: supported 
+threaded/policy_scoring_batch: checking compatibility
+threaded/policy_scoring_batch: supported 
+threaded/portfolio_exposure: checking compatibility
+threaded/portfolio_exposure: supported 
+threaded/capacity_planning: checking compatibility
+threaded/capacity_planning: supported 
+threaded/ticket_search: checking compatibility
+threaded/ticket_search: supported 
+threaded/perf_float: checking compatibility
+threaded/perf_float: supported 
+typed/game_spectral_norm: checking compatibility
+typed/game_spectral_norm: supported 
+typed/perf_unpack_sequence: checking compatibility
+typed/perf_unpack_sequence: supported 
+typed/policy_scoring_short: checking compatibility
+typed/policy_scoring_short: supported 
+typed/policy_scoring_batch: checking compatibility
+typed/policy_scoring_batch: supported 
+typed/portfolio_exposure: checking compatibility
+typed/portfolio_exposure: supported 
+typed/capacity_planning: checking compatibility
+typed/capacity_planning: supported 
+typed/ticket_search: checking compatibility
+typed/ticket_search: supported 
+typed/perf_float: checking compatibility
+typed/perf_float: supported 
+previous_typed/game_spectral_norm: checking compatibility
+previous_typed/game_spectral_norm: supported 
+previous_typed/perf_unpack_sequence: checking compatibility
+previous_typed/perf_unpack_sequence: supported 
+previous_typed/policy_scoring_short: checking compatibility
+previous_typed/policy_scoring_short: supported 
+previous_typed/policy_scoring_batch: checking compatibility
+previous_typed/policy_scoring_batch: supported 
+previous_typed/portfolio_exposure: checking compatibility
+previous_typed/portfolio_exposure: supported 
+previous_typed/capacity_planning: checking compatibility
+previous_typed/capacity_planning: supported 
+previous_typed/ticket_search: checking compatibility
+previous_typed/ticket_search: supported 
+previous_typed/perf_float: checking compatibility
+previous_typed/perf_float: supported 
+match/game_spectral_norm: checking compatibility
+match/game_spectral_norm: supported 
+match/perf_unpack_sequence: checking compatibility
+match/perf_unpack_sequence: supported 
+match/policy_scoring_short: checking compatibility
+match/policy_scoring_short: supported 
+match/policy_scoring_batch: checking compatibility
+match/policy_scoring_batch: supported 
+match/portfolio_exposure: checking compatibility
+match/portfolio_exposure: supported 
+match/capacity_planning: checking compatibility
+match/capacity_planning: supported 
+match/ticket_search: checking compatibility
+match/ticket_search: supported 
+match/perf_float: checking compatibility
+match/perf_float: supported 
+match_typed/game_spectral_norm: checking compatibility
+match_typed/game_spectral_norm: supported 
+match_typed/perf_unpack_sequence: checking compatibility
+match_typed/perf_unpack_sequence: supported 
+match_typed/policy_scoring_short: checking compatibility
+match_typed/policy_scoring_short: supported 
+match_typed/policy_scoring_batch: checking compatibility
+match_typed/policy_scoring_batch: supported 
+match_typed/portfolio_exposure: checking compatibility
+match_typed/portfolio_exposure: supported 
+match_typed/capacity_planning: checking compatibility
+match_typed/capacity_planning: supported 
+match_typed/ticket_search: checking compatibility
+match_typed/ticket_search: supported 
+match_typed/perf_float: checking compatibility
+match_typed/perf_float: supported 
+CPython/game_spectral_norm: checking compatibility
+CPython/game_spectral_norm: supported 
+CPython/perf_unpack_sequence: checking compatibility
+CPython/perf_unpack_sequence: supported 
+CPython/policy_scoring_short: checking compatibility
+CPython/policy_scoring_short: supported 
+CPython/policy_scoring_batch: checking compatibility
+CPython/policy_scoring_batch: supported 
+CPython/portfolio_exposure: checking compatibility
+CPython/portfolio_exposure: supported 
+CPython/capacity_planning: checking compatibility
+CPython/capacity_planning: supported 
+CPython/ticket_search: checking compatibility
+CPython/ticket_search: supported 
+CPython/perf_float: checking compatibility
+CPython/perf_float: supported 
+threaded/game_spectral_norm: warmup 1/3
+threaded/perf_unpack_sequence: warmup 1/3
+threaded/policy_scoring_short: warmup 1/3
+threaded/policy_scoring_batch: warmup 1/3
+threaded/portfolio_exposure: warmup 1/3
+threaded/capacity_planning: warmup 1/3
+threaded/ticket_search: warmup 1/3
+threaded/perf_float: warmup 1/3
+typed/game_spectral_norm: warmup 1/3
+typed/perf_unpack_sequence: warmup 1/3
+typed/policy_scoring_short: warmup 1/3
+typed/policy_scoring_batch: warmup 1/3
+typed/portfolio_exposure: warmup 1/3
+typed/capacity_planning: warmup 1/3
+typed/ticket_search: warmup 1/3
+typed/perf_float: warmup 1/3
+previous_typed/game_spectral_norm: warmup 1/3
+previous_typed/perf_unpack_sequence: warmup 1/3
+previous_typed/policy_scoring_short: warmup 1/3
+previous_typed/policy_scoring_batch: warmup 1/3
+previous_typed/portfolio_exposure: warmup 1/3
+previous_typed/capacity_planning: warmup 1/3
+previous_typed/ticket_search: warmup 1/3
+previous_typed/perf_float: warmup 1/3
+match/game_spectral_norm: warmup 1/3
+match/perf_unpack_sequence: warmup 1/3
+match/policy_scoring_short: warmup 1/3
+match/policy_scoring_batch: warmup 1/3
+match/portfolio_exposure: warmup 1/3
+match/capacity_planning: warmup 1/3
+match/ticket_search: warmup 1/3
+match/perf_float: warmup 1/3
+match_typed/game_spectral_norm: warmup 1/3
+match_typed/perf_unpack_sequence: warmup 1/3
+match_typed/policy_scoring_short: warmup 1/3
+match_typed/policy_scoring_batch: warmup 1/3
+match_typed/portfolio_exposure: warmup 1/3
+match_typed/capacity_planning: warmup 1/3
+match_typed/ticket_search: warmup 1/3
+match_typed/perf_float: warmup 1/3
+CPython/game_spectral_norm: warmup 1/3
+CPython/perf_unpack_sequence: warmup 1/3
+CPython/policy_scoring_short: warmup 1/3
+CPython/policy_scoring_batch: warmup 1/3
+CPython/portfolio_exposure: warmup 1/3
+CPython/capacity_planning: warmup 1/3
+CPython/ticket_search: warmup 1/3
+CPython/perf_float: warmup 1/3
+threaded/game_spectral_norm: warmup 2/3
+threaded/perf_unpack_sequence: warmup 2/3
+threaded/policy_scoring_short: warmup 2/3
+threaded/policy_scoring_batch: warmup 2/3
+threaded/portfolio_exposure: warmup 2/3
+threaded/capacity_planning: warmup 2/3
+threaded/ticket_search: warmup 2/3
+threaded/perf_float: warmup 2/3
+typed/game_spectral_norm: warmup 2/3
+typed/perf_unpack_sequence: warmup 2/3
+typed/policy_scoring_short: warmup 2/3
+typed/policy_scoring_batch: warmup 2/3
+typed/portfolio_exposure: warmup 2/3
+typed/capacity_planning: warmup 2/3
+typed/ticket_search: warmup 2/3
+typed/perf_float: warmup 2/3
+previous_typed/game_spectral_norm: warmup 2/3
+previous_typed/perf_unpack_sequence: warmup 2/3
+previous_typed/policy_scoring_short: warmup 2/3
+previous_typed/policy_scoring_batch: warmup 2/3
+previous_typed/portfolio_exposure: warmup 2/3
+previous_typed/capacity_planning: warmup 2/3
+previous_typed/ticket_search: warmup 2/3
+previous_typed/perf_float: warmup 2/3
+match/game_spectral_norm: warmup 2/3
+match/perf_unpack_sequence: warmup 2/3
+match/policy_scoring_short: warmup 2/3
+match/policy_scoring_batch: warmup 2/3
+match/portfolio_exposure: warmup 2/3
+match/capacity_planning: warmup 2/3
+match/ticket_search: warmup 2/3
+match/perf_float: warmup 2/3
+match_typed/game_spectral_norm: warmup 2/3
+match_typed/perf_unpack_sequence: warmup 2/3
+match_typed/policy_scoring_short: warmup 2/3
+match_typed/policy_scoring_batch: warmup 2/3
+match_typed/portfolio_exposure: warmup 2/3
+match_typed/capacity_planning: warmup 2/3
+match_typed/ticket_search: warmup 2/3
+match_typed/perf_float: warmup 2/3
+CPython/game_spectral_norm: warmup 2/3
+CPython/perf_unpack_sequence: warmup 2/3
+CPython/policy_scoring_short: warmup 2/3
+CPython/policy_scoring_batch: warmup 2/3
+CPython/portfolio_exposure: warmup 2/3
+CPython/capacity_planning: warmup 2/3
+CPython/ticket_search: warmup 2/3
+CPython/perf_float: warmup 2/3
+threaded/game_spectral_norm: warmup 3/3
+threaded/perf_unpack_sequence: warmup 3/3
+threaded/policy_scoring_short: warmup 3/3
+threaded/policy_scoring_batch: warmup 3/3
+threaded/portfolio_exposure: warmup 3/3
+threaded/capacity_planning: warmup 3/3
+threaded/ticket_search: warmup 3/3
+threaded/perf_float: warmup 3/3
+typed/game_spectral_norm: warmup 3/3
+typed/perf_unpack_sequence: warmup 3/3
+typed/policy_scoring_short: warmup 3/3
+typed/policy_scoring_batch: warmup 3/3
+typed/portfolio_exposure: warmup 3/3
+typed/capacity_planning: warmup 3/3
+typed/ticket_search: warmup 3/3
+typed/perf_float: warmup 3/3
+previous_typed/game_spectral_norm: warmup 3/3
+previous_typed/perf_unpack_sequence: warmup 3/3
+previous_typed/policy_scoring_short: warmup 3/3
+previous_typed/policy_scoring_batch: warmup 3/3
+previous_typed/portfolio_exposure: warmup 3/3
+previous_typed/capacity_planning: warmup 3/3
+previous_typed/ticket_search: warmup 3/3
+previous_typed/perf_float: warmup 3/3
+match/game_spectral_norm: warmup 3/3
+match/perf_unpack_sequence: warmup 3/3
+match/policy_scoring_short: warmup 3/3
+match/policy_scoring_batch: warmup 3/3
+match/portfolio_exposure: warmup 3/3
+match/capacity_planning: warmup 3/3
+match/ticket_search: warmup 3/3
+match/perf_float: warmup 3/3
+match_typed/game_spectral_norm: warmup 3/3
+match_typed/perf_unpack_sequence: warmup 3/3
+match_typed/policy_scoring_short: warmup 3/3
+match_typed/policy_scoring_batch: warmup 3/3
+match_typed/portfolio_exposure: warmup 3/3
+match_typed/capacity_planning: warmup 3/3
+match_typed/ticket_search: warmup 3/3
+match_typed/perf_float: warmup 3/3
+CPython/game_spectral_norm: warmup 3/3
+CPython/perf_unpack_sequence: warmup 3/3
+CPython/policy_scoring_short: warmup 3/3
+CPython/policy_scoring_batch: warmup 3/3
+CPython/portfolio_exposure: warmup 3/3
+CPython/capacity_planning: warmup 3/3
+CPython/ticket_search: warmup 3/3
+CPython/perf_float: warmup 3/3
+previous_typed/policy_scoring_short: timing sample 1/15
+previous_typed/policy_scoring_short: 0.566 ms
+CPython/policy_scoring_batch: timing sample 1/15
+CPython/policy_scoring_batch: 4.13 ms
+threaded/policy_scoring_short: timing sample 1/15
+threaded/policy_scoring_short: 0.579 ms
+match/ticket_search: timing sample 1/15
+match/ticket_search: 26.4 ms
+CPython/game_spectral_norm: timing sample 1/15
+CPython/game_spectral_norm: 66.6 ms
+CPython/capacity_planning: timing sample 1/15
+CPython/capacity_planning: 8.65 ms
+threaded/ticket_search: timing sample 1/15
+threaded/ticket_search: 26.7 ms
+CPython/capacity_planning: timing sample 2/15
+CPython/capacity_planning: 8.75 ms
+typed/game_spectral_norm: timing sample 1/15
+typed/game_spectral_norm: 239 ms
+threaded/game_spectral_norm: timing sample 1/15
+threaded/game_spectral_norm: 319 ms
+match_typed/policy_scoring_short: timing sample 1/15
+match_typed/policy_scoring_short: 0.506 ms
+threaded/policy_scoring_batch: timing sample 1/15
+threaded/policy_scoring_batch: 7.9 ms
+threaded/ticket_search: timing sample 2/15
+threaded/ticket_search: 26.7 ms
+previous_typed/portfolio_exposure: timing sample 1/15
+previous_typed/portfolio_exposure: 1.48 ms
+threaded/ticket_search: timing sample 3/15
+threaded/ticket_search: 26.7 ms
+match_typed/perf_float: timing sample 1/15
+match_typed/perf_float: 210 ms
+match_typed/policy_scoring_batch: timing sample 1/15
+match_typed/policy_scoring_batch: 6.62 ms
+previous_typed/ticket_search: timing sample 1/15
+previous_typed/ticket_search: 27 ms
+CPython/game_spectral_norm: timing sample 2/15
+CPython/game_spectral_norm: 66.5 ms
+match/perf_float: timing sample 1/15
+match/perf_float: 213 ms
+threaded/policy_scoring_short: timing sample 2/15
+threaded/policy_scoring_short: 0.558 ms
+previous_typed/policy_scoring_batch: timing sample 1/15
+previous_typed/policy_scoring_batch: 6.55 ms
+threaded/game_spectral_norm: timing sample 2/15
+threaded/game_spectral_norm: 317 ms
+match_typed/portfolio_exposure: timing sample 1/15
+match_typed/portfolio_exposure: 1.39 ms
+typed/ticket_search: timing sample 1/15
+typed/ticket_search: 26.9 ms
+previous_typed/perf_unpack_sequence: timing sample 1/15
+previous_typed/perf_unpack_sequence: 7.14 ms
+CPython/perf_float: timing sample 1/15
+CPython/perf_float: 49.9 ms
+match/game_spectral_norm: timing sample 1/15
+match/game_spectral_norm: 312 ms
+threaded/policy_scoring_batch: timing sample 2/15
+threaded/policy_scoring_batch: 8.16 ms
+match_typed/policy_scoring_short: timing sample 2/15
+match_typed/policy_scoring_short: 0.541 ms
+CPython/portfolio_exposure: timing sample 1/15
+CPython/portfolio_exposure: 1.52 ms
+CPython/portfolio_exposure: timing sample 2/15
+CPython/portfolio_exposure: 1.42 ms
+previous_typed/perf_unpack_sequence: timing sample 2/15
+previous_typed/perf_unpack_sequence: 6.83 ms
+match/ticket_search: timing sample 2/15
+match/ticket_search: 26.5 ms
+typed/game_spectral_norm: timing sample 2/15
+typed/game_spectral_norm: 239 ms
+typed/perf_float: timing sample 1/15
+typed/perf_float: 216 ms
+match/ticket_search: timing sample 3/15
+match/ticket_search: 27.4 ms
+threaded/game_spectral_norm: timing sample 3/15
+threaded/game_spectral_norm: 318 ms
+match/perf_unpack_sequence: timing sample 1/15
+match/perf_unpack_sequence: 317 ms
+typed/perf_unpack_sequence: timing sample 1/15
+typed/perf_unpack_sequence: 7.04 ms
+match_typed/game_spectral_norm: timing sample 1/15
+match_typed/game_spectral_norm: 250 ms
+typed/perf_unpack_sequence: timing sample 2/15
+typed/perf_unpack_sequence: 6.95 ms
+previous_typed/policy_scoring_batch: timing sample 2/15
+previous_typed/policy_scoring_batch: 6.43 ms
+typed/portfolio_exposure: timing sample 1/15
+typed/portfolio_exposure: 1.47 ms
+previous_typed/policy_scoring_batch: timing sample 3/15
+previous_typed/policy_scoring_batch: 6.61 ms
+typed/portfolio_exposure: timing sample 2/15
+typed/portfolio_exposure: 1.41 ms
+threaded/perf_float: timing sample 1/15
+threaded/perf_float: 216 ms
+threaded/game_spectral_norm: timing sample 4/15
+threaded/game_spectral_norm: 320 ms
+threaded/ticket_search: timing sample 4/15
+threaded/ticket_search: 27.1 ms
+match_typed/perf_unpack_sequence: timing sample 1/15
+match_typed/perf_unpack_sequence: 6.86 ms
+match/policy_scoring_batch: timing sample 1/15
+match/policy_scoring_batch: 8.32 ms
+typed/ticket_search: timing sample 2/15
+typed/ticket_search: 26.9 ms
+match_typed/perf_float: timing sample 2/15
+match_typed/perf_float: 213 ms
+typed/portfolio_exposure: timing sample 3/15
+typed/portfolio_exposure: 1.47 ms
+previous_typed/portfolio_exposure: timing sample 2/15
+previous_typed/portfolio_exposure: 1.42 ms
+previous_typed/capacity_planning: timing sample 1/15
+previous_typed/capacity_planning: 30.4 ms
+threaded/policy_scoring_batch: timing sample 3/15
+threaded/policy_scoring_batch: 8.16 ms
+typed/policy_scoring_batch: timing sample 1/15
+typed/policy_scoring_batch: 6.46 ms
+typed/capacity_planning: timing sample 1/15
+typed/capacity_planning: 29.4 ms
+threaded/ticket_search: timing sample 5/15
+threaded/ticket_search: 25.7 ms
+typed/ticket_search: timing sample 3/15
+typed/ticket_search: 26.1 ms
+CPython/policy_scoring_short: timing sample 1/15
+CPython/policy_scoring_short: 0.564 ms
+CPython/policy_scoring_short: timing sample 2/15
+CPython/policy_scoring_short: 0.459 ms
+CPython/ticket_search: timing sample 1/15
+CPython/ticket_search: 6.54 ms
+match_typed/capacity_planning: timing sample 1/15
+match_typed/capacity_planning: 29.5 ms
+previous_typed/policy_scoring_short: timing sample 2/15
+previous_typed/policy_scoring_short: 0.524 ms
+threaded/perf_unpack_sequence: timing sample 1/15
+threaded/perf_unpack_sequence: 315 ms
+match_typed/policy_scoring_short: timing sample 3/15
+match_typed/policy_scoring_short: 0.55 ms
+typed/policy_scoring_short: timing sample 1/15
+typed/policy_scoring_short: 0.524 ms
+typed/capacity_planning: timing sample 2/15
+typed/capacity_planning: 29.2 ms
+typed/policy_scoring_batch: timing sample 2/15
+typed/policy_scoring_batch: 6.64 ms
+typed/game_spectral_norm: timing sample 3/15
+typed/game_spectral_norm: 238 ms
+typed/policy_scoring_batch: timing sample 3/15
+typed/policy_scoring_batch: 6.54 ms
+match_typed/policy_scoring_short: timing sample 4/15
+match_typed/policy_scoring_short: 0.504 ms
+CPython/ticket_search: timing sample 2/15
+CPython/ticket_search: 6.99 ms
+match_typed/perf_unpack_sequence: timing sample 2/15
+match_typed/perf_unpack_sequence: 6.98 ms
+previous_typed/ticket_search: timing sample 2/15
+previous_typed/ticket_search: 26.7 ms
+threaded/game_spectral_norm: timing sample 5/15
+threaded/game_spectral_norm: 317 ms
+previous_typed/perf_float: timing sample 1/15
+previous_typed/perf_float: 302 ms
+previous_typed/perf_unpack_sequence: timing sample 3/15
+previous_typed/perf_unpack_sequence: 6.99 ms
+previous_typed/perf_unpack_sequence: timing sample 4/15
+previous_typed/perf_unpack_sequence: 7.06 ms
+typed/portfolio_exposure: timing sample 4/15
+typed/portfolio_exposure: 1.4 ms
+CPython/policy_scoring_short: timing sample 3/15
+CPython/policy_scoring_short: 0.544 ms
+match_typed/ticket_search: timing sample 1/15
+match_typed/ticket_search: 26 ms
+CPython/ticket_search: timing sample 3/15
+CPython/ticket_search: 6.86 ms
+threaded/perf_float: timing sample 2/15
+threaded/perf_float: 213 ms
+match/policy_scoring_short: timing sample 1/15
+match/policy_scoring_short: 0.541 ms
+threaded/perf_float: timing sample 3/15
+threaded/perf_float: 217 ms
+previous_typed/capacity_planning: timing sample 2/15
+previous_typed/capacity_planning: 30.3 ms
+threaded/ticket_search: timing sample 6/15
+threaded/ticket_search: 27.3 ms
+previous_typed/ticket_search: timing sample 3/15
+previous_typed/ticket_search: 26.5 ms
+match/game_spectral_norm: timing sample 2/15
+match/game_spectral_norm: 312 ms
+previous_typed/perf_float: timing sample 2/15
+previous_typed/perf_float: 218 ms
+threaded/capacity_planning: timing sample 1/15
+threaded/capacity_planning: 28.9 ms
+match/perf_float: timing sample 2/15
+match/perf_float: 212 ms
+previous_typed/policy_scoring_batch: timing sample 4/15
+previous_typed/policy_scoring_batch: 6.51 ms
+CPython/perf_unpack_sequence: timing sample 1/15
+CPython/perf_unpack_sequence: 17.4 ms
+CPython/policy_scoring_batch: timing sample 2/15
+CPython/policy_scoring_batch: 4.06 ms
+previous_typed/portfolio_exposure: timing sample 3/15
+previous_typed/portfolio_exposure: 1.44 ms
+previous_typed/ticket_search: timing sample 4/15
+previous_typed/ticket_search: 26.8 ms
+match/capacity_planning: timing sample 1/15
+match/capacity_planning: 28.1 ms
+threaded/perf_float: timing sample 4/15
+threaded/perf_float: 214 ms
+match_typed/capacity_planning: timing sample 2/15
+match_typed/capacity_planning: 28.9 ms
+match/game_spectral_norm: timing sample 3/15
+match/game_spectral_norm: 314 ms
+match/ticket_search: timing sample 4/15
+match/ticket_search: 26.3 ms
+match_typed/policy_scoring_short: timing sample 5/15
+match_typed/policy_scoring_short: 0.495 ms
+CPython/game_spectral_norm: timing sample 3/15
+CPython/game_spectral_norm: 66.6 ms
+match_typed/policy_scoring_short: timing sample 6/15
+match_typed/policy_scoring_short: 0.662 ms
+match/policy_scoring_batch: timing sample 2/15
+match/policy_scoring_batch: 8.09 ms
+threaded/portfolio_exposure: timing sample 1/15
+threaded/portfolio_exposure: 4.17 ms
+previous_typed/policy_scoring_short: timing sample 3/15
+previous_typed/policy_scoring_short: 0.52 ms
+match_typed/perf_unpack_sequence: timing sample 3/15
+match_typed/perf_unpack_sequence: 6.8 ms
+CPython/policy_scoring_batch: timing sample 3/15
+CPython/policy_scoring_batch: 4.08 ms
+match_typed/portfolio_exposure: timing sample 2/15
+match_typed/portfolio_exposure: 1.43 ms
+CPython/capacity_planning: timing sample 3/15
+CPython/capacity_planning: 8.66 ms
+threaded/policy_scoring_batch: timing sample 4/15
+threaded/policy_scoring_batch: 8.21 ms
+previous_typed/policy_scoring_batch: timing sample 5/15
+previous_typed/policy_scoring_batch: 6.22 ms
+match_typed/perf_unpack_sequence: timing sample 4/15
+match_typed/perf_unpack_sequence: 6.97 ms
+threaded/portfolio_exposure: timing sample 2/15
+threaded/portfolio_exposure: 4.17 ms
+typed/game_spectral_norm: timing sample 4/15
+typed/game_spectral_norm: 239 ms
+CPython/capacity_planning: timing sample 4/15
+CPython/capacity_planning: 9.13 ms
+match/portfolio_exposure: timing sample 1/15
+match/portfolio_exposure: 4.43 ms
+previous_typed/policy_scoring_batch: timing sample 6/15
+previous_typed/policy_scoring_batch: 6.18 ms
+typed/policy_scoring_short: timing sample 2/15
+typed/policy_scoring_short: 0.538 ms
+threaded/portfolio_exposure: timing sample 3/15
+threaded/portfolio_exposure: 3.94 ms
+match_typed/perf_float: timing sample 3/15
+match_typed/perf_float: 215 ms
+typed/perf_float: timing sample 2/15
+typed/perf_float: 216 ms
+previous_typed/perf_unpack_sequence: timing sample 5/15
+previous_typed/perf_unpack_sequence: 7.25 ms
+previous_typed/capacity_planning: timing sample 3/15
+previous_typed/capacity_planning: 30.2 ms
+threaded/policy_scoring_batch: timing sample 5/15
+threaded/policy_scoring_batch: 8.22 ms
+match/perf_unpack_sequence: timing sample 2/15
+match/perf_unpack_sequence: 317 ms
+threaded/portfolio_exposure: timing sample 4/15
+threaded/portfolio_exposure: 4.03 ms
+match/game_spectral_norm: timing sample 4/15
+match/game_spectral_norm: 312 ms
+match_typed/ticket_search: timing sample 2/15
+match_typed/ticket_search: 26.2 ms
+CPython/policy_scoring_short: timing sample 4/15
+CPython/policy_scoring_short: 0.658 ms
+CPython/policy_scoring_batch: timing sample 4/15
+CPython/policy_scoring_batch: 4.18 ms
+match/portfolio_exposure: timing sample 2/15
+match/portfolio_exposure: 4.48 ms
+previous_typed/game_spectral_norm: timing sample 1/15
+previous_typed/game_spectral_norm: 270 ms
+typed/game_spectral_norm: timing sample 5/15
+typed/game_spectral_norm: 239 ms
+threaded/perf_unpack_sequence: timing sample 2/15
+threaded/perf_unpack_sequence: 316 ms
+CPython/game_spectral_norm: timing sample 4/15
+CPython/game_spectral_norm: 66.7 ms
+match/perf_unpack_sequence: timing sample 3/15
+match/perf_unpack_sequence: 317 ms
+match/policy_scoring_short: timing sample 2/15
+match/policy_scoring_short: 0.533 ms
+CPython/capacity_planning: timing sample 5/15
+CPython/capacity_planning: 8.64 ms
+match_typed/ticket_search: timing sample 3/15
+match_typed/ticket_search: 26.5 ms
+previous_typed/policy_scoring_batch: timing sample 7/15
+previous_typed/policy_scoring_batch: 6.39 ms
+previous_typed/portfolio_exposure: timing sample 4/15
+previous_typed/portfolio_exposure: 1.43 ms
+threaded/perf_unpack_sequence: timing sample 3/15
+threaded/perf_unpack_sequence: 316 ms
+threaded/game_spectral_norm: timing sample 6/15
+threaded/game_spectral_norm: 318 ms
+match_typed/portfolio_exposure: timing sample 3/15
+match_typed/portfolio_exposure: 1.4 ms
+CPython/ticket_search: timing sample 4/15
+CPython/ticket_search: 8.43 ms
+match/perf_unpack_sequence: timing sample 4/15
+match/perf_unpack_sequence: 315 ms
+previous_typed/game_spectral_norm: timing sample 2/15
+previous_typed/game_spectral_norm: 272 ms
+previous_typed/portfolio_exposure: timing sample 5/15
+previous_typed/portfolio_exposure: 1.39 ms
+threaded/capacity_planning: timing sample 2/15
+threaded/capacity_planning: 29.2 ms
+typed/portfolio_exposure: timing sample 5/15
+typed/portfolio_exposure: 1.38 ms
+CPython/policy_scoring_short: timing sample 5/15
+CPython/policy_scoring_short: 0.564 ms
+match/policy_scoring_batch: timing sample 3/15
+match/policy_scoring_batch: 8.38 ms
+match_typed/game_spectral_norm: timing sample 2/15
+match_typed/game_spectral_norm: 251 ms
+typed/perf_float: timing sample 3/15
+typed/perf_float: 217 ms
+match/capacity_planning: timing sample 2/15
+match/capacity_planning: 27.8 ms
+threaded/ticket_search: timing sample 7/15
+threaded/ticket_search: 26.5 ms
+CPython/policy_scoring_batch: timing sample 5/15
+CPython/policy_scoring_batch: 6.3 ms
+previous_typed/portfolio_exposure: timing sample 6/15
+previous_typed/portfolio_exposure: 1.42 ms
+typed/perf_float: timing sample 4/15
+typed/perf_float: 215 ms
+match/perf_float: timing sample 3/15
+match/perf_float: 213 ms
+CPython/policy_scoring_short: timing sample 6/15
+CPython/policy_scoring_short: 0.571 ms
+previous_typed/portfolio_exposure: timing sample 7/15
+previous_typed/portfolio_exposure: 1.53 ms
+typed/capacity_planning: timing sample 3/15
+typed/capacity_planning: 28.8 ms
+threaded/ticket_search: timing sample 8/15
+threaded/ticket_search: 26.8 ms
+threaded/game_spectral_norm: timing sample 7/15
+threaded/game_spectral_norm: 317 ms
+match/capacity_planning: timing sample 3/15
+match/capacity_planning: 28.1 ms
+typed/perf_float: timing sample 5/15
+typed/perf_float: 216 ms
+previous_typed/policy_scoring_short: timing sample 4/15
+previous_typed/policy_scoring_short: 0.506 ms
+threaded/capacity_planning: timing sample 3/15
+threaded/capacity_planning: 29.1 ms
+typed/game_spectral_norm: timing sample 6/15
+typed/game_spectral_norm: 240 ms
+previous_typed/policy_scoring_short: timing sample 5/15
+previous_typed/policy_scoring_short: 0.491 ms
+previous_typed/policy_scoring_batch: timing sample 8/15
+previous_typed/policy_scoring_batch: 6.4 ms
+CPython/policy_scoring_batch: timing sample 6/15
+CPython/policy_scoring_batch: 4.13 ms
+CPython/game_spectral_norm: timing sample 5/15
+CPython/game_spectral_norm: 66.9 ms
+threaded/perf_float: timing sample 5/15
+threaded/perf_float: 216 ms
+typed/policy_scoring_batch: timing sample 4/15
+typed/policy_scoring_batch: 6.54 ms
+match_typed/ticket_search: timing sample 4/15
+match_typed/ticket_search: 26.7 ms
+typed/policy_scoring_batch: timing sample 5/15
+typed/policy_scoring_batch: 6.4 ms
+match_typed/game_spectral_norm: timing sample 3/15
+match_typed/game_spectral_norm: 252 ms
+CPython/policy_scoring_short: timing sample 7/15
+CPython/policy_scoring_short: 0.542 ms
+match_typed/policy_scoring_short: timing sample 7/15
+match_typed/policy_scoring_short: 0.527 ms
+previous_typed/capacity_planning: timing sample 4/15
+previous_typed/capacity_planning: 30.5 ms
+threaded/capacity_planning: timing sample 4/15
+threaded/capacity_planning: 28.5 ms
+previous_typed/policy_scoring_short: timing sample 6/15
+previous_typed/policy_scoring_short: 0.472 ms
+typed/portfolio_exposure: timing sample 6/15
+typed/portfolio_exposure: 1.42 ms
+typed/policy_scoring_batch: timing sample 6/15
+typed/policy_scoring_batch: 6.55 ms
+threaded/policy_scoring_batch: timing sample 6/15
+threaded/policy_scoring_batch: 7.81 ms
+match/policy_scoring_batch: timing sample 4/15
+match/policy_scoring_batch: 8.05 ms
+typed/perf_float: timing sample 6/15
+typed/perf_float: 215 ms
+match/portfolio_exposure: timing sample 3/15
+match/portfolio_exposure: 4.65 ms
+CPython/perf_unpack_sequence: timing sample 2/15
+CPython/perf_unpack_sequence: 17.6 ms
+match_typed/ticket_search: timing sample 5/15
+match_typed/ticket_search: 26.4 ms
+threaded/portfolio_exposure: timing sample 5/15
+threaded/portfolio_exposure: 4.03 ms
+match_typed/policy_scoring_short: timing sample 8/15
+match_typed/policy_scoring_short: 0.473 ms
+threaded/perf_float: timing sample 6/15
+threaded/perf_float: 214 ms
+threaded/perf_float: timing sample 7/15
+threaded/perf_float: 216 ms
+previous_typed/policy_scoring_short: timing sample 7/15
+previous_typed/policy_scoring_short: 0.534 ms
+previous_typed/ticket_search: timing sample 5/15
+previous_typed/ticket_search: 27.1 ms
+threaded/ticket_search: timing sample 9/15
+threaded/ticket_search: 26.6 ms
+CPython/portfolio_exposure: timing sample 3/15
+CPython/portfolio_exposure: 2.65 ms
+match_typed/perf_float: timing sample 4/15
+match_typed/perf_float: 213 ms
+CPython/policy_scoring_batch: timing sample 7/15
+CPython/policy_scoring_batch: 4.31 ms
+match/policy_scoring_batch: timing sample 5/15
+match/policy_scoring_batch: 8.25 ms
+previous_typed/policy_scoring_short: timing sample 8/15
+previous_typed/policy_scoring_short: 0.525 ms
+threaded/policy_scoring_short: timing sample 3/15
+threaded/policy_scoring_short: 0.555 ms
+typed/game_spectral_norm: timing sample 7/15
+typed/game_spectral_norm: 239 ms
+match_typed/game_spectral_norm: timing sample 4/15
+match_typed/game_spectral_norm: 251 ms
+match_typed/policy_scoring_short: timing sample 9/15
+match_typed/policy_scoring_short: 0.502 ms
+match/policy_scoring_batch: timing sample 6/15
+match/policy_scoring_batch: 8.2 ms
+match_typed/perf_unpack_sequence: timing sample 5/15
+match_typed/perf_unpack_sequence: 6.82 ms
+threaded/portfolio_exposure: timing sample 6/15
+threaded/portfolio_exposure: 4.1 ms
+previous_typed/capacity_planning: timing sample 5/15
+previous_typed/capacity_planning: 30.2 ms
+previous_typed/perf_float: timing sample 3/15
+previous_typed/perf_float: 218 ms
+match_typed/ticket_search: timing sample 6/15
+match_typed/ticket_search: 25.9 ms
+CPython/ticket_search: timing sample 5/15
+CPython/ticket_search: 8.07 ms
+match_typed/game_spectral_norm: timing sample 5/15
+match_typed/game_spectral_norm: 252 ms
+match_typed/policy_scoring_batch: timing sample 2/15
+match_typed/policy_scoring_batch: 6.56 ms
+threaded/game_spectral_norm: timing sample 8/15
+threaded/game_spectral_norm: 318 ms
+previous_typed/portfolio_exposure: timing sample 8/15
+previous_typed/portfolio_exposure: 1.4 ms
+CPython/policy_scoring_batch: timing sample 8/15
+CPython/policy_scoring_batch: 4.17 ms
+match/game_spectral_norm: timing sample 5/15
+match/game_spectral_norm: 312 ms
+threaded/policy_scoring_batch: timing sample 7/15
+threaded/policy_scoring_batch: 7.84 ms
+match_typed/game_spectral_norm: timing sample 6/15
+match_typed/game_spectral_norm: 251 ms
+CPython/perf_unpack_sequence: timing sample 3/15
+CPython/perf_unpack_sequence: 17.5 ms
+match/portfolio_exposure: timing sample 4/15
+match/portfolio_exposure: 4.4 ms
+typed/perf_unpack_sequence: timing sample 3/15
+typed/perf_unpack_sequence: 6.79 ms
+match/policy_scoring_batch: timing sample 7/15
+match/policy_scoring_batch: 8.33 ms
+typed/policy_scoring_short: timing sample 3/15
+typed/policy_scoring_short: 0.583 ms
+CPython/perf_unpack_sequence: timing sample 4/15
+CPython/perf_unpack_sequence: 17.5 ms
+threaded/perf_unpack_sequence: timing sample 4/15
+threaded/perf_unpack_sequence: 316 ms
+typed/ticket_search: timing sample 4/15
+typed/ticket_search: 27 ms
+match_typed/ticket_search: timing sample 7/15
+match_typed/ticket_search: 26.9 ms
+previous_typed/capacity_planning: timing sample 6/15
+previous_typed/capacity_planning: 30.6 ms
+CPython/policy_scoring_short: timing sample 8/15
+CPython/policy_scoring_short: 0.518 ms
+typed/policy_scoring_short: timing sample 4/15
+typed/policy_scoring_short: 0.534 ms
+previous_typed/game_spectral_norm: timing sample 3/15
+previous_typed/game_spectral_norm: 270 ms
+match_typed/portfolio_exposure: timing sample 4/15
+match_typed/portfolio_exposure: 1.5 ms
+threaded/portfolio_exposure: timing sample 7/15
+threaded/portfolio_exposure: 4.22 ms
+match_typed/perf_unpack_sequence: timing sample 6/15
+match_typed/perf_unpack_sequence: 6.98 ms
+match_typed/portfolio_exposure: timing sample 5/15
+match_typed/portfolio_exposure: 1.44 ms
+match_typed/portfolio_exposure: timing sample 6/15
+match_typed/portfolio_exposure: 1.41 ms
+CPython/perf_unpack_sequence: timing sample 5/15
+CPython/perf_unpack_sequence: 17.4 ms
+CPython/ticket_search: timing sample 6/15
+CPython/ticket_search: 7.23 ms
+typed/game_spectral_norm: timing sample 8/15
+typed/game_spectral_norm: 239 ms
+previous_typed/game_spectral_norm: timing sample 4/15
+previous_typed/game_spectral_norm: 272 ms
+previous_typed/perf_unpack_sequence: timing sample 6/15
+previous_typed/perf_unpack_sequence: 7.14 ms
+match_typed/portfolio_exposure: timing sample 7/15
+match_typed/portfolio_exposure: 1.45 ms
+CPython/perf_float: timing sample 2/15
+CPython/perf_float: 50.3 ms
+match_typed/ticket_search: timing sample 8/15
+match_typed/ticket_search: 26.7 ms
+match/perf_unpack_sequence: timing sample 5/15
+match/perf_unpack_sequence: 315 ms
+previous_typed/portfolio_exposure: timing sample 9/15
+previous_typed/portfolio_exposure: 1.4 ms
+typed/ticket_search: timing sample 5/15
+typed/ticket_search: 27 ms
+match_typed/policy_scoring_batch: timing sample 3/15
+match_typed/policy_scoring_batch: 6.65 ms
+CPython/game_spectral_norm: timing sample 6/15
+CPython/game_spectral_norm: 66.5 ms
+typed/policy_scoring_short: timing sample 5/15
+typed/policy_scoring_short: 0.566 ms
+CPython/ticket_search: timing sample 7/15
+CPython/ticket_search: 6.95 ms
+previous_typed/perf_float: timing sample 4/15
+previous_typed/perf_float: 219 ms
+typed/perf_float: timing sample 7/15
+typed/perf_float: 223 ms
+typed/capacity_planning: timing sample 4/15
+typed/capacity_planning: 28.7 ms
+threaded/game_spectral_norm: timing sample 9/15
+threaded/game_spectral_norm: 319 ms
+previous_typed/ticket_search: timing sample 6/15
+previous_typed/ticket_search: 26.7 ms
+match_typed/capacity_planning: timing sample 3/15
+match_typed/capacity_planning: 29.2 ms
+typed/perf_float: timing sample 8/15
+typed/perf_float: 215 ms
+typed/game_spectral_norm: timing sample 9/15
+typed/game_spectral_norm: 238 ms
+match_typed/perf_float: timing sample 5/15
+match_typed/perf_float: 215 ms
+match_typed/capacity_planning: timing sample 4/15
+match_typed/capacity_planning: 29.1 ms
+match_typed/perf_unpack_sequence: timing sample 7/15
+match_typed/perf_unpack_sequence: 7.08 ms
+CPython/perf_unpack_sequence: timing sample 6/15
+CPython/perf_unpack_sequence: 17.5 ms
+CPython/policy_scoring_short: timing sample 9/15
+CPython/policy_scoring_short: 0.484 ms
+CPython/capacity_planning: timing sample 6/15
+CPython/capacity_planning: 8.86 ms
+match/policy_scoring_short: timing sample 3/15
+match/policy_scoring_short: 0.648 ms
+threaded/capacity_planning: timing sample 5/15
+threaded/capacity_planning: 28.7 ms
+match/policy_scoring_short: timing sample 4/15
+match/policy_scoring_short: 0.618 ms
+typed/ticket_search: timing sample 6/15
+typed/ticket_search: 26.4 ms
+match_typed/capacity_planning: timing sample 5/15
+match_typed/capacity_planning: 29 ms
+match_typed/perf_float: timing sample 6/15
+match_typed/perf_float: 213 ms
+match/portfolio_exposure: timing sample 5/15
+match/portfolio_exposure: 4.41 ms
+match_typed/policy_scoring_short: timing sample 10/15
+match_typed/policy_scoring_short: 0.456 ms
+previous_typed/policy_scoring_batch: timing sample 9/15
+previous_typed/policy_scoring_batch: 6.26 ms
+previous_typed/perf_unpack_sequence: timing sample 7/15
+previous_typed/perf_unpack_sequence: 6.94 ms
+previous_typed/perf_float: timing sample 5/15
+previous_typed/perf_float: 220 ms
+match/capacity_planning: timing sample 4/15
+match/capacity_planning: 28.2 ms
+match/capacity_planning: timing sample 5/15
+match/capacity_planning: 28.3 ms
+threaded/capacity_planning: timing sample 6/15
+threaded/capacity_planning: 28.9 ms
+CPython/portfolio_exposure: timing sample 4/15
+CPython/portfolio_exposure: 1.59 ms
+typed/capacity_planning: timing sample 5/15
+typed/capacity_planning: 28.7 ms
+match_typed/perf_float: timing sample 7/15
+match_typed/perf_float: 215 ms
+CPython/perf_float: timing sample 3/15
+CPython/perf_float: 49 ms
+match_typed/ticket_search: timing sample 9/15
+match_typed/ticket_search: 27 ms
+match_typed/game_spectral_norm: timing sample 7/15
+match_typed/game_spectral_norm: 251 ms
+threaded/game_spectral_norm: timing sample 10/15
+threaded/game_spectral_norm: 316 ms
+previous_typed/game_spectral_norm: timing sample 5/15
+previous_typed/game_spectral_norm: 270 ms
+threaded/policy_scoring_short: timing sample 4/15
+threaded/policy_scoring_short: 0.545 ms
+previous_typed/perf_unpack_sequence: timing sample 8/15
+previous_typed/perf_unpack_sequence: 6.98 ms
+match/game_spectral_norm: timing sample 6/15
+match/game_spectral_norm: 313 ms
+match/ticket_search: timing sample 5/15
+match/ticket_search: 26.5 ms
+typed/policy_scoring_batch: timing sample 7/15
+typed/policy_scoring_batch: 6.46 ms
+typed/policy_scoring_short: timing sample 6/15
+typed/policy_scoring_short: 0.422 ms
+match_typed/capacity_planning: timing sample 6/15
+match_typed/capacity_planning: 29 ms
+previous_typed/policy_scoring_batch: timing sample 10/15
+previous_typed/policy_scoring_batch: 6.33 ms
+CPython/portfolio_exposure: timing sample 5/15
+CPython/portfolio_exposure: 1.56 ms
+CPython/portfolio_exposure: timing sample 6/15
+CPython/portfolio_exposure: 1.39 ms
+typed/perf_unpack_sequence: timing sample 4/15
+typed/perf_unpack_sequence: 6.83 ms
+threaded/perf_unpack_sequence: timing sample 5/15
+threaded/perf_unpack_sequence: 317 ms
+typed/portfolio_exposure: timing sample 7/15
+typed/portfolio_exposure: 1.4 ms
+threaded/capacity_planning: timing sample 7/15
+threaded/capacity_planning: 28.9 ms
+match/perf_float: timing sample 4/15
+match/perf_float: 211 ms
+previous_typed/perf_unpack_sequence: timing sample 9/15
+previous_typed/perf_unpack_sequence: 6.89 ms
+CPython/perf_unpack_sequence: timing sample 7/15
+CPython/perf_unpack_sequence: 17.7 ms
+CPython/policy_scoring_batch: timing sample 9/15
+CPython/policy_scoring_batch: 4.31 ms
+threaded/ticket_search: timing sample 10/15
+threaded/ticket_search: 26.1 ms
+CPython/portfolio_exposure: timing sample 7/15
+CPython/portfolio_exposure: 1.65 ms
+match_typed/ticket_search: timing sample 10/15
+match_typed/ticket_search: 26.8 ms
+threaded/perf_unpack_sequence: timing sample 6/15
+threaded/perf_unpack_sequence: 316 ms
+match_typed/capacity_planning: timing sample 7/15
+match_typed/capacity_planning: 29.1 ms
+previous_typed/perf_unpack_sequence: timing sample 10/15
+previous_typed/perf_unpack_sequence: 6.78 ms
+previous_typed/perf_float: timing sample 6/15
+previous_typed/perf_float: 218 ms
+CPython/ticket_search: timing sample 8/15
+CPython/ticket_search: 9.17 ms
+match_typed/ticket_search: timing sample 11/15
+match_typed/ticket_search: 26.5 ms
+match/policy_scoring_short: timing sample 5/15
+match/policy_scoring_short: 0.644 ms
+typed/ticket_search: timing sample 7/15
+typed/ticket_search: 26.5 ms
+match/policy_scoring_short: timing sample 6/15
+match/policy_scoring_short: 0.545 ms
+match_typed/perf_float: timing sample 8/15
+match_typed/perf_float: 212 ms
+typed/ticket_search: timing sample 8/15
+typed/ticket_search: 26.4 ms
+match/perf_float: timing sample 5/15
+match/perf_float: 209 ms
+match_typed/ticket_search: timing sample 12/15
+match_typed/ticket_search: 26.8 ms
+threaded/policy_scoring_short: timing sample 5/15
+threaded/policy_scoring_short: 0.574 ms
+threaded/ticket_search: timing sample 11/15
+threaded/ticket_search: 26.3 ms
+match_typed/capacity_planning: timing sample 8/15
+match_typed/capacity_planning: 29 ms
+CPython/ticket_search: timing sample 9/15
+CPython/ticket_search: 7.05 ms
+threaded/perf_float: timing sample 8/15
+threaded/perf_float: 214 ms
+CPython/game_spectral_norm: timing sample 7/15
+CPython/game_spectral_norm: 66.5 ms
+CPython/perf_float: timing sample 4/15
+CPython/perf_float: 50.3 ms
+match/game_spectral_norm: timing sample 7/15
+match/game_spectral_norm: 309 ms
+typed/ticket_search: timing sample 9/15
+typed/ticket_search: 26.6 ms
+match/ticket_search: timing sample 6/15
+match/ticket_search: 26.5 ms
+match_typed/portfolio_exposure: timing sample 8/15
+match_typed/portfolio_exposure: 1.38 ms
+match/policy_scoring_batch: timing sample 8/15
+match/policy_scoring_batch: 7.94 ms
+CPython/game_spectral_norm: timing sample 8/15
+CPython/game_spectral_norm: 67 ms
+CPython/perf_float: timing sample 5/15
+CPython/perf_float: 48.7 ms
+match/game_spectral_norm: timing sample 8/15
+match/game_spectral_norm: 314 ms
+typed/ticket_search: timing sample 10/15
+typed/ticket_search: 26.9 ms
+match_typed/perf_float: timing sample 9/15
+match_typed/perf_float: 214 ms
+previous_typed/policy_scoring_short: timing sample 9/15
+previous_typed/policy_scoring_short: 0.545 ms
+match/policy_scoring_short: timing sample 7/15
+match/policy_scoring_short: 0.549 ms
+typed/policy_scoring_batch: timing sample 8/15
+typed/policy_scoring_batch: 6.4 ms
+previous_typed/policy_scoring_batch: timing sample 11/15
+previous_typed/policy_scoring_batch: 6.26 ms
+typed/policy_scoring_short: timing sample 7/15
+typed/policy_scoring_short: 0.483 ms
+match_typed/capacity_planning: timing sample 9/15
+match_typed/capacity_planning: 29.2 ms
+threaded/portfolio_exposure: timing sample 8/15
+threaded/portfolio_exposure: 4.15 ms
+match/policy_scoring_batch: timing sample 9/15
+match/policy_scoring_batch: 8.05 ms
+match/portfolio_exposure: timing sample 6/15
+match/portfolio_exposure: 4.3 ms
+match_typed/policy_scoring_batch: timing sample 4/15
+match_typed/policy_scoring_batch: 7.42 ms
+match_typed/game_spectral_norm: timing sample 8/15
+match_typed/game_spectral_norm: 251 ms
+threaded/capacity_planning: timing sample 8/15
+threaded/capacity_planning: 28.9 ms
+previous_typed/policy_scoring_short: timing sample 10/15
+previous_typed/policy_scoring_short: 0.53 ms
+match_typed/perf_unpack_sequence: timing sample 8/15
+match_typed/perf_unpack_sequence: 6.88 ms
+match/portfolio_exposure: timing sample 7/15
+match/portfolio_exposure: 4.32 ms
+CPython/perf_float: timing sample 6/15
+CPython/perf_float: 50.9 ms
+match/ticket_search: timing sample 7/15
+match/ticket_search: 27.4 ms
+match/portfolio_exposure: timing sample 8/15
+match/portfolio_exposure: 4.55 ms
+match/policy_scoring_short: timing sample 8/15
+match/policy_scoring_short: 0.518 ms
+threaded/portfolio_exposure: timing sample 9/15
+threaded/portfolio_exposure: 4.06 ms
+match/capacity_planning: timing sample 6/15
+match/capacity_planning: 27.8 ms
+threaded/game_spectral_norm: timing sample 11/15
+threaded/game_spectral_norm: 318 ms
+threaded/portfolio_exposure: timing sample 10/15
+threaded/portfolio_exposure: 4.06 ms
+typed/portfolio_exposure: timing sample 8/15
+typed/portfolio_exposure: 1.3 ms
+typed/portfolio_exposure: timing sample 9/15
+typed/portfolio_exposure: 1.31 ms
+threaded/game_spectral_norm: timing sample 12/15
+threaded/game_spectral_norm: 317 ms
+typed/policy_scoring_short: timing sample 8/15
+typed/policy_scoring_short: 0.503 ms
+typed/perf_float: timing sample 9/15
+typed/perf_float: 217 ms
+match_typed/policy_scoring_batch: timing sample 5/15
+match_typed/policy_scoring_batch: 6.54 ms
+CPython/ticket_search: timing sample 10/15
+CPython/ticket_search: 6.97 ms
+match/ticket_search: timing sample 8/15
+match/ticket_search: 26.5 ms
+match_typed/perf_unpack_sequence: timing sample 9/15
+match_typed/perf_unpack_sequence: 6.72 ms
+CPython/policy_scoring_short: timing sample 10/15
+CPython/policy_scoring_short: 0.611 ms
+CPython/perf_unpack_sequence: timing sample 8/15
+CPython/perf_unpack_sequence: 17.4 ms
+match/portfolio_exposure: timing sample 9/15
+match/portfolio_exposure: 4.52 ms
+match/perf_float: timing sample 6/15
+match/perf_float: 212 ms
+CPython/perf_float: timing sample 7/15
+CPython/perf_float: 48.7 ms
+CPython/policy_scoring_batch: timing sample 10/15
+CPython/policy_scoring_batch: 4.23 ms
+CPython/portfolio_exposure: timing sample 8/15
+CPython/portfolio_exposure: 1.48 ms
+CPython/perf_float: timing sample 8/15
+CPython/perf_float: 54.3 ms
+typed/ticket_search: timing sample 11/15
+typed/ticket_search: 26.5 ms
+threaded/ticket_search: timing sample 12/15
+threaded/ticket_search: 27.4 ms
+CPython/policy_scoring_batch: timing sample 11/15
+CPython/policy_scoring_batch: 4.12 ms
+typed/perf_unpack_sequence: timing sample 5/15
+typed/perf_unpack_sequence: 6.92 ms
+CPython/capacity_planning: timing sample 7/15
+CPython/capacity_planning: 8.66 ms
+CPython/capacity_planning: timing sample 8/15
+CPython/capacity_planning: 8.81 ms
+typed/portfolio_exposure: timing sample 10/15
+typed/portfolio_exposure: 1.32 ms
+typed/perf_unpack_sequence: timing sample 6/15
+typed/perf_unpack_sequence: 6.88 ms
+previous_typed/portfolio_exposure: timing sample 10/15
+previous_typed/portfolio_exposure: 1.43 ms
+previous_typed/capacity_planning: timing sample 7/15
+previous_typed/capacity_planning: 30.2 ms
+typed/perf_unpack_sequence: timing sample 7/15
+typed/perf_unpack_sequence: 6.83 ms
+match_typed/policy_scoring_short: timing sample 11/15
+match_typed/policy_scoring_short: 0.479 ms
+match/perf_float: timing sample 7/15
+match/perf_float: 214 ms
+typed/policy_scoring_short: timing sample 9/15
+typed/policy_scoring_short: 0.503 ms
+match_typed/perf_unpack_sequence: timing sample 10/15
+match_typed/perf_unpack_sequence: 6.96 ms
+CPython/policy_scoring_short: timing sample 11/15
+CPython/policy_scoring_short: 0.596 ms
+match/capacity_planning: timing sample 7/15
+match/capacity_planning: 28.3 ms
+previous_typed/portfolio_exposure: timing sample 11/15
+previous_typed/portfolio_exposure: 1.46 ms
+CPython/ticket_search: timing sample 11/15
+CPython/ticket_search: 6.54 ms
+previous_typed/portfolio_exposure: timing sample 12/15
+previous_typed/portfolio_exposure: 1.31 ms
+match_typed/policy_scoring_batch: timing sample 6/15
+match_typed/policy_scoring_batch: 6.65 ms
+typed/perf_float: timing sample 10/15
+typed/perf_float: 215 ms
+previous_typed/capacity_planning: timing sample 8/15
+previous_typed/capacity_planning: 30 ms
+match/perf_unpack_sequence: timing sample 6/15
+match/perf_unpack_sequence: 317 ms
+match_typed/perf_float: timing sample 10/15
+match_typed/perf_float: 213 ms
+CPython/portfolio_exposure: timing sample 9/15
+CPython/portfolio_exposure: 1.69 ms
+typed/policy_scoring_batch: timing sample 9/15
+typed/policy_scoring_batch: 6.57 ms
+match/portfolio_exposure: timing sample 10/15
+match/portfolio_exposure: 4.62 ms
+match_typed/perf_unpack_sequence: timing sample 11/15
+match_typed/perf_unpack_sequence: 6.73 ms
+typed/policy_scoring_batch: timing sample 10/15
+typed/policy_scoring_batch: 6.65 ms
+threaded/policy_scoring_batch: timing sample 8/15
+threaded/policy_scoring_batch: 7.83 ms
+threaded/policy_scoring_batch: timing sample 9/15
+threaded/policy_scoring_batch: 8.05 ms
+threaded/policy_scoring_short: timing sample 6/15
+threaded/policy_scoring_short: 0.564 ms
+previous_typed/game_spectral_norm: timing sample 6/15
+previous_typed/game_spectral_norm: 271 ms
+match_typed/game_spectral_norm: timing sample 9/15
+match_typed/game_spectral_norm: 251 ms
+typed/policy_scoring_short: timing sample 10/15
+typed/policy_scoring_short: 0.523 ms
+match/game_spectral_norm: timing sample 9/15
+match/game_spectral_norm: 312 ms
+match/capacity_planning: timing sample 8/15
+match/capacity_planning: 28.3 ms
+previous_typed/perf_float: timing sample 7/15
+previous_typed/perf_float: 218 ms
+typed/portfolio_exposure: timing sample 11/15
+typed/portfolio_exposure: 1.45 ms
+match/perf_float: timing sample 8/15
+match/perf_float: 212 ms
+threaded/policy_scoring_short: timing sample 7/15
+threaded/policy_scoring_short: 0.579 ms
+match/perf_unpack_sequence: timing sample 7/15
+match/perf_unpack_sequence: 316 ms
+CPython/perf_unpack_sequence: timing sample 9/15
+CPython/perf_unpack_sequence: 17.6 ms
+typed/perf_unpack_sequence: timing sample 8/15
+typed/perf_unpack_sequence: 7.08 ms
+match/game_spectral_norm: timing sample 10/15
+match/game_spectral_norm: 311 ms
+typed/game_spectral_norm: timing sample 10/15
+typed/game_spectral_norm: 239 ms
+match_typed/policy_scoring_batch: timing sample 7/15
+match_typed/policy_scoring_batch: 6.73 ms
+match/policy_scoring_short: timing sample 9/15
+match/policy_scoring_short: 0.582 ms
+typed/capacity_planning: timing sample 6/15
+typed/capacity_planning: 29 ms
+typed/capacity_planning: timing sample 7/15
+typed/capacity_planning: 29 ms
+threaded/perf_unpack_sequence: timing sample 7/15
+threaded/perf_unpack_sequence: 314 ms
+previous_typed/perf_unpack_sequence: timing sample 11/15
+previous_typed/perf_unpack_sequence: 7.22 ms
+previous_typed/capacity_planning: timing sample 9/15
+previous_typed/capacity_planning: 30.7 ms
+typed/policy_scoring_batch: timing sample 11/15
+typed/policy_scoring_batch: 6.5 ms
+typed/perf_unpack_sequence: timing sample 9/15
+typed/perf_unpack_sequence: 6.86 ms
+threaded/perf_float: timing sample 9/15
+threaded/perf_float: 217 ms
+previous_typed/policy_scoring_short: timing sample 11/15
+previous_typed/policy_scoring_short: 0.513 ms
+match_typed/policy_scoring_batch: timing sample 8/15
+match_typed/policy_scoring_batch: 6.58 ms
+match/portfolio_exposure: timing sample 11/15
+match/portfolio_exposure: 4.4 ms
+CPython/policy_scoring_short: timing sample 12/15
+CPython/policy_scoring_short: 0.573 ms
+typed/capacity_planning: timing sample 8/15
+typed/capacity_planning: 29.4 ms
+CPython/game_spectral_norm: timing sample 9/15
+CPython/game_spectral_norm: 67.9 ms
+threaded/game_spectral_norm: timing sample 13/15
+threaded/game_spectral_norm: 325 ms
+typed/policy_scoring_batch: timing sample 12/15
+typed/policy_scoring_batch: 6.58 ms
+match/perf_float: timing sample 9/15
+match/perf_float: 210 ms
+typed/perf_float: timing sample 11/15
+typed/perf_float: 216 ms
+match_typed/capacity_planning: timing sample 10/15
+match_typed/capacity_planning: 29.4 ms
+CPython/perf_unpack_sequence: timing sample 10/15
+CPython/perf_unpack_sequence: 17.6 ms
+match/perf_unpack_sequence: timing sample 8/15
+match/perf_unpack_sequence: 312 ms
+CPython/perf_float: timing sample 9/15
+CPython/perf_float: 49.2 ms
+CPython/portfolio_exposure: timing sample 10/15
+CPython/portfolio_exposure: 1.56 ms
+typed/perf_float: timing sample 12/15
+typed/perf_float: 216 ms
+previous_typed/ticket_search: timing sample 7/15
+previous_typed/ticket_search: 26.7 ms
+typed/capacity_planning: timing sample 9/15
+typed/capacity_planning: 28.8 ms
+previous_typed/policy_scoring_batch: timing sample 12/15
+previous_typed/policy_scoring_batch: 6.42 ms
+CPython/policy_scoring_short: timing sample 13/15
+CPython/policy_scoring_short: 0.548 ms
+match/policy_scoring_batch: timing sample 10/15
+match/policy_scoring_batch: 8.2 ms
+threaded/policy_scoring_short: timing sample 8/15
+threaded/policy_scoring_short: 0.572 ms
+previous_typed/capacity_planning: timing sample 10/15
+previous_typed/capacity_planning: 30.3 ms
+CPython/perf_unpack_sequence: timing sample 11/15
+CPython/perf_unpack_sequence: 17.6 ms
+match_typed/game_spectral_norm: timing sample 10/15
+match_typed/game_spectral_norm: 252 ms
+CPython/capacity_planning: timing sample 9/15
+CPython/capacity_planning: 8.64 ms
+typed/policy_scoring_short: timing sample 11/15
+typed/policy_scoring_short: 0.519 ms
+match/ticket_search: timing sample 9/15
+match/ticket_search: 26.8 ms
+CPython/perf_float: timing sample 10/15
+CPython/perf_float: 49.8 ms
+CPython/portfolio_exposure: timing sample 11/15
+CPython/portfolio_exposure: 1.59 ms
+threaded/capacity_planning: timing sample 9/15
+threaded/capacity_planning: 29.4 ms
+match_typed/portfolio_exposure: timing sample 9/15
+match_typed/portfolio_exposure: 1.45 ms
+match_typed/game_spectral_norm: timing sample 11/15
+match_typed/game_spectral_norm: 251 ms
+match_typed/portfolio_exposure: timing sample 10/15
+match_typed/portfolio_exposure: 1.4 ms
+match/ticket_search: timing sample 10/15
+match/ticket_search: 26.5 ms
+match_typed/perf_float: timing sample 11/15
+match_typed/perf_float: 214 ms
+previous_typed/game_spectral_norm: timing sample 7/15
+previous_typed/game_spectral_norm: 273 ms
+threaded/policy_scoring_batch: timing sample 10/15
+threaded/policy_scoring_batch: 8.06 ms
+typed/policy_scoring_batch: timing sample 13/15
+typed/policy_scoring_batch: 6.41 ms
+previous_typed/ticket_search: timing sample 8/15
+previous_typed/ticket_search: 27.7 ms
+match_typed/ticket_search: timing sample 13/15
+match_typed/ticket_search: 26.7 ms
+previous_typed/perf_float: timing sample 8/15
+previous_typed/perf_float: 220 ms
+match_typed/ticket_search: timing sample 14/15
+match_typed/ticket_search: 26.5 ms
+typed/capacity_planning: timing sample 10/15
+typed/capacity_planning: 28.8 ms
+previous_typed/ticket_search: timing sample 9/15
+previous_typed/ticket_search: 26.6 ms
+previous_typed/portfolio_exposure: timing sample 13/15
+previous_typed/portfolio_exposure: 1.4 ms
+typed/perf_float: timing sample 13/15
+typed/perf_float: 218 ms
+threaded/policy_scoring_short: timing sample 9/15
+threaded/policy_scoring_short: 0.565 ms
+typed/game_spectral_norm: timing sample 11/15
+typed/game_spectral_norm: 239 ms
+previous_typed/game_spectral_norm: timing sample 8/15
+previous_typed/game_spectral_norm: 273 ms
+match/policy_scoring_batch: timing sample 11/15
+match/policy_scoring_batch: 8.18 ms
+CPython/perf_unpack_sequence: timing sample 12/15
+CPython/perf_unpack_sequence: 17.5 ms
+match_typed/capacity_planning: timing sample 11/15
+match_typed/capacity_planning: 29.1 ms
+match_typed/ticket_search: timing sample 15/15
+match_typed/ticket_search: 25.6 ms
+previous_typed/policy_scoring_short: timing sample 12/15
+previous_typed/policy_scoring_short: 0.593 ms
+threaded/portfolio_exposure: timing sample 11/15
+threaded/portfolio_exposure: 4.12 ms
+match_typed/perf_unpack_sequence: timing sample 12/15
+match_typed/perf_unpack_sequence: 6.88 ms
+match/policy_scoring_batch: timing sample 12/15
+match/policy_scoring_batch: 8.22 ms
+previous_typed/capacity_planning: timing sample 11/15
+previous_typed/capacity_planning: 30.4 ms
+threaded/policy_scoring_short: timing sample 10/15
+threaded/policy_scoring_short: 0.572 ms
+previous_typed/game_spectral_norm: timing sample 9/15
+previous_typed/game_spectral_norm: 271 ms
+threaded/game_spectral_norm: timing sample 14/15
+threaded/game_spectral_norm: 317 ms
+CPython/capacity_planning: timing sample 10/15
+CPython/capacity_planning: 8.99 ms
+CPython/portfolio_exposure: timing sample 12/15
+CPython/portfolio_exposure: 1.59 ms
+match/perf_float: timing sample 10/15
+match/perf_float: 211 ms
+CPython/game_spectral_norm: timing sample 10/15
+CPython/game_spectral_norm: 66.8 ms
+threaded/perf_unpack_sequence: timing sample 8/15
+threaded/perf_unpack_sequence: 317 ms
+match/perf_unpack_sequence: timing sample 9/15
+match/perf_unpack_sequence: 317 ms
+match_typed/perf_float: timing sample 12/15
+match_typed/perf_float: 212 ms
+typed/perf_unpack_sequence: timing sample 10/15
+typed/perf_unpack_sequence: 7.16 ms
+previous_typed/policy_scoring_short: timing sample 13/15
+previous_typed/policy_scoring_short: 0.584 ms
+match/game_spectral_norm: timing sample 11/15
+match/game_spectral_norm: 313 ms
+typed/capacity_planning: timing sample 11/15
+typed/capacity_planning: 28.9 ms
+threaded/capacity_planning: timing sample 10/15
+threaded/capacity_planning: 28.9 ms
+CPython/policy_scoring_short: timing sample 14/15
+CPython/policy_scoring_short: 0.554 ms
+CPython/perf_float: timing sample 11/15
+CPython/perf_float: 50.9 ms
+typed/policy_scoring_short: timing sample 12/15
+typed/policy_scoring_short: 0.59 ms
+match/policy_scoring_short: timing sample 10/15
+match/policy_scoring_short: 0.549 ms
+match_typed/game_spectral_norm: timing sample 12/15
+match_typed/game_spectral_norm: 251 ms
+match_typed/portfolio_exposure: timing sample 11/15
+match_typed/portfolio_exposure: 1.43 ms
+typed/portfolio_exposure: timing sample 12/15
+typed/portfolio_exposure: 1.46 ms
+typed/capacity_planning: timing sample 12/15
+typed/capacity_planning: 28.7 ms
+typed/policy_scoring_batch: timing sample 14/15
+typed/policy_scoring_batch: 6.62 ms
+typed/capacity_planning: timing sample 13/15
+typed/capacity_planning: 28.7 ms
+match/perf_float: timing sample 11/15
+match/perf_float: 216 ms
+match/ticket_search: timing sample 11/15
+match/ticket_search: 27 ms
+match_typed/game_spectral_norm: timing sample 13/15
+match_typed/game_spectral_norm: 251 ms
+match_typed/policy_scoring_batch: timing sample 9/15
+match_typed/policy_scoring_batch: 6.62 ms
+threaded/policy_scoring_short: timing sample 11/15
+threaded/policy_scoring_short: 0.534 ms
+typed/capacity_planning: timing sample 14/15
+typed/capacity_planning: 29.4 ms
+match_typed/policy_scoring_batch: timing sample 10/15
+match_typed/policy_scoring_batch: 6.65 ms
+previous_typed/portfolio_exposure: timing sample 14/15
+previous_typed/portfolio_exposure: 1.38 ms
+match/game_spectral_norm: timing sample 12/15
+match/game_spectral_norm: 314 ms
+match/capacity_planning: timing sample 9/15
+match/capacity_planning: 28.3 ms
+typed/ticket_search: timing sample 12/15
+typed/ticket_search: 27.4 ms
+previous_typed/capacity_planning: timing sample 12/15
+previous_typed/capacity_planning: 30.2 ms
+previous_typed/policy_scoring_short: timing sample 14/15
+previous_typed/policy_scoring_short: 0.482 ms
+typed/policy_scoring_batch: timing sample 15/15
+typed/policy_scoring_batch: 6.66 ms
+previous_typed/ticket_search: timing sample 10/15
+previous_typed/ticket_search: 26.8 ms
+match/capacity_planning: timing sample 10/15
+match/capacity_planning: 27.9 ms
+threaded/perf_unpack_sequence: timing sample 9/15
+threaded/perf_unpack_sequence: 315 ms
+match/perf_float: timing sample 12/15
+match/perf_float: 212 ms
+match_typed/policy_scoring_batch: timing sample 11/15
+match_typed/policy_scoring_batch: 6.59 ms
+typed/portfolio_exposure: timing sample 13/15
+typed/portfolio_exposure: 1.38 ms
+threaded/policy_scoring_batch: timing sample 11/15
+threaded/policy_scoring_batch: 8.11 ms
+match/portfolio_exposure: timing sample 12/15
+match/portfolio_exposure: 4.6 ms
+CPython/game_spectral_norm: timing sample 11/15
+CPython/game_spectral_norm: 66.8 ms
+CPython/ticket_search: timing sample 12/15
+CPython/ticket_search: 6.98 ms
+match_typed/policy_scoring_batch: timing sample 12/15
+match_typed/policy_scoring_batch: 6.59 ms
+CPython/game_spectral_norm: timing sample 12/15
+CPython/game_spectral_norm: 67.5 ms
+CPython/game_spectral_norm: timing sample 13/15
+CPython/game_spectral_norm: 66.9 ms
+typed/ticket_search: timing sample 13/15
+typed/ticket_search: 26.9 ms
+previous_typed/ticket_search: timing sample 11/15
+previous_typed/ticket_search: 27.5 ms
+match/capacity_planning: timing sample 11/15
+match/capacity_planning: 28.1 ms
+match/perf_unpack_sequence: timing sample 10/15
+match/perf_unpack_sequence: 315 ms
+match_typed/policy_scoring_short: timing sample 12/15
+match_typed/policy_scoring_short: 0.555 ms
+previous_typed/perf_float: timing sample 9/15
+previous_typed/perf_float: 219 ms
+threaded/portfolio_exposure: timing sample 12/15
+threaded/portfolio_exposure: 4.25 ms
+typed/portfolio_exposure: timing sample 14/15
+typed/portfolio_exposure: 1.5 ms
+threaded/policy_scoring_batch: timing sample 12/15
+threaded/policy_scoring_batch: 8.06 ms
+match/capacity_planning: timing sample 12/15
+match/capacity_planning: 28.6 ms
+previous_typed/perf_float: timing sample 10/15
+previous_typed/perf_float: 219 ms
+typed/ticket_search: timing sample 14/15
+typed/ticket_search: 28.5 ms
+previous_typed/perf_float: timing sample 11/15
+previous_typed/perf_float: 218 ms
+typed/policy_scoring_short: timing sample 13/15
+typed/policy_scoring_short: 0.509 ms
+match/ticket_search: timing sample 12/15
+match/ticket_search: 26.7 ms
+CPython/capacity_planning: timing sample 11/15
+CPython/capacity_planning: 8.5 ms
+threaded/perf_float: timing sample 10/15
+threaded/perf_float: 214 ms
+previous_typed/ticket_search: timing sample 12/15
+previous_typed/ticket_search: 28.2 ms
+match_typed/capacity_planning: timing sample 12/15
+match_typed/capacity_planning: 29 ms
+match/portfolio_exposure: timing sample 13/15
+match/portfolio_exposure: 4.59 ms
+CPython/policy_scoring_batch: timing sample 12/15
+CPython/policy_scoring_batch: 4.25 ms
+threaded/policy_scoring_short: timing sample 12/15
+threaded/policy_scoring_short: 0.558 ms
+CPython/policy_scoring_batch: timing sample 13/15
+CPython/policy_scoring_batch: 4.26 ms
+match/policy_scoring_short: timing sample 11/15
+match/policy_scoring_short: 0.609 ms
+typed/game_spectral_norm: timing sample 12/15
+typed/game_spectral_norm: 240 ms
+match/policy_scoring_short: timing sample 12/15
+match/policy_scoring_short: 0.553 ms
+match/policy_scoring_batch: timing sample 13/15
+match/policy_scoring_batch: 7.89 ms
+previous_typed/perf_float: timing sample 12/15
+previous_typed/perf_float: 219 ms
+previous_typed/policy_scoring_batch: timing sample 13/15
+previous_typed/policy_scoring_batch: 6.2 ms
+CPython/ticket_search: timing sample 13/15
+CPython/ticket_search: 6.72 ms
+match_typed/game_spectral_norm: timing sample 14/15
+match_typed/game_spectral_norm: 252 ms
+threaded/capacity_planning: timing sample 11/15
+threaded/capacity_planning: 28.9 ms
+previous_typed/policy_scoring_batch: timing sample 14/15
+previous_typed/policy_scoring_batch: 6.25 ms
+threaded/perf_float: timing sample 11/15
+threaded/perf_float: 216 ms
+threaded/portfolio_exposure: timing sample 13/15
+threaded/portfolio_exposure: 4.24 ms
+match/game_spectral_norm: timing sample 13/15
+match/game_spectral_norm: 312 ms
+match/ticket_search: timing sample 13/15
+match/ticket_search: 26.1 ms
+CPython/portfolio_exposure: timing sample 13/15
+CPython/portfolio_exposure: 1.65 ms
+match_typed/perf_unpack_sequence: timing sample 13/15
+match_typed/perf_unpack_sequence: 6.96 ms
+previous_typed/perf_float: timing sample 13/15
+previous_typed/perf_float: 219 ms
+match_typed/capacity_planning: timing sample 13/15
+match_typed/capacity_planning: 28.9 ms
+previous_typed/game_spectral_norm: timing sample 10/15
+previous_typed/game_spectral_norm: 273 ms
+typed/game_spectral_norm: timing sample 13/15
+typed/game_spectral_norm: 239 ms
+threaded/policy_scoring_short: timing sample 13/15
+threaded/policy_scoring_short: 0.609 ms
+threaded/perf_float: timing sample 12/15
+threaded/perf_float: 214 ms
+previous_typed/policy_scoring_batch: timing sample 15/15
+previous_typed/policy_scoring_batch: 6.41 ms
+previous_typed/policy_scoring_short: timing sample 15/15
+previous_typed/policy_scoring_short: 0.427 ms
+previous_typed/ticket_search: timing sample 13/15
+previous_typed/ticket_search: 26.8 ms
+CPython/portfolio_exposure: timing sample 14/15
+CPython/portfolio_exposure: 1.58 ms
+match_typed/portfolio_exposure: timing sample 12/15
+match_typed/portfolio_exposure: 1.43 ms
+match/capacity_planning: timing sample 13/15
+match/capacity_planning: 28.8 ms
+match/game_spectral_norm: timing sample 14/15
+match/game_spectral_norm: 313 ms
+match/capacity_planning: timing sample 14/15
+match/capacity_planning: 28.2 ms
+CPython/perf_unpack_sequence: timing sample 13/15
+CPython/perf_unpack_sequence: 17.6 ms
+previous_typed/perf_unpack_sequence: timing sample 12/15
+previous_typed/perf_unpack_sequence: 6.97 ms
+CPython/capacity_planning: timing sample 12/15
+CPython/capacity_planning: 8.58 ms
+match/policy_scoring_batch: timing sample 14/15
+match/policy_scoring_batch: 7.93 ms
+match/portfolio_exposure: timing sample 14/15
+match/portfolio_exposure: 4.45 ms
+threaded/perf_unpack_sequence: timing sample 10/15
+threaded/perf_unpack_sequence: 315 ms
+threaded/ticket_search: timing sample 13/15
+threaded/ticket_search: 26.5 ms
+CPython/policy_scoring_short: timing sample 15/15
+CPython/policy_scoring_short: 0.606 ms
+typed/perf_unpack_sequence: timing sample 11/15
+typed/perf_unpack_sequence: 6.92 ms
+previous_typed/game_spectral_norm: timing sample 11/15
+previous_typed/game_spectral_norm: 271 ms
+previous_typed/perf_float: timing sample 14/15
+previous_typed/perf_float: 221 ms
+match_typed/policy_scoring_short: timing sample 13/15
+match_typed/policy_scoring_short: 0.548 ms
+match_typed/perf_float: timing sample 13/15
+match_typed/perf_float: 216 ms
+typed/perf_unpack_sequence: timing sample 12/15
+typed/perf_unpack_sequence: 6.8 ms
+match_typed/capacity_planning: timing sample 14/15
+match_typed/capacity_planning: 29.2 ms
+CPython/policy_scoring_batch: timing sample 14/15
+CPython/policy_scoring_batch: 5.14 ms
+previous_typed/ticket_search: timing sample 14/15
+previous_typed/ticket_search: 26.6 ms
+threaded/perf_float: timing sample 13/15
+threaded/perf_float: 218 ms
+typed/game_spectral_norm: timing sample 14/15
+typed/game_spectral_norm: 238 ms
+threaded/policy_scoring_batch: timing sample 13/15
+threaded/policy_scoring_batch: 8.21 ms
+match_typed/perf_unpack_sequence: timing sample 14/15
+match_typed/perf_unpack_sequence: 6.82 ms
+CPython/perf_float: timing sample 12/15
+CPython/perf_float: 48.3 ms
+threaded/perf_unpack_sequence: timing sample 11/15
+threaded/perf_unpack_sequence: 315 ms
+CPython/portfolio_exposure: timing sample 15/15
+CPython/portfolio_exposure: 1.54 ms
+typed/perf_unpack_sequence: timing sample 13/15
+typed/perf_unpack_sequence: 6.9 ms
+threaded/perf_float: timing sample 14/15
+threaded/perf_float: 214 ms
+typed/capacity_planning: timing sample 15/15
+typed/capacity_planning: 28.6 ms
+match_typed/portfolio_exposure: timing sample 13/15
+match_typed/portfolio_exposure: 1.38 ms
+CPython/perf_float: timing sample 13/15
+CPython/perf_float: 53.8 ms
+match_typed/policy_scoring_short: timing sample 14/15
+match_typed/policy_scoring_short: 0.614 ms
+match_typed/policy_scoring_batch: timing sample 13/15
+match_typed/policy_scoring_batch: 6.57 ms
+previous_typed/perf_float: timing sample 15/15
+previous_typed/perf_float: 218 ms
+threaded/ticket_search: timing sample 14/15
+threaded/ticket_search: 27.1 ms
+match/perf_unpack_sequence: timing sample 11/15
+match/perf_unpack_sequence: 318 ms
+match/perf_unpack_sequence: timing sample 12/15
+match/perf_unpack_sequence: 317 ms
+CPython/perf_unpack_sequence: timing sample 14/15
+CPython/perf_unpack_sequence: 17.4 ms
+previous_typed/game_spectral_norm: timing sample 12/15
+previous_typed/game_spectral_norm: 273 ms
+match/perf_unpack_sequence: timing sample 13/15
+match/perf_unpack_sequence: 317 ms
+threaded/portfolio_exposure: timing sample 14/15
+threaded/portfolio_exposure: 4 ms
+match_typed/game_spectral_norm: timing sample 15/15
+match_typed/game_spectral_norm: 251 ms
+match/perf_float: timing sample 13/15
+match/perf_float: 210 ms
+typed/policy_scoring_short: timing sample 14/15
+typed/policy_scoring_short: 0.535 ms
+match_typed/portfolio_exposure: timing sample 14/15
+match_typed/portfolio_exposure: 1.43 ms
+previous_typed/portfolio_exposure: timing sample 15/15
+previous_typed/portfolio_exposure: 1.39 ms
+typed/perf_float: timing sample 14/15
+typed/perf_float: 216 ms
+previous_typed/capacity_planning: timing sample 13/15
+previous_typed/capacity_planning: 30.2 ms
+CPython/game_spectral_norm: timing sample 14/15
+CPython/game_spectral_norm: 66.7 ms
+match_typed/perf_float: timing sample 14/15
+match_typed/perf_float: 215 ms
+match_typed/policy_scoring_short: timing sample 15/15
+match_typed/policy_scoring_short: 0.515 ms
+CPython/capacity_planning: timing sample 13/15
+CPython/capacity_planning: 8.89 ms
+match/policy_scoring_short: timing sample 13/15
+match/policy_scoring_short: 0.698 ms
+match/portfolio_exposure: timing sample 15/15
+match/portfolio_exposure: 4.46 ms
+threaded/perf_unpack_sequence: timing sample 12/15
+threaded/perf_unpack_sequence: 315 ms
+threaded/portfolio_exposure: timing sample 15/15
+threaded/portfolio_exposure: 4.07 ms
+match_typed/policy_scoring_batch: timing sample 14/15
+match_typed/policy_scoring_batch: 6.57 ms
+threaded/capacity_planning: timing sample 12/15
+threaded/capacity_planning: 28.9 ms
+threaded/policy_scoring_batch: timing sample 14/15
+threaded/policy_scoring_batch: 7.82 ms
+previous_typed/game_spectral_norm: timing sample 13/15
+previous_typed/game_spectral_norm: 272 ms
+CPython/capacity_planning: timing sample 14/15
+CPython/capacity_planning: 8.89 ms
+typed/perf_unpack_sequence: timing sample 14/15
+typed/perf_unpack_sequence: 7.16 ms
+threaded/capacity_planning: timing sample 13/15
+threaded/capacity_planning: 29 ms
+match/perf_unpack_sequence: timing sample 14/15
+match/perf_unpack_sequence: 312 ms
+threaded/policy_scoring_short: timing sample 14/15
+threaded/policy_scoring_short: 0.559 ms
+threaded/perf_unpack_sequence: timing sample 13/15
+threaded/perf_unpack_sequence: 316 ms
+previous_typed/game_spectral_norm: timing sample 14/15
+previous_typed/game_spectral_norm: 270 ms
+match/game_spectral_norm: timing sample 15/15
+match/game_spectral_norm: 311 ms
+CPython/perf_float: timing sample 14/15
+CPython/perf_float: 48.9 ms
+typed/ticket_search: timing sample 15/15
+typed/ticket_search: 26.6 ms
+match_typed/perf_unpack_sequence: timing sample 15/15
+match_typed/perf_unpack_sequence: 7.05 ms
+typed/perf_float: timing sample 15/15
+typed/perf_float: 217 ms
+match/policy_scoring_short: timing sample 14/15
+match/policy_scoring_short: 0.577 ms
+threaded/capacity_planning: timing sample 14/15
+threaded/capacity_planning: 28.8 ms
+previous_typed/capacity_planning: timing sample 14/15
+previous_typed/capacity_planning: 30 ms
+match_typed/perf_float: timing sample 15/15
+match_typed/perf_float: 218 ms
+match_typed/capacity_planning: timing sample 15/15
+match_typed/capacity_planning: 29.7 ms
+previous_typed/perf_unpack_sequence: timing sample 13/15
+previous_typed/perf_unpack_sequence: 7.29 ms
+match/perf_float: timing sample 14/15
+match/perf_float: 213 ms
+threaded/perf_unpack_sequence: timing sample 14/15
+threaded/perf_unpack_sequence: 315 ms
+match_typed/policy_scoring_batch: timing sample 15/15
+match_typed/policy_scoring_batch: 6.8 ms
+typed/portfolio_exposure: timing sample 15/15
+typed/portfolio_exposure: 1.48 ms
+match/policy_scoring_short: timing sample 15/15
+match/policy_scoring_short: 0.551 ms
+threaded/perf_float: timing sample 15/15
+threaded/perf_float: 217 ms
+CPython/capacity_planning: timing sample 15/15
+CPython/capacity_planning: 8.98 ms
+threaded/policy_scoring_batch: timing sample 15/15
+threaded/policy_scoring_batch: 7.95 ms
+threaded/policy_scoring_short: timing sample 15/15
+threaded/policy_scoring_short: 0.437 ms
+match/policy_scoring_batch: timing sample 15/15
+match/policy_scoring_batch: 8.08 ms
+threaded/capacity_planning: timing sample 15/15
+threaded/capacity_planning: 29 ms
+match/capacity_planning: timing sample 15/15
+match/capacity_planning: 28.2 ms
+threaded/ticket_search: timing sample 15/15
+threaded/ticket_search: 26.6 ms
+CPython/game_spectral_norm: timing sample 15/15
+CPython/game_spectral_norm: 66.7 ms
+previous_typed/perf_unpack_sequence: timing sample 14/15
+previous_typed/perf_unpack_sequence: 7.1 ms
+previous_typed/game_spectral_norm: timing sample 15/15
+previous_typed/game_spectral_norm: 271 ms
+typed/perf_unpack_sequence: timing sample 15/15
+typed/perf_unpack_sequence: 6.91 ms
+threaded/perf_unpack_sequence: timing sample 15/15
+threaded/perf_unpack_sequence: 315 ms
+CPython/perf_float: timing sample 15/15
+CPython/perf_float: 48.8 ms
+threaded/game_spectral_norm: timing sample 15/15
+threaded/game_spectral_norm: 318 ms
+CPython/ticket_search: timing sample 14/15
+CPython/ticket_search: 6.6 ms
+match_typed/portfolio_exposure: timing sample 15/15
+match_typed/portfolio_exposure: 1.4 ms
+match/perf_float: timing sample 15/15
+match/perf_float: 213 ms
+previous_typed/capacity_planning: timing sample 15/15
+previous_typed/capacity_planning: 30.2 ms
+match/ticket_search: timing sample 14/15
+match/ticket_search: 28.6 ms
+typed/game_spectral_norm: timing sample 15/15
+typed/game_spectral_norm: 238 ms
+previous_typed/ticket_search: timing sample 15/15
+previous_typed/ticket_search: 27.4 ms
+match/ticket_search: timing sample 15/15
+match/ticket_search: 26.8 ms
+previous_typed/perf_unpack_sequence: timing sample 15/15
+previous_typed/perf_unpack_sequence: 7 ms
+CPython/policy_scoring_batch: timing sample 15/15
+CPython/policy_scoring_batch: 4.17 ms
+match/perf_unpack_sequence: timing sample 15/15
+match/perf_unpack_sequence: 319 ms
+CPython/perf_unpack_sequence: timing sample 15/15
+CPython/perf_unpack_sequence: 17.4 ms
+CPython/ticket_search: timing sample 15/15
+CPython/ticket_search: 6.41 ms
+typed/policy_scoring_short: timing sample 15/15
+typed/policy_scoring_short: 0.614 ms
+threaded/game_spectral_norm: ok, median 318 ms
+threaded/perf_unpack_sequence: ok, median 315 ms
+threaded/policy_scoring_short: ok, median 0.564 ms
+threaded/policy_scoring_batch: ok, median 8.06 ms
+threaded/portfolio_exposure: ok, median 4.1 ms
+threaded/capacity_planning: ok, median 28.9 ms
+threaded/ticket_search: ok, median 26.7 ms
+threaded/perf_float: ok, median 216 ms
+typed/game_spectral_norm: ok, median 239 ms
+typed/perf_unpack_sequence: ok, median 6.91 ms
+typed/policy_scoring_short: ok, median 0.524 ms
+typed/policy_scoring_batch: ok, median 6.54 ms
+typed/portfolio_exposure: ok, median 1.41 ms
+typed/capacity_planning: ok, median 28.8 ms
+typed/ticket_search: ok, median 26.9 ms
+typed/perf_float: ok, median 216 ms
+previous_typed/game_spectral_norm: ok, median 271 ms
+previous_typed/perf_unpack_sequence: ok, median 7 ms
+previous_typed/policy_scoring_short: ok, median 0.524 ms
+previous_typed/policy_scoring_batch: ok, median 6.39 ms
+previous_typed/portfolio_exposure: ok, median 1.42 ms
+previous_typed/capacity_planning: ok, median 30.2 ms
+previous_typed/ticket_search: ok, median 26.8 ms
+previous_typed/perf_float: ok, median 219 ms
+match/game_spectral_norm: ok, median 312 ms
+match/perf_unpack_sequence: ok, median 317 ms
+match/policy_scoring_short: ok, median 0.553 ms
+match/policy_scoring_batch: ok, median 8.18 ms
+match/portfolio_exposure: ok, median 4.46 ms
+match/capacity_planning: ok, median 28.2 ms
+match/ticket_search: ok, median 26.5 ms
+match/perf_float: ok, median 212 ms
+match_typed/game_spectral_norm: ok, median 251 ms
+match_typed/perf_unpack_sequence: ok, median 6.88 ms
+match_typed/policy_scoring_short: ok, median 0.515 ms
+match_typed/policy_scoring_batch: ok, median 6.62 ms
+match_typed/portfolio_exposure: ok, median 1.43 ms
+match_typed/capacity_planning: ok, median 29.1 ms
+match_typed/ticket_search: ok, median 26.5 ms
+match_typed/perf_float: ok, median 214 ms
+CPython/game_spectral_norm: ok, median 66.7 ms
+CPython/perf_unpack_sequence: ok, median 17.5 ms
+CPython/policy_scoring_short: ok, median 0.564 ms
+CPython/policy_scoring_batch: ok, median 4.18 ms
+CPython/portfolio_exposure: ok, median 1.58 ms
+CPython/capacity_planning: ok, median 8.75 ms
+CPython/ticket_search: ok, median 6.97 ms
+CPython/perf_float: ok, median 49.8 ms
+regression: 6
+improvement: 44
+inconclusive: 32
+failure: 0
+compatibility change: 0
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/budget-confirmation/report.html
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/budget-confirmation/report.md
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/budget-confirmation/report.json

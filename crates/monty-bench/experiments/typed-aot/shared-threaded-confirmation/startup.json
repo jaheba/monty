@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "scenario": "empty_command_process",
+  "samples": 5,
+  "timestamp": "2026-11-13T00:10:19.729161+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "scope": "Fresh process launch through exit; empty -c command; no shell; normal interpreter defaults",
+  "engines": {
+    "match": {
+      "binary_sha256": "86b9c52addc738fa9b9790e5e6e990573b19f04b8235cdf62745a9a12174cdaa",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/match-typed-artifacts/bin/monty",
+        "--no-native",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.006967917,
+        0.005996834,
+        0.007119209,
+        0.007442375,
+        0.006999792
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.006999792
+    },
+    "threaded": {
+      "binary_sha256": "28686f0240b0b6b802d7c29491f4a9a8e16783b82c01e835f1326d98a8d85e64",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/combined-typed-artifacts/bin/monty",
+        "--no-native",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007762458,
+        0.006932459,
+        0.00678625,
+        0.006355291,
+        0.006068208
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.00678625
+    },
+    "match_copied": {
+      "binary_sha256": "86b9c52addc738fa9b9790e5e6e990573b19f04b8235cdf62745a9a12174cdaa",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/match-typed-artifacts/bin/monty",
+        "--aot",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007663916,
+        0.007511375,
+        0.007964,
+        0.007597542,
+        0.006891667
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.007597542
+    },
+    "match_shared": {
+      "binary_sha256": "86b9c52addc738fa9b9790e5e6e990573b19f04b8235cdf62745a9a12174cdaa",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/match-typed-artifacts/bin/monty",
+        "--aot",
+        "--aot-shared",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007511708,
+        0.008344708,
+        0.0068775,
+        0.006694292,
+        0.0076045
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.007511708
+    },
+    "threaded_copied": {
+      "binary_sha256": "28686f0240b0b6b802d7c29491f4a9a8e16783b82c01e835f1326d98a8d85e64",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/combined-typed-artifacts/bin/monty",
+        "--aot",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.00835925,
+        0.007399125,
+        0.00777975,
+        0.008015917,
+        0.007640458
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.00777975
+    },
+    "threaded_shared": {
+      "binary_sha256": "28686f0240b0b6b802d7c29491f4a9a8e16783b82c01e835f1326d98a8d85e64",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/combined-typed-artifacts/bin/monty",
+        "--aot",
+        "--aot-shared",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007043125,
+        0.006912,
+        0.006844209,
+        0.006803167,
+        0.007182791
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.006912
+    },
+    "CPython": {
+      "binary_sha256": "15c72833c1ffc09bc4e05d1e1866784d126721ad548d9c4d8f943641262535cb",
+      "revision": "Python 3.15.0",
+      "command": [
+        "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/bin/python3.15",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.026825458,
+        0.026124375,
+        0.026963375,
+        0.02621425,
+        0.025905292
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.02621425
+    }
+  }
+}

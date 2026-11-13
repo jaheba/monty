@@ -1,0 +1,1139 @@
+Preparing custom benchmarks: capturing expected output with harness CPython
+Measuring empty-command startup
+native: startup sample 1/5
+native: startup 7.29 ms
+baseline: startup sample 1/5
+baseline: startup 6.54 ms
+native: startup sample 2/5
+native: startup 6.05 ms
+native: startup sample 3/5
+native: startup 7.27 ms
+native: startup sample 4/5
+native: startup 6.87 ms
+baseline: startup sample 2/5
+baseline: startup 6.83 ms
+baseline: startup sample 3/5
+baseline: startup 5.95 ms
+baseline: startup sample 4/5
+baseline: startup 6.39 ms
+native: startup sample 5/5
+native: startup 6.96 ms
+baseline: startup sample 5/5
+baseline: startup 7.06 ms
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+Running one-shot: baseline, native
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+baseline/capacity_planning: checking compatibility
+baseline/capacity_planning: supported 
+baseline/text_csv_cleanup_medium: checking compatibility
+baseline/text_csv_cleanup_medium: supported 
+baseline/ticket_search: checking compatibility
+baseline/ticket_search: supported 
+baseline/perf_float: checking compatibility
+baseline/perf_float: supported 
+baseline/rustpython_micro_cmp: checking compatibility
+baseline/rustpython_micro_cmp: supported 
+baseline/rustpython_micro_addition_900: checking compatibility
+baseline/rustpython_micro_addition_900: supported 
+baseline/expense_report: checking compatibility
+baseline/expense_report: supported 
+baseline/text_json_transform_small: checking compatibility
+baseline/text_json_transform_small: supported 
+native/capacity_planning: checking compatibility
+native/capacity_planning: supported 
+native/text_csv_cleanup_medium: checking compatibility
+native/text_csv_cleanup_medium: supported 
+native/ticket_search: checking compatibility
+native/ticket_search: supported 
+native/perf_float: checking compatibility
+native/perf_float: supported 
+native/rustpython_micro_cmp: checking compatibility
+native/rustpython_micro_cmp: supported 
+native/rustpython_micro_addition_900: checking compatibility
+native/rustpython_micro_addition_900: supported 
+native/expense_report: checking compatibility
+native/expense_report: supported 
+native/text_json_transform_small: checking compatibility
+native/text_json_transform_small: supported 
+baseline/text_csv_cleanup_medium: timing sample 1/15
+baseline/text_csv_cleanup_medium: 707 ms
+native/capacity_planning: timing sample 1/15
+native/capacity_planning: 160 ms
+baseline/capacity_planning: timing sample 1/15
+baseline/capacity_planning: 29 ms
+native/perf_float: timing sample 1/15
+native/perf_float: 1.03e+03 ms
+baseline/rustpython_micro_addition_900: timing sample 1/15
+baseline/rustpython_micro_addition_900: 0.189 ms
+baseline/rustpython_micro_addition_900: timing sample 2/15
+baseline/rustpython_micro_addition_900: 0.191 ms
+native/ticket_search: timing sample 1/15
+native/ticket_search: 102 ms
+baseline/text_csv_cleanup_medium: timing sample 2/15
+baseline/text_csv_cleanup_medium: 702 ms
+baseline/expense_report: timing sample 1/15
+baseline/expense_report: 0.371 ms
+baseline/rustpython_micro_cmp: timing sample 1/15
+baseline/rustpython_micro_cmp: 2.01 ms
+native/expense_report: timing sample 1/15
+native/expense_report: 0.43 ms
+baseline/capacity_planning: timing sample 2/15
+baseline/capacity_planning: 28.9 ms
+native/rustpython_micro_cmp: timing sample 1/15
+native/rustpython_micro_cmp: 0.947 ms
+native/rustpython_micro_addition_900: timing sample 1/15
+native/rustpython_micro_addition_900: 0.214 ms
+baseline/perf_float: timing sample 1/15
+baseline/perf_float: 219 ms
+native/ticket_search: timing sample 2/15
+native/ticket_search: 102 ms
+baseline/text_csv_cleanup_medium: timing sample 3/15
+baseline/text_csv_cleanup_medium: 703 ms
+baseline/perf_float: timing sample 2/15
+baseline/perf_float: 221 ms
+native/rustpython_micro_cmp: timing sample 2/15
+native/rustpython_micro_cmp: 0.944 ms
+baseline/text_csv_cleanup_medium: timing sample 4/15
+baseline/text_csv_cleanup_medium: 708 ms
+baseline/text_json_transform_small: timing sample 1/15
+baseline/text_json_transform_small: 0.519 ms
+baseline/ticket_search: timing sample 1/15
+baseline/ticket_search: 27.3 ms
+baseline/perf_float: timing sample 3/15
+baseline/perf_float: 221 ms
+baseline/perf_float: timing sample 4/15
+baseline/perf_float: 221 ms
+baseline/text_json_transform_small: timing sample 2/15
+baseline/text_json_transform_small: 0.537 ms
+baseline/text_json_transform_small: timing sample 3/15
+baseline/text_json_transform_small: 0.555 ms
+native/text_json_transform_small: timing sample 1/15
+native/text_json_transform_small: 0.618 ms
+native/capacity_planning: timing sample 2/15
+native/capacity_planning: 161 ms
+native/perf_float: timing sample 2/15
+native/perf_float: 1.03e+03 ms
+baseline/text_json_transform_small: timing sample 4/15
+baseline/text_json_transform_small: 0.624 ms
+native/capacity_planning: timing sample 3/15
+native/capacity_planning: 161 ms
+native/expense_report: timing sample 2/15
+native/expense_report: 0.394 ms
+baseline/expense_report: timing sample 2/15
+baseline/expense_report: 0.348 ms
+baseline/text_csv_cleanup_medium: timing sample 5/15
+baseline/text_csv_cleanup_medium: 706 ms
+native/text_json_transform_small: timing sample 2/15
+native/text_json_transform_small: 0.637 ms
+native/rustpython_micro_addition_900: timing sample 2/15
+native/rustpython_micro_addition_900: 0.184 ms
+baseline/expense_report: timing sample 3/15
+baseline/expense_report: 0.371 ms
+native/capacity_planning: timing sample 4/15
+native/capacity_planning: 159 ms
+native/expense_report: timing sample 3/15
+native/expense_report: 0.409 ms
+baseline/perf_float: timing sample 5/15
+baseline/perf_float: 220 ms
+baseline/expense_report: timing sample 4/15
+baseline/expense_report: 0.406 ms
+baseline/text_csv_cleanup_medium: timing sample 6/15
+baseline/text_csv_cleanup_medium: 703 ms
+baseline/rustpython_micro_addition_900: timing sample 3/15
+baseline/rustpython_micro_addition_900: 0.21 ms
+native/perf_float: timing sample 3/15
+native/perf_float: 1.03e+03 ms
+native/expense_report: timing sample 4/15
+native/expense_report: 0.406 ms
+baseline/rustpython_micro_addition_900: timing sample 4/15
+baseline/rustpython_micro_addition_900: 0.213 ms
+native/rustpython_micro_addition_900: timing sample 3/15
+native/rustpython_micro_addition_900: 0.185 ms
+baseline/capacity_planning: timing sample 3/15
+baseline/capacity_planning: 28.8 ms
+baseline/ticket_search: timing sample 2/15
+baseline/ticket_search: 27.2 ms
+native/ticket_search: timing sample 3/15
+native/ticket_search: 173 ms
+native/text_csv_cleanup_medium: timing sample 1/15
+native/text_csv_cleanup_medium: 3.86e+03 ms
+baseline/text_json_transform_small: timing sample 5/15
+baseline/text_json_transform_small: 0.589 ms
+baseline/perf_float: timing sample 6/15
+baseline/perf_float: 225 ms
+native/expense_report: timing sample 5/15
+native/expense_report: 0.446 ms
+native/ticket_search: timing sample 4/15
+native/ticket_search: 103 ms
+native/rustpython_micro_cmp: timing sample 3/15
+native/rustpython_micro_cmp: 0.969 ms
+baseline/text_json_transform_small: timing sample 6/15
+baseline/text_json_transform_small: 0.585 ms
+native/rustpython_micro_addition_900: timing sample 4/15
+native/rustpython_micro_addition_900: 0.203 ms
+baseline/capacity_planning: timing sample 4/15
+baseline/capacity_planning: 28.7 ms
+baseline/expense_report: timing sample 5/15
+baseline/expense_report: 0.38 ms
+baseline/text_json_transform_small: timing sample 7/15
+baseline/text_json_transform_small: 0.582 ms
+baseline/rustpython_micro_cmp: timing sample 2/15
+baseline/rustpython_micro_cmp: 1.89 ms
+baseline/perf_float: timing sample 7/15
+baseline/perf_float: 221 ms
+native/expense_report: timing sample 6/15
+native/expense_report: 0.408 ms
+baseline/text_csv_cleanup_medium: timing sample 7/15
+baseline/text_csv_cleanup_medium: 700 ms
+native/ticket_search: timing sample 5/15
+native/ticket_search: 103 ms
+baseline/capacity_planning: timing sample 5/15
+baseline/capacity_planning: 28.9 ms
+native/rustpython_micro_cmp: timing sample 4/15
+native/rustpython_micro_cmp: 0.922 ms
+baseline/perf_float: timing sample 8/15
+baseline/perf_float: 222 ms
+baseline/capacity_planning: timing sample 6/15
+baseline/capacity_planning: 29.1 ms
+baseline/rustpython_micro_cmp: timing sample 3/15
+baseline/rustpython_micro_cmp: 2.01 ms
+baseline/rustpython_micro_cmp: timing sample 4/15
+baseline/rustpython_micro_cmp: 2.01 ms
+baseline/ticket_search: timing sample 3/15
+baseline/ticket_search: 27 ms
+native/text_json_transform_small: timing sample 3/15
+native/text_json_transform_small: 0.621 ms
+native/perf_float: timing sample 4/15
+native/perf_float: 1.03e+03 ms
+baseline/ticket_search: timing sample 4/15
+baseline/ticket_search: 27.9 ms
+native/perf_float: timing sample 5/15
+native/perf_float: 1.03e+03 ms
+baseline/text_csv_cleanup_medium: timing sample 8/15
+baseline/text_csv_cleanup_medium: 702 ms
+native/expense_report: timing sample 7/15
+native/expense_report: 0.43 ms
+baseline/expense_report: timing sample 6/15
+baseline/expense_report: 0.361 ms
+native/rustpython_micro_cmp: timing sample 5/15
+native/rustpython_micro_cmp: 1.04 ms
+native/expense_report: timing sample 8/15
+native/expense_report: 0.441 ms
+baseline/rustpython_micro_cmp: timing sample 5/15
+baseline/rustpython_micro_cmp: 2.13 ms
+native/text_json_transform_small: timing sample 4/15
+native/text_json_transform_small: 0.628 ms
+baseline/rustpython_micro_cmp: timing sample 6/15
+baseline/rustpython_micro_cmp: 1.97 ms
+baseline/expense_report: timing sample 7/15
+baseline/expense_report: 0.377 ms
+baseline/capacity_planning: timing sample 7/15
+baseline/capacity_planning: 29 ms
+baseline/rustpython_micro_addition_900: timing sample 5/15
+baseline/rustpython_micro_addition_900: 0.211 ms
+baseline/capacity_planning: timing sample 8/15
+baseline/capacity_planning: 28.9 ms
+native/rustpython_micro_addition_900: timing sample 5/15
+native/rustpython_micro_addition_900: 0.236 ms
+native/rustpython_micro_cmp: timing sample 6/15
+native/rustpython_micro_cmp: 0.973 ms
+baseline/text_json_transform_small: timing sample 8/15
+baseline/text_json_transform_small: 0.587 ms
+baseline/expense_report: timing sample 8/15
+baseline/expense_report: 0.357 ms
+native/capacity_planning: timing sample 5/15
+native/capacity_planning: 160 ms
+baseline/rustpython_micro_addition_900: timing sample 6/15
+baseline/rustpython_micro_addition_900: 0.211 ms
+baseline/text_json_transform_small: timing sample 9/15
+baseline/text_json_transform_small: 0.55 ms
+native/rustpython_micro_cmp: timing sample 7/15
+native/rustpython_micro_cmp: 1.03 ms
+baseline/text_json_transform_small: timing sample 10/15
+baseline/text_json_transform_small: 0.538 ms
+native/rustpython_micro_cmp: timing sample 8/15
+native/rustpython_micro_cmp: 0.935 ms
+baseline/ticket_search: timing sample 5/15
+baseline/ticket_search: 27.5 ms
+native/rustpython_micro_addition_900: timing sample 6/15
+native/rustpython_micro_addition_900: 0.207 ms
+baseline/ticket_search: timing sample 6/15
+baseline/ticket_search: 27.1 ms
+baseline/ticket_search: timing sample 7/15
+baseline/ticket_search: 27.8 ms
+native/text_csv_cleanup_medium: timing sample 2/15
+native/text_csv_cleanup_medium: 3.84e+03 ms
+native/ticket_search: timing sample 6/15
+native/ticket_search: 102 ms
+baseline/rustpython_micro_addition_900: timing sample 7/15
+baseline/rustpython_micro_addition_900: 0.218 ms
+baseline/text_json_transform_small: timing sample 11/15
+baseline/text_json_transform_small: 0.566 ms
+baseline/text_json_transform_small: timing sample 12/15
+baseline/text_json_transform_small: 0.59 ms
+native/expense_report: timing sample 9/15
+native/expense_report: 0.403 ms
+native/expense_report: timing sample 10/15
+native/expense_report: 0.499 ms
+native/text_csv_cleanup_medium: timing sample 3/15
+native/text_csv_cleanup_medium: 3.86e+03 ms
+native/ticket_search: timing sample 7/15
+native/ticket_search: 103 ms
+native/rustpython_micro_addition_900: timing sample 7/15
+native/rustpython_micro_addition_900: 0.202 ms
+baseline/rustpython_micro_addition_900: timing sample 8/15
+baseline/rustpython_micro_addition_900: 0.229 ms
+native/text_csv_cleanup_medium: timing sample 4/15
+native/text_csv_cleanup_medium: 3.86e+03 ms
+baseline/ticket_search: timing sample 8/15
+baseline/ticket_search: 27.4 ms
+native/perf_float: timing sample 6/15
+native/perf_float: 1.03e+03 ms
+native/text_json_transform_small: timing sample 5/15
+native/text_json_transform_small: 0.692 ms
+native/text_csv_cleanup_medium: timing sample 5/15
+native/text_csv_cleanup_medium: 3.85e+03 ms
+native/perf_float: timing sample 7/15
+native/perf_float: 1.03e+03 ms
+native/text_csv_cleanup_medium: timing sample 6/15
+native/text_csv_cleanup_medium: 3.85e+03 ms
+baseline/rustpython_micro_addition_900: timing sample 9/15
+baseline/rustpython_micro_addition_900: 0.231 ms
+native/text_csv_cleanup_medium: timing sample 7/15
+native/text_csv_cleanup_medium: 3.85e+03 ms
+native/text_csv_cleanup_medium: timing sample 8/15
+native/text_csv_cleanup_medium: 3.85e+03 ms
+native/perf_float: timing sample 8/15
+native/perf_float: 1.03e+03 ms
+baseline/expense_report: timing sample 9/15
+baseline/expense_report: 0.444 ms
+baseline/expense_report: timing sample 10/15
+baseline/expense_report: 0.428 ms
+native/text_json_transform_small: timing sample 6/15
+native/text_json_transform_small: 0.645 ms
+native/rustpython_micro_cmp: timing sample 9/15
+native/rustpython_micro_cmp: 0.952 ms
+baseline/expense_report: timing sample 11/15
+baseline/expense_report: 0.367 ms
+baseline/rustpython_micro_cmp: timing sample 7/15
+baseline/rustpython_micro_cmp: 1.95 ms
+baseline/rustpython_micro_cmp: timing sample 8/15
+baseline/rustpython_micro_cmp: 1.98 ms
+native/text_csv_cleanup_medium: timing sample 9/15
+native/text_csv_cleanup_medium: 3.86e+03 ms
+baseline/expense_report: timing sample 12/15
+baseline/expense_report: 0.361 ms
+baseline/text_csv_cleanup_medium: timing sample 9/15
+baseline/text_csv_cleanup_medium: 705 ms
+baseline/expense_report: timing sample 13/15
+baseline/expense_report: 0.352 ms
+baseline/text_csv_cleanup_medium: timing sample 10/15
+baseline/text_csv_cleanup_medium: 704 ms
+native/text_csv_cleanup_medium: timing sample 10/15
+native/text_csv_cleanup_medium: 3.85e+03 ms
+native/rustpython_micro_addition_900: timing sample 8/15
+native/rustpython_micro_addition_900: 0.206 ms
+native/capacity_planning: timing sample 6/15
+native/capacity_planning: 158 ms
+native/expense_report: timing sample 11/15
+native/expense_report: 0.482 ms
+native/rustpython_micro_cmp: timing sample 10/15
+native/rustpython_micro_cmp: 0.954 ms
+native/text_json_transform_small: timing sample 7/15
+native/text_json_transform_small: 0.648 ms
+native/rustpython_micro_addition_900: timing sample 9/15
+native/rustpython_micro_addition_900: 0.19 ms
+native/text_csv_cleanup_medium: timing sample 11/15
+native/text_csv_cleanup_medium: 3.85e+03 ms
+baseline/perf_float: timing sample 9/15
+baseline/perf_float: 221 ms
+native/expense_report: timing sample 12/15
+native/expense_report: 0.392 ms
+baseline/rustpython_micro_addition_900: timing sample 10/15
+baseline/rustpython_micro_addition_900: 0.205 ms
+native/text_json_transform_small: timing sample 8/15
+native/text_json_transform_small: 0.631 ms
+native/text_csv_cleanup_medium: timing sample 12/15
+native/text_csv_cleanup_medium: 3.86e+03 ms
+baseline/expense_report: timing sample 14/15
+baseline/expense_report: 0.37 ms
+native/perf_float: timing sample 9/15
+native/perf_float: 1.03e+03 ms
+native/rustpython_micro_addition_900: timing sample 10/15
+native/rustpython_micro_addition_900: 0.212 ms
+native/ticket_search: timing sample 8/15
+native/ticket_search: 102 ms
+baseline/capacity_planning: timing sample 9/15
+baseline/capacity_planning: 28.9 ms
+native/perf_float: timing sample 10/15
+native/perf_float: 1.03e+03 ms
+native/text_json_transform_small: timing sample 9/15
+native/text_json_transform_small: 0.712 ms
+native/ticket_search: timing sample 9/15
+native/ticket_search: 102 ms
+native/ticket_search: timing sample 10/15
+native/ticket_search: 102 ms
+native/rustpython_micro_cmp: timing sample 11/15
+native/rustpython_micro_cmp: 0.968 ms
+native/perf_float: timing sample 11/15
+native/perf_float: 1.04e+03 ms
+native/rustpython_micro_addition_900: timing sample 11/15
+native/rustpython_micro_addition_900: 0.192 ms
+native/capacity_planning: timing sample 7/15
+native/capacity_planning: 159 ms
+baseline/text_csv_cleanup_medium: timing sample 11/15
+baseline/text_csv_cleanup_medium: 707 ms
+baseline/rustpython_micro_cmp: timing sample 9/15
+baseline/rustpython_micro_cmp: 1.99 ms
+native/text_csv_cleanup_medium: timing sample 13/15
+native/text_csv_cleanup_medium: 3.86e+03 ms
+baseline/ticket_search: timing sample 9/15
+baseline/ticket_search: 27 ms
+native/perf_float: timing sample 12/15
+native/perf_float: 1.03e+03 ms
+baseline/rustpython_micro_cmp: timing sample 10/15
+baseline/rustpython_micro_cmp: 1.9 ms
+native/rustpython_micro_addition_900: timing sample 12/15
+native/rustpython_micro_addition_900: 0.189 ms
+native/capacity_planning: timing sample 8/15
+native/capacity_planning: 159 ms
+baseline/text_csv_cleanup_medium: timing sample 12/15
+baseline/text_csv_cleanup_medium: 704 ms
+baseline/capacity_planning: timing sample 10/15
+baseline/capacity_planning: 29.4 ms
+baseline/capacity_planning: timing sample 11/15
+baseline/capacity_planning: 28.6 ms
+baseline/perf_float: timing sample 10/15
+baseline/perf_float: 220 ms
+native/expense_report: timing sample 13/15
+native/expense_report: 0.423 ms
+baseline/rustpython_micro_addition_900: timing sample 11/15
+baseline/rustpython_micro_addition_900: 0.202 ms
+native/expense_report: timing sample 14/15
+native/expense_report: 0.399 ms
+baseline/rustpython_micro_cmp: timing sample 11/15
+baseline/rustpython_micro_cmp: 1.92 ms
+baseline/capacity_planning: timing sample 12/15
+baseline/capacity_planning: 29 ms
+baseline/capacity_planning: timing sample 13/15
+baseline/capacity_planning: 28.7 ms
+native/perf_float: timing sample 13/15
+native/perf_float: 1.03e+03 ms
+baseline/rustpython_micro_addition_900: timing sample 12/15
+baseline/rustpython_micro_addition_900: 0.218 ms
+baseline/expense_report: timing sample 15/15
+baseline/expense_report: 0.352 ms
+native/capacity_planning: timing sample 9/15
+native/capacity_planning: 160 ms
+baseline/text_json_transform_small: timing sample 13/15
+baseline/text_json_transform_small: 0.543 ms
+baseline/perf_float: timing sample 11/15
+baseline/perf_float: 220 ms
+native/rustpython_micro_cmp: timing sample 12/15
+native/rustpython_micro_cmp: 0.947 ms
+native/text_json_transform_small: timing sample 10/15
+native/text_json_transform_small: 0.689 ms
+native/text_csv_cleanup_medium: timing sample 14/15
+native/text_csv_cleanup_medium: 3.92e+03 ms
+baseline/rustpython_micro_addition_900: timing sample 13/15
+baseline/rustpython_micro_addition_900: 0.203 ms
+baseline/text_csv_cleanup_medium: timing sample 13/15
+baseline/text_csv_cleanup_medium: 704 ms
+baseline/ticket_search: timing sample 10/15
+baseline/ticket_search: 27.8 ms
+native/rustpython_micro_addition_900: timing sample 13/15
+native/rustpython_micro_addition_900: 0.225 ms
+baseline/rustpython_micro_cmp: timing sample 12/15
+baseline/rustpython_micro_cmp: 1.9 ms
+baseline/perf_float: timing sample 12/15
+baseline/perf_float: 221 ms
+native/rustpython_micro_cmp: timing sample 13/15
+native/rustpython_micro_cmp: 0.949 ms
+baseline/capacity_planning: timing sample 14/15
+baseline/capacity_planning: 28.9 ms
+native/text_json_transform_small: timing sample 11/15
+native/text_json_transform_small: 0.654 ms
+native/ticket_search: timing sample 11/15
+native/ticket_search: 102 ms
+baseline/perf_float: timing sample 13/15
+baseline/perf_float: 221 ms
+native/text_json_transform_small: timing sample 12/15
+native/text_json_transform_small: 0.638 ms
+native/capacity_planning: timing sample 10/15
+native/capacity_planning: 160 ms
+baseline/rustpython_micro_cmp: timing sample 13/15
+baseline/rustpython_micro_cmp: 1.95 ms
+native/text_json_transform_small: timing sample 13/15
+native/text_json_transform_small: 0.623 ms
+baseline/ticket_search: timing sample 11/15
+baseline/ticket_search: 26.7 ms
+native/ticket_search: timing sample 12/15
+native/ticket_search: 102 ms
+native/text_csv_cleanup_medium: timing sample 15/15
+native/text_csv_cleanup_medium: 3.85e+03 ms
+native/text_json_transform_small: timing sample 14/15
+native/text_json_transform_small: 0.659 ms
+baseline/rustpython_micro_addition_900: timing sample 14/15
+baseline/rustpython_micro_addition_900: 0.209 ms
+native/ticket_search: timing sample 13/15
+native/ticket_search: 102 ms
+native/text_json_transform_small: timing sample 15/15
+native/text_json_transform_small: 0.653 ms
+baseline/rustpython_micro_cmp: timing sample 14/15
+baseline/rustpython_micro_cmp: 2 ms
+native/capacity_planning: timing sample 11/15
+native/capacity_planning: 160 ms
+baseline/capacity_planning: timing sample 15/15
+baseline/capacity_planning: 29.4 ms
+native/rustpython_micro_cmp: timing sample 14/15
+native/rustpython_micro_cmp: 1.05 ms
+native/expense_report: timing sample 15/15
+native/expense_report: 0.439 ms
+native/capacity_planning: timing sample 12/15
+native/capacity_planning: 159 ms
+baseline/text_csv_cleanup_medium: timing sample 14/15
+baseline/text_csv_cleanup_medium: 710 ms
+native/rustpython_micro_addition_900: timing sample 14/15
+native/rustpython_micro_addition_900: 0.254 ms
+native/capacity_planning: timing sample 13/15
+native/capacity_planning: 160 ms
+baseline/perf_float: timing sample 14/15
+baseline/perf_float: 221 ms
+baseline/text_csv_cleanup_medium: timing sample 15/15
+baseline/text_csv_cleanup_medium: 701 ms
+baseline/text_json_transform_small: timing sample 14/15
+baseline/text_json_transform_small: 0.502 ms
+baseline/rustpython_micro_addition_900: timing sample 15/15
+baseline/rustpython_micro_addition_900: 0.196 ms
+native/perf_float: timing sample 14/15
+native/perf_float: 1.03e+03 ms
+native/ticket_search: timing sample 14/15
+native/ticket_search: 103 ms
+native/rustpython_micro_addition_900: timing sample 15/15
+native/rustpython_micro_addition_900: 0.206 ms
+baseline/rustpython_micro_cmp: timing sample 15/15
+baseline/rustpython_micro_cmp: 2 ms
+native/capacity_planning: timing sample 14/15
+native/capacity_planning: 160 ms
+baseline/text_json_transform_small: timing sample 15/15
+baseline/text_json_transform_small: 0.582 ms
+native/rustpython_micro_cmp: timing sample 15/15
+native/rustpython_micro_cmp: 1.05 ms
+baseline/ticket_search: timing sample 12/15
+baseline/ticket_search: 27.2 ms
+baseline/ticket_search: timing sample 13/15
+baseline/ticket_search: 26.4 ms
+native/ticket_search: timing sample 15/15
+native/ticket_search: 102 ms
+native/perf_float: timing sample 15/15
+native/perf_float: 1.03e+03 ms
+baseline/perf_float: timing sample 15/15
+baseline/perf_float: 220 ms
+baseline/ticket_search: timing sample 14/15
+baseline/ticket_search: 27.9 ms
+baseline/ticket_search: timing sample 15/15
+baseline/ticket_search: 27.4 ms
+native/capacity_planning: timing sample 15/15
+native/capacity_planning: 159 ms
+baseline/capacity_planning: ok, median 28.9 ms
+baseline/text_csv_cleanup_medium: ok, median 704 ms
+baseline/ticket_search: ok, median 27.3 ms
+baseline/perf_float: ok, median 221 ms
+baseline/rustpython_micro_cmp: ok, median 1.98 ms
+baseline/rustpython_micro_addition_900: ok, median 0.21 ms
+baseline/expense_report: ok, median 0.37 ms
+baseline/text_json_transform_small: ok, median 0.566 ms
+native/capacity_planning: ok, median 160 ms
+native/text_csv_cleanup_medium: ok, median 3.85e+03 ms
+native/ticket_search: ok, median 102 ms
+native/perf_float: ok, median 1.03e+03 ms
+native/rustpython_micro_cmp: ok, median 0.954 ms
+native/rustpython_micro_addition_900: ok, median 0.206 ms
+native/expense_report: ok, median 0.423 ms
+native/text_json_transform_small: ok, median 0.645 ms
+Running repeated: baseline, native
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+baseline/capacity_planning: checking compatibility
+baseline/capacity_planning: supported 
+baseline/text_csv_cleanup_medium: checking compatibility
+baseline/text_csv_cleanup_medium: supported 
+baseline/ticket_search: checking compatibility
+baseline/ticket_search: supported 
+baseline/perf_float: checking compatibility
+baseline/perf_float: supported 
+baseline/rustpython_micro_cmp: checking compatibility
+baseline/rustpython_micro_cmp: supported 
+baseline/rustpython_micro_addition_900: checking compatibility
+baseline/rustpython_micro_addition_900: supported 
+baseline/expense_report: checking compatibility
+baseline/expense_report: supported 
+baseline/text_json_transform_small: checking compatibility
+baseline/text_json_transform_small: supported 
+native/capacity_planning: checking compatibility
+native/capacity_planning: supported 
+native/text_csv_cleanup_medium: checking compatibility
+native/text_csv_cleanup_medium: supported 
+native/ticket_search: checking compatibility
+native/ticket_search: supported 
+native/perf_float: checking compatibility
+native/perf_float: supported 
+native/rustpython_micro_cmp: checking compatibility
+native/rustpython_micro_cmp: supported 
+native/rustpython_micro_addition_900: checking compatibility
+native/rustpython_micro_addition_900: supported 
+native/expense_report: checking compatibility
+native/expense_report: supported 
+native/text_json_transform_small: checking compatibility
+native/text_json_transform_small: supported 
+baseline/capacity_planning: warmup 1/3
+baseline/text_csv_cleanup_medium: warmup 1/3
+baseline/ticket_search: warmup 1/3
+baseline/perf_float: warmup 1/3
+baseline/rustpython_micro_cmp: warmup 1/3
+baseline/rustpython_micro_addition_900: warmup 1/3
+baseline/expense_report: warmup 1/3
+baseline/text_json_transform_small: warmup 1/3
+native/capacity_planning: warmup 1/3
+native/text_csv_cleanup_medium: warmup 1/3
+native/ticket_search: warmup 1/3
+native/perf_float: warmup 1/3
+native/rustpython_micro_cmp: warmup 1/3
+native/rustpython_micro_addition_900: warmup 1/3
+native/expense_report: warmup 1/3
+native/text_json_transform_small: warmup 1/3
+baseline/capacity_planning: warmup 2/3
+baseline/text_csv_cleanup_medium: warmup 2/3
+baseline/ticket_search: warmup 2/3
+baseline/perf_float: warmup 2/3
+baseline/rustpython_micro_cmp: warmup 2/3
+baseline/rustpython_micro_addition_900: warmup 2/3
+baseline/expense_report: warmup 2/3
+baseline/text_json_transform_small: warmup 2/3
+native/capacity_planning: warmup 2/3
+native/text_csv_cleanup_medium: warmup 2/3
+native/ticket_search: warmup 2/3
+native/perf_float: warmup 2/3
+native/rustpython_micro_cmp: warmup 2/3
+native/rustpython_micro_addition_900: warmup 2/3
+native/expense_report: warmup 2/3
+native/text_json_transform_small: warmup 2/3
+baseline/capacity_planning: warmup 3/3
+baseline/text_csv_cleanup_medium: warmup 3/3
+baseline/ticket_search: warmup 3/3
+baseline/perf_float: warmup 3/3
+baseline/rustpython_micro_cmp: warmup 3/3
+baseline/rustpython_micro_addition_900: warmup 3/3
+baseline/expense_report: warmup 3/3
+baseline/text_json_transform_small: warmup 3/3
+native/capacity_planning: warmup 3/3
+native/text_csv_cleanup_medium: warmup 3/3
+native/ticket_search: warmup 3/3
+native/perf_float: warmup 3/3
+native/rustpython_micro_cmp: warmup 3/3
+native/rustpython_micro_addition_900: warmup 3/3
+native/expense_report: warmup 3/3
+native/text_json_transform_small: warmup 3/3
+baseline/text_csv_cleanup_medium: timing sample 1/15
+baseline/text_csv_cleanup_medium: 707 ms
+native/capacity_planning: timing sample 1/15
+native/capacity_planning: 163 ms
+baseline/capacity_planning: timing sample 1/15
+baseline/capacity_planning: 28.4 ms
+native/perf_float: timing sample 1/15
+native/perf_float: 1.04e+03 ms
+baseline/rustpython_micro_addition_900: timing sample 1/15
+baseline/rustpython_micro_addition_900: 0.147 ms
+baseline/rustpython_micro_addition_900: timing sample 2/15
+baseline/rustpython_micro_addition_900: 0.204 ms
+native/ticket_search: timing sample 1/15
+native/ticket_search: 102 ms
+baseline/text_csv_cleanup_medium: timing sample 2/15
+baseline/text_csv_cleanup_medium: 707 ms
+baseline/expense_report: timing sample 1/15
+baseline/expense_report: 0.258 ms
+baseline/rustpython_micro_cmp: timing sample 1/15
+baseline/rustpython_micro_cmp: 1.91 ms
+native/expense_report: timing sample 1/15
+native/expense_report: 0.187 ms
+baseline/capacity_planning: timing sample 2/15
+baseline/capacity_planning: 28.8 ms
+native/rustpython_micro_cmp: timing sample 1/15
+native/rustpython_micro_cmp: 1.02 ms
+native/rustpython_micro_addition_900: timing sample 1/15
+native/rustpython_micro_addition_900: 0.154 ms
+baseline/perf_float: timing sample 1/15
+baseline/perf_float: 219 ms
+native/ticket_search: timing sample 2/15
+native/ticket_search: 103 ms
+baseline/text_csv_cleanup_medium: timing sample 3/15
+baseline/text_csv_cleanup_medium: 701 ms
+baseline/perf_float: timing sample 2/15
+baseline/perf_float: 215 ms
+native/rustpython_micro_cmp: timing sample 2/15
+native/rustpython_micro_cmp: 0.882 ms
+baseline/text_csv_cleanup_medium: timing sample 4/15
+baseline/text_csv_cleanup_medium: 697 ms
+baseline/text_json_transform_small: timing sample 1/15
+baseline/text_json_transform_small: 0.445 ms
+baseline/ticket_search: timing sample 1/15
+baseline/ticket_search: 27.3 ms
+baseline/perf_float: timing sample 3/15
+baseline/perf_float: 216 ms
+baseline/perf_float: timing sample 4/15
+baseline/perf_float: 214 ms
+baseline/text_json_transform_small: timing sample 2/15
+baseline/text_json_transform_small: 0.372 ms
+baseline/text_json_transform_small: timing sample 3/15
+baseline/text_json_transform_small: 0.262 ms
+native/text_json_transform_small: timing sample 1/15
+native/text_json_transform_small: 0.353 ms
+native/capacity_planning: timing sample 2/15
+native/capacity_planning: 159 ms
+native/perf_float: timing sample 2/15
+native/perf_float: 1.03e+03 ms
+baseline/text_json_transform_small: timing sample 4/15
+baseline/text_json_transform_small: 0.355 ms
+native/capacity_planning: timing sample 3/15
+native/capacity_planning: 164 ms
+native/expense_report: timing sample 2/15
+native/expense_report: 0.27 ms
+baseline/expense_report: timing sample 2/15
+baseline/expense_report: 0.125 ms
+baseline/text_csv_cleanup_medium: timing sample 5/15
+baseline/text_csv_cleanup_medium: 699 ms
+native/text_json_transform_small: timing sample 2/15
+native/text_json_transform_small: 0.442 ms
+native/rustpython_micro_addition_900: timing sample 2/15
+native/rustpython_micro_addition_900: 0.0934 ms
+baseline/expense_report: timing sample 3/15
+baseline/expense_report: 0.131 ms
+native/capacity_planning: timing sample 4/15
+native/capacity_planning: 159 ms
+native/expense_report: timing sample 3/15
+native/expense_report: 0.194 ms
+baseline/perf_float: timing sample 5/15
+baseline/perf_float: 215 ms
+baseline/expense_report: timing sample 4/15
+baseline/expense_report: 0.255 ms
+baseline/text_csv_cleanup_medium: timing sample 6/15
+baseline/text_csv_cleanup_medium: 701 ms
+baseline/rustpython_micro_addition_900: timing sample 3/15
+baseline/rustpython_micro_addition_900: 0.143 ms
+native/perf_float: timing sample 3/15
+native/perf_float: 1.02e+03 ms
+native/expense_report: timing sample 4/15
+native/expense_report: 0.272 ms
+baseline/rustpython_micro_addition_900: timing sample 4/15
+baseline/rustpython_micro_addition_900: 0.143 ms
+native/rustpython_micro_addition_900: timing sample 3/15
+native/rustpython_micro_addition_900: 0.088 ms
+baseline/capacity_planning: timing sample 3/15
+baseline/capacity_planning: 28 ms
+baseline/ticket_search: timing sample 2/15
+baseline/ticket_search: 26.5 ms
+native/ticket_search: timing sample 3/15
+native/ticket_search: 101 ms
+native/text_csv_cleanup_medium: timing sample 1/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+baseline/text_json_transform_small: timing sample 5/15
+baseline/text_json_transform_small: 0.375 ms
+baseline/perf_float: timing sample 6/15
+baseline/perf_float: 214 ms
+native/expense_report: timing sample 5/15
+native/expense_report: 0.305 ms
+native/ticket_search: timing sample 4/15
+native/ticket_search: 101 ms
+native/rustpython_micro_cmp: timing sample 3/15
+native/rustpython_micro_cmp: 0.916 ms
+baseline/text_json_transform_small: timing sample 6/15
+baseline/text_json_transform_small: 0.341 ms
+native/rustpython_micro_addition_900: timing sample 4/15
+native/rustpython_micro_addition_900: 0.0966 ms
+baseline/capacity_planning: timing sample 4/15
+baseline/capacity_planning: 28.1 ms
+baseline/expense_report: timing sample 5/15
+baseline/expense_report: 0.191 ms
+baseline/text_json_transform_small: timing sample 7/15
+baseline/text_json_transform_small: 0.316 ms
+baseline/rustpython_micro_cmp: timing sample 2/15
+baseline/rustpython_micro_cmp: 1.83 ms
+baseline/perf_float: timing sample 7/15
+baseline/perf_float: 216 ms
+native/expense_report: timing sample 6/15
+native/expense_report: 0.238 ms
+baseline/text_csv_cleanup_medium: timing sample 7/15
+baseline/text_csv_cleanup_medium: 699 ms
+native/ticket_search: timing sample 5/15
+native/ticket_search: 101 ms
+baseline/capacity_planning: timing sample 5/15
+baseline/capacity_planning: 28.4 ms
+native/rustpython_micro_cmp: timing sample 4/15
+native/rustpython_micro_cmp: 0.881 ms
+baseline/perf_float: timing sample 8/15
+baseline/perf_float: 217 ms
+baseline/capacity_planning: timing sample 6/15
+baseline/capacity_planning: 28.4 ms
+baseline/rustpython_micro_cmp: timing sample 3/15
+baseline/rustpython_micro_cmp: 1.93 ms
+baseline/rustpython_micro_cmp: timing sample 4/15
+baseline/rustpython_micro_cmp: 1.94 ms
+baseline/ticket_search: timing sample 3/15
+baseline/ticket_search: 26.2 ms
+native/text_json_transform_small: timing sample 3/15
+native/text_json_transform_small: 0.559 ms
+native/perf_float: timing sample 4/15
+native/perf_float: 1.03e+03 ms
+baseline/ticket_search: timing sample 4/15
+baseline/ticket_search: 25.7 ms
+native/perf_float: timing sample 5/15
+native/perf_float: 1.03e+03 ms
+baseline/text_csv_cleanup_medium: timing sample 8/15
+baseline/text_csv_cleanup_medium: 698 ms
+native/expense_report: timing sample 7/15
+native/expense_report: 0.289 ms
+baseline/expense_report: timing sample 6/15
+baseline/expense_report: 0.12 ms
+native/rustpython_micro_cmp: timing sample 5/15
+native/rustpython_micro_cmp: 0.84 ms
+native/expense_report: timing sample 8/15
+native/expense_report: 0.127 ms
+baseline/rustpython_micro_cmp: timing sample 5/15
+baseline/rustpython_micro_cmp: 1.87 ms
+native/text_json_transform_small: timing sample 4/15
+native/text_json_transform_small: 0.389 ms
+baseline/rustpython_micro_cmp: timing sample 6/15
+baseline/rustpython_micro_cmp: 1.82 ms
+baseline/expense_report: timing sample 7/15
+baseline/expense_report: 0.145 ms
+baseline/capacity_planning: timing sample 7/15
+baseline/capacity_planning: 28.7 ms
+baseline/rustpython_micro_addition_900: timing sample 5/15
+baseline/rustpython_micro_addition_900: 0.134 ms
+baseline/capacity_planning: timing sample 8/15
+baseline/capacity_planning: 28.4 ms
+native/rustpython_micro_addition_900: timing sample 5/15
+native/rustpython_micro_addition_900: 0.102 ms
+native/rustpython_micro_cmp: timing sample 6/15
+native/rustpython_micro_cmp: 0.822 ms
+baseline/text_json_transform_small: timing sample 8/15
+baseline/text_json_transform_small: 0.29 ms
+baseline/expense_report: timing sample 8/15
+baseline/expense_report: 0.0842 ms
+native/capacity_planning: timing sample 5/15
+native/capacity_planning: 160 ms
+baseline/rustpython_micro_addition_900: timing sample 6/15
+baseline/rustpython_micro_addition_900: 0.124 ms
+baseline/text_json_transform_small: timing sample 9/15
+baseline/text_json_transform_small: 0.298 ms
+native/rustpython_micro_cmp: timing sample 7/15
+native/rustpython_micro_cmp: 0.877 ms
+baseline/text_json_transform_small: timing sample 10/15
+baseline/text_json_transform_small: 0.252 ms
+native/rustpython_micro_cmp: timing sample 8/15
+native/rustpython_micro_cmp: 0.814 ms
+baseline/ticket_search: timing sample 5/15
+baseline/ticket_search: 26.1 ms
+native/rustpython_micro_addition_900: timing sample 6/15
+native/rustpython_micro_addition_900: 0.112 ms
+baseline/ticket_search: timing sample 6/15
+baseline/ticket_search: 26.5 ms
+baseline/ticket_search: timing sample 7/15
+baseline/ticket_search: 25.8 ms
+native/text_csv_cleanup_medium: timing sample 2/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+native/ticket_search: timing sample 6/15
+native/ticket_search: 101 ms
+baseline/rustpython_micro_addition_900: timing sample 7/15
+baseline/rustpython_micro_addition_900: 0.153 ms
+baseline/text_json_transform_small: timing sample 11/15
+baseline/text_json_transform_small: 0.298 ms
+baseline/text_json_transform_small: timing sample 12/15
+baseline/text_json_transform_small: 0.271 ms
+native/expense_report: timing sample 9/15
+native/expense_report: 0.192 ms
+native/expense_report: timing sample 10/15
+native/expense_report: 0.143 ms
+native/text_csv_cleanup_medium: timing sample 3/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+native/ticket_search: timing sample 7/15
+native/ticket_search: 102 ms
+native/rustpython_micro_addition_900: timing sample 7/15
+native/rustpython_micro_addition_900: 0.104 ms
+baseline/rustpython_micro_addition_900: timing sample 8/15
+baseline/rustpython_micro_addition_900: 0.0962 ms
+native/text_csv_cleanup_medium: timing sample 4/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+baseline/ticket_search: timing sample 8/15
+baseline/ticket_search: 26.4 ms
+native/perf_float: timing sample 6/15
+native/perf_float: 1.03e+03 ms
+native/text_json_transform_small: timing sample 5/15
+native/text_json_transform_small: 0.435 ms
+native/text_csv_cleanup_medium: timing sample 5/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+native/perf_float: timing sample 7/15
+native/perf_float: 1.13e+03 ms
+native/text_csv_cleanup_medium: timing sample 6/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+baseline/rustpython_micro_addition_900: timing sample 9/15
+baseline/rustpython_micro_addition_900: 0.139 ms
+native/text_csv_cleanup_medium: timing sample 7/15
+native/text_csv_cleanup_medium: 3.83e+03 ms
+native/text_csv_cleanup_medium: timing sample 8/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+native/perf_float: timing sample 8/15
+native/perf_float: 1.03e+03 ms
+baseline/expense_report: timing sample 9/15
+baseline/expense_report: 0.205 ms
+baseline/expense_report: timing sample 10/15
+baseline/expense_report: 0.0865 ms
+native/text_json_transform_small: timing sample 6/15
+native/text_json_transform_small: 0.406 ms
+native/rustpython_micro_cmp: timing sample 9/15
+native/rustpython_micro_cmp: 0.851 ms
+baseline/expense_report: timing sample 11/15
+baseline/expense_report: 0.107 ms
+baseline/rustpython_micro_cmp: timing sample 7/15
+baseline/rustpython_micro_cmp: 1.91 ms
+baseline/rustpython_micro_cmp: timing sample 8/15
+baseline/rustpython_micro_cmp: 1.83 ms
+native/text_csv_cleanup_medium: timing sample 9/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+baseline/expense_report: timing sample 12/15
+baseline/expense_report: 0.176 ms
+baseline/text_csv_cleanup_medium: timing sample 9/15
+baseline/text_csv_cleanup_medium: 699 ms
+baseline/expense_report: timing sample 13/15
+baseline/expense_report: 0.2 ms
+baseline/text_csv_cleanup_medium: timing sample 10/15
+baseline/text_csv_cleanup_medium: 698 ms
+native/text_csv_cleanup_medium: timing sample 10/15
+native/text_csv_cleanup_medium: 3.83e+03 ms
+native/rustpython_micro_addition_900: timing sample 8/15
+native/rustpython_micro_addition_900: 0.157 ms
+native/capacity_planning: timing sample 6/15
+native/capacity_planning: 159 ms
+native/expense_report: timing sample 11/15
+native/expense_report: 0.212 ms
+native/rustpython_micro_cmp: timing sample 10/15
+native/rustpython_micro_cmp: 0.885 ms
+native/text_json_transform_small: timing sample 7/15
+native/text_json_transform_small: 0.388 ms
+native/rustpython_micro_addition_900: timing sample 9/15
+native/rustpython_micro_addition_900: 0.0771 ms
+native/text_csv_cleanup_medium: timing sample 11/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+baseline/perf_float: timing sample 9/15
+baseline/perf_float: 217 ms
+native/expense_report: timing sample 12/15
+native/expense_report: 0.284 ms
+baseline/rustpython_micro_addition_900: timing sample 10/15
+baseline/rustpython_micro_addition_900: 0.117 ms
+native/text_json_transform_small: timing sample 8/15
+native/text_json_transform_small: 0.492 ms
+native/text_csv_cleanup_medium: timing sample 12/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+baseline/expense_report: timing sample 14/15
+baseline/expense_report: 0.239 ms
+native/perf_float: timing sample 9/15
+native/perf_float: 1.03e+03 ms
+native/rustpython_micro_addition_900: timing sample 10/15
+native/rustpython_micro_addition_900: 0.132 ms
+native/ticket_search: timing sample 8/15
+native/ticket_search: 102 ms
+baseline/capacity_planning: timing sample 9/15
+baseline/capacity_planning: 28.4 ms
+native/perf_float: timing sample 10/15
+native/perf_float: 1.03e+03 ms
+native/text_json_transform_small: timing sample 9/15
+native/text_json_transform_small: 0.453 ms
+native/ticket_search: timing sample 9/15
+native/ticket_search: 101 ms
+native/ticket_search: timing sample 10/15
+native/ticket_search: 100 ms
+native/rustpython_micro_cmp: timing sample 11/15
+native/rustpython_micro_cmp: 0.886 ms
+native/perf_float: timing sample 11/15
+native/perf_float: 1.03e+03 ms
+native/rustpython_micro_addition_900: timing sample 11/15
+native/rustpython_micro_addition_900: 0.111 ms
+native/capacity_planning: timing sample 7/15
+native/capacity_planning: 159 ms
+baseline/text_csv_cleanup_medium: timing sample 11/15
+baseline/text_csv_cleanup_medium: 698 ms
+baseline/rustpython_micro_cmp: timing sample 9/15
+baseline/rustpython_micro_cmp: 1.96 ms
+native/text_csv_cleanup_medium: timing sample 13/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+baseline/ticket_search: timing sample 9/15
+baseline/ticket_search: 26.6 ms
+native/perf_float: timing sample 12/15
+native/perf_float: 1.03e+03 ms
+baseline/rustpython_micro_cmp: timing sample 10/15
+baseline/rustpython_micro_cmp: 1.9 ms
+native/rustpython_micro_addition_900: timing sample 12/15
+native/rustpython_micro_addition_900: 0.101 ms
+native/capacity_planning: timing sample 8/15
+native/capacity_planning: 160 ms
+baseline/text_csv_cleanup_medium: timing sample 12/15
+baseline/text_csv_cleanup_medium: 697 ms
+baseline/capacity_planning: timing sample 10/15
+baseline/capacity_planning: 28.4 ms
+baseline/capacity_planning: timing sample 11/15
+baseline/capacity_planning: 28.3 ms
+baseline/perf_float: timing sample 10/15
+baseline/perf_float: 216 ms
+native/expense_report: timing sample 13/15
+native/expense_report: 0.249 ms
+baseline/rustpython_micro_addition_900: timing sample 11/15
+baseline/rustpython_micro_addition_900: 0.104 ms
+native/expense_report: timing sample 14/15
+native/expense_report: 0.117 ms
+baseline/rustpython_micro_cmp: timing sample 11/15
+baseline/rustpython_micro_cmp: 1.83 ms
+baseline/capacity_planning: timing sample 12/15
+baseline/capacity_planning: 28.1 ms
+baseline/capacity_planning: timing sample 13/15
+baseline/capacity_planning: 28.1 ms
+native/perf_float: timing sample 13/15
+native/perf_float: 1.03e+03 ms
+baseline/rustpython_micro_addition_900: timing sample 12/15
+baseline/rustpython_micro_addition_900: 0.122 ms
+baseline/expense_report: timing sample 15/15
+baseline/expense_report: 0.181 ms
+native/capacity_planning: timing sample 9/15
+native/capacity_planning: 160 ms
+baseline/text_json_transform_small: timing sample 13/15
+baseline/text_json_transform_small: 0.33 ms
+baseline/perf_float: timing sample 11/15
+baseline/perf_float: 215 ms
+native/rustpython_micro_cmp: timing sample 12/15
+native/rustpython_micro_cmp: 0.929 ms
+native/text_json_transform_small: timing sample 10/15
+native/text_json_transform_small: 0.391 ms
+native/text_csv_cleanup_medium: timing sample 14/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+baseline/rustpython_micro_addition_900: timing sample 13/15
+baseline/rustpython_micro_addition_900: 0.125 ms
+baseline/text_csv_cleanup_medium: timing sample 13/15
+baseline/text_csv_cleanup_medium: 698 ms
+baseline/ticket_search: timing sample 10/15
+baseline/ticket_search: 26.9 ms
+native/rustpython_micro_addition_900: timing sample 13/15
+native/rustpython_micro_addition_900: 0.129 ms
+baseline/rustpython_micro_cmp: timing sample 12/15
+baseline/rustpython_micro_cmp: 1.91 ms
+baseline/perf_float: timing sample 12/15
+baseline/perf_float: 214 ms
+native/rustpython_micro_cmp: timing sample 13/15
+native/rustpython_micro_cmp: 0.91 ms
+baseline/capacity_planning: timing sample 14/15
+baseline/capacity_planning: 28.1 ms
+native/text_json_transform_small: timing sample 11/15
+native/text_json_transform_small: 0.445 ms
+native/ticket_search: timing sample 11/15
+native/ticket_search: 101 ms
+baseline/perf_float: timing sample 13/15
+baseline/perf_float: 217 ms
+native/text_json_transform_small: timing sample 12/15
+native/text_json_transform_small: 0.461 ms
+native/capacity_planning: timing sample 10/15
+native/capacity_planning: 159 ms
+baseline/rustpython_micro_cmp: timing sample 13/15
+baseline/rustpython_micro_cmp: 1.88 ms
+native/text_json_transform_small: timing sample 13/15
+native/text_json_transform_small: 0.38 ms
+baseline/ticket_search: timing sample 11/15
+baseline/ticket_search: 26.4 ms
+native/ticket_search: timing sample 12/15
+native/ticket_search: 101 ms
+native/text_csv_cleanup_medium: timing sample 15/15
+native/text_csv_cleanup_medium: 3.82e+03 ms
+native/text_json_transform_small: timing sample 14/15
+native/text_json_transform_small: 0.461 ms
+baseline/rustpython_micro_addition_900: timing sample 14/15
+baseline/rustpython_micro_addition_900: 0.113 ms
+native/ticket_search: timing sample 13/15
+native/ticket_search: 100 ms
+native/text_json_transform_small: timing sample 15/15
+native/text_json_transform_small: 0.405 ms
+baseline/rustpython_micro_cmp: timing sample 14/15
+baseline/rustpython_micro_cmp: 1.87 ms
+native/capacity_planning: timing sample 11/15
+native/capacity_planning: 160 ms
+baseline/capacity_planning: timing sample 15/15
+baseline/capacity_planning: 28.6 ms
+native/rustpython_micro_cmp: timing sample 14/15
+native/rustpython_micro_cmp: 0.873 ms
+native/expense_report: timing sample 15/15
+native/expense_report: 0.202 ms
+native/capacity_planning: timing sample 12/15
+native/capacity_planning: 160 ms
+baseline/text_csv_cleanup_medium: timing sample 14/15
+baseline/text_csv_cleanup_medium: 701 ms
+native/rustpython_micro_addition_900: timing sample 14/15
+native/rustpython_micro_addition_900: 0.141 ms
+native/capacity_planning: timing sample 13/15
+native/capacity_planning: 159 ms
+baseline/perf_float: timing sample 14/15
+baseline/perf_float: 214 ms
+baseline/text_csv_cleanup_medium: timing sample 15/15
+baseline/text_csv_cleanup_medium: 698 ms
+baseline/text_json_transform_small: timing sample 14/15
+baseline/text_json_transform_small: 0.361 ms
+baseline/rustpython_micro_addition_900: timing sample 15/15
+baseline/rustpython_micro_addition_900: 0.113 ms
+native/perf_float: timing sample 14/15
+native/perf_float: 1.03e+03 ms
+native/ticket_search: timing sample 14/15
+native/ticket_search: 102 ms
+native/rustpython_micro_addition_900: timing sample 15/15
+native/rustpython_micro_addition_900: 0.114 ms
+baseline/rustpython_micro_cmp: timing sample 15/15
+baseline/rustpython_micro_cmp: 1.82 ms
+native/capacity_planning: timing sample 14/15
+native/capacity_planning: 160 ms
+baseline/text_json_transform_small: timing sample 15/15
+baseline/text_json_transform_small: 0.308 ms
+native/rustpython_micro_cmp: timing sample 15/15
+native/rustpython_micro_cmp: 0.833 ms
+baseline/ticket_search: timing sample 12/15
+baseline/ticket_search: 26.4 ms
+baseline/ticket_search: timing sample 13/15
+baseline/ticket_search: 27.2 ms
+native/ticket_search: timing sample 15/15
+native/ticket_search: 101 ms
+native/perf_float: timing sample 15/15
+native/perf_float: 1.03e+03 ms
+baseline/perf_float: timing sample 15/15
+baseline/perf_float: 214 ms
+baseline/ticket_search: timing sample 14/15
+baseline/ticket_search: 27 ms
+baseline/ticket_search: timing sample 15/15
+baseline/ticket_search: 26.7 ms
+native/capacity_planning: timing sample 15/15
+native/capacity_planning: 159 ms
+baseline/capacity_planning: ok, median 28.4 ms
+baseline/text_csv_cleanup_medium: ok, median 699 ms
+baseline/ticket_search: ok, median 26.5 ms
+baseline/perf_float: ok, median 215 ms
+baseline/rustpython_micro_cmp: ok, median 1.88 ms
+baseline/rustpython_micro_addition_900: ok, median 0.125 ms
+baseline/expense_report: ok, median 0.176 ms
+baseline/text_json_transform_small: ok, median 0.316 ms
+native/capacity_planning: ok, median 160 ms
+native/text_csv_cleanup_medium: ok, median 3.82e+03 ms
+native/ticket_search: ok, median 101 ms
+native/perf_float: ok, median 1.03e+03 ms
+native/rustpython_micro_cmp: ok, median 0.881 ms
+native/rustpython_micro_addition_900: ok, median 0.111 ms
+native/expense_report: ok, median 0.212 ms
+native/text_json_transform_small: ok, median 0.435 ms
+regression: 11
+improvement: 2
+inconclusive: 3
+failure: 0
+compatibility change: 0
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/report.html
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/report.md
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/report.json

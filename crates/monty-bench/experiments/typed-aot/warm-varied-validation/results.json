@@ -1,0 +1,4337 @@
+{
+  "binary": {
+    "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/combined-budget-artifacts/bin/monty",
+    "sha256": "1a683ea6d70bf975c665e662845cab0d1c2a3fb25a31443d3f7b0d8413c98360"
+  },
+  "harness": {
+    "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/validated_comparison.py",
+    "sha256": "91a5b4376922aa011c07eecb98eb898a5092ab92249d354a00b309b94419281a"
+  },
+  "worker_client": {
+    "path": "/Users/jaheba/p/flying-circus/src/flying_circus/workers.py",
+    "sha256": "412a0efca331662cff310ecc7692c5d03d64b8cc5fb5ac5845d3ca3101c50d8a"
+  },
+  "workloads": [
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_short.py",
+      "sha256": "0abb3361c754380a9f4eba501a20479bb7ee647c896212155955cb2932c353be"
+    },
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_batch.py",
+      "sha256": "8c7adf278dfaf8e0159a291a0822313b851de005dc0687e4c81d31f0be005cd7"
+    },
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/portfolio_exposure.py",
+      "sha256": "8fecf54209a2da92541765f22465021f6a6a94619422abbe1b5896b4f6961c0d"
+    },
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/game_spectral_norm.py",
+      "sha256": "b3961c3858ab9f9e01026a209208613b8a5996d5db423d56a74d5b1f120e3cee"
+    },
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/perf_unpack_sequence.py",
+      "sha256": "b932742e5e239f62f44392ed693d54b1b994117c3fce1108313250e36ac8a567"
+    }
+  ],
+  "samples": 15,
+  "warmups": 3,
+  "worker": "warm",
+  "varied_source": true,
+  "host": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "python": "3.14.2",
+  "boundary": "Fresh Configure and Feed each sample. Submission includes validation when requested; session includes Configure. Startup, readiness negotiation and Reset excluded.",
+  "records": [
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 19416,
+      "submission_ns": 408959,
+      "session_ns": 428375
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 23875,
+      "submission_ns": 389042,
+      "session_ns": 412917
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 25542,
+      "submission_ns": 396416,
+      "session_ns": 421958
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 21209,
+      "submission_ns": 1224500,
+      "session_ns": 1245709
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 27292,
+      "submission_ns": 1354667,
+      "session_ns": 1381959
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 35583,
+      "submission_ns": 1176333,
+      "session_ns": 1211916
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 26250,
+      "submission_ns": 1094792,
+      "session_ns": 1121042
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 28625,
+      "submission_ns": 1287875,
+      "session_ns": 1316500
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 27000,
+      "submission_ns": 1270417,
+      "session_ns": 1297417
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 28125,
+      "submission_ns": 389334,
+      "session_ns": 417459
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 38084,
+      "submission_ns": 452791,
+      "session_ns": 490875
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 33208,
+      "submission_ns": 446958,
+      "session_ns": 480166
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 25667,
+      "submission_ns": 435333,
+      "session_ns": 461000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 27041,
+      "submission_ns": 419375,
+      "session_ns": 446416
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 31292,
+      "submission_ns": 389416,
+      "session_ns": 420708
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 22541,
+      "submission_ns": 1310750,
+      "session_ns": 1333291
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 31083,
+      "submission_ns": 1427375,
+      "session_ns": 1458458
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 40292,
+      "submission_ns": 1327042,
+      "session_ns": 1367334
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 21875,
+      "submission_ns": 1059625,
+      "session_ns": 1081500
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 26792,
+      "submission_ns": 1341750,
+      "session_ns": 1368542
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 40458,
+      "submission_ns": 1569584,
+      "session_ns": 1610042
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 41250,
+      "submission_ns": 406958,
+      "session_ns": 448208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 43500,
+      "submission_ns": 427500,
+      "session_ns": 471000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 34208,
+      "submission_ns": 464917,
+      "session_ns": 499125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 23042,
+      "submission_ns": 427833,
+      "session_ns": 450875
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 25500,
+      "submission_ns": 415917,
+      "session_ns": 441417
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 34625,
+      "submission_ns": 414875,
+      "session_ns": 449500
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 24416,
+      "submission_ns": 1579000,
+      "session_ns": 1603416
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 45875,
+      "submission_ns": 1501416,
+      "session_ns": 1547291
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 52792,
+      "submission_ns": 1391083,
+      "session_ns": 1443875
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 64042,
+      "submission_ns": 1186125,
+      "session_ns": 1250167
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 31917,
+      "submission_ns": 1293917,
+      "session_ns": 1325834
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 41542,
+      "submission_ns": 1339375,
+      "session_ns": 1380917
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 40958,
+      "submission_ns": 412875,
+      "session_ns": 453833
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 31459,
+      "submission_ns": 424208,
+      "session_ns": 455667
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 35250,
+      "submission_ns": 450250,
+      "session_ns": 485500
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 20125,
+      "submission_ns": 430834,
+      "session_ns": 450959
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 37417,
+      "submission_ns": 439250,
+      "session_ns": 476667
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 34042,
+      "submission_ns": 450791,
+      "session_ns": 484833
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 22375,
+      "submission_ns": 1293834,
+      "session_ns": 1316209
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 28292,
+      "submission_ns": 1180000,
+      "session_ns": 1208292
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 28041,
+      "submission_ns": 1241417,
+      "session_ns": 1269458
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 22834,
+      "submission_ns": 1190958,
+      "session_ns": 1213792
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 27292,
+      "submission_ns": 1168500,
+      "session_ns": 1195792
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 24709,
+      "submission_ns": 1184666,
+      "session_ns": 1209375
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 27333,
+      "submission_ns": 398917,
+      "session_ns": 426250
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 37459,
+      "submission_ns": 413833,
+      "session_ns": 451292
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 25334,
+      "submission_ns": 427833,
+      "session_ns": 453167
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 35000,
+      "submission_ns": 429250,
+      "session_ns": 464250
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 20625,
+      "submission_ns": 389458,
+      "session_ns": 410083
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 31209,
+      "submission_ns": 414166,
+      "session_ns": 445375
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 22333,
+      "submission_ns": 1171750,
+      "session_ns": 1194083
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 23417,
+      "submission_ns": 1255750,
+      "session_ns": 1279167
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 32750,
+      "submission_ns": 1199250,
+      "session_ns": 1232000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 20375,
+      "submission_ns": 1076375,
+      "session_ns": 1096750
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 30875,
+      "submission_ns": 1379291,
+      "session_ns": 1410166
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 46083,
+      "submission_ns": 1571542,
+      "session_ns": 1617625
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 40542,
+      "submission_ns": 437958,
+      "session_ns": 478500
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 40750,
+      "submission_ns": 465959,
+      "session_ns": 506709
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 50666,
+      "submission_ns": 481417,
+      "session_ns": 532083
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 29125,
+      "submission_ns": 477208,
+      "session_ns": 506333
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 50125,
+      "submission_ns": 502167,
+      "session_ns": 552292
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 36833,
+      "submission_ns": 440708,
+      "session_ns": 477541
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 40792,
+      "submission_ns": 1670333,
+      "session_ns": 1711125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 70000,
+      "submission_ns": 1666541,
+      "session_ns": 1736541
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 87250,
+      "submission_ns": 1560250,
+      "session_ns": 1647500
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 68625,
+      "submission_ns": 1221459,
+      "session_ns": 1290084
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 27167,
+      "submission_ns": 1312500,
+      "session_ns": 1339667
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 26625,
+      "submission_ns": 1302000,
+      "session_ns": 1328625
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 32834,
+      "submission_ns": 387708,
+      "session_ns": 420542
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 62750,
+      "submission_ns": 602333,
+      "session_ns": 665083
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 45167,
+      "submission_ns": 488042,
+      "session_ns": 533209
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 31209,
+      "submission_ns": 457416,
+      "session_ns": 488625
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 31375,
+      "submission_ns": 452583,
+      "session_ns": 483958
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 45125,
+      "submission_ns": 415167,
+      "session_ns": 460292
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 28917,
+      "submission_ns": 1176792,
+      "session_ns": 1205709
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 80791,
+      "submission_ns": 1671709,
+      "session_ns": 1752500
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 64584,
+      "submission_ns": 1389916,
+      "session_ns": 1454500
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 46709,
+      "submission_ns": 1544583,
+      "session_ns": 1591292
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 49708,
+      "submission_ns": 1680625,
+      "session_ns": 1730333
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 53458,
+      "submission_ns": 1868000,
+      "session_ns": 1921458
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 76042,
+      "submission_ns": 529542,
+      "session_ns": 605584
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 53458,
+      "submission_ns": 490000,
+      "session_ns": 543458
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 37583,
+      "submission_ns": 471833,
+      "session_ns": 509416
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 23708,
+      "submission_ns": 445583,
+      "session_ns": 469291
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 41417,
+      "submission_ns": 433333,
+      "session_ns": 474750
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 29166,
+      "submission_ns": 392709,
+      "session_ns": 421875
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 27458,
+      "submission_ns": 1309333,
+      "session_ns": 1336791
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 47000,
+      "submission_ns": 1696125,
+      "session_ns": 1743125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 44417,
+      "submission_ns": 1357750,
+      "session_ns": 1402167
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 82709,
+      "submission_ns": 7937166,
+      "session_ns": 8019875
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 56708,
+      "submission_ns": 6279875,
+      "session_ns": 6336583
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 37083,
+      "submission_ns": 6180417,
+      "session_ns": 6217500
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 61875,
+      "submission_ns": 9178458,
+      "session_ns": 9240333
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 47250,
+      "submission_ns": 7408792,
+      "session_ns": 7456042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 57542,
+      "submission_ns": 7494750,
+      "session_ns": 7552292
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 28959,
+      "submission_ns": 7422458,
+      "session_ns": 7451417
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 68250,
+      "submission_ns": 7308375,
+      "session_ns": 7376625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 95166,
+      "submission_ns": 9093500,
+      "session_ns": 9188666
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 40625,
+      "submission_ns": 6244542,
+      "session_ns": 6285167
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 46792,
+      "submission_ns": 6348125,
+      "session_ns": 6394917
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 53666,
+      "submission_ns": 8058042,
+      "session_ns": 8111708
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 40875,
+      "submission_ns": 8094167,
+      "session_ns": 8135042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 44208,
+      "submission_ns": 6322667,
+      "session_ns": 6366875
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 74709,
+      "submission_ns": 6302666,
+      "session_ns": 6377375
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 39125,
+      "submission_ns": 8973625,
+      "session_ns": 9012750
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 44583,
+      "submission_ns": 7659292,
+      "session_ns": 7703875
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 39958,
+      "submission_ns": 7292167,
+      "session_ns": 7332125
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 29042,
+      "submission_ns": 7275958,
+      "session_ns": 7305000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 88708,
+      "submission_ns": 7371333,
+      "session_ns": 7460041
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 55000,
+      "submission_ns": 9026417,
+      "session_ns": 9081417
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 46916,
+      "submission_ns": 6290834,
+      "session_ns": 6337750
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 44125,
+      "submission_ns": 6312458,
+      "session_ns": 6356583
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 48292,
+      "submission_ns": 7825166,
+      "session_ns": 7873458
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 22375,
+      "submission_ns": 8021917,
+      "session_ns": 8044292
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 52334,
+      "submission_ns": 6387666,
+      "session_ns": 6440000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 47792,
+      "submission_ns": 6255667,
+      "session_ns": 6303459
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 40542,
+      "submission_ns": 8831083,
+      "session_ns": 8871625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 43792,
+      "submission_ns": 7282958,
+      "session_ns": 7326750
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 46542,
+      "submission_ns": 7576667,
+      "session_ns": 7623209
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 27333,
+      "submission_ns": 7214833,
+      "session_ns": 7242166
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 36708,
+      "submission_ns": 7534750,
+      "session_ns": 7571458
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 62459,
+      "submission_ns": 8991291,
+      "session_ns": 9053750
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 45500,
+      "submission_ns": 6488500,
+      "session_ns": 6534000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 46125,
+      "submission_ns": 6368959,
+      "session_ns": 6415084
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 54500,
+      "submission_ns": 7852667,
+      "session_ns": 7907167
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 31667,
+      "submission_ns": 7778416,
+      "session_ns": 7810083
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 39000,
+      "submission_ns": 6363959,
+      "session_ns": 6402959
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 44750,
+      "submission_ns": 6429584,
+      "session_ns": 6474334
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 52000,
+      "submission_ns": 9174417,
+      "session_ns": 9226417
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 50875,
+      "submission_ns": 7402208,
+      "session_ns": 7453083
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 50333,
+      "submission_ns": 7456208,
+      "session_ns": 7506541
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 26208,
+      "submission_ns": 6987125,
+      "session_ns": 7013333
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 50875,
+      "submission_ns": 7556916,
+      "session_ns": 7607791
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 48541,
+      "submission_ns": 8896875,
+      "session_ns": 8945416
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 90416,
+      "submission_ns": 6842084,
+      "session_ns": 6932500
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 52917,
+      "submission_ns": 6658542,
+      "session_ns": 6711459
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 51417,
+      "submission_ns": 8046750,
+      "session_ns": 8098167
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 34000,
+      "submission_ns": 7798000,
+      "session_ns": 7832000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 35917,
+      "submission_ns": 6340000,
+      "session_ns": 6375917
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 50334,
+      "submission_ns": 6305250,
+      "session_ns": 6355584
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 54000,
+      "submission_ns": 9146375,
+      "session_ns": 9200375
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 57625,
+      "submission_ns": 7424167,
+      "session_ns": 7481792
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 52125,
+      "submission_ns": 7084208,
+      "session_ns": 7136333
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 29833,
+      "submission_ns": 6974583,
+      "session_ns": 7004416
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 39500,
+      "submission_ns": 7370417,
+      "session_ns": 7409917
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 50625,
+      "submission_ns": 9047417,
+      "session_ns": 9098042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 42500,
+      "submission_ns": 6609750,
+      "session_ns": 6652250
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 39459,
+      "submission_ns": 6310000,
+      "session_ns": 6349459
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 40834,
+      "submission_ns": 8090625,
+      "session_ns": 8131459
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 40333,
+      "submission_ns": 8196458,
+      "session_ns": 8236791
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 53000,
+      "submission_ns": 6580042,
+      "session_ns": 6633042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 41458,
+      "submission_ns": 6307292,
+      "session_ns": 6348750
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 48209,
+      "submission_ns": 9172333,
+      "session_ns": 9220542
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 59625,
+      "submission_ns": 7338000,
+      "session_ns": 7397625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 57750,
+      "submission_ns": 7335417,
+      "session_ns": 7393167
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 24083,
+      "submission_ns": 6958417,
+      "session_ns": 6982500
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 36416,
+      "submission_ns": 7381167,
+      "session_ns": 7417583
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 41750,
+      "submission_ns": 8976875,
+      "session_ns": 9018625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 54917,
+      "submission_ns": 6256208,
+      "session_ns": 6311125
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 41625,
+      "submission_ns": 6283459,
+      "session_ns": 6325084
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 50750,
+      "submission_ns": 7937875,
+      "session_ns": 7988625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 25792,
+      "submission_ns": 8373375,
+      "session_ns": 8399167
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 135083,
+      "submission_ns": 6753958,
+      "session_ns": 6889041
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 37958,
+      "submission_ns": 6180000,
+      "session_ns": 6217958
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 42958,
+      "submission_ns": 8850042,
+      "session_ns": 8893000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 43375,
+      "submission_ns": 7595083,
+      "session_ns": 7638458
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 65500,
+      "submission_ns": 7712541,
+      "session_ns": 7778041
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 67209,
+      "submission_ns": 7840375,
+      "session_ns": 7907584
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 40666,
+      "submission_ns": 7537167,
+      "session_ns": 7577833
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 53250,
+      "submission_ns": 9057125,
+      "session_ns": 9110375
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 76250,
+      "submission_ns": 6469042,
+      "session_ns": 6545292
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 95834,
+      "submission_ns": 6776083,
+      "session_ns": 6871917
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 56541,
+      "submission_ns": 8262334,
+      "session_ns": 8318875
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 31792,
+      "submission_ns": 7998792,
+      "session_ns": 8030584
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 47500,
+      "submission_ns": 6682042,
+      "session_ns": 6729542
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 44500,
+      "submission_ns": 6513250,
+      "session_ns": 6557750
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 57541,
+      "submission_ns": 9444000,
+      "session_ns": 9501541
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 52958,
+      "submission_ns": 7628458,
+      "session_ns": 7681416
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 55666,
+      "submission_ns": 8687417,
+      "session_ns": 8743083
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 19459,
+      "submission_ns": 3894416,
+      "session_ns": 3913875
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 32916,
+      "submission_ns": 1270209,
+      "session_ns": 1303125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 26667,
+      "submission_ns": 1280916,
+      "session_ns": 1307583
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 28083,
+      "submission_ns": 5094334,
+      "session_ns": 5122417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 37834,
+      "submission_ns": 2529916,
+      "session_ns": 2567750
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 52584,
+      "submission_ns": 2496833,
+      "session_ns": 2549417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 23209,
+      "submission_ns": 2070541,
+      "session_ns": 2093750
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 64083,
+      "submission_ns": 2225042,
+      "session_ns": 2289125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 37084,
+      "submission_ns": 4850916,
+      "session_ns": 4888000
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 34791,
+      "submission_ns": 1345959,
+      "session_ns": 1380750
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 44042,
+      "submission_ns": 1323041,
+      "session_ns": 1367083
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 40333,
+      "submission_ns": 4007167,
+      "session_ns": 4047500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 22083,
+      "submission_ns": 3916750,
+      "session_ns": 3938833
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 32834,
+      "submission_ns": 1271708,
+      "session_ns": 1304542
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 23458,
+      "submission_ns": 1273375,
+      "session_ns": 1296833
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 24583,
+      "submission_ns": 5153208,
+      "session_ns": 5177791
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 37000,
+      "submission_ns": 2545917,
+      "session_ns": 2582917
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 43875,
+      "submission_ns": 2463042,
+      "session_ns": 2506917
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 26541,
+      "submission_ns": 2156750,
+      "session_ns": 2183291
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 29500,
+      "submission_ns": 2304250,
+      "session_ns": 2333750
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 43125,
+      "submission_ns": 5120667,
+      "session_ns": 5163792
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 71667,
+      "submission_ns": 1420000,
+      "session_ns": 1491667
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 50334,
+      "submission_ns": 1402708,
+      "session_ns": 1453042
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 35667,
+      "submission_ns": 4109708,
+      "session_ns": 4145375
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 72666,
+      "submission_ns": 4076792,
+      "session_ns": 4149458
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 38875,
+      "submission_ns": 1347584,
+      "session_ns": 1386459
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 31583,
+      "submission_ns": 1309208,
+      "session_ns": 1340791
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 41958,
+      "submission_ns": 5317334,
+      "session_ns": 5359292
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 48500,
+      "submission_ns": 2447709,
+      "session_ns": 2496209
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 51916,
+      "submission_ns": 2631792,
+      "session_ns": 2683708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 80875,
+      "submission_ns": 2650333,
+      "session_ns": 2731208
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 48791,
+      "submission_ns": 2331917,
+      "session_ns": 2380708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 60541,
+      "submission_ns": 4929500,
+      "session_ns": 4990041
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 48375,
+      "submission_ns": 1399792,
+      "session_ns": 1448167
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 36958,
+      "submission_ns": 1385125,
+      "session_ns": 1422083
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 50417,
+      "submission_ns": 4046292,
+      "session_ns": 4096709
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 27667,
+      "submission_ns": 3950833,
+      "session_ns": 3978500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 25208,
+      "submission_ns": 1368417,
+      "session_ns": 1393625
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 28875,
+      "submission_ns": 1363542,
+      "session_ns": 1392417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 40167,
+      "submission_ns": 5367208,
+      "session_ns": 5407375
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 61917,
+      "submission_ns": 2627500,
+      "session_ns": 2689417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 42250,
+      "submission_ns": 2255750,
+      "session_ns": 2298000
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 39041,
+      "submission_ns": 2093500,
+      "session_ns": 2132541
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 31125,
+      "submission_ns": 2175959,
+      "session_ns": 2207084
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 40208,
+      "submission_ns": 4894834,
+      "session_ns": 4935042
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 47041,
+      "submission_ns": 1322500,
+      "session_ns": 1369541
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 33750,
+      "submission_ns": 1368250,
+      "session_ns": 1402000
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 36875,
+      "submission_ns": 3928334,
+      "session_ns": 3965209
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 22916,
+      "submission_ns": 3899500,
+      "session_ns": 3922416
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 26333,
+      "submission_ns": 1376458,
+      "session_ns": 1402791
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 94334,
+      "submission_ns": 1394958,
+      "session_ns": 1489292
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 39416,
+      "submission_ns": 5261084,
+      "session_ns": 5300500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 40208,
+      "submission_ns": 2625708,
+      "session_ns": 2665916
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 55667,
+      "submission_ns": 2402833,
+      "session_ns": 2458500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 33750,
+      "submission_ns": 2167250,
+      "session_ns": 2201000
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 39875,
+      "submission_ns": 2465584,
+      "session_ns": 2505459
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 24542,
+      "submission_ns": 5150500,
+      "session_ns": 5175042
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 42292,
+      "submission_ns": 1438833,
+      "session_ns": 1481125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 58834,
+      "submission_ns": 1400625,
+      "session_ns": 1459459
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 41375,
+      "submission_ns": 3980917,
+      "session_ns": 4022292
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 21917,
+      "submission_ns": 4076083,
+      "session_ns": 4098000
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 67625,
+      "submission_ns": 1308125,
+      "session_ns": 1375750
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 38250,
+      "submission_ns": 1342875,
+      "session_ns": 1381125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 40000,
+      "submission_ns": 5265125,
+      "session_ns": 5305125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 46041,
+      "submission_ns": 2515125,
+      "session_ns": 2561166
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 37833,
+      "submission_ns": 2308792,
+      "session_ns": 2346625
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 20625,
+      "submission_ns": 2134459,
+      "session_ns": 2155084
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 31083,
+      "submission_ns": 2116500,
+      "session_ns": 2147583
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 29958,
+      "submission_ns": 4820667,
+      "session_ns": 4850625
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 44500,
+      "submission_ns": 1297875,
+      "session_ns": 1342375
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 38417,
+      "submission_ns": 1298625,
+      "session_ns": 1337042
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 35250,
+      "submission_ns": 4039500,
+      "session_ns": 4074750
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 28125,
+      "submission_ns": 4237459,
+      "session_ns": 4265584
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 39250,
+      "submission_ns": 1371500,
+      "session_ns": 1410750
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 31542,
+      "submission_ns": 1399750,
+      "session_ns": 1431292
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 39833,
+      "submission_ns": 5363000,
+      "session_ns": 5402833
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 39250,
+      "submission_ns": 2456458,
+      "session_ns": 2495708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 42250,
+      "submission_ns": 2276583,
+      "session_ns": 2318833
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 29666,
+      "submission_ns": 2130750,
+      "session_ns": 2160416
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 31750,
+      "submission_ns": 2123542,
+      "session_ns": 2155292
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 31958,
+      "submission_ns": 4989459,
+      "session_ns": 5021417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 47542,
+      "submission_ns": 1291125,
+      "session_ns": 1338667
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 38291,
+      "submission_ns": 1293417,
+      "session_ns": 1331708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 35667,
+      "submission_ns": 3938750,
+      "session_ns": 3974417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 28625,
+      "submission_ns": 4032666,
+      "session_ns": 4061291
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 26708,
+      "submission_ns": 1328875,
+      "session_ns": 1355583
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 36917,
+      "submission_ns": 1347625,
+      "session_ns": 1384542
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 33125,
+      "submission_ns": 5223959,
+      "session_ns": 5257084
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 45542,
+      "submission_ns": 2340417,
+      "session_ns": 2385959
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 49083,
+      "submission_ns": 2266584,
+      "session_ns": 2315667
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 49167,
+      "submission_ns": 315860375,
+      "session_ns": 315909542
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 50750,
+      "submission_ns": 237793167,
+      "session_ns": 237843917
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 39208,
+      "submission_ns": 238486459,
+      "session_ns": 238525667
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 50458,
+      "submission_ns": 317556583,
+      "session_ns": 317607041
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 64209,
+      "submission_ns": 240350666,
+      "session_ns": 240414875
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 43459,
+      "submission_ns": 237667791,
+      "session_ns": 237711250
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 28042,
+      "submission_ns": 238831875,
+      "session_ns": 238859917
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 89875,
+      "submission_ns": 238922208,
+      "session_ns": 239012083
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 92334,
+      "submission_ns": 324773500,
+      "session_ns": 324865834
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 60750,
+      "submission_ns": 238024583,
+      "session_ns": 238085333
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 65958,
+      "submission_ns": 239182709,
+      "session_ns": 239248667
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 113209,
+      "submission_ns": 317324166,
+      "session_ns": 317437375
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 41083,
+      "submission_ns": 315901208,
+      "session_ns": 315942291
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 50458,
+      "submission_ns": 237642084,
+      "session_ns": 237692542
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 51625,
+      "submission_ns": 241356250,
+      "session_ns": 241407875
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 71958,
+      "submission_ns": 321771084,
+      "session_ns": 321843042
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 65042,
+      "submission_ns": 240657208,
+      "session_ns": 240722250
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 51917,
+      "submission_ns": 239465292,
+      "session_ns": 239517209
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 50708,
+      "submission_ns": 237117250,
+      "session_ns": 237167958
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 41083,
+      "submission_ns": 275592125,
+      "session_ns": 275633208
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 115500,
+      "submission_ns": 361327167,
+      "session_ns": 361442667
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 90542,
+      "submission_ns": 237180083,
+      "session_ns": 237270625
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 37125,
+      "submission_ns": 237307000,
+      "session_ns": 237344125
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 54709,
+      "submission_ns": 318753458,
+      "session_ns": 318808167
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 82584,
+      "submission_ns": 318976625,
+      "session_ns": 319059209
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 65500,
+      "submission_ns": 237463208,
+      "session_ns": 237528708
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 50833,
+      "submission_ns": 237527375,
+      "session_ns": 237578208
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 50875,
+      "submission_ns": 317730167,
+      "session_ns": 317781042
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 56500,
+      "submission_ns": 239513042,
+      "session_ns": 239569542
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 47792,
+      "submission_ns": 239962833,
+      "session_ns": 240010625
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 28083,
+      "submission_ns": 239924709,
+      "session_ns": 239952792
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 50458,
+      "submission_ns": 238842500,
+      "session_ns": 238892958
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 57875,
+      "submission_ns": 316607750,
+      "session_ns": 316665625
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 78416,
+      "submission_ns": 237259375,
+      "session_ns": 237337791
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 38375,
+      "submission_ns": 237961000,
+      "session_ns": 237999375
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 52916,
+      "submission_ns": 315564125,
+      "session_ns": 315617041
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 28166,
+      "submission_ns": 318542584,
+      "session_ns": 318570750
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 55708,
+      "submission_ns": 237974000,
+      "session_ns": 238029708
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 49292,
+      "submission_ns": 239761917,
+      "session_ns": 239811209
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 59125,
+      "submission_ns": 316461791,
+      "session_ns": 316520916
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 49500,
+      "submission_ns": 239970250,
+      "session_ns": 240019750
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 43166,
+      "submission_ns": 237223667,
+      "session_ns": 237266833
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 43625,
+      "submission_ns": 239483417,
+      "session_ns": 239527042
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 43958,
+      "submission_ns": 237990500,
+      "session_ns": 238034458
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 51500,
+      "submission_ns": 323399292,
+      "session_ns": 323450792
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 74292,
+      "submission_ns": 243754791,
+      "session_ns": 243829083
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 40959,
+      "submission_ns": 237373375,
+      "session_ns": 237414334
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 86583,
+      "submission_ns": 317601750,
+      "session_ns": 317688333
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 41292,
+      "submission_ns": 317381250,
+      "session_ns": 317422542
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 90333,
+      "submission_ns": 238518292,
+      "session_ns": 238608625
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 92083,
+      "submission_ns": 237899333,
+      "session_ns": 237991416
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 57833,
+      "submission_ns": 318095458,
+      "session_ns": 318153291
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 46958,
+      "submission_ns": 239240708,
+      "session_ns": 239287666
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 47292,
+      "submission_ns": 239012708,
+      "session_ns": 239060000
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 44333,
+      "submission_ns": 236676042,
+      "session_ns": 236720375
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 61250,
+      "submission_ns": 238221916,
+      "session_ns": 238283166
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 62833,
+      "submission_ns": 316660625,
+      "session_ns": 316723458
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 61791,
+      "submission_ns": 238133000,
+      "session_ns": 238194791
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 51667,
+      "submission_ns": 238026458,
+      "session_ns": 238078125
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 119417,
+      "submission_ns": 321262417,
+      "session_ns": 321381834
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 29500,
+      "submission_ns": 316566875,
+      "session_ns": 316596375
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 64167,
+      "submission_ns": 238948750,
+      "session_ns": 239012917
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 43250,
+      "submission_ns": 237651042,
+      "session_ns": 237694292
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 53709,
+      "submission_ns": 318102375,
+      "session_ns": 318156084
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 44667,
+      "submission_ns": 239908583,
+      "session_ns": 239953250
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 74625,
+      "submission_ns": 238236667,
+      "session_ns": 238311292
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 33709,
+      "submission_ns": 238146375,
+      "session_ns": 238180084
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 75542,
+      "submission_ns": 238715541,
+      "session_ns": 238791083
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 58250,
+      "submission_ns": 318174666,
+      "session_ns": 318232916
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 54500,
+      "submission_ns": 236541125,
+      "session_ns": 236595625
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 37625,
+      "submission_ns": 237265833,
+      "session_ns": 237303458
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 54291,
+      "submission_ns": 316508792,
+      "session_ns": 316563083
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 32417,
+      "submission_ns": 314605375,
+      "session_ns": 314637792
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 42334,
+      "submission_ns": 237489791,
+      "session_ns": 237532125
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 63291,
+      "submission_ns": 238221959,
+      "session_ns": 238285250
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 47042,
+      "submission_ns": 318878875,
+      "session_ns": 318925917
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 54958,
+      "submission_ns": 239829083,
+      "session_ns": 239884041
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 39000,
+      "submission_ns": 238001125,
+      "session_ns": 238040125
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 43792,
+      "submission_ns": 237511416,
+      "session_ns": 237555208
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 56625,
+      "submission_ns": 238721375,
+      "session_ns": 238778000
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 41709,
+      "submission_ns": 318240833,
+      "session_ns": 318282542
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 39375,
+      "submission_ns": 237620875,
+      "session_ns": 237660250
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 81166,
+      "submission_ns": 237908375,
+      "session_ns": 237989541
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 51459,
+      "submission_ns": 316117000,
+      "session_ns": 316168459
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 58750,
+      "submission_ns": 317786792,
+      "session_ns": 317845542
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 51500,
+      "submission_ns": 237616167,
+      "session_ns": 237667667
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 53250,
+      "submission_ns": 237045917,
+      "session_ns": 237099167
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 43417,
+      "submission_ns": 317096000,
+      "session_ns": 317139417
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 40875,
+      "submission_ns": 240676917,
+      "session_ns": 240717792
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 87417,
+      "submission_ns": 243722625,
+      "session_ns": 243810042
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 27375,
+      "submission_ns": 316424542,
+      "session_ns": 316451917
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 49208,
+      "submission_ns": 13083167,
+      "session_ns": 13132375
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 42000,
+      "submission_ns": 6973834,
+      "session_ns": 7015834
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 34042,
+      "submission_ns": 323381583,
+      "session_ns": 323415625
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 41375,
+      "submission_ns": 24571791,
+      "session_ns": 24613166
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 43500,
+      "submission_ns": 19295625,
+      "session_ns": 19339125
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 42125,
+      "submission_ns": 18424541,
+      "session_ns": 18466666
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 40166,
+      "submission_ns": 24938042,
+      "session_ns": 24978208
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 40042,
+      "submission_ns": 324296416,
+      "session_ns": 324336458
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 61666,
+      "submission_ns": 6874125,
+      "session_ns": 6935791
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 50916,
+      "submission_ns": 12970167,
+      "session_ns": 13021083
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 58000,
+      "submission_ns": 316933375,
+      "session_ns": 316991375
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 51625,
+      "submission_ns": 318477458,
+      "session_ns": 318529083
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 49083,
+      "submission_ns": 12348000,
+      "session_ns": 12397083
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 36375,
+      "submission_ns": 7008417,
+      "session_ns": 7044792
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 41541,
+      "submission_ns": 324521959,
+      "session_ns": 324563500
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 40583,
+      "submission_ns": 24368333,
+      "session_ns": 24408916
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 93750,
+      "submission_ns": 18295167,
+      "session_ns": 18388917
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 26958,
+      "submission_ns": 18791625,
+      "session_ns": 18818583
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 55042,
+      "submission_ns": 24641916,
+      "session_ns": 24696958
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 36541,
+      "submission_ns": 324192792,
+      "session_ns": 324229333
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 42166,
+      "submission_ns": 7042667,
+      "session_ns": 7084833
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 49125,
+      "submission_ns": 13993542,
+      "session_ns": 14042667
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 56500,
+      "submission_ns": 316308875,
+      "session_ns": 316365375
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 42000,
+      "submission_ns": 318126333,
+      "session_ns": 318168333
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 94042,
+      "submission_ns": 12726500,
+      "session_ns": 12820542
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 39542,
+      "submission_ns": 7085041,
+      "session_ns": 7124583
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 58750,
+      "submission_ns": 323553541,
+      "session_ns": 323612291
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 42667,
+      "submission_ns": 24224000,
+      "session_ns": 24266667
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 49875,
+      "submission_ns": 18858750,
+      "session_ns": 18908625
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 32958,
+      "submission_ns": 18532250,
+      "session_ns": 18565208
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 38333,
+      "submission_ns": 24225667,
+      "session_ns": 24264000
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 53667,
+      "submission_ns": 323940875,
+      "session_ns": 323994542
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 95500,
+      "submission_ns": 6852583,
+      "session_ns": 6948083
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 38917,
+      "submission_ns": 12430416,
+      "session_ns": 12469333
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 41250,
+      "submission_ns": 317035875,
+      "session_ns": 317077125
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 27083,
+      "submission_ns": 314346584,
+      "session_ns": 314373667
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 65375,
+      "submission_ns": 12738292,
+      "session_ns": 12803667
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 50375,
+      "submission_ns": 6961292,
+      "session_ns": 7011667
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 41042,
+      "submission_ns": 323811500,
+      "session_ns": 323852542
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 73667,
+      "submission_ns": 23962792,
+      "session_ns": 24036459
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 57958,
+      "submission_ns": 18692834,
+      "session_ns": 18750792
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 44458,
+      "submission_ns": 18570709,
+      "session_ns": 18615167
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 41292,
+      "submission_ns": 24694416,
+      "session_ns": 24735708
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 50084,
+      "submission_ns": 324870375,
+      "session_ns": 324920459
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 37292,
+      "submission_ns": 6811958,
+      "session_ns": 6849250
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 37042,
+      "submission_ns": 12932583,
+      "session_ns": 12969625
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 41417,
+      "submission_ns": 317310292,
+      "session_ns": 317351709
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 29125,
+      "submission_ns": 316794208,
+      "session_ns": 316823333
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 48250,
+      "submission_ns": 12601417,
+      "session_ns": 12649667
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 39000,
+      "submission_ns": 6802042,
+      "session_ns": 6841042
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 47167,
+      "submission_ns": 324897542,
+      "session_ns": 324944709
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 58917,
+      "submission_ns": 24179041,
+      "session_ns": 24237958
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 55917,
+      "submission_ns": 18552125,
+      "session_ns": 18608042
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 41333,
+      "submission_ns": 17905792,
+      "session_ns": 17947125
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 38292,
+      "submission_ns": 24413125,
+      "session_ns": 24451417
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 58958,
+      "submission_ns": 325471375,
+      "session_ns": 325530333
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 55792,
+      "submission_ns": 6945791,
+      "session_ns": 7001583
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 40541,
+      "submission_ns": 12869167,
+      "session_ns": 12909708
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 51250,
+      "submission_ns": 328291250,
+      "session_ns": 328342500
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 76542,
+      "submission_ns": 382534458,
+      "session_ns": 382611000
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 49084,
+      "submission_ns": 13034083,
+      "session_ns": 13083167
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 38000,
+      "submission_ns": 6979417,
+      "session_ns": 7017417
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 57334,
+      "submission_ns": 324283208,
+      "session_ns": 324340542
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 45083,
+      "submission_ns": 24004958,
+      "session_ns": 24050041
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 58042,
+      "submission_ns": 18426750,
+      "session_ns": 18484792
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 76625,
+      "submission_ns": 18685209,
+      "session_ns": 18761834
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 43375,
+      "submission_ns": 24846417,
+      "session_ns": 24889792
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 59417,
+      "submission_ns": 323352833,
+      "session_ns": 323412250
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 43709,
+      "submission_ns": 6899833,
+      "session_ns": 6943542
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 57500,
+      "submission_ns": 12328000,
+      "session_ns": 12385500
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 37291,
+      "submission_ns": 313912917,
+      "session_ns": 313950208
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 63041,
+      "submission_ns": 314567125,
+      "session_ns": 314630166
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 43542,
+      "submission_ns": 12932208,
+      "session_ns": 12975750
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 44708,
+      "submission_ns": 6840750,
+      "session_ns": 6885458
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 41333,
+      "submission_ns": 325597792,
+      "session_ns": 325639125
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 86500,
+      "submission_ns": 23703458,
+      "session_ns": 23789958
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 50291,
+      "submission_ns": 19114875,
+      "session_ns": 19165166
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 42833,
+      "submission_ns": 18349208,
+      "session_ns": 18392041
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 124458,
+      "submission_ns": 24987792,
+      "session_ns": 25112250
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 66166,
+      "submission_ns": 324159209,
+      "session_ns": 324225375
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 57250,
+      "submission_ns": 6908167,
+      "session_ns": 6965417
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 45250,
+      "submission_ns": 12913375,
+      "session_ns": 12958625
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 106583,
+      "submission_ns": 315075834,
+      "session_ns": 315182417
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 38041,
+      "submission_ns": 316575334,
+      "session_ns": 316613375
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 64125,
+      "submission_ns": 12771916,
+      "session_ns": 12836041
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 60084,
+      "submission_ns": 6847916,
+      "session_ns": 6908000
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 44708,
+      "submission_ns": 324375167,
+      "session_ns": 324419875
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 68333,
+      "submission_ns": 24257500,
+      "session_ns": 24325833
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 57583,
+      "submission_ns": 19571792,
+      "session_ns": 19629375
+    }
+  ],
+  "summaries": [
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "configure_ns": 31209,
+      "submission_ns": 446958,
+      "session_ns": 480166
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "configure_ns": 37459,
+      "submission_ns": 433333,
+      "session_ns": 474750
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "configure_ns": 34042,
+      "submission_ns": 412875,
+      "session_ns": 448208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "configure_ns": 27000,
+      "submission_ns": 1309333,
+      "session_ns": 1333291
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "configure_ns": 30875,
+      "submission_ns": 1354667,
+      "session_ns": 1381959
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "configure_ns": 40292,
+      "submission_ns": 1221459,
+      "session_ns": 1269458
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "configure_ns": 40875,
+      "submission_ns": 8021917,
+      "session_ns": 8044292
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "configure_ns": 46792,
+      "submission_ns": 6363959,
+      "session_ns": 6402959
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "configure_ns": 45500,
+      "submission_ns": 6305250,
+      "session_ns": 6355584
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "configure_ns": 52000,
+      "submission_ns": 9047417,
+      "session_ns": 9098042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "configure_ns": 47250,
+      "submission_ns": 7408792,
+      "session_ns": 7460041
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "configure_ns": 46542,
+      "submission_ns": 7335417,
+      "session_ns": 7393167
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "configure_ns": 35250,
+      "submission_ns": 4007167,
+      "session_ns": 4047500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "configure_ns": 38291,
+      "submission_ns": 1347584,
+      "session_ns": 1386459
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "configure_ns": 38250,
+      "submission_ns": 1345959,
+      "session_ns": 1381125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "configure_ns": 39416,
+      "submission_ns": 5150500,
+      "session_ns": 5175042
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "configure_ns": 39875,
+      "submission_ns": 2447709,
+      "session_ns": 2495708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "configure_ns": 42250,
+      "submission_ns": 2266584,
+      "session_ns": 2315667
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "interpreter",
+      "configure_ns": 52916,
+      "submission_ns": 317324166,
+      "session_ns": 317422542
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "copied",
+      "configure_ns": 51500,
+      "submission_ns": 237793167,
+      "session_ns": 237843917
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "backend": "shared",
+      "configure_ns": 54500,
+      "submission_ns": 237899333,
+      "session_ns": 237991416
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "interpreter",
+      "configure_ns": 57833,
+      "submission_ns": 318102375,
+      "session_ns": 318156084
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "copied",
+      "configure_ns": 54958,
+      "submission_ns": 239513042,
+      "session_ns": 239569542
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "backend": "shared",
+      "configure_ns": 43792,
+      "submission_ns": 238236667,
+      "session_ns": 238311292
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "interpreter",
+      "configure_ns": 42000,
+      "submission_ns": 316794208,
+      "session_ns": 316823333
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "copied",
+      "configure_ns": 49084,
+      "submission_ns": 12869167,
+      "session_ns": 12909708
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "backend": "shared",
+      "configure_ns": 43709,
+      "submission_ns": 6908167,
+      "session_ns": 6965417
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "interpreter",
+      "configure_ns": 47167,
+      "submission_ns": 324283208,
+      "session_ns": 324336458
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "copied",
+      "configure_ns": 43375,
+      "submission_ns": 24368333,
+      "session_ns": 24408916
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "backend": "shared",
+      "configure_ns": 49875,
+      "submission_ns": 18570709,
+      "session_ns": 18615167
+    }
+  ]
+}

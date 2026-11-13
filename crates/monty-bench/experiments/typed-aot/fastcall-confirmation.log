@@ -1,0 +1,1555 @@
+Preparing custom benchmarks: capturing expected output with harness CPython
+Measuring empty-command startup
+aot: startup sample 1/5
+aot: startup 8.11 ms
+aot: startup sample 2/5
+aot: startup 7.16 ms
+baseline: startup sample 1/5
+baseline: startup 6.64 ms
+aot: startup sample 3/5
+aot: startup 6.84 ms
+baseline: startup sample 2/5
+baseline: startup 5.87 ms
+previous_aot: startup sample 1/5
+previous_aot: startup 6.49 ms
+CPython: startup sample 1/5
+CPython: startup 25.2 ms
+aot: startup sample 4/5
+aot: startup 8.47 ms
+CPython: startup sample 2/5
+CPython: startup 25.2 ms
+previous_aot: startup sample 2/5
+previous_aot: startup 8.06 ms
+previous_aot: startup sample 3/5
+previous_aot: startup 7.22 ms
+CPython: startup sample 3/5
+CPython: startup 25.4 ms
+baseline: startup sample 3/5
+baseline: startup 6.72 ms
+CPython: startup sample 4/5
+CPython: startup 24.5 ms
+aot: startup sample 5/5
+aot: startup 7.2 ms
+CPython: startup sample 5/5
+CPython: startup 26.2 ms
+baseline: startup sample 4/5
+baseline: startup 7.02 ms
+previous_aot: startup sample 4/5
+previous_aot: startup 7.64 ms
+previous_aot: startup sample 5/5
+previous_aot: startup 7.91 ms
+baseline: startup sample 5/5
+baseline: startup 6.87 ms
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+Running one-shot: baseline, previous_aot, aot, CPython
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+baseline/game_spectral_norm: checking compatibility
+baseline/game_spectral_norm: supported 
+baseline/perf_unpack_sequence: checking compatibility
+baseline/perf_unpack_sequence: supported 
+baseline/policy_scoring_short: checking compatibility
+baseline/policy_scoring_short: supported 
+baseline/policy_scoring_batch: checking compatibility
+baseline/policy_scoring_batch: supported 
+baseline/portfolio_exposure: checking compatibility
+baseline/portfolio_exposure: supported 
+previous_aot/game_spectral_norm: checking compatibility
+previous_aot/game_spectral_norm: supported 
+previous_aot/perf_unpack_sequence: checking compatibility
+previous_aot/perf_unpack_sequence: supported 
+previous_aot/policy_scoring_short: checking compatibility
+previous_aot/policy_scoring_short: supported 
+previous_aot/policy_scoring_batch: checking compatibility
+previous_aot/policy_scoring_batch: supported 
+previous_aot/portfolio_exposure: checking compatibility
+previous_aot/portfolio_exposure: supported 
+aot/game_spectral_norm: checking compatibility
+aot/game_spectral_norm: supported 
+aot/perf_unpack_sequence: checking compatibility
+aot/perf_unpack_sequence: supported 
+aot/policy_scoring_short: checking compatibility
+aot/policy_scoring_short: supported 
+aot/policy_scoring_batch: checking compatibility
+aot/policy_scoring_batch: supported 
+aot/portfolio_exposure: checking compatibility
+aot/portfolio_exposure: supported 
+CPython/game_spectral_norm: checking compatibility
+CPython/game_spectral_norm: supported 
+CPython/perf_unpack_sequence: checking compatibility
+CPython/perf_unpack_sequence: supported 
+CPython/policy_scoring_short: checking compatibility
+CPython/policy_scoring_short: supported 
+CPython/policy_scoring_batch: checking compatibility
+CPython/policy_scoring_batch: supported 
+CPython/portfolio_exposure: checking compatibility
+CPython/portfolio_exposure: supported 
+CPython/portfolio_exposure: timing sample 1/15
+CPython/portfolio_exposure: 2.58 ms
+aot/portfolio_exposure: timing sample 1/15
+aot/portfolio_exposure: 1.67 ms
+baseline/policy_scoring_batch: timing sample 1/15
+baseline/policy_scoring_batch: 9.21 ms
+aot/portfolio_exposure: timing sample 2/15
+aot/portfolio_exposure: 1.69 ms
+aot/perf_unpack_sequence: timing sample 1/15
+aot/perf_unpack_sequence: 13.1 ms
+baseline/policy_scoring_batch: timing sample 2/15
+baseline/policy_scoring_batch: 9.11 ms
+baseline/policy_scoring_batch: timing sample 3/15
+baseline/policy_scoring_batch: 8.74 ms
+CPython/perf_unpack_sequence: timing sample 1/15
+CPython/perf_unpack_sequence: 18.6 ms
+CPython/policy_scoring_short: timing sample 1/15
+CPython/policy_scoring_short: 1.37 ms
+previous_aot/policy_scoring_batch: timing sample 1/15
+previous_aot/policy_scoring_batch: 7.24 ms
+baseline/perf_unpack_sequence: timing sample 1/15
+baseline/perf_unpack_sequence: 330 ms
+previous_aot/portfolio_exposure: timing sample 1/15
+previous_aot/portfolio_exposure: 4.83 ms
+CPython/policy_scoring_batch: timing sample 1/15
+CPython/policy_scoring_batch: 5.23 ms
+aot/policy_scoring_short: timing sample 1/15
+aot/policy_scoring_short: 0.923 ms
+baseline/game_spectral_norm: timing sample 1/15
+baseline/game_spectral_norm: 323 ms
+CPython/policy_scoring_short: timing sample 2/15
+CPython/policy_scoring_short: 1.43 ms
+aot/perf_unpack_sequence: timing sample 2/15
+aot/perf_unpack_sequence: 13 ms
+aot/policy_scoring_batch: timing sample 1/15
+aot/policy_scoring_batch: 6.92 ms
+previous_aot/policy_scoring_batch: timing sample 2/15
+previous_aot/policy_scoring_batch: 6.98 ms
+CPython/portfolio_exposure: timing sample 2/15
+CPython/portfolio_exposure: 2.48 ms
+baseline/policy_scoring_short: timing sample 1/15
+baseline/policy_scoring_short: 0.765 ms
+baseline/game_spectral_norm: timing sample 2/15
+baseline/game_spectral_norm: 322 ms
+baseline/policy_scoring_batch: timing sample 4/15
+baseline/policy_scoring_batch: 8.86 ms
+previous_aot/policy_scoring_short: timing sample 1/15
+previous_aot/policy_scoring_short: 0.793 ms
+aot/policy_scoring_short: timing sample 2/15
+aot/policy_scoring_short: 0.743 ms
+previous_aot/perf_unpack_sequence: timing sample 1/15
+previous_aot/perf_unpack_sequence: 13.4 ms
+CPython/portfolio_exposure: timing sample 3/15
+CPython/portfolio_exposure: 2.54 ms
+baseline/portfolio_exposure: timing sample 1/15
+baseline/portfolio_exposure: 5 ms
+CPython/perf_unpack_sequence: timing sample 2/15
+CPython/perf_unpack_sequence: 18.5 ms
+CPython/portfolio_exposure: timing sample 4/15
+CPython/portfolio_exposure: 2.36 ms
+aot/portfolio_exposure: timing sample 3/15
+aot/portfolio_exposure: 1.71 ms
+CPython/policy_scoring_batch: timing sample 2/15
+CPython/policy_scoring_batch: 5.28 ms
+baseline/policy_scoring_batch: timing sample 5/15
+baseline/policy_scoring_batch: 9.02 ms
+CPython/policy_scoring_short: timing sample 3/15
+CPython/policy_scoring_short: 1.44 ms
+previous_aot/policy_scoring_short: timing sample 2/15
+previous_aot/policy_scoring_short: 0.761 ms
+previous_aot/policy_scoring_batch: timing sample 3/15
+previous_aot/policy_scoring_batch: 7.08 ms
+CPython/game_spectral_norm: timing sample 1/15
+CPython/game_spectral_norm: 67.4 ms
+previous_aot/perf_unpack_sequence: timing sample 2/15
+previous_aot/perf_unpack_sequence: 13 ms
+CPython/perf_unpack_sequence: timing sample 3/15
+CPython/perf_unpack_sequence: 18.3 ms
+aot/policy_scoring_batch: timing sample 2/15
+aot/policy_scoring_batch: 7.11 ms
+aot/game_spectral_norm: timing sample 1/15
+aot/game_spectral_norm: 258 ms
+baseline/policy_scoring_short: timing sample 2/15
+baseline/policy_scoring_short: 0.826 ms
+aot/game_spectral_norm: timing sample 2/15
+aot/game_spectral_norm: 255 ms
+aot/perf_unpack_sequence: timing sample 3/15
+aot/perf_unpack_sequence: 13.4 ms
+aot/perf_unpack_sequence: timing sample 4/15
+aot/perf_unpack_sequence: 13.3 ms
+aot/policy_scoring_short: timing sample 3/15
+aot/policy_scoring_short: 0.739 ms
+previous_aot/portfolio_exposure: timing sample 2/15
+previous_aot/portfolio_exposure: 4.98 ms
+previous_aot/policy_scoring_batch: timing sample 4/15
+previous_aot/policy_scoring_batch: 6.92 ms
+baseline/game_spectral_norm: timing sample 3/15
+baseline/game_spectral_norm: 319 ms
+aot/portfolio_exposure: timing sample 4/15
+aot/portfolio_exposure: 1.62 ms
+baseline/policy_scoring_batch: timing sample 6/15
+baseline/policy_scoring_batch: 8.76 ms
+baseline/perf_unpack_sequence: timing sample 2/15
+baseline/perf_unpack_sequence: 326 ms
+aot/perf_unpack_sequence: timing sample 5/15
+aot/perf_unpack_sequence: 13.8 ms
+baseline/policy_scoring_short: timing sample 3/15
+baseline/policy_scoring_short: 0.843 ms
+CPython/policy_scoring_batch: timing sample 3/15
+CPython/policy_scoring_batch: 4.97 ms
+baseline/perf_unpack_sequence: timing sample 3/15
+baseline/perf_unpack_sequence: 326 ms
+baseline/policy_scoring_short: timing sample 4/15
+baseline/policy_scoring_short: 0.788 ms
+previous_aot/game_spectral_norm: timing sample 1/15
+previous_aot/game_spectral_norm: 271 ms
+baseline/perf_unpack_sequence: timing sample 4/15
+baseline/perf_unpack_sequence: 332 ms
+aot/policy_scoring_batch: timing sample 3/15
+aot/policy_scoring_batch: 7.1 ms
+previous_aot/game_spectral_norm: timing sample 2/15
+previous_aot/game_spectral_norm: 272 ms
+previous_aot/portfolio_exposure: timing sample 3/15
+previous_aot/portfolio_exposure: 4.66 ms
+baseline/portfolio_exposure: timing sample 2/15
+baseline/portfolio_exposure: 4.89 ms
+baseline/portfolio_exposure: timing sample 3/15
+baseline/portfolio_exposure: 4.98 ms
+CPython/perf_unpack_sequence: timing sample 4/15
+CPython/perf_unpack_sequence: 18.7 ms
+CPython/perf_unpack_sequence: timing sample 5/15
+CPython/perf_unpack_sequence: 18.5 ms
+aot/perf_unpack_sequence: timing sample 6/15
+aot/perf_unpack_sequence: 13.2 ms
+baseline/policy_scoring_short: timing sample 5/15
+baseline/policy_scoring_short: 0.827 ms
+CPython/policy_scoring_short: timing sample 4/15
+CPython/policy_scoring_short: 1.44 ms
+previous_aot/game_spectral_norm: timing sample 3/15
+previous_aot/game_spectral_norm: 274 ms
+baseline/policy_scoring_batch: timing sample 7/15
+baseline/policy_scoring_batch: 9.24 ms
+CPython/game_spectral_norm: timing sample 2/15
+CPython/game_spectral_norm: 68.2 ms
+previous_aot/policy_scoring_batch: timing sample 5/15
+previous_aot/policy_scoring_batch: 6.94 ms
+baseline/game_spectral_norm: timing sample 4/15
+baseline/game_spectral_norm: 320 ms
+baseline/policy_scoring_short: timing sample 6/15
+baseline/policy_scoring_short: 0.777 ms
+aot/game_spectral_norm: timing sample 3/15
+aot/game_spectral_norm: 275 ms
+CPython/policy_scoring_batch: timing sample 4/15
+CPython/policy_scoring_batch: 5.23 ms
+aot/game_spectral_norm: timing sample 4/15
+aot/game_spectral_norm: 261 ms
+previous_aot/game_spectral_norm: timing sample 4/15
+previous_aot/game_spectral_norm: 271 ms
+CPython/portfolio_exposure: timing sample 5/15
+CPython/portfolio_exposure: 2.28 ms
+CPython/perf_unpack_sequence: timing sample 6/15
+CPython/perf_unpack_sequence: 18.6 ms
+previous_aot/policy_scoring_short: timing sample 3/15
+previous_aot/policy_scoring_short: 0.764 ms
+aot/game_spectral_norm: timing sample 5/15
+aot/game_spectral_norm: 255 ms
+CPython/perf_unpack_sequence: timing sample 7/15
+CPython/perf_unpack_sequence: 18.5 ms
+CPython/portfolio_exposure: timing sample 6/15
+CPython/portfolio_exposure: 2.61 ms
+previous_aot/game_spectral_norm: timing sample 5/15
+previous_aot/game_spectral_norm: 271 ms
+baseline/game_spectral_norm: timing sample 5/15
+baseline/game_spectral_norm: 323 ms
+aot/game_spectral_norm: timing sample 6/15
+aot/game_spectral_norm: 258 ms
+previous_aot/policy_scoring_short: timing sample 4/15
+previous_aot/policy_scoring_short: 0.844 ms
+previous_aot/portfolio_exposure: timing sample 4/15
+previous_aot/portfolio_exposure: 4.82 ms
+baseline/perf_unpack_sequence: timing sample 5/15
+baseline/perf_unpack_sequence: 328 ms
+aot/game_spectral_norm: timing sample 7/15
+aot/game_spectral_norm: 259 ms
+aot/perf_unpack_sequence: timing sample 7/15
+aot/perf_unpack_sequence: 13.3 ms
+previous_aot/portfolio_exposure: timing sample 5/15
+previous_aot/portfolio_exposure: 4.77 ms
+CPython/portfolio_exposure: timing sample 7/15
+CPython/portfolio_exposure: 2.46 ms
+CPython/game_spectral_norm: timing sample 3/15
+CPython/game_spectral_norm: 67.6 ms
+CPython/policy_scoring_short: timing sample 5/15
+CPython/policy_scoring_short: 1.34 ms
+previous_aot/policy_scoring_short: timing sample 5/15
+previous_aot/policy_scoring_short: 0.883 ms
+baseline/policy_scoring_short: timing sample 7/15
+baseline/policy_scoring_short: 0.756 ms
+baseline/policy_scoring_short: timing sample 8/15
+baseline/policy_scoring_short: 0.767 ms
+CPython/portfolio_exposure: timing sample 8/15
+CPython/portfolio_exposure: 2.7 ms
+previous_aot/perf_unpack_sequence: timing sample 3/15
+previous_aot/perf_unpack_sequence: 12.9 ms
+previous_aot/policy_scoring_batch: timing sample 6/15
+previous_aot/policy_scoring_batch: 6.96 ms
+baseline/policy_scoring_batch: timing sample 8/15
+baseline/policy_scoring_batch: 8.87 ms
+baseline/game_spectral_norm: timing sample 6/15
+baseline/game_spectral_norm: 318 ms
+previous_aot/perf_unpack_sequence: timing sample 4/15
+previous_aot/perf_unpack_sequence: 13.2 ms
+previous_aot/perf_unpack_sequence: timing sample 5/15
+previous_aot/perf_unpack_sequence: 13 ms
+CPython/policy_scoring_short: timing sample 6/15
+CPython/policy_scoring_short: 1.32 ms
+CPython/policy_scoring_short: timing sample 7/15
+CPython/policy_scoring_short: 1.56 ms
+aot/policy_scoring_short: timing sample 4/15
+aot/policy_scoring_short: 0.808 ms
+previous_aot/perf_unpack_sequence: timing sample 6/15
+previous_aot/perf_unpack_sequence: 13.2 ms
+aot/game_spectral_norm: timing sample 8/15
+aot/game_spectral_norm: 256 ms
+aot/policy_scoring_batch: timing sample 4/15
+aot/policy_scoring_batch: 7.06 ms
+previous_aot/game_spectral_norm: timing sample 6/15
+previous_aot/game_spectral_norm: 272 ms
+baseline/policy_scoring_short: timing sample 9/15
+baseline/policy_scoring_short: 0.857 ms
+CPython/perf_unpack_sequence: timing sample 8/15
+CPython/perf_unpack_sequence: 18.8 ms
+CPython/portfolio_exposure: timing sample 9/15
+CPython/portfolio_exposure: 2.55 ms
+previous_aot/portfolio_exposure: timing sample 6/15
+previous_aot/portfolio_exposure: 4.7 ms
+aot/policy_scoring_short: timing sample 5/15
+aot/policy_scoring_short: 0.793 ms
+CPython/perf_unpack_sequence: timing sample 9/15
+CPython/perf_unpack_sequence: 18.7 ms
+baseline/policy_scoring_batch: timing sample 9/15
+baseline/policy_scoring_batch: 8.89 ms
+CPython/portfolio_exposure: timing sample 10/15
+CPython/portfolio_exposure: 2.27 ms
+baseline/portfolio_exposure: timing sample 4/15
+baseline/portfolio_exposure: 4.82 ms
+previous_aot/game_spectral_norm: timing sample 7/15
+previous_aot/game_spectral_norm: 272 ms
+previous_aot/game_spectral_norm: timing sample 8/15
+previous_aot/game_spectral_norm: 270 ms
+previous_aot/portfolio_exposure: timing sample 7/15
+previous_aot/portfolio_exposure: 4.96 ms
+baseline/portfolio_exposure: timing sample 5/15
+baseline/portfolio_exposure: 5.04 ms
+CPython/portfolio_exposure: timing sample 11/15
+CPython/portfolio_exposure: 2.57 ms
+aot/policy_scoring_batch: timing sample 5/15
+aot/policy_scoring_batch: 7.27 ms
+CPython/game_spectral_norm: timing sample 4/15
+CPython/game_spectral_norm: 67.9 ms
+previous_aot/perf_unpack_sequence: timing sample 7/15
+previous_aot/perf_unpack_sequence: 13.6 ms
+aot/policy_scoring_short: timing sample 6/15
+aot/policy_scoring_short: 0.789 ms
+baseline/game_spectral_norm: timing sample 7/15
+baseline/game_spectral_norm: 325 ms
+previous_aot/policy_scoring_batch: timing sample 7/15
+previous_aot/policy_scoring_batch: 7.19 ms
+baseline/policy_scoring_short: timing sample 10/15
+baseline/policy_scoring_short: 0.8 ms
+CPython/portfolio_exposure: timing sample 12/15
+CPython/portfolio_exposure: 2.63 ms
+aot/policy_scoring_batch: timing sample 6/15
+aot/policy_scoring_batch: 7.13 ms
+baseline/policy_scoring_short: timing sample 11/15
+baseline/policy_scoring_short: 0.843 ms
+aot/policy_scoring_short: timing sample 7/15
+aot/policy_scoring_short: 1.13 ms
+aot/policy_scoring_short: timing sample 8/15
+aot/policy_scoring_short: 0.804 ms
+previous_aot/portfolio_exposure: timing sample 8/15
+previous_aot/portfolio_exposure: 4.75 ms
+previous_aot/game_spectral_norm: timing sample 9/15
+previous_aot/game_spectral_norm: 272 ms
+baseline/game_spectral_norm: timing sample 8/15
+baseline/game_spectral_norm: 335 ms
+previous_aot/game_spectral_norm: timing sample 10/15
+previous_aot/game_spectral_norm: 271 ms
+aot/portfolio_exposure: timing sample 5/15
+aot/portfolio_exposure: 1.59 ms
+baseline/policy_scoring_batch: timing sample 10/15
+baseline/policy_scoring_batch: 8.92 ms
+CPython/game_spectral_norm: timing sample 5/15
+CPython/game_spectral_norm: 67.8 ms
+aot/game_spectral_norm: timing sample 9/15
+aot/game_spectral_norm: 258 ms
+CPython/policy_scoring_batch: timing sample 5/15
+CPython/policy_scoring_batch: 5.15 ms
+aot/portfolio_exposure: timing sample 6/15
+aot/portfolio_exposure: 1.58 ms
+CPython/game_spectral_norm: timing sample 6/15
+CPython/game_spectral_norm: 67.6 ms
+previous_aot/perf_unpack_sequence: timing sample 8/15
+previous_aot/perf_unpack_sequence: 13.3 ms
+CPython/policy_scoring_batch: timing sample 6/15
+CPython/policy_scoring_batch: 5.47 ms
+CPython/perf_unpack_sequence: timing sample 10/15
+CPython/perf_unpack_sequence: 18.2 ms
+previous_aot/perf_unpack_sequence: timing sample 9/15
+previous_aot/perf_unpack_sequence: 13.5 ms
+aot/perf_unpack_sequence: timing sample 8/15
+aot/perf_unpack_sequence: 13.3 ms
+aot/portfolio_exposure: timing sample 7/15
+aot/portfolio_exposure: 1.64 ms
+CPython/policy_scoring_batch: timing sample 7/15
+CPython/policy_scoring_batch: 5.09 ms
+previous_aot/game_spectral_norm: timing sample 11/15
+previous_aot/game_spectral_norm: 269 ms
+CPython/game_spectral_norm: timing sample 7/15
+CPython/game_spectral_norm: 67.6 ms
+previous_aot/portfolio_exposure: timing sample 9/15
+previous_aot/portfolio_exposure: 4.67 ms
+baseline/game_spectral_norm: timing sample 9/15
+baseline/game_spectral_norm: 320 ms
+baseline/policy_scoring_batch: timing sample 11/15
+baseline/policy_scoring_batch: 8.74 ms
+CPython/game_spectral_norm: timing sample 8/15
+CPython/game_spectral_norm: 67.9 ms
+CPython/perf_unpack_sequence: timing sample 11/15
+CPython/perf_unpack_sequence: 18.2 ms
+CPython/perf_unpack_sequence: timing sample 12/15
+CPython/perf_unpack_sequence: 18.9 ms
+previous_aot/portfolio_exposure: timing sample 10/15
+previous_aot/portfolio_exposure: 4.74 ms
+baseline/portfolio_exposure: timing sample 6/15
+baseline/portfolio_exposure: 4.86 ms
+baseline/policy_scoring_short: timing sample 12/15
+baseline/policy_scoring_short: 0.784 ms
+aot/portfolio_exposure: timing sample 8/15
+aot/portfolio_exposure: 1.66 ms
+aot/policy_scoring_batch: timing sample 7/15
+aot/policy_scoring_batch: 7.08 ms
+baseline/policy_scoring_short: timing sample 13/15
+baseline/policy_scoring_short: 0.877 ms
+previous_aot/policy_scoring_short: timing sample 6/15
+previous_aot/policy_scoring_short: 0.792 ms
+CPython/portfolio_exposure: timing sample 13/15
+CPython/portfolio_exposure: 2.37 ms
+previous_aot/portfolio_exposure: timing sample 11/15
+previous_aot/portfolio_exposure: 4.79 ms
+aot/policy_scoring_batch: timing sample 8/15
+aot/policy_scoring_batch: 7.17 ms
+baseline/policy_scoring_batch: timing sample 12/15
+baseline/policy_scoring_batch: 8.91 ms
+baseline/perf_unpack_sequence: timing sample 6/15
+baseline/perf_unpack_sequence: 328 ms
+aot/perf_unpack_sequence: timing sample 9/15
+aot/perf_unpack_sequence: 13.5 ms
+CPython/policy_scoring_batch: timing sample 8/15
+CPython/policy_scoring_batch: 4.97 ms
+baseline/portfolio_exposure: timing sample 7/15
+baseline/portfolio_exposure: 4.83 ms
+CPython/policy_scoring_short: timing sample 8/15
+CPython/policy_scoring_short: 1.61 ms
+previous_aot/perf_unpack_sequence: timing sample 10/15
+previous_aot/perf_unpack_sequence: 13.3 ms
+CPython/game_spectral_norm: timing sample 9/15
+CPython/game_spectral_norm: 67.5 ms
+aot/policy_scoring_short: timing sample 9/15
+aot/policy_scoring_short: 0.782 ms
+previous_aot/policy_scoring_batch: timing sample 8/15
+previous_aot/policy_scoring_batch: 6.95 ms
+previous_aot/policy_scoring_short: timing sample 7/15
+previous_aot/policy_scoring_short: 0.783 ms
+previous_aot/portfolio_exposure: timing sample 12/15
+previous_aot/portfolio_exposure: 4.89 ms
+baseline/perf_unpack_sequence: timing sample 7/15
+baseline/perf_unpack_sequence: 328 ms
+CPython/game_spectral_norm: timing sample 10/15
+CPython/game_spectral_norm: 68.4 ms
+baseline/game_spectral_norm: timing sample 10/15
+baseline/game_spectral_norm: 322 ms
+previous_aot/policy_scoring_short: timing sample 8/15
+previous_aot/policy_scoring_short: 0.756 ms
+aot/game_spectral_norm: timing sample 10/15
+aot/game_spectral_norm: 259 ms
+aot/portfolio_exposure: timing sample 9/15
+aot/portfolio_exposure: 1.65 ms
+CPython/perf_unpack_sequence: timing sample 13/15
+CPython/perf_unpack_sequence: 18.6 ms
+baseline/game_spectral_norm: timing sample 11/15
+baseline/game_spectral_norm: 321 ms
+aot/portfolio_exposure: timing sample 10/15
+aot/portfolio_exposure: 1.64 ms
+aot/perf_unpack_sequence: timing sample 10/15
+aot/perf_unpack_sequence: 13 ms
+CPython/portfolio_exposure: timing sample 14/15
+CPython/portfolio_exposure: 2.48 ms
+previous_aot/perf_unpack_sequence: timing sample 11/15
+previous_aot/perf_unpack_sequence: 13 ms
+previous_aot/portfolio_exposure: timing sample 13/15
+previous_aot/portfolio_exposure: 4.77 ms
+CPython/policy_scoring_batch: timing sample 9/15
+CPython/policy_scoring_batch: 5.11 ms
+aot/policy_scoring_batch: timing sample 9/15
+aot/policy_scoring_batch: 7.24 ms
+aot/policy_scoring_batch: timing sample 10/15
+aot/policy_scoring_batch: 7.23 ms
+aot/policy_scoring_batch: timing sample 11/15
+aot/policy_scoring_batch: 7.14 ms
+baseline/policy_scoring_short: timing sample 14/15
+baseline/policy_scoring_short: 0.77 ms
+CPython/policy_scoring_short: timing sample 9/15
+CPython/policy_scoring_short: 1.54 ms
+baseline/perf_unpack_sequence: timing sample 8/15
+baseline/perf_unpack_sequence: 331 ms
+previous_aot/perf_unpack_sequence: timing sample 12/15
+previous_aot/perf_unpack_sequence: 13.1 ms
+previous_aot/policy_scoring_batch: timing sample 9/15
+previous_aot/policy_scoring_batch: 7.12 ms
+CPython/perf_unpack_sequence: timing sample 14/15
+CPython/perf_unpack_sequence: 18.9 ms
+previous_aot/policy_scoring_batch: timing sample 10/15
+previous_aot/policy_scoring_batch: 7.28 ms
+CPython/policy_scoring_batch: timing sample 10/15
+CPython/policy_scoring_batch: 5.17 ms
+aot/game_spectral_norm: timing sample 11/15
+aot/game_spectral_norm: 256 ms
+baseline/portfolio_exposure: timing sample 8/15
+baseline/portfolio_exposure: 5.06 ms
+baseline/portfolio_exposure: timing sample 9/15
+baseline/portfolio_exposure: 4.89 ms
+CPython/policy_scoring_short: timing sample 10/15
+CPython/policy_scoring_short: 1.31 ms
+aot/portfolio_exposure: timing sample 11/15
+aot/portfolio_exposure: 1.82 ms
+previous_aot/policy_scoring_short: timing sample 9/15
+previous_aot/policy_scoring_short: 0.749 ms
+previous_aot/game_spectral_norm: timing sample 12/15
+previous_aot/game_spectral_norm: 268 ms
+CPython/policy_scoring_batch: timing sample 11/15
+CPython/policy_scoring_batch: 4.9 ms
+previous_aot/portfolio_exposure: timing sample 14/15
+previous_aot/portfolio_exposure: 4.9 ms
+aot/policy_scoring_short: timing sample 10/15
+aot/policy_scoring_short: 0.785 ms
+CPython/game_spectral_norm: timing sample 11/15
+CPython/game_spectral_norm: 67.9 ms
+CPython/game_spectral_norm: timing sample 12/15
+CPython/game_spectral_norm: 67.5 ms
+aot/policy_scoring_batch: timing sample 12/15
+aot/policy_scoring_batch: 7.13 ms
+aot/game_spectral_norm: timing sample 12/15
+aot/game_spectral_norm: 256 ms
+aot/portfolio_exposure: timing sample 12/15
+aot/portfolio_exposure: 1.55 ms
+aot/portfolio_exposure: timing sample 13/15
+aot/portfolio_exposure: 1.65 ms
+baseline/policy_scoring_batch: timing sample 13/15
+baseline/policy_scoring_batch: 8.87 ms
+aot/policy_scoring_short: timing sample 11/15
+aot/policy_scoring_short: 0.738 ms
+CPython/policy_scoring_batch: timing sample 12/15
+CPython/policy_scoring_batch: 5.46 ms
+previous_aot/policy_scoring_batch: timing sample 11/15
+previous_aot/policy_scoring_batch: 6.96 ms
+previous_aot/game_spectral_norm: timing sample 13/15
+previous_aot/game_spectral_norm: 272 ms
+baseline/game_spectral_norm: timing sample 12/15
+baseline/game_spectral_norm: 322 ms
+previous_aot/policy_scoring_batch: timing sample 12/15
+previous_aot/policy_scoring_batch: 6.89 ms
+baseline/game_spectral_norm: timing sample 13/15
+baseline/game_spectral_norm: 323 ms
+aot/portfolio_exposure: timing sample 14/15
+aot/portfolio_exposure: 1.7 ms
+baseline/perf_unpack_sequence: timing sample 9/15
+baseline/perf_unpack_sequence: 325 ms
+CPython/policy_scoring_short: timing sample 11/15
+CPython/policy_scoring_short: 1.65 ms
+previous_aot/policy_scoring_short: timing sample 10/15
+previous_aot/policy_scoring_short: 0.913 ms
+previous_aot/game_spectral_norm: timing sample 14/15
+previous_aot/game_spectral_norm: 272 ms
+CPython/policy_scoring_batch: timing sample 13/15
+CPython/policy_scoring_batch: 5.25 ms
+aot/game_spectral_norm: timing sample 13/15
+aot/game_spectral_norm: 259 ms
+baseline/portfolio_exposure: timing sample 10/15
+baseline/portfolio_exposure: 4.96 ms
+baseline/perf_unpack_sequence: timing sample 10/15
+baseline/perf_unpack_sequence: 326 ms
+CPython/policy_scoring_short: timing sample 12/15
+CPython/policy_scoring_short: 1.4 ms
+baseline/policy_scoring_batch: timing sample 14/15
+baseline/policy_scoring_batch: 8.84 ms
+aot/portfolio_exposure: timing sample 15/15
+aot/portfolio_exposure: 1.55 ms
+CPython/portfolio_exposure: timing sample 15/15
+CPython/portfolio_exposure: 2.4 ms
+aot/policy_scoring_batch: timing sample 13/15
+aot/policy_scoring_batch: 7.31 ms
+CPython/perf_unpack_sequence: timing sample 15/15
+CPython/perf_unpack_sequence: 18.2 ms
+previous_aot/policy_scoring_short: timing sample 11/15
+previous_aot/policy_scoring_short: 0.749 ms
+previous_aot/game_spectral_norm: timing sample 15/15
+previous_aot/game_spectral_norm: 271 ms
+baseline/perf_unpack_sequence: timing sample 11/15
+baseline/perf_unpack_sequence: 326 ms
+aot/policy_scoring_batch: timing sample 14/15
+aot/policy_scoring_batch: 7.14 ms
+CPython/policy_scoring_short: timing sample 13/15
+CPython/policy_scoring_short: 1.47 ms
+aot/policy_scoring_short: timing sample 12/15
+aot/policy_scoring_short: 0.809 ms
+previous_aot/perf_unpack_sequence: timing sample 13/15
+previous_aot/perf_unpack_sequence: 13.4 ms
+baseline/portfolio_exposure: timing sample 11/15
+baseline/portfolio_exposure: 4.76 ms
+aot/game_spectral_norm: timing sample 14/15
+aot/game_spectral_norm: 255 ms
+aot/policy_scoring_short: timing sample 13/15
+aot/policy_scoring_short: 0.81 ms
+baseline/game_spectral_norm: timing sample 14/15
+baseline/game_spectral_norm: 322 ms
+baseline/portfolio_exposure: timing sample 12/15
+baseline/portfolio_exposure: 4.88 ms
+previous_aot/policy_scoring_short: timing sample 12/15
+previous_aot/policy_scoring_short: 0.768 ms
+previous_aot/policy_scoring_short: timing sample 13/15
+previous_aot/policy_scoring_short: 0.794 ms
+aot/perf_unpack_sequence: timing sample 11/15
+aot/perf_unpack_sequence: 13.8 ms
+aot/policy_scoring_batch: timing sample 15/15
+aot/policy_scoring_batch: 7.19 ms
+previous_aot/perf_unpack_sequence: timing sample 14/15
+previous_aot/perf_unpack_sequence: 14.1 ms
+previous_aot/perf_unpack_sequence: timing sample 15/15
+previous_aot/perf_unpack_sequence: 13.1 ms
+aot/perf_unpack_sequence: timing sample 12/15
+aot/perf_unpack_sequence: 13.5 ms
+baseline/portfolio_exposure: timing sample 13/15
+baseline/portfolio_exposure: 4.86 ms
+baseline/perf_unpack_sequence: timing sample 12/15
+baseline/perf_unpack_sequence: 333 ms
+baseline/policy_scoring_short: timing sample 15/15
+baseline/policy_scoring_short: 0.856 ms
+baseline/perf_unpack_sequence: timing sample 13/15
+baseline/perf_unpack_sequence: 325 ms
+aot/perf_unpack_sequence: timing sample 13/15
+aot/perf_unpack_sequence: 13.2 ms
+baseline/perf_unpack_sequence: timing sample 14/15
+baseline/perf_unpack_sequence: 325 ms
+previous_aot/portfolio_exposure: timing sample 15/15
+previous_aot/portfolio_exposure: 4.9 ms
+CPython/policy_scoring_short: timing sample 14/15
+CPython/policy_scoring_short: 1.38 ms
+aot/game_spectral_norm: timing sample 15/15
+aot/game_spectral_norm: 259 ms
+CPython/policy_scoring_batch: timing sample 14/15
+CPython/policy_scoring_batch: 5.55 ms
+CPython/game_spectral_norm: timing sample 13/15
+CPython/game_spectral_norm: 68.1 ms
+aot/policy_scoring_short: timing sample 14/15
+aot/policy_scoring_short: 0.752 ms
+previous_aot/policy_scoring_batch: timing sample 13/15
+previous_aot/policy_scoring_batch: 6.94 ms
+previous_aot/policy_scoring_batch: timing sample 14/15
+previous_aot/policy_scoring_batch: 6.95 ms
+previous_aot/policy_scoring_short: timing sample 14/15
+previous_aot/policy_scoring_short: 0.871 ms
+baseline/portfolio_exposure: timing sample 14/15
+baseline/portfolio_exposure: 5.04 ms
+aot/perf_unpack_sequence: timing sample 14/15
+aot/perf_unpack_sequence: 13.3 ms
+CPython/policy_scoring_batch: timing sample 15/15
+CPython/policy_scoring_batch: 5 ms
+aot/perf_unpack_sequence: timing sample 15/15
+aot/perf_unpack_sequence: 12.8 ms
+baseline/policy_scoring_batch: timing sample 15/15
+baseline/policy_scoring_batch: 8.76 ms
+baseline/portfolio_exposure: timing sample 15/15
+baseline/portfolio_exposure: 5.16 ms
+CPython/game_spectral_norm: timing sample 14/15
+CPython/game_spectral_norm: 67.5 ms
+previous_aot/policy_scoring_short: timing sample 15/15
+previous_aot/policy_scoring_short: 0.715 ms
+previous_aot/policy_scoring_batch: timing sample 15/15
+previous_aot/policy_scoring_batch: 7.02 ms
+baseline/perf_unpack_sequence: timing sample 15/15
+baseline/perf_unpack_sequence: 328 ms
+aot/policy_scoring_short: timing sample 15/15
+aot/policy_scoring_short: 0.739 ms
+baseline/game_spectral_norm: timing sample 15/15
+baseline/game_spectral_norm: 319 ms
+CPython/game_spectral_norm: timing sample 15/15
+CPython/game_spectral_norm: 67.4 ms
+CPython/policy_scoring_short: timing sample 15/15
+CPython/policy_scoring_short: 1.67 ms
+baseline/game_spectral_norm: RSS sample 1/3
+baseline/game_spectral_norm: RSS 10.9 MiB
+baseline/game_spectral_norm: RSS sample 2/3
+baseline/game_spectral_norm: RSS 10.9 MiB
+baseline/game_spectral_norm: RSS sample 3/3
+baseline/game_spectral_norm: RSS 11 MiB
+baseline/perf_unpack_sequence: RSS sample 1/3
+baseline/perf_unpack_sequence: RSS 11.8 MiB
+baseline/perf_unpack_sequence: RSS sample 2/3
+baseline/perf_unpack_sequence: RSS 11.7 MiB
+baseline/perf_unpack_sequence: RSS sample 3/3
+baseline/perf_unpack_sequence: RSS 11.7 MiB
+baseline/policy_scoring_short: RSS sample 1/3
+baseline/policy_scoring_short: RSS 10.8 MiB
+baseline/policy_scoring_short: RSS sample 2/3
+baseline/policy_scoring_short: RSS 10.9 MiB
+baseline/policy_scoring_short: RSS sample 3/3
+baseline/policy_scoring_short: RSS 10.9 MiB
+baseline/policy_scoring_batch: RSS sample 1/3
+baseline/policy_scoring_batch: RSS 13.3 MiB
+baseline/policy_scoring_batch: RSS sample 2/3
+baseline/policy_scoring_batch: RSS 13.4 MiB
+baseline/policy_scoring_batch: RSS sample 3/3
+baseline/policy_scoring_batch: RSS 13.3 MiB
+baseline/portfolio_exposure: RSS sample 1/3
+baseline/portfolio_exposure: RSS 10.7 MiB
+baseline/portfolio_exposure: RSS sample 2/3
+baseline/portfolio_exposure: RSS 10.7 MiB
+baseline/portfolio_exposure: RSS sample 3/3
+baseline/portfolio_exposure: RSS 10.7 MiB
+previous_aot/game_spectral_norm: RSS sample 1/3
+previous_aot/game_spectral_norm: RSS 10.9 MiB
+previous_aot/game_spectral_norm: RSS sample 2/3
+previous_aot/game_spectral_norm: RSS 10.9 MiB
+previous_aot/game_spectral_norm: RSS sample 3/3
+previous_aot/game_spectral_norm: RSS 10.9 MiB
+previous_aot/perf_unpack_sequence: RSS sample 1/3
+previous_aot/perf_unpack_sequence: RSS 12.1 MiB
+previous_aot/perf_unpack_sequence: RSS sample 2/3
+previous_aot/perf_unpack_sequence: RSS 12.2 MiB
+previous_aot/perf_unpack_sequence: RSS sample 3/3
+previous_aot/perf_unpack_sequence: RSS 12.1 MiB
+previous_aot/policy_scoring_short: RSS sample 1/3
+previous_aot/policy_scoring_short: RSS 10.9 MiB
+previous_aot/policy_scoring_short: RSS sample 2/3
+previous_aot/policy_scoring_short: RSS 11 MiB
+previous_aot/policy_scoring_short: RSS sample 3/3
+previous_aot/policy_scoring_short: RSS 10.9 MiB
+previous_aot/policy_scoring_batch: RSS sample 1/3
+previous_aot/policy_scoring_batch: RSS 13.5 MiB
+previous_aot/policy_scoring_batch: RSS sample 2/3
+previous_aot/policy_scoring_batch: RSS 13.5 MiB
+previous_aot/policy_scoring_batch: RSS sample 3/3
+previous_aot/policy_scoring_batch: RSS 13.4 MiB
+previous_aot/portfolio_exposure: RSS sample 1/3
+previous_aot/portfolio_exposure: RSS 10.6 MiB
+previous_aot/portfolio_exposure: RSS sample 2/3
+previous_aot/portfolio_exposure: RSS 10.6 MiB
+previous_aot/portfolio_exposure: RSS sample 3/3
+previous_aot/portfolio_exposure: RSS 10.5 MiB
+aot/game_spectral_norm: RSS sample 1/3
+aot/game_spectral_norm: RSS 11 MiB
+aot/game_spectral_norm: RSS sample 2/3
+aot/game_spectral_norm: RSS 11 MiB
+aot/game_spectral_norm: RSS sample 3/3
+aot/game_spectral_norm: RSS 11 MiB
+aot/perf_unpack_sequence: RSS sample 1/3
+aot/perf_unpack_sequence: RSS 12.3 MiB
+aot/perf_unpack_sequence: RSS sample 2/3
+aot/perf_unpack_sequence: RSS 12.3 MiB
+aot/perf_unpack_sequence: RSS sample 3/3
+aot/perf_unpack_sequence: RSS 12.3 MiB
+aot/policy_scoring_short: RSS sample 1/3
+aot/policy_scoring_short: RSS 11 MiB
+aot/policy_scoring_short: RSS sample 2/3
+aot/policy_scoring_short: RSS 11 MiB
+aot/policy_scoring_short: RSS sample 3/3
+aot/policy_scoring_short: RSS 11 MiB
+aot/policy_scoring_batch: RSS sample 1/3
+aot/policy_scoring_batch: RSS 13.6 MiB
+aot/policy_scoring_batch: RSS sample 2/3
+aot/policy_scoring_batch: RSS 13.6 MiB
+aot/policy_scoring_batch: RSS sample 3/3
+aot/policy_scoring_batch: RSS 13.5 MiB
+aot/portfolio_exposure: RSS sample 1/3
+aot/portfolio_exposure: RSS 10.8 MiB
+aot/portfolio_exposure: RSS sample 2/3
+aot/portfolio_exposure: RSS 10.9 MiB
+aot/portfolio_exposure: RSS sample 3/3
+aot/portfolio_exposure: RSS 10.8 MiB
+CPython/game_spectral_norm: RSS sample 1/3
+CPython/game_spectral_norm: RSS 15.8 MiB
+CPython/game_spectral_norm: RSS sample 2/3
+CPython/game_spectral_norm: RSS 15.7 MiB
+CPython/game_spectral_norm: RSS sample 3/3
+CPython/game_spectral_norm: RSS 15.6 MiB
+CPython/perf_unpack_sequence: RSS sample 1/3
+CPython/perf_unpack_sequence: RSS 19.6 MiB
+CPython/perf_unpack_sequence: RSS sample 2/3
+CPython/perf_unpack_sequence: RSS 19.6 MiB
+CPython/perf_unpack_sequence: RSS sample 3/3
+CPython/perf_unpack_sequence: RSS 19.7 MiB
+CPython/policy_scoring_short: RSS sample 1/3
+CPython/policy_scoring_short: RSS 15.6 MiB
+CPython/policy_scoring_short: RSS sample 2/3
+CPython/policy_scoring_short: RSS 15.7 MiB
+CPython/policy_scoring_short: RSS sample 3/3
+CPython/policy_scoring_short: RSS 15.7 MiB
+CPython/policy_scoring_batch: RSS sample 1/3
+CPython/policy_scoring_batch: RSS 17.5 MiB
+CPython/policy_scoring_batch: RSS sample 2/3
+CPython/policy_scoring_batch: RSS 17.5 MiB
+CPython/policy_scoring_batch: RSS sample 3/3
+CPython/policy_scoring_batch: RSS 17.4 MiB
+CPython/portfolio_exposure: RSS sample 1/3
+CPython/portfolio_exposure: RSS 15.7 MiB
+CPython/portfolio_exposure: RSS sample 2/3
+CPython/portfolio_exposure: RSS 15.7 MiB
+CPython/portfolio_exposure: RSS sample 3/3
+CPython/portfolio_exposure: RSS 15.7 MiB
+baseline/game_spectral_norm: ok, median 322 ms
+baseline/perf_unpack_sequence: ok, median 328 ms
+baseline/policy_scoring_short: ok, median 0.8 ms
+baseline/policy_scoring_batch: ok, median 8.87 ms
+baseline/portfolio_exposure: ok, median 4.89 ms
+previous_aot/game_spectral_norm: ok, median 271 ms
+previous_aot/perf_unpack_sequence: ok, median 13.2 ms
+previous_aot/policy_scoring_short: ok, median 0.783 ms
+previous_aot/policy_scoring_batch: ok, median 6.96 ms
+previous_aot/portfolio_exposure: ok, median 4.79 ms
+aot/game_spectral_norm: ok, median 258 ms
+aot/perf_unpack_sequence: ok, median 13.3 ms
+aot/policy_scoring_short: ok, median 0.789 ms
+aot/policy_scoring_batch: ok, median 7.14 ms
+aot/portfolio_exposure: ok, median 1.65 ms
+CPython/game_spectral_norm: ok, median 67.6 ms
+CPython/perf_unpack_sequence: ok, median 18.6 ms
+CPython/policy_scoring_short: ok, median 1.44 ms
+CPython/policy_scoring_batch: ok, median 5.17 ms
+CPython/portfolio_exposure: ok, median 2.48 ms
+Running repeated: baseline, previous_aot, aot, CPython
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+baseline/game_spectral_norm: checking compatibility
+baseline/game_spectral_norm: supported 
+baseline/perf_unpack_sequence: checking compatibility
+baseline/perf_unpack_sequence: supported 
+baseline/policy_scoring_short: checking compatibility
+baseline/policy_scoring_short: supported 
+baseline/policy_scoring_batch: checking compatibility
+baseline/policy_scoring_batch: supported 
+baseline/portfolio_exposure: checking compatibility
+baseline/portfolio_exposure: supported 
+previous_aot/game_spectral_norm: checking compatibility
+previous_aot/game_spectral_norm: supported 
+previous_aot/perf_unpack_sequence: checking compatibility
+previous_aot/perf_unpack_sequence: supported 
+previous_aot/policy_scoring_short: checking compatibility
+previous_aot/policy_scoring_short: supported 
+previous_aot/policy_scoring_batch: checking compatibility
+previous_aot/policy_scoring_batch: supported 
+previous_aot/portfolio_exposure: checking compatibility
+previous_aot/portfolio_exposure: supported 
+aot/game_spectral_norm: checking compatibility
+aot/game_spectral_norm: supported 
+aot/perf_unpack_sequence: checking compatibility
+aot/perf_unpack_sequence: supported 
+aot/policy_scoring_short: checking compatibility
+aot/policy_scoring_short: supported 
+aot/policy_scoring_batch: checking compatibility
+aot/policy_scoring_batch: supported 
+aot/portfolio_exposure: checking compatibility
+aot/portfolio_exposure: supported 
+CPython/game_spectral_norm: checking compatibility
+CPython/game_spectral_norm: supported 
+CPython/perf_unpack_sequence: checking compatibility
+CPython/perf_unpack_sequence: supported 
+CPython/policy_scoring_short: checking compatibility
+CPython/policy_scoring_short: supported 
+CPython/policy_scoring_batch: checking compatibility
+CPython/policy_scoring_batch: supported 
+CPython/portfolio_exposure: checking compatibility
+CPython/portfolio_exposure: supported 
+baseline/game_spectral_norm: warmup 1/3
+baseline/perf_unpack_sequence: warmup 1/3
+baseline/policy_scoring_short: warmup 1/3
+baseline/policy_scoring_batch: warmup 1/3
+baseline/portfolio_exposure: warmup 1/3
+previous_aot/game_spectral_norm: warmup 1/3
+previous_aot/perf_unpack_sequence: warmup 1/3
+previous_aot/policy_scoring_short: warmup 1/3
+previous_aot/policy_scoring_batch: warmup 1/3
+previous_aot/portfolio_exposure: warmup 1/3
+aot/game_spectral_norm: warmup 1/3
+aot/perf_unpack_sequence: warmup 1/3
+aot/policy_scoring_short: warmup 1/3
+aot/policy_scoring_batch: warmup 1/3
+aot/portfolio_exposure: warmup 1/3
+CPython/game_spectral_norm: warmup 1/3
+CPython/perf_unpack_sequence: warmup 1/3
+CPython/policy_scoring_short: warmup 1/3
+CPython/policy_scoring_batch: warmup 1/3
+CPython/portfolio_exposure: warmup 1/3
+baseline/game_spectral_norm: warmup 2/3
+baseline/perf_unpack_sequence: warmup 2/3
+baseline/policy_scoring_short: warmup 2/3
+baseline/policy_scoring_batch: warmup 2/3
+baseline/portfolio_exposure: warmup 2/3
+previous_aot/game_spectral_norm: warmup 2/3
+previous_aot/perf_unpack_sequence: warmup 2/3
+previous_aot/policy_scoring_short: warmup 2/3
+previous_aot/policy_scoring_batch: warmup 2/3
+previous_aot/portfolio_exposure: warmup 2/3
+aot/game_spectral_norm: warmup 2/3
+aot/perf_unpack_sequence: warmup 2/3
+aot/policy_scoring_short: warmup 2/3
+aot/policy_scoring_batch: warmup 2/3
+aot/portfolio_exposure: warmup 2/3
+CPython/game_spectral_norm: warmup 2/3
+CPython/perf_unpack_sequence: warmup 2/3
+CPython/policy_scoring_short: warmup 2/3
+CPython/policy_scoring_batch: warmup 2/3
+CPython/portfolio_exposure: warmup 2/3
+baseline/game_spectral_norm: warmup 3/3
+baseline/perf_unpack_sequence: warmup 3/3
+baseline/policy_scoring_short: warmup 3/3
+baseline/policy_scoring_batch: warmup 3/3
+baseline/portfolio_exposure: warmup 3/3
+previous_aot/game_spectral_norm: warmup 3/3
+previous_aot/perf_unpack_sequence: warmup 3/3
+previous_aot/policy_scoring_short: warmup 3/3
+previous_aot/policy_scoring_batch: warmup 3/3
+previous_aot/portfolio_exposure: warmup 3/3
+aot/game_spectral_norm: warmup 3/3
+aot/perf_unpack_sequence: warmup 3/3
+aot/policy_scoring_short: warmup 3/3
+aot/policy_scoring_batch: warmup 3/3
+aot/portfolio_exposure: warmup 3/3
+CPython/game_spectral_norm: warmup 3/3
+CPython/perf_unpack_sequence: warmup 3/3
+CPython/policy_scoring_short: warmup 3/3
+CPython/policy_scoring_batch: warmup 3/3
+CPython/portfolio_exposure: warmup 3/3
+CPython/portfolio_exposure: timing sample 1/15
+CPython/portfolio_exposure: 1.46 ms
+aot/portfolio_exposure: timing sample 1/15
+aot/portfolio_exposure: 1.56 ms
+baseline/policy_scoring_batch: timing sample 1/15
+baseline/policy_scoring_batch: 8.1 ms
+aot/portfolio_exposure: timing sample 2/15
+aot/portfolio_exposure: 1.5 ms
+aot/perf_unpack_sequence: timing sample 1/15
+aot/perf_unpack_sequence: 13.1 ms
+baseline/policy_scoring_batch: timing sample 2/15
+baseline/policy_scoring_batch: 8.78 ms
+baseline/policy_scoring_batch: timing sample 3/15
+baseline/policy_scoring_batch: 8.47 ms
+CPython/perf_unpack_sequence: timing sample 1/15
+CPython/perf_unpack_sequence: 17.5 ms
+CPython/policy_scoring_short: timing sample 1/15
+CPython/policy_scoring_short: 0.49 ms
+previous_aot/policy_scoring_batch: timing sample 1/15
+previous_aot/policy_scoring_batch: 6.67 ms
+baseline/perf_unpack_sequence: timing sample 1/15
+baseline/perf_unpack_sequence: 324 ms
+previous_aot/portfolio_exposure: timing sample 1/15
+previous_aot/portfolio_exposure: 4.49 ms
+CPython/policy_scoring_batch: timing sample 1/15
+CPython/policy_scoring_batch: 4.42 ms
+aot/policy_scoring_short: timing sample 1/15
+aot/policy_scoring_short: 0.583 ms
+baseline/game_spectral_norm: timing sample 1/15
+baseline/game_spectral_norm: 320 ms
+CPython/policy_scoring_short: timing sample 2/15
+CPython/policy_scoring_short: 0.583 ms
+aot/perf_unpack_sequence: timing sample 2/15
+aot/perf_unpack_sequence: 14.1 ms
+aot/policy_scoring_batch: timing sample 1/15
+aot/policy_scoring_batch: 6.69 ms
+previous_aot/policy_scoring_batch: timing sample 2/15
+previous_aot/policy_scoring_batch: 6.61 ms
+CPython/portfolio_exposure: timing sample 2/15
+CPython/portfolio_exposure: 1.61 ms
+baseline/policy_scoring_short: timing sample 1/15
+baseline/policy_scoring_short: 0.599 ms
+baseline/game_spectral_norm: timing sample 2/15
+baseline/game_spectral_norm: 320 ms
+baseline/policy_scoring_batch: timing sample 4/15
+baseline/policy_scoring_batch: 8.4 ms
+previous_aot/policy_scoring_short: timing sample 1/15
+previous_aot/policy_scoring_short: 0.525 ms
+aot/policy_scoring_short: timing sample 2/15
+aot/policy_scoring_short: 0.498 ms
+previous_aot/perf_unpack_sequence: timing sample 1/15
+previous_aot/perf_unpack_sequence: 12.7 ms
+CPython/portfolio_exposure: timing sample 3/15
+CPython/portfolio_exposure: 1.53 ms
+baseline/portfolio_exposure: timing sample 1/15
+baseline/portfolio_exposure: 4.6 ms
+CPython/perf_unpack_sequence: timing sample 2/15
+CPython/perf_unpack_sequence: 17.2 ms
+CPython/portfolio_exposure: timing sample 4/15
+CPython/portfolio_exposure: 1.63 ms
+aot/portfolio_exposure: timing sample 3/15
+aot/portfolio_exposure: 1.48 ms
+CPython/policy_scoring_batch: timing sample 2/15
+CPython/policy_scoring_batch: 4.33 ms
+baseline/policy_scoring_batch: timing sample 5/15
+baseline/policy_scoring_batch: 8.46 ms
+CPython/policy_scoring_short: timing sample 3/15
+CPython/policy_scoring_short: 0.542 ms
+previous_aot/policy_scoring_short: timing sample 2/15
+previous_aot/policy_scoring_short: 0.588 ms
+previous_aot/policy_scoring_batch: timing sample 3/15
+previous_aot/policy_scoring_batch: 6.54 ms
+CPython/game_spectral_norm: timing sample 1/15
+CPython/game_spectral_norm: 67.1 ms
+previous_aot/perf_unpack_sequence: timing sample 2/15
+previous_aot/perf_unpack_sequence: 13 ms
+CPython/perf_unpack_sequence: timing sample 3/15
+CPython/perf_unpack_sequence: 17.4 ms
+aot/policy_scoring_batch: timing sample 2/15
+aot/policy_scoring_batch: 6.72 ms
+aot/game_spectral_norm: timing sample 1/15
+aot/game_spectral_norm: 255 ms
+baseline/policy_scoring_short: timing sample 2/15
+baseline/policy_scoring_short: 0.522 ms
+aot/game_spectral_norm: timing sample 2/15
+aot/game_spectral_norm: 257 ms
+aot/perf_unpack_sequence: timing sample 3/15
+aot/perf_unpack_sequence: 12.9 ms
+aot/perf_unpack_sequence: timing sample 4/15
+aot/perf_unpack_sequence: 13 ms
+aot/policy_scoring_short: timing sample 3/15
+aot/policy_scoring_short: 0.573 ms
+previous_aot/portfolio_exposure: timing sample 2/15
+previous_aot/portfolio_exposure: 4.56 ms
+previous_aot/policy_scoring_batch: timing sample 4/15
+previous_aot/policy_scoring_batch: 6.55 ms
+baseline/game_spectral_norm: timing sample 3/15
+baseline/game_spectral_norm: 403 ms
+aot/portfolio_exposure: timing sample 4/15
+aot/portfolio_exposure: 1.4 ms
+baseline/policy_scoring_batch: timing sample 6/15
+baseline/policy_scoring_batch: 8.13 ms
+baseline/perf_unpack_sequence: timing sample 2/15
+baseline/perf_unpack_sequence: 322 ms
+aot/perf_unpack_sequence: timing sample 5/15
+aot/perf_unpack_sequence: 12.9 ms
+baseline/policy_scoring_short: timing sample 3/15
+baseline/policy_scoring_short: 0.557 ms
+CPython/policy_scoring_batch: timing sample 3/15
+CPython/policy_scoring_batch: 4.56 ms
+baseline/perf_unpack_sequence: timing sample 3/15
+baseline/perf_unpack_sequence: 324 ms
+baseline/policy_scoring_short: timing sample 4/15
+baseline/policy_scoring_short: 0.597 ms
+previous_aot/game_spectral_norm: timing sample 1/15
+previous_aot/game_spectral_norm: 268 ms
+baseline/perf_unpack_sequence: timing sample 4/15
+baseline/perf_unpack_sequence: 323 ms
+aot/policy_scoring_batch: timing sample 3/15
+aot/policy_scoring_batch: 6.67 ms
+previous_aot/game_spectral_norm: timing sample 2/15
+previous_aot/game_spectral_norm: 267 ms
+previous_aot/portfolio_exposure: timing sample 3/15
+previous_aot/portfolio_exposure: 4.63 ms
+baseline/portfolio_exposure: timing sample 2/15
+baseline/portfolio_exposure: 4.85 ms
+baseline/portfolio_exposure: timing sample 3/15
+baseline/portfolio_exposure: 4.5 ms
+CPython/perf_unpack_sequence: timing sample 4/15
+CPython/perf_unpack_sequence: 17.2 ms
+CPython/perf_unpack_sequence: timing sample 5/15
+CPython/perf_unpack_sequence: 17.5 ms
+aot/perf_unpack_sequence: timing sample 6/15
+aot/perf_unpack_sequence: 12.7 ms
+baseline/policy_scoring_short: timing sample 5/15
+baseline/policy_scoring_short: 0.496 ms
+CPython/policy_scoring_short: timing sample 4/15
+CPython/policy_scoring_short: 0.585 ms
+previous_aot/game_spectral_norm: timing sample 3/15
+previous_aot/game_spectral_norm: 267 ms
+baseline/policy_scoring_batch: timing sample 7/15
+baseline/policy_scoring_batch: 8.45 ms
+CPython/game_spectral_norm: timing sample 2/15
+CPython/game_spectral_norm: 66.8 ms
+previous_aot/policy_scoring_batch: timing sample 5/15
+previous_aot/policy_scoring_batch: 6.65 ms
+baseline/game_spectral_norm: timing sample 4/15
+baseline/game_spectral_norm: 320 ms
+baseline/policy_scoring_short: timing sample 6/15
+baseline/policy_scoring_short: 0.576 ms
+aot/game_spectral_norm: timing sample 3/15
+aot/game_spectral_norm: 256 ms
+CPython/policy_scoring_batch: timing sample 4/15
+CPython/policy_scoring_batch: 4.42 ms
+aot/game_spectral_norm: timing sample 4/15
+aot/game_spectral_norm: 255 ms
+previous_aot/game_spectral_norm: timing sample 4/15
+previous_aot/game_spectral_norm: 268 ms
+CPython/portfolio_exposure: timing sample 5/15
+CPython/portfolio_exposure: 1.59 ms
+CPython/perf_unpack_sequence: timing sample 6/15
+CPython/perf_unpack_sequence: 17.4 ms
+previous_aot/policy_scoring_short: timing sample 3/15
+previous_aot/policy_scoring_short: 0.574 ms
+aot/game_spectral_norm: timing sample 5/15
+aot/game_spectral_norm: 256 ms
+CPython/perf_unpack_sequence: timing sample 7/15
+CPython/perf_unpack_sequence: 17.4 ms
+CPython/portfolio_exposure: timing sample 6/15
+CPython/portfolio_exposure: 1.53 ms
+previous_aot/game_spectral_norm: timing sample 5/15
+previous_aot/game_spectral_norm: 268 ms
+baseline/game_spectral_norm: timing sample 5/15
+baseline/game_spectral_norm: 320 ms
+aot/game_spectral_norm: timing sample 6/15
+aot/game_spectral_norm: 255 ms
+previous_aot/policy_scoring_short: timing sample 4/15
+previous_aot/policy_scoring_short: 0.55 ms
+previous_aot/portfolio_exposure: timing sample 4/15
+previous_aot/portfolio_exposure: 4.36 ms
+baseline/perf_unpack_sequence: timing sample 5/15
+baseline/perf_unpack_sequence: 323 ms
+aot/game_spectral_norm: timing sample 7/15
+aot/game_spectral_norm: 257 ms
+aot/perf_unpack_sequence: timing sample 7/15
+aot/perf_unpack_sequence: 13.2 ms
+previous_aot/portfolio_exposure: timing sample 5/15
+previous_aot/portfolio_exposure: 4.58 ms
+CPython/portfolio_exposure: timing sample 7/15
+CPython/portfolio_exposure: 1.57 ms
+CPython/game_spectral_norm: timing sample 3/15
+CPython/game_spectral_norm: 66.9 ms
+CPython/policy_scoring_short: timing sample 5/15
+CPython/policy_scoring_short: 0.558 ms
+previous_aot/policy_scoring_short: timing sample 5/15
+previous_aot/policy_scoring_short: 0.532 ms
+baseline/policy_scoring_short: timing sample 7/15
+baseline/policy_scoring_short: 0.552 ms
+baseline/policy_scoring_short: timing sample 8/15
+baseline/policy_scoring_short: 0.473 ms
+CPython/portfolio_exposure: timing sample 8/15
+CPython/portfolio_exposure: 1.56 ms
+previous_aot/perf_unpack_sequence: timing sample 3/15
+previous_aot/perf_unpack_sequence: 13 ms
+previous_aot/policy_scoring_batch: timing sample 6/15
+previous_aot/policy_scoring_batch: 6.49 ms
+baseline/policy_scoring_batch: timing sample 8/15
+baseline/policy_scoring_batch: 8.32 ms
+baseline/game_spectral_norm: timing sample 6/15
+baseline/game_spectral_norm: 319 ms
+previous_aot/perf_unpack_sequence: timing sample 4/15
+previous_aot/perf_unpack_sequence: 13 ms
+previous_aot/perf_unpack_sequence: timing sample 5/15
+previous_aot/perf_unpack_sequence: 12.9 ms
+CPython/policy_scoring_short: timing sample 6/15
+CPython/policy_scoring_short: 0.538 ms
+CPython/policy_scoring_short: timing sample 7/15
+CPython/policy_scoring_short: 0.479 ms
+aot/policy_scoring_short: timing sample 4/15
+aot/policy_scoring_short: 0.569 ms
+previous_aot/perf_unpack_sequence: timing sample 6/15
+previous_aot/perf_unpack_sequence: 12.6 ms
+aot/game_spectral_norm: timing sample 8/15
+aot/game_spectral_norm: 257 ms
+aot/policy_scoring_batch: timing sample 4/15
+aot/policy_scoring_batch: 6.78 ms
+previous_aot/game_spectral_norm: timing sample 6/15
+previous_aot/game_spectral_norm: 267 ms
+baseline/policy_scoring_short: timing sample 9/15
+baseline/policy_scoring_short: 0.57 ms
+CPython/perf_unpack_sequence: timing sample 8/15
+CPython/perf_unpack_sequence: 17.7 ms
+CPython/portfolio_exposure: timing sample 9/15
+CPython/portfolio_exposure: 1.67 ms
+previous_aot/portfolio_exposure: timing sample 6/15
+previous_aot/portfolio_exposure: 4.82 ms
+aot/policy_scoring_short: timing sample 5/15
+aot/policy_scoring_short: 0.628 ms
+CPython/perf_unpack_sequence: timing sample 9/15
+CPython/perf_unpack_sequence: 17.3 ms
+baseline/policy_scoring_batch: timing sample 9/15
+baseline/policy_scoring_batch: 8.58 ms
+CPython/portfolio_exposure: timing sample 10/15
+CPython/portfolio_exposure: 1.64 ms
+baseline/portfolio_exposure: timing sample 4/15
+baseline/portfolio_exposure: 4.92 ms
+previous_aot/game_spectral_norm: timing sample 7/15
+previous_aot/game_spectral_norm: 268 ms
+previous_aot/game_spectral_norm: timing sample 8/15
+previous_aot/game_spectral_norm: 266 ms
+previous_aot/portfolio_exposure: timing sample 7/15
+previous_aot/portfolio_exposure: 4.48 ms
+baseline/portfolio_exposure: timing sample 5/15
+baseline/portfolio_exposure: 4.54 ms
+CPython/portfolio_exposure: timing sample 11/15
+CPython/portfolio_exposure: 1.55 ms
+aot/policy_scoring_batch: timing sample 5/15
+aot/policy_scoring_batch: 6.65 ms
+CPython/game_spectral_norm: timing sample 4/15
+CPython/game_spectral_norm: 67.7 ms
+previous_aot/perf_unpack_sequence: timing sample 7/15
+previous_aot/perf_unpack_sequence: 12.7 ms
+aot/policy_scoring_short: timing sample 6/15
+aot/policy_scoring_short: 0.562 ms
+baseline/game_spectral_norm: timing sample 7/15
+baseline/game_spectral_norm: 319 ms
+previous_aot/policy_scoring_batch: timing sample 7/15
+previous_aot/policy_scoring_batch: 6.77 ms
+baseline/policy_scoring_short: timing sample 10/15
+baseline/policy_scoring_short: 0.564 ms
+CPython/portfolio_exposure: timing sample 12/15
+CPython/portfolio_exposure: 1.65 ms
+aot/policy_scoring_batch: timing sample 6/15
+aot/policy_scoring_batch: 6.66 ms
+baseline/policy_scoring_short: timing sample 11/15
+baseline/policy_scoring_short: 0.599 ms
+aot/policy_scoring_short: timing sample 7/15
+aot/policy_scoring_short: 0.495 ms
+aot/policy_scoring_short: timing sample 8/15
+aot/policy_scoring_short: 0.399 ms
+previous_aot/portfolio_exposure: timing sample 8/15
+previous_aot/portfolio_exposure: 4.73 ms
+previous_aot/game_spectral_norm: timing sample 9/15
+previous_aot/game_spectral_norm: 267 ms
+baseline/game_spectral_norm: timing sample 8/15
+baseline/game_spectral_norm: 328 ms
+previous_aot/game_spectral_norm: timing sample 10/15
+previous_aot/game_spectral_norm: 268 ms
+aot/portfolio_exposure: timing sample 5/15
+aot/portfolio_exposure: 1.39 ms
+baseline/policy_scoring_batch: timing sample 10/15
+baseline/policy_scoring_batch: 8.23 ms
+CPython/game_spectral_norm: timing sample 5/15
+CPython/game_spectral_norm: 66.9 ms
+aot/game_spectral_norm: timing sample 9/15
+aot/game_spectral_norm: 256 ms
+CPython/policy_scoring_batch: timing sample 5/15
+CPython/policy_scoring_batch: 6.8 ms
+aot/portfolio_exposure: timing sample 6/15
+aot/portfolio_exposure: 1.45 ms
+CPython/game_spectral_norm: timing sample 6/15
+CPython/game_spectral_norm: 66.4 ms
+previous_aot/perf_unpack_sequence: timing sample 8/15
+previous_aot/perf_unpack_sequence: 12.9 ms
+CPython/policy_scoring_batch: timing sample 6/15
+CPython/policy_scoring_batch: 4.32 ms
+CPython/perf_unpack_sequence: timing sample 10/15
+CPython/perf_unpack_sequence: 17.2 ms
+previous_aot/perf_unpack_sequence: timing sample 9/15
+previous_aot/perf_unpack_sequence: 12.9 ms
+aot/perf_unpack_sequence: timing sample 8/15
+aot/perf_unpack_sequence: 12.9 ms
+aot/portfolio_exposure: timing sample 7/15
+aot/portfolio_exposure: 1.33 ms
+CPython/policy_scoring_batch: timing sample 7/15
+CPython/policy_scoring_batch: 4.25 ms
+previous_aot/game_spectral_norm: timing sample 11/15
+previous_aot/game_spectral_norm: 268 ms
+CPython/game_spectral_norm: timing sample 7/15
+CPython/game_spectral_norm: 67.2 ms
+previous_aot/portfolio_exposure: timing sample 9/15
+previous_aot/portfolio_exposure: 4.63 ms
+baseline/game_spectral_norm: timing sample 9/15
+baseline/game_spectral_norm: 320 ms
+baseline/policy_scoring_batch: timing sample 11/15
+baseline/policy_scoring_batch: 8.34 ms
+CPython/game_spectral_norm: timing sample 8/15
+CPython/game_spectral_norm: 66.8 ms
+CPython/perf_unpack_sequence: timing sample 11/15
+CPython/perf_unpack_sequence: 17.3 ms
+CPython/perf_unpack_sequence: timing sample 12/15
+CPython/perf_unpack_sequence: 17.4 ms
+previous_aot/portfolio_exposure: timing sample 10/15
+previous_aot/portfolio_exposure: 4.65 ms
+baseline/portfolio_exposure: timing sample 6/15
+baseline/portfolio_exposure: 4.83 ms
+baseline/policy_scoring_short: timing sample 12/15
+baseline/policy_scoring_short: 0.561 ms
+aot/portfolio_exposure: timing sample 8/15
+aot/portfolio_exposure: 1.4 ms
+aot/policy_scoring_batch: timing sample 7/15
+aot/policy_scoring_batch: 6.44 ms
+baseline/policy_scoring_short: timing sample 13/15
+baseline/policy_scoring_short: 0.522 ms
+previous_aot/policy_scoring_short: timing sample 6/15
+previous_aot/policy_scoring_short: 0.567 ms
+CPython/portfolio_exposure: timing sample 13/15
+CPython/portfolio_exposure: 1.51 ms
+previous_aot/portfolio_exposure: timing sample 11/15
+previous_aot/portfolio_exposure: 4.4 ms
+aot/policy_scoring_batch: timing sample 8/15
+aot/policy_scoring_batch: 6.62 ms
+baseline/policy_scoring_batch: timing sample 12/15
+baseline/policy_scoring_batch: 8.52 ms
+baseline/perf_unpack_sequence: timing sample 6/15
+baseline/perf_unpack_sequence: 322 ms
+aot/perf_unpack_sequence: timing sample 9/15
+aot/perf_unpack_sequence: 12.8 ms
+CPython/policy_scoring_batch: timing sample 8/15
+CPython/policy_scoring_batch: 4.33 ms
+baseline/portfolio_exposure: timing sample 7/15
+baseline/portfolio_exposure: 4.77 ms
+CPython/policy_scoring_short: timing sample 8/15
+CPython/policy_scoring_short: 0.57 ms
+previous_aot/perf_unpack_sequence: timing sample 10/15
+previous_aot/perf_unpack_sequence: 12.7 ms
+CPython/game_spectral_norm: timing sample 9/15
+CPython/game_spectral_norm: 66.5 ms
+aot/policy_scoring_short: timing sample 9/15
+aot/policy_scoring_short: 0.585 ms
+previous_aot/policy_scoring_batch: timing sample 8/15
+previous_aot/policy_scoring_batch: 6.68 ms
+previous_aot/policy_scoring_short: timing sample 7/15
+previous_aot/policy_scoring_short: 0.604 ms
+previous_aot/portfolio_exposure: timing sample 12/15
+previous_aot/portfolio_exposure: 4.36 ms
+baseline/perf_unpack_sequence: timing sample 7/15
+baseline/perf_unpack_sequence: 325 ms
+CPython/game_spectral_norm: timing sample 10/15
+CPython/game_spectral_norm: 66.5 ms
+baseline/game_spectral_norm: timing sample 10/15
+baseline/game_spectral_norm: 319 ms
+previous_aot/policy_scoring_short: timing sample 8/15
+previous_aot/policy_scoring_short: 0.577 ms
+aot/game_spectral_norm: timing sample 10/15
+aot/game_spectral_norm: 256 ms
+aot/portfolio_exposure: timing sample 9/15
+aot/portfolio_exposure: 1.4 ms
+CPython/perf_unpack_sequence: timing sample 13/15
+CPython/perf_unpack_sequence: 17.2 ms
+baseline/game_spectral_norm: timing sample 11/15
+baseline/game_spectral_norm: 320 ms
+aot/portfolio_exposure: timing sample 10/15
+aot/portfolio_exposure: 1.46 ms
+aot/perf_unpack_sequence: timing sample 10/15
+aot/perf_unpack_sequence: 12.7 ms
+CPython/portfolio_exposure: timing sample 14/15
+CPython/portfolio_exposure: 1.67 ms
+previous_aot/perf_unpack_sequence: timing sample 11/15
+previous_aot/perf_unpack_sequence: 12.6 ms
+previous_aot/portfolio_exposure: timing sample 13/15
+previous_aot/portfolio_exposure: 4.49 ms
+CPython/policy_scoring_batch: timing sample 9/15
+CPython/policy_scoring_batch: 6.18 ms
+aot/policy_scoring_batch: timing sample 9/15
+aot/policy_scoring_batch: 6.77 ms
+aot/policy_scoring_batch: timing sample 10/15
+aot/policy_scoring_batch: 6.61 ms
+aot/policy_scoring_batch: timing sample 11/15
+aot/policy_scoring_batch: 6.7 ms
+baseline/policy_scoring_short: timing sample 14/15
+baseline/policy_scoring_short: 0.634 ms
+CPython/policy_scoring_short: timing sample 9/15
+CPython/policy_scoring_short: 0.562 ms
+baseline/perf_unpack_sequence: timing sample 8/15
+baseline/perf_unpack_sequence: 323 ms
+previous_aot/perf_unpack_sequence: timing sample 12/15
+previous_aot/perf_unpack_sequence: 12.6 ms
+previous_aot/policy_scoring_batch: timing sample 9/15
+previous_aot/policy_scoring_batch: 6.55 ms
+CPython/perf_unpack_sequence: timing sample 14/15
+CPython/perf_unpack_sequence: 17.5 ms
+previous_aot/policy_scoring_batch: timing sample 10/15
+previous_aot/policy_scoring_batch: 6.57 ms
+CPython/policy_scoring_batch: timing sample 10/15
+CPython/policy_scoring_batch: 4.33 ms
+aot/game_spectral_norm: timing sample 11/15
+aot/game_spectral_norm: 256 ms
+baseline/portfolio_exposure: timing sample 8/15
+baseline/portfolio_exposure: 4.71 ms
+baseline/portfolio_exposure: timing sample 9/15
+baseline/portfolio_exposure: 4.74 ms
+CPython/policy_scoring_short: timing sample 10/15
+CPython/policy_scoring_short: 0.598 ms
+aot/portfolio_exposure: timing sample 11/15
+aot/portfolio_exposure: 1.4 ms
+previous_aot/policy_scoring_short: timing sample 9/15
+previous_aot/policy_scoring_short: 0.544 ms
+previous_aot/game_spectral_norm: timing sample 12/15
+previous_aot/game_spectral_norm: 266 ms
+CPython/policy_scoring_batch: timing sample 11/15
+CPython/policy_scoring_batch: 4.32 ms
+previous_aot/portfolio_exposure: timing sample 14/15
+previous_aot/portfolio_exposure: 4.6 ms
+aot/policy_scoring_short: timing sample 10/15
+aot/policy_scoring_short: 0.553 ms
+CPython/game_spectral_norm: timing sample 11/15
+CPython/game_spectral_norm: 66.8 ms
+CPython/game_spectral_norm: timing sample 12/15
+CPython/game_spectral_norm: 67.4 ms
+aot/policy_scoring_batch: timing sample 12/15
+aot/policy_scoring_batch: 6.8 ms
+aot/game_spectral_norm: timing sample 12/15
+aot/game_spectral_norm: 256 ms
+aot/portfolio_exposure: timing sample 12/15
+aot/portfolio_exposure: 1.35 ms
+aot/portfolio_exposure: timing sample 13/15
+aot/portfolio_exposure: 1.49 ms
+baseline/policy_scoring_batch: timing sample 13/15
+baseline/policy_scoring_batch: 8.3 ms
+aot/policy_scoring_short: timing sample 11/15
+aot/policy_scoring_short: 0.547 ms
+CPython/policy_scoring_batch: timing sample 12/15
+CPython/policy_scoring_batch: 4.21 ms
+previous_aot/policy_scoring_batch: timing sample 11/15
+previous_aot/policy_scoring_batch: 6.71 ms
+previous_aot/game_spectral_norm: timing sample 13/15
+previous_aot/game_spectral_norm: 267 ms
+baseline/game_spectral_norm: timing sample 12/15
+baseline/game_spectral_norm: 320 ms
+previous_aot/policy_scoring_batch: timing sample 12/15
+previous_aot/policy_scoring_batch: 6.72 ms
+baseline/game_spectral_norm: timing sample 13/15
+baseline/game_spectral_norm: 321 ms
+aot/portfolio_exposure: timing sample 14/15
+aot/portfolio_exposure: 1.48 ms
+baseline/perf_unpack_sequence: timing sample 9/15
+baseline/perf_unpack_sequence: 326 ms
+CPython/policy_scoring_short: timing sample 11/15
+CPython/policy_scoring_short: 0.618 ms
+previous_aot/policy_scoring_short: timing sample 10/15
+previous_aot/policy_scoring_short: 0.535 ms
+previous_aot/game_spectral_norm: timing sample 14/15
+previous_aot/game_spectral_norm: 267 ms
+CPython/policy_scoring_batch: timing sample 13/15
+CPython/policy_scoring_batch: 4.63 ms
+aot/game_spectral_norm: timing sample 13/15
+aot/game_spectral_norm: 256 ms
+baseline/portfolio_exposure: timing sample 10/15
+baseline/portfolio_exposure: 4.66 ms
+baseline/perf_unpack_sequence: timing sample 10/15
+baseline/perf_unpack_sequence: 324 ms
+CPython/policy_scoring_short: timing sample 12/15
+CPython/policy_scoring_short: 0.592 ms
+baseline/policy_scoring_batch: timing sample 14/15
+baseline/policy_scoring_batch: 8.56 ms
+aot/portfolio_exposure: timing sample 15/15
+aot/portfolio_exposure: 1.44 ms
+CPython/portfolio_exposure: timing sample 15/15
+CPython/portfolio_exposure: 1.62 ms
+aot/policy_scoring_batch: timing sample 13/15
+aot/policy_scoring_batch: 6.61 ms
+CPython/perf_unpack_sequence: timing sample 15/15
+CPython/perf_unpack_sequence: 17.2 ms
+previous_aot/policy_scoring_short: timing sample 11/15
+previous_aot/policy_scoring_short: 0.588 ms
+previous_aot/game_spectral_norm: timing sample 15/15
+previous_aot/game_spectral_norm: 268 ms
+baseline/perf_unpack_sequence: timing sample 11/15
+baseline/perf_unpack_sequence: 325 ms
+aot/policy_scoring_batch: timing sample 14/15
+aot/policy_scoring_batch: 6.72 ms
+CPython/policy_scoring_short: timing sample 13/15
+CPython/policy_scoring_short: 0.539 ms
+aot/policy_scoring_short: timing sample 12/15
+aot/policy_scoring_short: 0.452 ms
+previous_aot/perf_unpack_sequence: timing sample 13/15
+previous_aot/perf_unpack_sequence: 13.1 ms
+baseline/portfolio_exposure: timing sample 11/15
+baseline/portfolio_exposure: 4.7 ms
+aot/game_spectral_norm: timing sample 14/15
+aot/game_spectral_norm: 256 ms
+aot/policy_scoring_short: timing sample 13/15
+aot/policy_scoring_short: 0.557 ms
+baseline/game_spectral_norm: timing sample 14/15
+baseline/game_spectral_norm: 320 ms
+baseline/portfolio_exposure: timing sample 12/15
+baseline/portfolio_exposure: 4.62 ms
+previous_aot/policy_scoring_short: timing sample 12/15
+previous_aot/policy_scoring_short: 0.579 ms
+previous_aot/policy_scoring_short: timing sample 13/15
+previous_aot/policy_scoring_short: 0.401 ms
+aot/perf_unpack_sequence: timing sample 11/15
+aot/perf_unpack_sequence: 13 ms
+aot/policy_scoring_batch: timing sample 15/15
+aot/policy_scoring_batch: 6.69 ms
+previous_aot/perf_unpack_sequence: timing sample 14/15
+previous_aot/perf_unpack_sequence: 12.5 ms
+previous_aot/perf_unpack_sequence: timing sample 15/15
+previous_aot/perf_unpack_sequence: 12.9 ms
+aot/perf_unpack_sequence: timing sample 12/15
+aot/perf_unpack_sequence: 12.9 ms
+baseline/portfolio_exposure: timing sample 13/15
+baseline/portfolio_exposure: 4.66 ms
+baseline/perf_unpack_sequence: timing sample 12/15
+baseline/perf_unpack_sequence: 325 ms
+baseline/policy_scoring_short: timing sample 15/15
+baseline/policy_scoring_short: 0.629 ms
+baseline/perf_unpack_sequence: timing sample 13/15
+baseline/perf_unpack_sequence: 322 ms
+aot/perf_unpack_sequence: timing sample 13/15
+aot/perf_unpack_sequence: 12.7 ms
+baseline/perf_unpack_sequence: timing sample 14/15
+baseline/perf_unpack_sequence: 325 ms
+previous_aot/portfolio_exposure: timing sample 15/15
+previous_aot/portfolio_exposure: 4.64 ms
+CPython/policy_scoring_short: timing sample 14/15
+CPython/policy_scoring_short: 0.591 ms
+aot/game_spectral_norm: timing sample 15/15
+aot/game_spectral_norm: 256 ms
+CPython/policy_scoring_batch: timing sample 14/15
+CPython/policy_scoring_batch: 6.4 ms
+CPython/game_spectral_norm: timing sample 13/15
+CPython/game_spectral_norm: 67.1 ms
+aot/policy_scoring_short: timing sample 14/15
+aot/policy_scoring_short: 0.58 ms
+previous_aot/policy_scoring_batch: timing sample 13/15
+previous_aot/policy_scoring_batch: 6.58 ms
+previous_aot/policy_scoring_batch: timing sample 14/15
+previous_aot/policy_scoring_batch: 6.47 ms
+previous_aot/policy_scoring_short: timing sample 14/15
+previous_aot/policy_scoring_short: 0.446 ms
+baseline/portfolio_exposure: timing sample 14/15
+baseline/portfolio_exposure: 4.71 ms
+aot/perf_unpack_sequence: timing sample 14/15
+aot/perf_unpack_sequence: 12.8 ms
+CPython/policy_scoring_batch: timing sample 15/15
+CPython/policy_scoring_batch: 4.41 ms
+aot/perf_unpack_sequence: timing sample 15/15
+aot/perf_unpack_sequence: 12.7 ms
+baseline/policy_scoring_batch: timing sample 15/15
+baseline/policy_scoring_batch: 8.66 ms
+baseline/portfolio_exposure: timing sample 15/15
+baseline/portfolio_exposure: 4.68 ms
+CPython/game_spectral_norm: timing sample 14/15
+CPython/game_spectral_norm: 67.3 ms
+previous_aot/policy_scoring_short: timing sample 15/15
+previous_aot/policy_scoring_short: 0.529 ms
+previous_aot/policy_scoring_batch: timing sample 15/15
+previous_aot/policy_scoring_batch: 6.39 ms
+baseline/perf_unpack_sequence: timing sample 15/15
+baseline/perf_unpack_sequence: 324 ms
+aot/policy_scoring_short: timing sample 15/15
+aot/policy_scoring_short: 0.53 ms
+baseline/game_spectral_norm: timing sample 15/15
+baseline/game_spectral_norm: 320 ms
+CPython/game_spectral_norm: timing sample 15/15
+CPython/game_spectral_norm: 66.5 ms
+CPython/policy_scoring_short: timing sample 15/15
+CPython/policy_scoring_short: 0.57 ms
+baseline/game_spectral_norm: ok, median 320 ms
+baseline/perf_unpack_sequence: ok, median 324 ms
+baseline/policy_scoring_short: ok, median 0.564 ms
+baseline/policy_scoring_batch: ok, median 8.45 ms
+baseline/portfolio_exposure: ok, median 4.7 ms
+previous_aot/game_spectral_norm: ok, median 267 ms
+previous_aot/perf_unpack_sequence: ok, median 12.9 ms
+previous_aot/policy_scoring_short: ok, median 0.55 ms
+previous_aot/policy_scoring_batch: ok, median 6.58 ms
+previous_aot/portfolio_exposure: ok, median 4.58 ms
+aot/game_spectral_norm: ok, median 256 ms
+aot/perf_unpack_sequence: ok, median 12.9 ms
+aot/policy_scoring_short: ok, median 0.557 ms
+aot/policy_scoring_batch: ok, median 6.69 ms
+aot/portfolio_exposure: ok, median 1.44 ms
+CPython/game_spectral_norm: ok, median 66.9 ms
+CPython/perf_unpack_sequence: ok, median 17.4 ms
+CPython/policy_scoring_short: ok, median 0.57 ms
+CPython/policy_scoring_batch: ok, median 4.41 ms
+CPython/portfolio_exposure: ok, median 1.59 ms
+regression: 1
+improvement: 22
+inconclusive: 18
+failure: 0
+compatibility change: 0
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/report.html
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/report.md
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/report.json

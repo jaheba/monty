@@ -1,0 +1,92 @@
+{
+  "capacity_planning": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-confirmation/workloads/capacity_planning.py",
+    "suite": "custom",
+    "stdout": "benefit: 23667\ndays: 2396\nprojects: 35\nselected: 0,5,6,7,8,10,15,16,17,18,20,25,26,27,30,34,35,36,39,40,44,45,49,50,54,55,59,60,61,64,69,70,71,78,79\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/capacity_planning.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "88dc5d29c457d64c6735be5f8d8008e7e0f7ac3d78765ac007e110379c313156"
+  },
+  "dictionary_long_keys": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-confirmation/workloads/dictionary_long_keys.py",
+    "suite": "custom",
+    "stdout": "14000\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/dictionary_long_keys.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "47991561e5c65cc0fe6180a1ed10b73889d2c7b333c723ba3ae0a0a07623c288"
+  },
+  "game_spectral_norm": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-confirmation/workloads/game_spectral_norm.py",
+    "suite": "custom",
+    "stdout": "1.274222210\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/game_spectral_norm.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "b3961c3858ab9f9e01026a209208613b8a5996d5db423d56a74d5b1f120e3cee"
+  },
+  "perf_float": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-confirmation/workloads/perf_float.py",
+    "suite": "custom",
+    "stdout": "0.894427189 1.000000000 0.447213595\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/perf_float.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "542193ceaa5a7521f5d3a5ed6ba46f854e53225923f018262ea79bee93cf1ebc"
+  },
+  "perf_unpack_sequence": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-confirmation/workloads/perf_unpack_sequence.py",
+    "suite": "custom",
+    "stdout": "(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)\n(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/perf_unpack_sequence.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "b932742e5e239f62f44392ed693d54b1b994117c3fce1108313250e36ac8a567"
+  },
+  "policy_scoring_batch": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-confirmation/workloads/policy_scoring_batch.py",
+    "suite": "custom",
+    "stdout": "5000 373 2296966.597\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_batch.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "8c7adf278dfaf8e0159a291a0822313b851de005dc0687e4c81d31f0be005cd7"
+  },
+  "policy_scoring_short": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-confirmation/workloads/policy_scoring_short.py",
+    "suite": "custom",
+    "stdout": "200 0 59316.209\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_short.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "0abb3361c754380a9f4eba501a20479bb7ee647c896212155955cb2932c353be"
+  },
+  "portfolio_exposure": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-confirmation/workloads/portfolio_exposure.py",
+    "suite": "custom",
+    "stdout": "2000 19.083623\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/portfolio_exposure.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "8fecf54209a2da92541765f22465021f6a6a94619422abbe1b5896b4f6961c0d"
+  },
+  "ticket_search": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-confirmation/workloads/ticket_search.py",
+    "suite": "custom",
+    "stdout": "tickets: 1600\nterms: 147\npayments timeout retry: 648=2438484,1096=2438484,0=2435726,456=2089789,1024=2087235\nmissing reports permissions: 907=2709190,1547=2380733,19=2379865,659=2379865,1355=2379865\nwebhooks delayed logs: 1310=2401656,422=2400785,1062=2400785,806=2049998,678=2049403\naccounts invalid credentials: 178=2379620,226=2043314,1370=2042347,578=2031268,1018=2031268\nstorage unavailable connection: 791=2739173,343=2737889,151=2407110,1135=2054352,1583=2051421\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/ticket_search.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "6c14d8c2575f0c780a15b95534659804f3b1e7e83f9c3c187a123de5725e63f1"
+  }
+}

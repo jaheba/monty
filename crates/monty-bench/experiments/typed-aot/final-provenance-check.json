@@ -1,0 +1,10 @@
+{
+  "guarded-match-artifacts": {
+    "source_mismatches": [],
+    "binary_sha256": "e57f05511b42b70a1d18967ac3c75c5b96e4c78f86c315c47ef77071a5044761"
+  },
+  "guarded-combined-artifacts": {
+    "source_mismatches": [],
+    "binary_sha256": "9adfb37553b3233adbd8f82c7a3e2147eb64b4f86515f607a4647ac77a1cd882"
+  }
+}

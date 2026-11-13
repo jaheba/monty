@@ -1,0 +1,3 @@
+ Downgrading wasmtime-internal-core v50.0.0 -> v49.0.5
+ Downgrading wasmtime-internal-jit-icache-coherence v50.0.0 -> v49.0.5
+note: pass `--verbose` to see 76 unchanged dependencies behind latest

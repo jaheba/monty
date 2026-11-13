@@ -1,0 +1,26 @@
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.69s
+     Running tests/typed_aot.rs (/Users/jaheba/p/monty/target/debug/deps/typed_aot-12888a9f7868551e)
+
+running 18 tests
+test builtin_shadowing_preserves_callbacks ... ok
+test immutable_range_aliases_are_values ... ok
+test private_tuple_assignments_preserve_parallel_values ... ok
+test runtime_guards_and_errors ... ok
+test large_sparse_sequences_validate_only_the_accessed_values ... ok
+test floating_point_and_boolean_semantics ... ok
+test short_circuit_and_unbound_locals ... ok
+test infinite_typed_loop_polls_deadlines ... ok
+test sequence_mismatches_and_python_callbacks ... ok
+test suspension_round_trip_rebuilds_typed_helpers ... ok
+test virtual_range_loops ... ok
+test scalar_functions_and_loops ... ok
+test typed_dictionary_reads ... ok
+test typed_sequences_and_unpacking ... ok
+test readonly_sequence_loops_keep_python_iteration_semantics ... ok
+test maybe_bound_locals_and_scalar_tuple_returns ... ok
+test scalar_calls_preserve_binding_recursion_and_errors ... ok
+test repeated_native_calls_keep_dispatch_batches_bounded ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.67s
+

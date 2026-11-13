@@ -1,0 +1,66 @@
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty)
+warning: use of deprecated method `std::sync::atomic::Atomic::<usize>::fetch_update`: renamed to `try_update` for consistency
+   --> crates/monty/src/bytecode/aot/backend.rs:150:22
+    |
+150 | ...   MAPPED_BYTES.fetch_update(Ordering::Relaxed,Ordering::Relaxed,|old|old.checked_add(reservation).filter(|&n|n<=MAX_MAPPED_BYTE...
+    |                    ^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+help: replace the use of the deprecated method
+    |
+150 -         MAPPED_BYTES.fetch_update(Ordering::Relaxed,Ordering::Relaxed,|old|old.checked_add(reservation).filter(|&n|n<=MAX_MAPPED_BYTES)).map_err(|_|invalid())?;
+150 +         MAPPED_BYTES.try_update(Ordering::Relaxed,Ordering::Relaxed,|old|old.checked_add(reservation).filter(|&n|n<=MAX_MAPPED_BYTES)).map_err(|_|invalid())?;
+    |
+
+warning: field `ip` is never read
+  --> crates/monty/src/bytecode/aot/ir.rs:62:9
+   |
+61 | pub(crate) struct Block {
+   |                   ----- field in this struct
+62 |     pub ip: usize,
+   |         ^^
+   |
+   = note: `Block` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `monty` (lib) generated 2 warnings (run `cargo fix --lib -p monty` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.92s
+     Running tests/typed_aot.rs (/Users/jaheba/p/monty/target/debug/deps/typed_aot-52d7440f963b7be2)
+
+running 4 tests
+test short_circuit_and_unbound_locals ... FAILED
+test runtime_guards_and_errors ... ok
+test floating_point_and_boolean_semantics ... ok
+test scalar_functions_and_loops ... FAILED
+
+failures:
+
+---- short_circuit_and_unbound_locals stdout ----
+
+thread 'short_circuit_and_unbound_locals' (71186526) panicked at crates/monty/tests/typed_aot.rs:16:22:
+no optimized return: def f(x: int):
+    a = 2
+    b = 3
+    while x > 0:
+        a, b = b, a
+        x -= 1
+    return a * 10 + b
+f(5); Stats { compilations: 0, code_bytes: 0, entries: 0, returns: 0, fallbacks: 0, instructions: 0 }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- scalar_functions_and_loops stdout ----
+
+thread 'scalar_functions_and_loops' (71186525) panicked at crates/monty/tests/typed_aot.rs:16:22:
+no optimized return: def f(x: int, y: int) -> int:
+    x, y = y, x
+    return x * 10 + y
+f(2, 3); Stats { compilations: 0, code_bytes: 0, entries: 0, returns: 0, fallbacks: 0, instructions: 0 }
+
+
+failures:
+    scalar_functions_and_loops
+    short_circuit_and_unbound_locals
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `-p monty --test typed_aot`

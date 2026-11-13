@@ -1,0 +1,11 @@
+{
+  "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/final-combined-artifacts/aot_differential",
+  "sha256": "feab13ca73df6b8b3fdb961058faf0e098fb1a1965eedcd22c4e3b4ad9865f87",
+  "count": 1000000,
+  "seed": 20261113,
+  "max_seconds": 600,
+  "skip_cases": 0,
+  "status": "generator_resource_limit",
+  "stopped_case": 348948,
+  "explanation": "Both reference and copied backend raised ResourceError MemoryError; generated invalid string element amplified before TypeError. Generator changed to None to bound allocation. Original source and log retained."
+}

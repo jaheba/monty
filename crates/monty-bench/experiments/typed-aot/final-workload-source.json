@@ -1,0 +1,11 @@
+{
+  "workloads/ticket_search.py": "6c14d8c2575f0c780a15b95534659804f3b1e7e83f9c3c187a123de5725e63f1",
+  "workloads/perf_float.py": "542193ceaa5a7521f5d3a5ed6ba46f854e53225923f018262ea79bee93cf1ebc",
+  "workloads/policy_scoring_short.py": "0abb3361c754380a9f4eba501a20479bb7ee647c896212155955cb2932c353be",
+  "workloads/portfolio_exposure.py": "8fecf54209a2da92541765f22465021f6a6a94619422abbe1b5896b4f6961c0d",
+  "workloads/dictionary_long_keys.py": "47991561e5c65cc0fe6180a1ed10b73889d2c7b333c723ba3ae0a0a07623c288",
+  "workloads/perf_unpack_sequence.py": "b932742e5e239f62f44392ed693d54b1b994117c3fce1108313250e36ac8a567",
+  "workloads/capacity_planning.py": "88dc5d29c457d64c6735be5f8d8008e7e0f7ac3d78765ac007e110379c313156",
+  "workloads/policy_scoring_batch.py": "8c7adf278dfaf8e0159a291a0822313b851de005dc0687e4c81d31f0be005cd7",
+  "workloads/game_spectral_norm.py": "b3961c3858ab9f9e01026a209208613b8a5996d5db423d56a74d5b1f120e3cee"
+}

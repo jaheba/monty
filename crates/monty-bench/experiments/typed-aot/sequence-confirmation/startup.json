@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "scenario": "empty_command_process",
+  "samples": 5,
+  "timestamp": "2026-11-12T21:53:15.385809+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "scope": "Fresh process launch through exit; empty -c command; no shell; normal interpreter defaults",
+  "engines": {
+    "baseline": {
+      "binary_sha256": "adaf0f707b4387f2fcc60b66bef96cad3334c7f3974e96e31cd818e0c2153ea4",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-artifacts/bin/monty",
+        "--no-native",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.006807875,
+        0.007280667,
+        0.006332208,
+        0.006667333,
+        0.006645542
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.006667333
+    },
+    "typed": {
+      "binary_sha256": "adaf0f707b4387f2fcc60b66bef96cad3334c7f3974e96e31cd818e0c2153ea4",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-artifacts/bin/monty",
+        "--aot",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007708209,
+        0.007492583,
+        0.007604125,
+        0.007729042,
+        0.007882167
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.007708209
+    },
+    "CPython": {
+      "binary_sha256": "15c72833c1ffc09bc4e05d1e1866784d126721ad548d9c4d8f943641262535cb",
+      "revision": "Python 3.15.0",
+      "command": [
+        "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/bin/python3.15",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.024989375,
+        0.026488833,
+        0.025122667,
+        0.025704458,
+        0.025307459
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.025307459
+    }
+  }
+}

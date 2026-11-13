@@ -1,0 +1,6 @@
+   Compiling monty-typeshed v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-typeshed)
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty)
+   Compiling monty-type-checking v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-type-checking)
+   Compiling monty-proto v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-proto)
+   Compiling monty-runtime v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-runtime)
+    Finished `release` profile [optimized] target(s) in 3m 22s

@@ -1,0 +1,53 @@
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty)
+warning: use of deprecated method `std::sync::atomic::Atomic::<usize>::fetch_update`: renamed to `try_update` for consistency
+   --> crates/monty/src/bytecode/aot/backend.rs:160:22
+    |
+160 | ...   MAPPED_BYTES.fetch_update(Ordering::Relaxed,Ordering::Relaxed,|old|old.checked_add(reservation).filter(|&n|n<=MAX_MAPPED_BYTE...
+    |                    ^^^^^^^^^^^^
+    |
+    = note: `#[warn(deprecated)]` on by default
+help: replace the use of the deprecated method
+    |
+160 -         MAPPED_BYTES.fetch_update(Ordering::Relaxed,Ordering::Relaxed,|old|old.checked_add(reservation).filter(|&n|n<=MAX_MAPPED_BYTES)).map_err(|_|invalid())?;
+160 +         MAPPED_BYTES.try_update(Ordering::Relaxed,Ordering::Relaxed,|old|old.checked_add(reservation).filter(|&n|n<=MAX_MAPPED_BYTES)).map_err(|_|invalid())?;
+    |
+
+warning: field `ip` is never read
+  --> crates/monty/src/bytecode/aot/ir.rs:67:9
+   |
+66 | pub(crate) struct Block {
+   |                   ----- field in this struct
+67 |     pub ip: usize,
+   |         ^^
+   |
+   = note: `Block` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `monty` (lib) generated 2 warnings (run `cargo fix --lib -p monty` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.43s
+     Running tests/typed_aot.rs (/Users/jaheba/p/monty/target/debug/deps/typed_aot-52d7440f963b7be2)
+
+running 1 test
+decoded [Decoded { ip: 0, next: 2, op: LoadSmallInt, argument: 0, target: None }, Decoded { ip: 2, next: 4, op: StoreLocal, argument: 1, target: None }, Decoded { ip: 4, next: 9, op: LoadGlobalCallable, argument: 0, target: None }, Decoded { ip: 9, next: 10, op: LoadLocal0, argument: 0, target: None }, Decoded { ip: 10, next: 12, op: CallFunction, argument: 0, target: None }, Decoded { ip: 12, next: 13, op: GetIter, argument: 0, target: None }, Decoded { ip: 13, next: 16, op: ForIter, argument: 0, target: Some(29) }, Decoded { ip: 16, next: 18, op: StoreLocal, argument: 2, target: None }, Decoded { ip: 18, next: 19, op: LoadLocal1, argument: 1, target: None }, Decoded { ip: 19, next: 20, op: LoadLocal2, argument: 2, target: None }, Decoded { ip: 20, next: 22, op: LoadSmallInt, argument: 3, target: None }, Decoded { ip: 22, next: 23, op: BinaryMul, argument: 0, target: None }, Decoded { ip: 23, next: 24, op: InplaceAdd, argument: 0, target: None }, Decoded { ip: 24, next: 26, op: StoreLocal, argument: 1, target: None }, Decoded { ip: 26, next: 29, op: Jump, argument: 0, target: Some(13) }, Decoded { ip: 29, next: 30, op: LoadLocal1, argument: 1, target: None }, Decoded { ip: 30, next: 31, op: ReturnValue, argument: 0, target: None }]
+reject Decoded { ip: 4, next: 9, op: LoadGlobalCallable, argument: 0, target: None } [Int, Int, Unbound] []
+decoded [Decoded { ip: 0, next: 2, op: LoadSmallInt, argument: 0, target: None }, Decoded { ip: 2, next: 4, op: StoreLocal, argument: 1, target: None }, Decoded { ip: 4, next: 9, op: LoadGlobalCallable, argument: 0, target: None }, Decoded { ip: 9, next: 10, op: LoadLocal0, argument: 0, target: None }, Decoded { ip: 10, next: 12, op: CallFunction, argument: 0, target: None }, Decoded { ip: 12, next: 13, op: GetIter, argument: 0, target: None }, Decoded { ip: 13, next: 16, op: ForIter, argument: 0, target: Some(29) }, Decoded { ip: 16, next: 18, op: StoreLocal, argument: 2, target: None }, Decoded { ip: 18, next: 19, op: LoadLocal1, argument: 1, target: None }, Decoded { ip: 19, next: 20, op: LoadLocal2, argument: 2, target: None }, Decoded { ip: 20, next: 22, op: LoadSmallInt, argument: 3, target: None }, Decoded { ip: 22, next: 23, op: BinaryMul, argument: 0, target: None }, Decoded { ip: 23, next: 24, op: InplaceAdd, argument: 0, target: None }, Decoded { ip: 24, next: 26, op: StoreLocal, argument: 1, target: None }, Decoded { ip: 26, next: 29, op: Jump, argument: 0, target: Some(13) }, Decoded { ip: 29, next: 30, op: LoadLocal1, argument: 1, target: None }, Decoded { ip: 30, next: 31, op: ReturnValue, argument: 0, target: None }]
+reject Decoded { ip: 4, next: 9, op: LoadGlobalCallable, argument: 0, target: None } [Int, Int, Unbound] []
+
+thread 'virtual_range_loops' (71191423) panicked at crates/monty/tests/typed_aot.rs:16:22:
+no optimized return: def f(n: int):
+    total = 0
+    for i in range(n):
+        total += i * 3
+    return total
+f(500); Stats { compilations: 0, code_bytes: 0, entries: 0, returns: 0, fallbacks: 0, instructions: 0 }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test virtual_range_loops ... FAILED
+
+failures:
+
+failures:
+    virtual_range_loops
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `-p monty --test typed_aot`

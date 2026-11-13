@@ -1,0 +1,138 @@
+   Compiling monty-macros v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-macros)
+    Checking monty-types v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-types)
+    Checking monty-alloc v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-alloc)
+    Checking monty v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty)
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+   --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:664:29
+    |
+ 94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+    |                                             ------- ----------------------- mutable borrow occurs here
+    |                                             |
+    |                                             mutable borrow later used by call
+...
+664 |     handle_call_result!(vm, context, vm.load_attr(name_id));
+    |                             ^^^^^^^ immutable borrow occurs here
+
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+   --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:669:29
+    |
+ 94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+    |                                             ------- ----------------------- mutable borrow occurs here
+    |                                             |
+    |                                             mutable borrow later used by call
+...
+669 |     handle_call_result!(vm, context, vm.load_attr_import(name_id));
+    |                             ^^^^^^^ immutable borrow occurs here
+
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+   --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:776:29
+    |
+ 94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+    |                                             ------- ----------------------- mutable borrow occurs here
+    |                                             |
+    |                                             mutable borrow later used by call
+...
+776 |     handle_call_result!(vm, context, vm.exec_call_function(arg_count));
+    |                             ^^^^^^^ immutable borrow occurs here
+
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+   --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:781:29
+    |
+ 94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+    |                                             ------- ----------------------- mutable borrow occurs here
+    |                                             |
+    |                                             mutable borrow later used by call
+...
+781 |     handle_call_result!(vm, context, result);
+    |                             ^^^^^^^ immutable borrow occurs here
+
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+   --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:803:29
+    |
+ 94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+    |                                             ------- ----------------------- mutable borrow occurs here
+    |                                             |
+    |                                             mutable borrow later used by call
+...
+803 |     handle_call_result!(vm, context, vm.exec_call_function_kw(pos_count, kwname_ids));
+    |                             ^^^^^^^ immutable borrow occurs here
+
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+   --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:812:29
+    |
+ 94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+    |                                             ------- ----------------------- mutable borrow occurs here
+    |                                             |
+    |                                             mutable borrow later used by call
+...
+812 |     handle_call_result!(vm, context, vm.exec_call_attr(name_id, arg_count));
+    |                             ^^^^^^^ immutable borrow occurs here
+
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+   --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:827:29
+    |
+ 94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+    |                                             ------- ----------------------- mutable borrow occurs here
+    |                                             |
+    |                                             mutable borrow later used by call
+...
+827 |     handle_call_result!(vm, context, vm.exec_call_attr_kw(name_id, pos_count, kwname_ids));
+    |                             ^^^^^^^ immutable borrow occurs here
+
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+   --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:833:29
+    |
+ 94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+    |                                             ------- ----------------------- mutable borrow occurs here
+    |                                             |
+    |                                             mutable borrow later used by call
+...
+833 |     handle_call_result!(vm, context, vm.exec_call_function_extended(has_kwargs));
+    |                             ^^^^^^^ immutable borrow occurs here
+
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+   --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:840:29
+    |
+ 94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+    |                                             ------- ----------------------- mutable borrow occurs here
+    |                                             |
+    |                                             mutable borrow later used by call
+...
+840 |     handle_call_result!(vm, context, vm.exec_call_attr_extended(name_id, has_kwargs));
+    |                             ^^^^^^^ immutable borrow occurs here
+
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+    --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:1133:29
+     |
+  94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+     |                                             ------- ----------------------- mutable borrow occurs here
+     |                                             |
+     |                                             mutable borrow later used by call
+...
+1133 |     handle_call_result!(vm, context, vm.exec_before_with());
+     |                             ^^^^^^^ immutable borrow occurs here
+
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+    --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:1136:29
+     |
+  94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+     |                                             ------- ----------------------- mutable borrow occurs here
+     |                                             |
+     |                                             mutable borrow later used by call
+...
+1136 |     handle_call_result!(vm, context, vm.exec_with_exit());
+     |                             ^^^^^^^ immutable borrow occurs here
+
+error[E0502]: cannot borrow `*context` as immutable because it is also borrowed as mutable
+    --> crates/monty/src/bytecode/vm/dispatch_threaded.rs:1139:29
+     |
+  94 |                     if let Err(error)=$self.try_aot(&mut $context.countdown,$context.check_limits(),$context.poll_print()){
+     |                                             ------- ----------------------- mutable borrow occurs here
+     |                                             |
+     |                                             mutable borrow later used by call
+...
+1139 |     handle_call_result!(vm, context, vm.exec_with_except_start());
+     |                             ^^^^^^^ immutable borrow occurs here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `monty` (lib) due to 12 previous errors

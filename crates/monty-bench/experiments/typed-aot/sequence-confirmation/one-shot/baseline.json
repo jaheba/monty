@@ -1,0 +1,1353 @@
+{
+  "schema_version": 1,
+  "revision": "monty-runtime 1.0.1",
+  "runtime_label": "baseline",
+  "build_info": "Source revision and compiler flags unverified",
+  "engine": "monty",
+  "runtime_version": "monty-runtime 1.0.1",
+  "binary_sha256": "adaf0f707b4387f2fcc60b66bef96cad3334c7f3974e96e31cd818e0c2153ea4",
+  "manifest_sha256": "62e5e04996a051535b2b4ba76a6495f95b9f9153c75cf4232037d31963a61d41",
+  "harness_sha256": "fcb2dd6b2a3b76bae69414591ef71f95c319713285753987c7e64e73910c8bfc",
+  "memory_helper_sha256": "49f453feea639a8a52fa5d5e1aed4f09c4d9e8951677eef52675ec4fbbc4aa06",
+  "timestamp": "2026-11-12T21:53:15.415061+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "harness_python": "3.14.2",
+  "memory_method": "RUSAGE_CHILDREN.ru_maxrss",
+  "supported_protocol_versions": [
+    5,
+    6,
+    7
+  ],
+  "configuration": {
+    "samples": 15,
+    "memory_samples": 3,
+    "warmups": 0,
+    "timeout": 60.0,
+    "legacy_cli_summary": false,
+    "scenario": "warm_worker_one_shot",
+    "suite": "all",
+    "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-artifacts/bin/monty",
+    "arguments": [
+      "--no-native"
+    ]
+  },
+  "schedule_seed": 0,
+  "schedule": [
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "CPython",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "typed",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "CPython",
+      "ticket_search"
+    ],
+    [
+      "typed",
+      "perf_float"
+    ],
+    [
+      "typed",
+      "game_spectral_norm"
+    ]
+  ],
+  "benchmarks": {
+    "perf_unpack_sequence": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-confirmation/workloads/perf_unpack_sequence.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/perf_unpack_sequence.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "b932742e5e239f62f44392ed693d54b1b994117c3fce1108313250e36ac8a567",
+      "expected_sha256": "bb30125516106bee9464414135b75066f1cfe51ee891209ce6d9a80967f24f69",
+      "wall_seconds": [
+        0.318521417,
+        0.321321292,
+        0.319202375,
+        0.319496667,
+        0.32074225,
+        0.322588583,
+        0.320873291,
+        0.318839791,
+        0.319586583,
+        0.319748834,
+        0.31780625,
+        0.318469208,
+        0.324440709,
+        0.318378375,
+        0.319774542
+      ],
+      "worker_ready_seconds": [
+        0.014367417,
+        0.016379125,
+        0.014235584,
+        0.013992792,
+        0.013919959,
+        0.015901042,
+        0.015222625,
+        0.01320325,
+        0.015014,
+        0.015235791,
+        0.013287375,
+        0.015256666,
+        0.0135395,
+        0.015296291,
+        0.01426625
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        6.2583e-05,
+        3.55e-05,
+        3.5e-05,
+        5.1541e-05,
+        3.1708e-05,
+        2.95e-05,
+        3.9375e-05,
+        3.7125e-05,
+        3.4083e-05,
+        4.3e-05,
+        3.7167e-05,
+        4.2209e-05,
+        3.35e-05,
+        2.9709e-05,
+        4.275e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        12189696,
+        12173312,
+        12189696
+      ],
+      "median_peak_rss_bytes": 12189696,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.319586583,
+      "stdev_wall_seconds": 0.0017721921518648205,
+      "median_worker_ready_seconds": 0.014367417,
+      "median_session_setup_seconds": 3.7125e-05,
+      "median_session_reset_seconds": null
+    },
+    "game_spectral_norm": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-confirmation/workloads/game_spectral_norm.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/game_spectral_norm.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "b3961c3858ab9f9e01026a209208613b8a5996d5db423d56a74d5b1f120e3cee",
+      "expected_sha256": "344542309172ca4890f1aff73ffb30b7830a49202654e9d6ba52acf07466bd6b",
+      "wall_seconds": [
+        0.31424425,
+        0.31246,
+        0.383895041,
+        0.312028708,
+        0.310282083,
+        0.310462167,
+        0.313520166,
+        0.309712167,
+        0.312226542,
+        0.310990375,
+        0.311787625,
+        0.311303625,
+        0.311201167,
+        0.31094575,
+        0.315293083
+      ],
+      "worker_ready_seconds": [
+        0.015786458,
+        0.014010791,
+        0.014706916,
+        0.015178,
+        0.01533275,
+        0.013797958,
+        0.013737458,
+        0.014788833,
+        0.015216917,
+        0.014050708,
+        0.015272125,
+        0.014263208,
+        0.012703,
+        0.014554625,
+        0.013711917
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        8.85e-05,
+        8e-05,
+        4.4834e-05,
+        5.7542e-05,
+        5.4875e-05,
+        4.0083e-05,
+        9.4209e-05,
+        5.2208e-05,
+        3.4375e-05,
+        3.9875e-05,
+        3.3541e-05,
+        3.725e-05,
+        4.55e-05,
+        3.4375e-05,
+        3.1333e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        11386880,
+        11403264,
+        11370496
+      ],
+      "median_peak_rss_bytes": 11386880,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.311787625,
+      "stdev_wall_seconds": 0.018653292792822674,
+      "median_worker_ready_seconds": 0.014554625,
+      "median_session_setup_seconds": 4.4834e-05,
+      "median_session_reset_seconds": null
+    },
+    "capacity_planning": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-confirmation/workloads/capacity_planning.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/capacity_planning.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "88dc5d29c457d64c6735be5f8d8008e7e0f7ac3d78765ac007e110379c313156",
+      "expected_sha256": "350aa69b464e0030a3566f9a0ea21b6d25d7804375abef6174e4d24f22ac5eee",
+      "wall_seconds": [
+        0.035015167,
+        0.035231375,
+        0.035325083,
+        0.035233042,
+        0.035225958,
+        0.034996583,
+        0.03516875,
+        0.035044,
+        0.035251416,
+        0.03510825,
+        0.035278208,
+        0.035326709,
+        0.035225416,
+        0.035080333,
+        0.035595666
+      ],
+      "worker_ready_seconds": [
+        0.015289375,
+        0.014231583,
+        0.014051209,
+        0.013555292,
+        0.013657459,
+        0.015690292,
+        0.01294675,
+        0.013983459,
+        0.013276917,
+        0.013952541,
+        0.01500275,
+        0.0142415,
+        0.014010125,
+        0.012891208,
+        0.01305625
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        4.875e-05,
+        5.5208e-05,
+        4.3e-05,
+        4.0291e-05,
+        3.325e-05,
+        3.5125e-05,
+        5.7041e-05,
+        3.5583e-05,
+        4.9792e-05,
+        3.1125e-05,
+        3.5875e-05,
+        4.1666e-05,
+        5.2459e-05,
+        4.175e-05,
+        5.4417e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        15564800,
+        15597568,
+        15597568
+      ],
+      "median_peak_rss_bytes": 15597568,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.035225958,
+      "stdev_wall_seconds": 0.00015195221227011125,
+      "median_worker_ready_seconds": 0.013983459,
+      "median_session_setup_seconds": 4.175e-05,
+      "median_session_reset_seconds": null
+    },
+    "perf_float": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-confirmation/workloads/perf_float.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/perf_float.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "542193ceaa5a7521f5d3a5ed6ba46f854e53225923f018262ea79bee93cf1ebc",
+      "expected_sha256": "535aefc45a454bed7e9ab2bec2d9371b4bbce02b8c15e851aafdd73dff7b8a60",
+      "wall_seconds": [
+        0.229296083,
+        0.230579,
+        0.228403458,
+        0.230021,
+        0.229007791,
+        0.228394791,
+        0.231285042,
+        0.231278792,
+        0.229582875,
+        0.2296135,
+        0.228133834,
+        0.229706792,
+        0.23050325,
+        0.228538333,
+        0.229064375
+      ],
+      "worker_ready_seconds": [
+        0.014650917,
+        0.014537875,
+        0.013322625,
+        0.014739791,
+        0.014095791,
+        0.014907709,
+        0.015526958,
+        0.0136505,
+        0.01488325,
+        0.013863083,
+        0.01402675,
+        0.015030833,
+        0.0146225,
+        0.01409575,
+        0.013410958
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        5.6625e-05,
+        3.3875e-05,
+        4.3625e-05,
+        4.4375e-05,
+        3.3209e-05,
+        5.3625e-05,
+        3.4875e-05,
+        5.3916e-05,
+        4.5792e-05,
+        6.1209e-05,
+        5.5333e-05,
+        3.0667e-05,
+        3.1541e-05,
+        4.4708e-05,
+        3.3125e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        59899904,
+        61521920,
+        60194816
+      ],
+      "median_peak_rss_bytes": 60194816,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.229582875,
+      "stdev_wall_seconds": 0.001017308491764686,
+      "median_worker_ready_seconds": 0.014537875,
+      "median_session_setup_seconds": 4.4375e-05,
+      "median_session_reset_seconds": null
+    },
+    "ticket_search": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-confirmation/workloads/ticket_search.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/ticket_search.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "6c14d8c2575f0c780a15b95534659804f3b1e7e83f9c3c187a123de5725e63f1",
+      "expected_sha256": "37cffd68def50e3d4a21a8c63b92357bfb128b0673e92a5de643a79145594cdb",
+      "wall_seconds": [
+        0.028036167,
+        0.02796,
+        0.02697775,
+        0.027037333,
+        0.027493917,
+        0.02716225,
+        0.02804,
+        0.027191458,
+        0.027868792,
+        0.027535,
+        0.027659959,
+        0.029095,
+        0.027553458,
+        0.027529708,
+        0.028210542
+      ],
+      "worker_ready_seconds": [
+        0.015207875,
+        0.014052458,
+        0.013924625,
+        0.014842667,
+        0.014454416,
+        0.015,
+        0.014610292,
+        0.014922166,
+        0.012684625,
+        0.013346709,
+        0.013252708,
+        0.014657042,
+        0.013280292,
+        0.014184667,
+        0.015305875
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        7.6e-05,
+        4.5458e-05,
+        5.1792e-05,
+        3.3625e-05,
+        3.3625e-05,
+        3.4042e-05,
+        4.3625e-05,
+        4.5084e-05,
+        3.0708e-05,
+        4.525e-05,
+        3.0125e-05,
+        4.3917e-05,
+        5.4458e-05,
+        3.3583e-05,
+        4.6916e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        14712832,
+        14745600,
+        14712832
+      ],
+      "median_peak_rss_bytes": 14712832,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.027553458,
+      "stdev_wall_seconds": 0.0005451237564293431,
+      "median_worker_ready_seconds": 0.014454416,
+      "median_session_setup_seconds": 4.3917e-05,
+      "median_session_reset_seconds": null
+    }
+  },
+  "run_error": null
+}

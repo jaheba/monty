@@ -1,0 +1,27 @@
+[
+  {
+    "workload": "policy_scoring_short",
+    "exit": 0,
+    "checker_accepted": true
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "exit": 0,
+    "checker_accepted": true
+  },
+  {
+    "workload": "portfolio_exposure",
+    "exit": 0,
+    "checker_accepted": true
+  },
+  {
+    "workload": "game_spectral_norm",
+    "exit": 0,
+    "checker_accepted": true
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "exit": 0,
+    "checker_accepted": true
+  }
+]

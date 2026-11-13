@@ -1,0 +1,12 @@
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -3505,6 +3505,9 @@
+ [[package]]
+ name = "python-spam"
+ version = "0.1.0"
++dependencies = [
++ "memchr",
++]
+ 
+ [[package]]
+ name = "quick-xml"

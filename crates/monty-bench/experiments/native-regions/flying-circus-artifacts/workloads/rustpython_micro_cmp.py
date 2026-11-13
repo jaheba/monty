@@ -1,0 +1,14 @@
+# Adapted from RustPython; source and license in ../vendor/rustpython/.
+
+
+# --- benchmark ---
+a = 10
+b = 20
+
+for _ in range(10000):
+    a > b
+    a >= b
+    a < b
+    a <= b
+    a == b
+    a != b

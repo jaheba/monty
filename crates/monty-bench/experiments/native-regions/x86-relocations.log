@@ -1,0 +1,38 @@
+
+/Users/jaheba/p/monty/target/x86_64-unknown-linux-gnu/debug/build/monty-8300924fcb38921a/out/native_stencils.o:	file format elf64-x86-64
+
+RELOCATION RECORDS FOR [.eh_frame]:
+OFFSET           TYPE                     VALUE
+0000000000000020 R_X86_64_PC32            .text.monty_stencil_add
+0000000000000034 R_X86_64_PC32            .text.monty_stencil_and
+0000000000000048 R_X86_64_PC32            .text.monty_stencil_const
+000000000000005c R_X86_64_PC32            .text.monty_stencil_dup
+0000000000000070 R_X86_64_PC32            .text.monty_stencil_eq
+0000000000000084 R_X86_64_PC32            .text.monty_stencil_exit
+0000000000000098 R_X86_64_PC32            .text.monty_stencil_false
+00000000000000ac R_X86_64_PC32            .text.monty_stencil_false_value
+00000000000000c0 R_X86_64_PC32            .text.monty_stencil_floor
+00000000000000ec R_X86_64_PC32            .text.monty_stencil_for_iter
+0000000000000150 R_X86_64_PC32            .text.monty_stencil_ge
+0000000000000164 R_X86_64_PC32            .text.monty_stencil_getitem
+00000000000001c4 R_X86_64_PC32            .text.monty_stencil_global
+00000000000001d8 R_X86_64_PC32            .text.monty_stencil_gt
+00000000000001ec R_X86_64_PC32            .text.monty_stencil_jump
+0000000000000200 R_X86_64_PC32            .text.monty_stencil_le
+0000000000000214 R_X86_64_PC32            .text.monty_stencil_local
+0000000000000228 R_X86_64_PC32            .text.monty_stencil_lt
+000000000000023c R_X86_64_PC32            .text.monty_stencil_mod
+0000000000000268 R_X86_64_PC32            .text.monty_stencil_mul
+000000000000027c R_X86_64_PC32            .text.monty_stencil_ne
+0000000000000290 R_X86_64_PC32            .text.monty_stencil_neg
+00000000000002a4 R_X86_64_PC32            .text.monty_stencil_none
+00000000000002b8 R_X86_64_PC32            .text.monty_stencil_not
+00000000000002cc R_X86_64_PC32            .text.monty_stencil_or
+00000000000002e0 R_X86_64_PC32            .text.monty_stencil_pop
+00000000000002f4 R_X86_64_PC32            .text.monty_stencil_small_int
+0000000000000308 R_X86_64_PC32            .text.monty_stencil_store_global
+000000000000031c R_X86_64_PC32            .text.monty_stencil_store_local
+0000000000000330 R_X86_64_PC32            .text.monty_stencil_sub
+0000000000000344 R_X86_64_PC32            .text.monty_stencil_true
+0000000000000358 R_X86_64_PC32            .text.monty_stencil_true_value
+000000000000036c R_X86_64_PC32            .text.monty_stencil_xor

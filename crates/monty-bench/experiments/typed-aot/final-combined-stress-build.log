@@ -1,0 +1,5 @@
+   Compiling monty-macros v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-macros)
+   Compiling monty-types v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-types)
+   Compiling monty-alloc v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-alloc)
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty)
+    Finished `release` profile [optimized] target(s) in 1m 32s

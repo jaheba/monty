@@ -1,0 +1,193 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Performance changes</title><style>
+:root{color-scheme:light dark;--ink:#172b3a;--accent:#087ca7;--sky:#dff3ff;--circus-red:#c92b38;--paper:#fffdf9;--page:#eef3f6;--card-shadow:0 12px 36px #172b3a14;--stripe-white:#fffdf9;--table:#fff;--header-ink:#16405a;--line:#dfedf5;--outline:#bddded;--row:#f4faff;--hover:#e9f6ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:15px/1.6 system-ui,sans-serif}
+main{width:calc(100% - 48px);max-width:1180px;min-width:0;overflow-wrap:anywhere;position:relative;z-index:1;margin:-64px auto;padding:38px max(4vw,24px) 70px;background:var(--paper);border:1px solid var(--outline);border-top:5px solid #64c7f2;border-radius:8px;box-shadow:var(--card-shadow)}
+body::before,body::after{content:"";display:block;height:112px;background:repeating-linear-gradient(90deg,var(--circus-red) 0 24px,var(--stripe-white) 24px 48px)}
+h1{font:700 36px/1.2 Georgia,serif;letter-spacing:-.025em;margin:0 0 24px}
+h2{font-size:21px;margin:40px 0 16px}
+p{max-width:960px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(270px,100%),1fr));gap:16px 30px;margin:24px 0}
+.facts div{border-bottom:1px solid var(--line);padding-bottom:10px}
+.facts dt{font:700 11px ui-monospace,monospace;text-transform:uppercase;color:var(--accent)}
+.facts dd{margin:6px 0 0;font:13px/1.6 ui-monospace,monospace}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+details{margin-top:24px}summary{cursor:pointer;color:var(--accent)}
+.table-wrap{max-width:100%;overflow-x:auto;margin:20px 0 40px;border:1px solid var(--outline);border-radius:8px;overflow-wrap:normal}
+table{border-collapse:collapse;width:100%;background:var(--table);font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;font-variant-numeric:tabular-nums}
+th,td{text-align:center;padding:14px 18px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--sky);color:var(--header-ink);font-size:12px}
+.runtime-info{font:13px/1.6 ui-monospace,monospace;color:var(--ink)}
+table:not(.startup) th:first-child,table:not(.startup) td:first-child{text-align:left}
+td:first-child{font-weight:500}
+td.unavailable{text-align:center}
+tbody tr:nth-child(even){background:var(--row)}
+tbody tr:hover{background:var(--hover)}
+td[title]{cursor:help;text-decoration:underline dotted;text-underline-offset:4px}
+th button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+th button+button{margin-left:12px}
+th button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+th .sort-controls{display:block;margin-top:6px;font-size:10px;font-weight:400}
+strong{font-weight:800}
+code{font-size:12px;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+.diff-filter{display:flex;align-items:center;flex-wrap:wrap;gap:12px 24px;margin-top:24px}
+.diff-filter label{cursor:pointer}.diff-filter input{accent-color:var(--accent);margin-right:8px}
+#benchmark-count{font-size:13px;color:var(--accent)}
+.chart-legend{font-size:12px;color:var(--accent)}
+.inline-measurement{display:inline-flex;align-items:center;gap:7px}
+.inline-chart{display:inline-block;position:relative;width:9px;height:28px;background:var(--row);border-radius:2px;vertical-align:middle}
+.chart-bar{position:absolute;left:0;width:100%;background:var(--accent);border-radius:2px}
+.inline-chart.better .chart-bar{background:#269bd0}
+.inline-chart.worse .chart-bar{background:#dd5967}
+.chart-reference{position:absolute;bottom:50%;left:-2px;right:-2px;border-top:1px solid var(--ink);z-index:1}
+@media(max-width:850px){th,td{padding:12px}main{width:calc(100% - 24px);margin:-64px auto;padding:26px 18px 40px}h1{font-size:28px}}
+@media(max-width:600px){main{padding:24px 12px 32px}h2{font-size:18px}th,td{padding:10px 12px}table:not(.startup) th:first-child,table:not(.startup) td:first-child{position:sticky;left:0;z-index:1;min-width:120px;max-width:150px;white-space:normal;overflow-wrap:anywhere;background:var(--table);border-right:1px solid var(--outline)}table:not(.startup) th:first-child{background:var(--sky)}table:not(.startup) tbody tr:nth-child(even) td:first-child{background:var(--row)}table:not(.startup) tbody tr:hover td:first-child{background:var(--hover)}}
+@media screen and (prefers-color-scheme:dark){:root{--ink:#e5edf3;--accent:#7dd3fc;--sky:#203a4e;--circus-red:#8c3a46;--paper:#17212b;--page:#0e151d;--card-shadow:0 12px 36px #0004;--stripe-white:#c8c3ba;--table:#1c2936;--header-ink:#d3efff;--line:#344b5c;--outline:#456174;--row:#20303e;--hover:#294255}}
+@media print{:root{color-scheme:light}body::before,body::after{display:none}body{background:white;border:0}main{width:100%;max-width:none;margin:0;padding:20px;border:0;box-shadow:none}th{background:#eee;color:#222}}
+</style></head><body><main><h1>Performance changes</h1><dl class="facts"><div><dt>CPU</dt><dd>arm · 10 logical CPUs</dd></div><div><dt>OS</dt><dd>macOS-27.0-arm64-arm-64bit-Mach-O</dd></div><div><dt>Samples</dt><dd>15</dd></div><div><dt>Parallel jobs</dt><dd>1</dd></div><div><dt>Run duration</dt><dd>2m 15s</dd></div></dl><details><summary>Measurement details</summary><dl class="facts"><div><dt>Repeated warmups</dt><dd>3</dd></div><div><dt>Timing</dt><dd>Median ms · one-shot / repeated · startup excluded</dd></div><div><dt>RSS</dt><dd>Median MiB · separate one-shot processes including startup</dd></div><div><dt>Startup</dt><dd>Empty -c command · launch through exit · normal defaults</dd></div><div><dt>Sort</dt><dd>Percentage advantage vs chart reference · largest improvement first; click headers to reorder</dd></div><div><dt>Reference</dt><dd>default</dd></div><div><dt>Threshold</dt><dd>3% and 0.01 ms for timings</dd></div><div><dt>Evidence</dt><dd>Bootstrap median-ratio bounds · 95% family level · Bonferroni correction</dd></div></dl></details><p class="runtime-info">default: Monty 1.0.1 · before: Monty 1.0.1 · match: Monty 1.0.1</p><details><summary>Runtimes and build details</summary><p><strong>default</strong> · monty · monty-runtime 1.0.1<br>/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/default-artifacts/bin/monty <br>Source revision and compiler flags unverified<br><code>95519301f2db9abab0a02e0d8b2c69442b3395c4718d351cb847522ee856632f</code></p><p><strong>before</strong> · monty · monty-runtime 1.0.1<br>/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/unified-match-artifacts/bin/monty --aot<br>Source revision and compiler flags unverified<br><code>b43a25c6400d190a0c861a4e0d6c25740821a7ee69d2c17f6f0bca3f7815fc58</code></p><p><strong>match</strong> · monty · monty-runtime 1.0.1<br>/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-match-artifacts/bin/monty --aot<br>Source revision and compiler flags unverified<br><code>e57f05511b42b70a1d18967ac3c75c5b96e4c78f86c315c47ef77071a5044761</code></p></details><p>Reference: default · 22 changes or failures · 5 inconclusive</p><div class="diff-filter"><label><input type="checkbox" id="significant-only"> Significant changes only</label><span id="benchmark-count" role="status" aria-live="polite"></span></div><details><summary>Comparison evidence</summary><p>The checkbox filters to meaningful changes, failures or compatibility changes. Paired values include both modes for context. All classifications and confidence bounds are retained in diff.json.</p></details><section data-diff-section><h2>Process startup · ms</h2><div class="table-wrap"><table class="startup"><thead><tr><th>default</th><th>before</th><th>match</th></tr></thead><tbody><tr data-significant="false"><td data-runtime="default" data-values="[0.00814975]" data-metric="startup"><span class="inline-measurement">8.15</span></td><td data-runtime="before" data-values="[0.007731166]" data-metric="startup"><span class="inline-measurement"><strong>7.73</strong><span class="inline-chart better" role="img" aria-label="startup: -5.14% vs default runtime (0.949×); lower is faster" title="startup: -5.14% vs default runtime (0.949×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:36.218658%"></i></span></span></td><td data-runtime="match" data-values="[0.00879725]" data-metric="startup"><span class="inline-measurement">8.80<span class="inline-chart worse" role="img" aria-label="startup: +7.95% vs default runtime (1.08×); lower is faster" title="startup: +7.95% vs default runtime (1.08×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:0.000000%;height:50.000000%"></i></span></span></td></tr></tbody></table></div></section><section data-diff-section><h2>Runtime · ms · one-shot / repeated</h2><p class="chart-legend">Bars: default = midpoint · blue above = faster, red below = slower · shared asinh scale (5% transition)</p><div class="table-wrap"><table data-paired="true"><thead><tr><th>Workload</th><th>default</th><th>before</th><th>match</th></tr></thead><tbody><tr data-benchmark="rustpython_pystone" data-significant="true"><td>rustpython_pystone</td><td data-runtime="default" data-values="[0.282601958, 0.282861541]" data-metric="runtime" data-one-shot="283" data-repeated="283" data-relative-one-shot="1.0" data-relative-repeated="1.0"><strong>283</strong> / <strong>283</strong></td><td title="one-shot: unchanged +2.78%; repeated: regression +3.58%" data-runtime="before" data-values="[0.290452708, 0.292974667]" data-metric="runtime" data-one-shot="290" data-repeated="293" data-relative-one-shot="1.0277802392296236" data-relative-repeated="1.0357529198357864"><span class="inline-measurement">290<span class="inline-chart worse" role="img" aria-label="one-shot: +2.78% vs default runtime (1.03×); lower is faster" title="one-shot: +2.78% vs default runtime (1.03×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:34.308036%;height:15.691964%"></i></span></span> / <span class="inline-measurement">293<span class="inline-chart worse" role="img" aria-label="repeated: +3.58% vs default runtime (1.04×); lower is faster" title="repeated: +3.58% vs default runtime (1.04×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:30.326547%;height:19.673453%"></i></span></span></td><td title="one-shot: regression +5.18%; repeated: regression +5.34%" data-runtime="match" data-values="[0.297233667, 0.297964959]" data-metric="runtime" data-one-shot="297" data-repeated="298" data-relative-one-shot="1.0517749739016315" data-relative-repeated="1.0533950919824762"><span class="inline-measurement">297<span class="inline-chart worse" role="img" aria-label="one-shot: +5.18% vs default runtime (1.05×); lower is faster" title="one-shot: +5.18% vs default runtime (1.05×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:23.187610%;height:26.812390%"></i></span></span> / <span class="inline-measurement">298<span class="inline-chart worse" role="img" aria-label="repeated: +5.34% vs default runtime (1.05×); lower is faster" title="repeated: +5.34% vs default runtime (1.05×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:22.527023%;height:27.472977%"></i></span></span></td></tr><tr data-benchmark="rustpython_micro_sorted_900" data-significant="true"><td>rustpython_micro_sorted_900</td><td data-runtime="default" data-values="[0.001014667, 0.000951791]" data-metric="runtime" data-one-shot="1.01" data-repeated="0.95" data-relative-one-shot="1.0" data-relative-repeated="1.0"><strong>1.01</strong> / <strong>0.95</strong></td><td title="one-shot: unchanged +2.96%; repeated: inconclusive +3.38%" data-runtime="before" data-values="[0.00104475, 0.000983959]" data-metric="runtime" data-one-shot="1.04" data-repeated="0.98" data-relative-one-shot="1.0296481505755093" data-relative-repeated="1.0337973357596362"><span class="inline-measurement">1.04<span class="inline-chart worse" role="img" aria-label="one-shot: +2.96% vs default runtime (1.03×); lower is faster" title="one-shot: +2.96% vs default runtime (1.03×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:33.349577%;height:16.650423%"></i></span></span> / <span class="inline-measurement">0.98<span class="inline-chart worse" role="img" aria-label="repeated: +3.38% vs default runtime (1.03×); lower is faster" title="repeated: +3.38% vs default runtime (1.03×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:31.276529%;height:18.723471%"></i></span></span></td><td title="one-shot: regression +5.95%; repeated: regression +6.20%" data-runtime="match" data-values="[0.001075084, 0.001010792]" data-metric="runtime" data-one-shot="1.08" data-repeated="1.01" data-relative-one-shot="1.0595436729488592" data-relative-repeated="1.0619894493644086"><span class="inline-measurement">1.08<span class="inline-chart worse" role="img" aria-label="one-shot: +5.95% vs default runtime (1.06×); lower is faster" title="one-shot: +5.95% vs default runtime (1.06×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:20.114717%;height:29.885283%"></i></span></span> / <span class="inline-measurement">1.01<span class="inline-chart worse" role="img" aria-label="repeated: +6.20% vs default runtime (1.06×); lower is faster" title="repeated: +6.20% vs default runtime (1.06×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:19.195156%;height:30.804844%"></i></span></span></td></tr><tr data-benchmark="portfolio_risk" data-significant="true"><td>portfolio_risk</td><td data-runtime="default" data-values="[0.056849875, 0.056793292]" data-metric="runtime" data-one-shot="56.8" data-repeated="56.8" data-relative-one-shot="1.0" data-relative-repeated="1.0"><strong>56.8</strong> / <strong>56.8</strong></td><td title="one-shot: regression +5.57%; repeated: regression +5.31%" data-runtime="before" data-values="[0.060015625, 0.059810542]" data-metric="runtime" data-one-shot="60.0" data-repeated="59.8" data-relative-one-shot="1.055686138272072" data-relative-repeated="1.0531268728004004"><span class="inline-measurement">60.0<span class="inline-chart worse" role="img" aria-label="one-shot: +5.57% vs default runtime (1.06×); lower is faster" title="one-shot: +5.57% vs default runtime (1.06×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:21.610905%;height:28.389095%"></i></span></span> / <span class="inline-measurement">59.8<span class="inline-chart worse" role="img" aria-label="repeated: +5.31% vs default runtime (1.05×); lower is faster" title="repeated: +5.31% vs default runtime (1.05×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:22.635650%;height:27.364350%"></i></span></span></td><td title="one-shot: unchanged +2.97%; repeated: regression +3.03%" data-runtime="match" data-values="[0.058536458, 0.058516333]" data-metric="runtime" data-one-shot="58.5" data-repeated="58.5" data-relative-one-shot="1.0296673123731581" data-relative-repeated="1.0303388118441874"><span class="inline-measurement">58.5<span class="inline-chart worse" role="img" aria-label="one-shot: +2.97% vs default runtime (1.03×); lower is faster" title="one-shot: +2.97% vs default runtime (1.03×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:33.339825%;height:16.660175%"></i></span></span> / <span class="inline-measurement">58.5<span class="inline-chart worse" role="img" aria-label="repeated: +3.03% vs default runtime (1.03×); lower is faster" title="repeated: +3.03% vs default runtime (1.03×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:32.999119%;height:17.000881%"></i></span></span></td></tr><tr data-benchmark="stdout_lines" data-significant="true"><td>stdout_lines</td><td data-runtime="default" data-values="[0.002199334, 0.001899666]" data-metric="runtime" data-one-shot="2.20" data-repeated="1.90" data-relative-one-shot="1.0" data-relative-repeated="1.0"><strong>2.20</strong> / <strong>1.90</strong></td><td title="one-shot: inconclusive +4.16%; repeated: regression +4.10%" data-runtime="before" data-values="[0.00229075, 0.001977584]" data-metric="runtime" data-one-shot="2.29" data-repeated="1.98" data-relative-one-shot="1.041565310225732" data-relative-repeated="1.0410166839855006"><span class="inline-measurement">2.29<span class="inline-chart worse" role="img" aria-label="one-shot: +4.16% vs default runtime (1.04×); lower is faster" title="one-shot: +4.16% vs default runtime (1.04×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:27.605562%;height:22.394438%"></i></span></span> / <span class="inline-measurement">1.98<span class="inline-chart worse" role="img" aria-label="repeated: +4.10% vs default runtime (1.04×); lower is faster" title="repeated: +4.10% vs default runtime (1.04×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:27.855874%;height:22.144126%"></i></span></span></td><td title="one-shot: inconclusive +3.28%; repeated: regression +3.59%" data-runtime="match" data-values="[0.002271417, 0.001967875]" data-metric="runtime" data-one-shot="2.27" data-repeated="1.97" data-relative-one-shot="1.0327749218627094" data-relative-repeated="1.0359057855433536"><span class="inline-measurement">2.27<span class="inline-chart worse" role="img" aria-label="one-shot: +3.28% vs default runtime (1.03×); lower is faster" title="one-shot: +3.28% vs default runtime (1.03×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:31.780123%;height:18.219877%"></i></span></span> / <span class="inline-measurement">1.97<span class="inline-chart worse" role="img" aria-label="repeated: +3.59% vs default runtime (1.04×); lower is faster" title="repeated: +3.59% vs default runtime (1.04×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:30.253022%;height:19.746978%"></i></span></span></td></tr><tr data-benchmark="text_csv_cleanup_medium" data-significant="true"><td>text_csv_cleanup_medium</td><td data-runtime="default" data-values="[0.668783791, 0.662737125]" data-metric="runtime" data-one-shot="669" data-repeated="663" data-relative-one-shot="1.0" data-relative-repeated="1.0"><strong>669</strong> / <strong>663</strong></td><td title="one-shot: regression +3.67%; repeated: regression +3.74%" data-runtime="before" data-values="[0.693295792, 0.687507792]" data-metric="runtime" data-one-shot="693" data-repeated="688" data-relative-one-shot="1.036651607484907" data-relative-repeated="1.037376308140275"><span class="inline-measurement">693<span class="inline-chart worse" role="img" aria-label="one-shot: +3.67% vs default runtime (1.04×); lower is faster" title="one-shot: +3.67% vs default runtime (1.04×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:29.895825%;height:20.104175%"></i></span></span> / <span class="inline-measurement">688<span class="inline-chart worse" role="img" aria-label="repeated: +3.74% vs default runtime (1.04×); lower is faster" title="repeated: +3.74% vs default runtime (1.04×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:29.551168%;height:20.448832%"></i></span></span></td><td title="one-shot: regression +4.32%; repeated: regression +4.52%" data-runtime="match" data-values="[0.697642667, 0.692673667]" data-metric="runtime" data-one-shot="698" data-repeated="693" data-relative-one-shot="1.0431512790656137" data-relative-repeated="1.0451710653752797"><span class="inline-measurement">698<span class="inline-chart worse" role="img" aria-label="one-shot: +4.32% vs default runtime (1.04×); lower is faster" title="one-shot: +4.32% vs default runtime (1.04×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:26.889517%;height:23.110483%"></i></span></span> / <span class="inline-measurement">693<span class="inline-chart worse" role="img" aria-label="repeated: +4.52% vs default runtime (1.05×); lower is faster" title="repeated: +4.52% vs default runtime (1.05×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:25.993727%;height:24.006273%"></i></span></span></td></tr><tr data-benchmark="perf_richards" data-significant="true"><td>perf_richards</td><td data-runtime="default" data-values="[0.171070584, 0.170840541]" data-metric="runtime" data-one-shot="171" data-repeated="171" data-relative-one-shot="1.0" data-relative-repeated="1.0"><strong>171</strong> / <strong>171</strong></td><td title="one-shot: regression +4.66%; repeated: regression +5.02%" data-runtime="before" data-values="[0.179043084, 0.179419084]" data-metric="runtime" data-one-shot="179" data-repeated="179" data-relative-one-shot="1.0466035703718648" data-relative-repeated="1.050213742884366"><span class="inline-measurement">179<span class="inline-chart worse" role="img" aria-label="one-shot: +4.66% vs default runtime (1.05×); lower is faster" title="one-shot: +4.66% vs default runtime (1.05×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:25.369217%;height:24.630783%"></i></span></span> / <span class="inline-measurement">179<span class="inline-chart worse" role="img" aria-label="repeated: +5.02% vs default runtime (1.05×); lower is faster" title="repeated: +5.02% vs default runtime (1.05×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:23.834387%;height:26.165613%"></i></span></span></td><td title="one-shot: regression +5.23%; repeated: regression +4.81%" data-runtime="match" data-values="[0.180024625, 0.179055083]" data-metric="runtime" data-one-shot="180" data-repeated="179" data-relative-one-shot="1.0523412078841095" data-relative-repeated="1.0480830952180138"><span class="inline-measurement">180<span class="inline-chart worse" role="img" aria-label="one-shot: +5.23% vs default runtime (1.05×); lower is faster" title="one-shot: +5.23% vs default runtime (1.05×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:22.955518%;height:27.044482%"></i></span></span> / <span class="inline-measurement">179<span class="inline-chart worse" role="img" aria-label="repeated: +4.81% vs default runtime (1.05×); lower is faster" title="repeated: +4.81% vs default runtime (1.05×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:24.733508%;height:25.266492%"></i></span></span></td></tr><tr data-benchmark="rustpython_micro_cmp" data-significant="true"><td>rustpython_micro_cmp</td><td data-runtime="default" data-values="[0.001792458, 0.001748959]" data-metric="runtime" data-one-shot="1.79" data-repeated="1.75" data-relative-one-shot="1.0" data-relative-repeated="1.0"><strong>1.79</strong> / <strong>1.75</strong></td><td title="one-shot: regression +13.09%; repeated: regression +9.73%" data-runtime="before" data-values="[0.002027042, 0.001919209]" data-metric="runtime" data-one-shot="2.03" data-repeated="1.92" data-relative-one-shot="1.1308728014826568" data-relative-repeated="1.0973436198332838"><span class="inline-measurement">2.03<span class="inline-chart worse" role="img" aria-label="one-shot: +13.09% vs default runtime (1.13×); lower is faster" title="one-shot: +13.09% vs default runtime (1.13×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:0.000000%;height:50.000000%"></i></span></span> / <span class="inline-measurement">1.92<span class="inline-chart worse" role="img" aria-label="repeated: +9.73% vs default runtime (1.1×); lower is faster" title="repeated: +9.73% vs default runtime (1.1×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:7.999177%;height:42.000823%"></i></span></span></td><td title="one-shot: regression +10.36%; repeated: regression +9.71%" data-runtime="match" data-values="[0.001978125, 0.001918792]" data-metric="runtime" data-one-shot="1.98" data-repeated="1.92" data-relative-one-shot="1.103582343351978" data-relative-repeated="1.0971051922886699"><span class="inline-measurement">1.98<span class="inline-chart worse" role="img" aria-label="one-shot: +10.36% vs default runtime (1.1×); lower is faster" title="one-shot: +10.36% vs default runtime (1.1×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:6.354053%;height:43.645947%"></i></span></span> / <span class="inline-measurement">1.92<span class="inline-chart worse" role="img" aria-label="repeated: +9.71% vs default runtime (1.1×); lower is faster" title="repeated: +9.71% vs default runtime (1.1×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:8.063699%;height:41.936301%"></i></span></span></td></tr></tbody></table></div></section><section data-diff-section><h2>Peak RSS · MiB · one-shot</h2><div class="table-wrap"><table><thead><tr><th>Workload</th><th>default</th><th>before</th><th>match</th></tr></thead><tbody><tr data-benchmark="portfolio_risk" data-significant="false"><td>portfolio_risk</td><td data-runtime="default" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="before" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="match" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td></tr><tr data-benchmark="text_csv_cleanup_medium" data-significant="false"><td>text_csv_cleanup_medium</td><td data-runtime="default" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="before" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="match" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td></tr><tr data-benchmark="perf_richards" data-significant="false"><td>perf_richards</td><td data-runtime="default" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="before" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="match" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td></tr><tr data-benchmark="rustpython_pystone" data-significant="false"><td>rustpython_pystone</td><td data-runtime="default" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="before" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="match" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td></tr><tr data-benchmark="rustpython_micro_cmp" data-significant="false"><td>rustpython_micro_cmp</td><td data-runtime="default" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="before" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="match" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td></tr><tr data-benchmark="rustpython_micro_sorted_900" data-significant="false"><td>rustpython_micro_sorted_900</td><td data-runtime="default" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="before" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="match" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td></tr><tr data-benchmark="stdout_lines" data-significant="false"><td>stdout_lines</td><td data-runtime="default" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="before" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td><td title="one-shot: unavailable " data-runtime="match" data-values="[null]" data-metric="RSS" class="unavailable">n/a</td></tr></tbody></table></div></section></main>
+<script>
+document.querySelectorAll('table').forEach(table => {
+  const body = table.tBodies[0];
+  if (!body) return;
+  const headers = Array.from(table.querySelectorAll('thead th'));
+  headers.forEach((header, column) => {
+    const version = header.querySelector('.runtime-version');
+    if (version) version.remove();
+    const label = header.textContent.trim();
+    const paired = table.dataset.paired === 'true' && column > 0;
+    if (paired) {
+      header.textContent = label;
+      if (version) header.append(version);
+      const controls = document.createElement('span');
+      controls.className = 'sort-controls';
+      header.append(controls);
+    } else header.textContent = '';
+    const target = paired ? header.querySelector('.sort-controls') : header;
+    (paired ? ['oneShot', 'repeated'] : ['']).forEach(part => {
+      const button = document.createElement('button');
+      const name = part === 'oneShot' ? 'One-shot' : part === 'repeated' ? 'Repeated' : label;
+      button.type = 'button';
+      button.dataset.label = name;
+      button.textContent = name + ' ↕';
+      button.setAttribute('aria-label', 'Sort ' + label + (part ? ' ' + name : ''));
+      target.append(button);
+      button.addEventListener('click', () => {
+        const ascending = button.dataset.direction !== 'ascending';
+        headers.forEach(h => {
+          h.removeAttribute('aria-sort');
+          h.querySelectorAll('button').forEach(b => {
+            delete b.dataset.direction;
+            b.textContent = b.dataset.label + ' ↕';
+          });
+        });
+        button.dataset.direction = ascending ? 'ascending' : 'descending';
+        header.setAttribute('aria-sort', ascending ? 'ascending' : 'descending');
+        button.textContent = name + (ascending ? ' ↑' : ' ↓');
+        const rows = Array.from(body.rows);
+        rows.sort((a, b) => {
+          const cell = row => {
+            const td = row.cells[column];
+            const relative = part === 'oneShot' ? 'relativeOneShot' : part === 'repeated' ? 'relativeRepeated' : 'relative';
+            if (Object.hasOwn(td.dataset, relative)) return td.dataset[relative];
+            return part ? td.dataset[part] : td.textContent.trim();
+          };
+          const x = cell(a), y = cell(b);
+          const missing = v => v === 'n/a' || v === '—' || v === '';
+          if (missing(x) || missing(y)) return Number(missing(x)) - Number(missing(y));
+          const number = v => Number(v.replace(/[%×]$/, ''));
+          const result = Number.isFinite(number(x)) && Number.isFinite(number(y))
+            ? number(x) - number(y) : x.localeCompare(y, undefined, {numeric:true});
+          return ascending ? result : -result;
+        });
+        body.append(...rows);
+      });
+    });
+    if (version && !paired) header.append(version);
+  });
+});
+const baselineSelector = document.getElementById('chart-baseline');
+if (baselineSelector) {
+  const updateBaseline = () => {
+    const reference = baselineSelector.value;
+    const label = baselineSelector.selectedOptions[0].textContent;
+    document.querySelectorAll('table').forEach(table => {
+      const cells = Array.from(table.querySelectorAll('td[data-values]'));
+      const ratios = new Map();
+      cells.forEach(cell => {
+        const baseline = Array.from(cell.parentElement.cells).find(td => td.dataset.runtime === reference);
+        const values = JSON.parse(cell.dataset.values);
+        const denominators = baseline ? JSON.parse(baseline.dataset.values) : [];
+        ratios.set(cell, values.map((v, i) => v > 0 && denominators[i] > 0 ? v / denominators[i] : null));
+      });
+      const extent = Math.max(1, ...Array.from(ratios.values()).flat().filter(v => v !== null).map(v => Math.abs(Math.asinh((v - 1) / .05))));
+      cells.forEach(cell => {
+        cell.querySelectorAll('.inline-chart').forEach(chart => chart.remove());
+        let spans = Array.from(cell.querySelectorAll('.inline-measurement'));
+        const values = ratios.get(cell);
+        if (!spans.length) {
+          const parts = cell.innerHTML.split(' / ');
+          cell.innerHTML = '';
+          values.forEach((_, i) => {
+            if (i) cell.append(' / ');
+            const span = document.createElement('span');
+            span.className = 'inline-measurement';
+            span.innerHTML = parts[i] || parts[0];
+            cell.append(span);
+          });
+          spans = Array.from(cell.querySelectorAll('.inline-measurement'));
+        }
+        values.forEach((ratio, i) => {
+          const mode = cell.dataset.metric === 'startup' ? 'startup' : i ? 'repeated' : 'one-shot';
+          const attribute = values.length > 1 ? i ? 'relativeRepeated' : 'relativeOneShot' : 'relative';
+          cell.dataset[attribute] = ratio === null ? '' : ratio;
+          if (ratio === null || cell.dataset.runtime === reference) return;
+          const offset = 50 * Math.asinh((ratio - 1) / .05) / extent;
+          const chart = document.createElement('span');
+          chart.className = 'inline-chart ' + (ratio < 1 ? 'better' : ratio > 1 ? 'worse' : 'equal');
+          const description = mode + ': ' + ((ratio - 1) * 100).toFixed(2) + '% vs ' + label + ' ' + cell.dataset.metric + ' (' + ratio.toPrecision(3) + '×); lower is better';
+          chart.setAttribute('role', 'img');
+          chart.setAttribute('aria-label', description);
+          chart.title = description;
+          chart.innerHTML = '<i class="chart-reference"></i><i class="chart-bar"></i>';
+          const bar = chart.lastElementChild;
+          bar.style.bottom = (50 + Math.min(0, -offset)) + '%';
+          bar.style.height = Math.abs(offset) + '%';
+          spans[i].append(chart);
+        });
+      });
+      const body = table.tBodies[0];
+      const advantage = row => Math.min(Infinity, ...Array.from(row.cells).filter(cell => cell.dataset.runtime !== reference).flatMap(cell => ratios.get(cell) || []).filter(v => v !== null));
+      body.append(...Array.from(body.rows).sort((a, b) => advantage(a) - advantage(b)));
+      table.querySelectorAll('th').forEach(header => {
+        header.removeAttribute('aria-sort');
+        header.querySelectorAll('button').forEach(button => {
+          delete button.dataset.direction;
+          button.textContent = button.dataset.label + ' ↕';
+        });
+      });
+      const legend = table.closest('section').querySelector('.chart-legend');
+      if (legend) legend.textContent = legend.textContent.replace(/^Bars: .*? = midpoint/, 'Bars: ' + label + ' = midpoint');
+    });
+  };
+  baselineSelector.addEventListener('change', updateBaseline);
+}
+const filter = document.getElementById('significant-only');
+if (filter) {
+  const rows = Array.from(document.querySelectorAll('tr[data-significant]'));
+  const benchmarkRows = rows.filter(row => row.dataset.benchmark !== undefined);
+  const total = new Set(benchmarkRows.map(row => row.dataset.benchmark)).size;
+  const update = () => {
+    rows.forEach(row => { row.hidden = filter.checked && row.dataset.significant !== 'true'; });
+    document.querySelectorAll('[data-diff-section]').forEach(section => {
+      section.hidden = !Array.from(section.querySelectorAll('tbody tr')).some(row => !row.hidden);
+    });
+    const visible = new Set(benchmarkRows.filter(row => !row.hidden).map(row => row.dataset.benchmark)).size;
+    document.getElementById('benchmark-count').textContent = visible + ' of ' + total + ' benchmarks';
+  };
+  filter.addEventListener('change', update);
+  update();
+}
+</script>
+</body></html>

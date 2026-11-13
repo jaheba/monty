@@ -1,0 +1,26 @@
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty)
+warning: field `kind` is never read
+   --> crates/monty/src/bytecode/aot/ir.rs:102:36
+    |
+102 |     Length {dst:usize,object:usize,kind:Kind},
+    |     ------ field in this variant   ^^^^
+    |
+    = note: `Operation` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `monty` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.10s
+     Running tests/typed_aot.rs (/Users/jaheba/p/monty/target/debug/deps/typed_aot-39a5e759c00a2ce5)
+
+running 8 tests
+test builtin_shadowing_preserves_callbacks ... ok
+test short_circuit_and_unbound_locals ... ok
+test suspension_round_trip_rebuilds_typed_helpers ... ok
+test runtime_guards_and_errors ... ok
+test virtual_range_loops ... ok
+test floating_point_and_boolean_semantics ... ok
+test scalar_functions_and_loops ... ok
+test infinite_typed_loop_polls_deadlines ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

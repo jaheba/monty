@@ -1,0 +1,42 @@
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.66s
+     Running tests/dispatch_loop.rs (/Users/jaheba/p/monty/target/debug/deps/dispatch_loop-635b9c54b9e4e285)
+
+running 9 tests
+test native_runs_keep_deadline_checkpoints ... ok
+test callback_reentry_with_long_dispatch_batches_fits_small_stack ... ok
+test threaded_subscription_preserves_traceback_and_task_errors ... ok
+test native_batches_end_with_the_same_stack_and_counter_state ... ok
+test wide_locals_and_checkpoint_long_runs_preserve_values ... ok
+test local_runs_preserve_frame_changes_errors_and_reference_ownership ... ok
+test threaded_subscription_observes_deadlines_and_recovers ... ok
+test threaded_subscription_keeps_callbacks_mutations_and_caught_errors ... ok
+test direct_branches_preserve_short_circuit_values_and_heap_truth ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/typed_aot.rs (/Users/jaheba/p/monty/target/debug/deps/typed_aot-105e7b84864b47a0)
+
+running 19 tests
+test builtin_shadowing_preserves_callbacks ... ok
+test immutable_range_aliases_are_values ... ok
+test private_tuple_assignments_preserve_parallel_values ... ok
+test infinite_typed_loop_polls_deadlines ... ok
+test large_sparse_sequences_validate_only_the_accessed_values ... ok
+test runtime_guards_and_errors ... ok
+test short_circuit_and_unbound_locals ... ok
+test floating_point_and_boolean_semantics ... ok
+test suspension_round_trip_rebuilds_typed_helpers ... ok
+test sequence_mismatches_and_python_callbacks ... ok
+test scalar_functions_and_loops ... ok
+test virtual_range_loops ... ok
+test typed_dictionary_reads ... ok
+test typed_sequences_and_unpacking ... ok
+test readonly_sequence_loops_keep_python_iteration_semantics ... ok
+test maybe_bound_locals_and_scalar_tuple_returns ... ok
+test scalar_calls_preserve_binding_recursion_and_errors ... ok
+test generated_scalar_and_control_flow_differential ... ok
+test repeated_native_calls_keep_dispatch_batches_bounded ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.83s
+

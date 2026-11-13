@@ -1,0 +1,80 @@
+{
+  "runtimes": {
+    "default": {
+      "label": "default",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/default-artifacts/bin/monty",
+      "arguments": [],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "before": {
+      "label": "before",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/unified-match-artifacts/bin/monty",
+      "arguments": [
+        "--aot"
+      ],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "match": {
+      "label": "match",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-match-artifacts/bin/monty",
+      "arguments": [
+        "--aot"
+      ],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    }
+  },
+  "timestamp": "2026-11-13T03:28:26.892200+00:00",
+  "options": {
+    "runtime": [
+      "default=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/default-artifacts/bin/monty",
+      "before=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/unified-match-artifacts/bin/monty",
+      "match=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-match-artifacts/bin/monty"
+    ],
+    "runtime_arg": [
+      "before=--aot",
+      "match=--aot"
+    ],
+    "verbose": true,
+    "x": 1,
+    "chart_baseline": null,
+    "diff": true,
+    "output": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fallback-confirmation",
+    "format": [
+      "html",
+      "markdown",
+      "json"
+    ],
+    "benchmark": [
+      "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/portfolio_risk.py",
+      "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/text_csv_cleanup_medium.py",
+      "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/perf_richards.py",
+      "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/rustpython_pystone.py",
+      "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/rustpython_micro_cmp.py",
+      "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/rustpython_micro_sorted_900.py",
+      "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/stdout_lines.py"
+    ],
+    "include_defaults": false,
+    "quick": false,
+    "samples": 15,
+    "memory_samples": 0,
+    "startup_samples": 5,
+    "warmups": 3,
+    "timeout": 30,
+    "threshold": 3.0,
+    "absolute_threshold_ms": 0.01
+  },
+  "completed_at": "2026-11-13T03:30:41.744266+00:00",
+  "elapsed_seconds": 134.85167937492952
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "scenario": "empty_command_process",
+  "samples": 5,
+  "timestamp": "2026-11-13T02:08:25.142962+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "scope": "Fresh process launch through exit; empty -c command; no shell; normal interpreter defaults",
+  "engines": {
+    "default": {
+      "binary_sha256": "95519301f2db9abab0a02e0d8b2c69442b3395c4718d351cb847522ee856632f",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/default-artifacts/bin/monty",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.006107292,
+        0.006012,
+        0.006667959,
+        0.006834959,
+        0.006036417
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.006107292
+    },
+    "threaded": {
+      "binary_sha256": "e9ab28dba72d38e030019d9985c9815ce386ea064dbae5e0885929afd591d344",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-combined-artifacts/bin/monty",
+        "--no-native",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007064709,
+        0.006358459,
+        0.005767542,
+        0.006780083,
+        0.006713792
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.006713792
+    },
+    "typed": {
+      "binary_sha256": "e9ab28dba72d38e030019d9985c9815ce386ea064dbae5e0885929afd591d344",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-combined-artifacts/bin/monty",
+        "--aot",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.0066055,
+        0.007252541,
+        0.006746583,
+        0.006281,
+        0.00707275
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.006746583
+    }
+  }
+}

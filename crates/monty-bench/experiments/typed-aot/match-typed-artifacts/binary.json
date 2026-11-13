@@ -1,0 +1,11 @@
+{
+  "sha256": "86b9c52addc738fa9b9790e5e6e990573b19f04b8235cdf62745a9a12174cdaa",
+  "bytes": 23502528,
+  "features": [
+    "experimental-aot"
+  ],
+  "profile": "release: fat LTO, one codegen unit, strip=true",
+  "dispatch": "match with independent typed tier; copied/shared",
+  "baseline_commit": "9a9f8784bf6cb36b09f183b53d7d829bcd807bdf",
+  "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)"
+}

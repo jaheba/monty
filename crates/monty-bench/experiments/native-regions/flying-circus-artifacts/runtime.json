@@ -1,0 +1,17 @@
+{
+  "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/bin/monty",
+  "sha256": "bfdfc25c707f9b92f6b10a741bec598364bf08fe6e041dbdbb745c8568a3c1d3",
+  "bytes": 23369392,
+  "version": "monty-runtime 1.0.1",
+  "baseline_arguments": [
+    "--no-native"
+  ],
+  "native_arguments": [],
+  "features": [
+    "standalone",
+    "experimental-native"
+  ],
+  "profile": "release, fat LTO, one codegen unit",
+  "baseline_commit": "9a9f8784bf6cb36b09f183b53d7d829bcd807bdf",
+  "typed_optimization": false
+}

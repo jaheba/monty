@@ -1,0 +1,11 @@
+   Compiling psm v0.1.32
+   Compiling wasmtime-internal-core v49.0.5
+   Compiling monty-macros v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-macros)
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty)
+    Checking stacker v0.1.25
+    Checking monty-types v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-types)
+    Checking ruff_python_parser v0.0.14
+    Checking wasmtime-internal-jit-icache-coherence v49.0.5
+    Checking ruff_python_codegen v0.0.14
+    Checking monty-alloc v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-alloc)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 14.48s

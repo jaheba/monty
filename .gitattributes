@@ -1,0 +1,8 @@
+# Preserve raw measurement logs, workload snapshots and patches byte-for-byte.
+crates/monty-bench/experiments/native-regions/** -whitespace linguist-generated=true
+crates/monty-bench/experiments/typed-aot/** -whitespace linguist-generated=true
+crates/monty-bench/experiments/native-regions/**/*.md linguist-generated=false
+crates/monty-bench/experiments/typed-aot/**/*.md linguist-generated=false
+crates/monty-bench/experiments/native-regions/*.md linguist-generated=false
+crates/monty-bench/experiments/typed-aot/*.md linguist-generated=false
+crates/monty-bench/experiments/typed-aot/*.py linguist-generated=false

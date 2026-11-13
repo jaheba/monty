@@ -1,0 +1,12 @@
+{
+  "sha256": "56726a215c9695ca7f5d1fd698826f8cebc84d834d2632f7c849d77a64604349",
+  "bytes": 23602144,
+  "features": [
+    "experimental-aot",
+    "experimental-threaded"
+  ],
+  "profile": "release: fat LTO, one codegen unit, strip=true",
+  "dispatch": "threaded feature; shared AOT; local liveness; checkpoint diagnostic accounting",
+  "baseline_commit": "9a9f8784bf6cb36b09f183b53d7d829bcd807bdf",
+  "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)"
+}

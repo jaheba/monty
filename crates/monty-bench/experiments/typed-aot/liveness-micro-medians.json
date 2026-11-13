@@ -1,0 +1,362 @@
+[
+  {
+    "case": "tiny",
+    "boundary": "fresh",
+    "mode": "interpreter",
+    "median_ns": 5944
+  },
+  {
+    "case": "tiny",
+    "boundary": "fresh",
+    "mode": "aot_copied",
+    "median_ns": 17739
+  },
+  {
+    "case": "tiny",
+    "boundary": "fresh",
+    "mode": "aot_shared",
+    "median_ns": 6952
+  },
+  {
+    "case": "tiny",
+    "boundary": "retained",
+    "mode": "interpreter",
+    "median_ns": 583
+  },
+  {
+    "case": "tiny",
+    "boundary": "retained",
+    "mode": "aot_copied",
+    "median_ns": 543
+  },
+  {
+    "case": "tiny",
+    "boundary": "retained",
+    "mode": "aot_shared",
+    "median_ns": 545
+  },
+  {
+    "case": "while_20",
+    "boundary": "fresh",
+    "mode": "interpreter",
+    "median_ns": 9991
+  },
+  {
+    "case": "while_20",
+    "boundary": "fresh",
+    "mode": "aot_copied",
+    "median_ns": 24492
+  },
+  {
+    "case": "while_20",
+    "boundary": "fresh",
+    "mode": "aot_shared",
+    "median_ns": 11528
+  },
+  {
+    "case": "while_20",
+    "boundary": "retained",
+    "mode": "interpreter",
+    "median_ns": 2886
+  },
+  {
+    "case": "while_20",
+    "boundary": "retained",
+    "mode": "aot_copied",
+    "median_ns": 1015
+  },
+  {
+    "case": "while_20",
+    "boundary": "retained",
+    "mode": "aot_shared",
+    "median_ns": 1020
+  },
+  {
+    "case": "while_100",
+    "boundary": "fresh",
+    "mode": "interpreter",
+    "median_ns": 19067
+  },
+  {
+    "case": "while_100",
+    "boundary": "fresh",
+    "mode": "aot_copied",
+    "median_ns": 24950
+  },
+  {
+    "case": "while_100",
+    "boundary": "fresh",
+    "mode": "aot_shared",
+    "median_ns": 13243
+  },
+  {
+    "case": "while_100",
+    "boundary": "retained",
+    "mode": "interpreter",
+    "median_ns": 11975
+  },
+  {
+    "case": "while_100",
+    "boundary": "retained",
+    "mode": "aot_copied",
+    "median_ns": 2778
+  },
+  {
+    "case": "while_100",
+    "boundary": "retained",
+    "mode": "aot_shared",
+    "median_ns": 2778
+  },
+  {
+    "case": "while_1000",
+    "boundary": "fresh",
+    "mode": "interpreter",
+    "median_ns": 121679
+  },
+  {
+    "case": "while_1000",
+    "boundary": "fresh",
+    "mode": "aot_copied",
+    "median_ns": 45247
+  },
+  {
+    "case": "while_1000",
+    "boundary": "fresh",
+    "mode": "aot_shared",
+    "median_ns": 33051
+  },
+  {
+    "case": "while_1000",
+    "boundary": "retained",
+    "mode": "interpreter",
+    "median_ns": 114472
+  },
+  {
+    "case": "while_1000",
+    "boundary": "retained",
+    "mode": "aot_copied",
+    "median_ns": 22421
+  },
+  {
+    "case": "while_1000",
+    "boundary": "retained",
+    "mode": "aot_shared",
+    "median_ns": 22334
+  },
+  {
+    "case": "range_1000",
+    "boundary": "fresh",
+    "mode": "interpreter",
+    "median_ns": 78943
+  },
+  {
+    "case": "range_1000",
+    "boundary": "fresh",
+    "mode": "aot_copied",
+    "median_ns": 33492
+  },
+  {
+    "case": "range_1000",
+    "boundary": "fresh",
+    "mode": "aot_shared",
+    "median_ns": 21877
+  },
+  {
+    "case": "range_1000",
+    "boundary": "retained",
+    "mode": "interpreter",
+    "median_ns": 71707
+  },
+  {
+    "case": "range_1000",
+    "boundary": "retained",
+    "mode": "aot_copied",
+    "median_ns": 11240
+  },
+  {
+    "case": "range_1000",
+    "boundary": "retained",
+    "mode": "aot_shared",
+    "median_ns": 11188
+  },
+  {
+    "case": "branches",
+    "boundary": "fresh",
+    "mode": "interpreter",
+    "median_ns": 164399
+  },
+  {
+    "case": "branches",
+    "boundary": "fresh",
+    "mode": "aot_copied",
+    "median_ns": 63494
+  },
+  {
+    "case": "branches",
+    "boundary": "fresh",
+    "mode": "aot_shared",
+    "median_ns": 50556
+  },
+  {
+    "case": "branches",
+    "boundary": "retained",
+    "mode": "interpreter",
+    "median_ns": 155330
+  },
+  {
+    "case": "branches",
+    "boundary": "retained",
+    "mode": "aot_copied",
+    "median_ns": 36411
+  },
+  {
+    "case": "branches",
+    "boundary": "retained",
+    "mode": "aot_shared",
+    "median_ns": 36350
+  },
+  {
+    "case": "nested_range",
+    "boundary": "fresh",
+    "mode": "interpreter",
+    "median_ns": 388303
+  },
+  {
+    "case": "nested_range",
+    "boundary": "fresh",
+    "mode": "aot_copied",
+    "median_ns": 85286
+  },
+  {
+    "case": "nested_range",
+    "boundary": "fresh",
+    "mode": "aot_shared",
+    "median_ns": 72466
+  },
+  {
+    "case": "nested_range",
+    "boundary": "retained",
+    "mode": "interpreter",
+    "median_ns": 379261
+  },
+  {
+    "case": "nested_range",
+    "boundary": "retained",
+    "mode": "aot_copied",
+    "median_ns": 57441
+  },
+  {
+    "case": "nested_range",
+    "boundary": "retained",
+    "mode": "aot_shared",
+    "median_ns": 57330
+  },
+  {
+    "case": "float_loop",
+    "boundary": "fresh",
+    "mode": "interpreter",
+    "median_ns": 101862
+  },
+  {
+    "case": "float_loop",
+    "boundary": "fresh",
+    "mode": "aot_copied",
+    "median_ns": 42971
+  },
+  {
+    "case": "float_loop",
+    "boundary": "fresh",
+    "mode": "aot_shared",
+    "median_ns": 30980
+  },
+  {
+    "case": "float_loop",
+    "boundary": "retained",
+    "mode": "interpreter",
+    "median_ns": 93780
+  },
+  {
+    "case": "float_loop",
+    "boundary": "retained",
+    "mode": "aot_copied",
+    "median_ns": 20177
+  },
+  {
+    "case": "float_loop",
+    "boundary": "retained",
+    "mode": "aot_shared",
+    "median_ns": 20083
+  },
+  {
+    "case": "helper_calls",
+    "boundary": "fresh",
+    "mode": "interpreter",
+    "median_ns": 188314
+  },
+  {
+    "case": "helper_calls",
+    "boundary": "fresh",
+    "mode": "aot_copied",
+    "median_ns": 165094
+  },
+  {
+    "case": "helper_calls",
+    "boundary": "fresh",
+    "mode": "aot_shared",
+    "median_ns": 152668
+  },
+  {
+    "case": "helper_calls",
+    "boundary": "retained",
+    "mode": "interpreter",
+    "median_ns": 180253
+  },
+  {
+    "case": "helper_calls",
+    "boundary": "retained",
+    "mode": "aot_copied",
+    "median_ns": 144216
+  },
+  {
+    "case": "helper_calls",
+    "boundary": "retained",
+    "mode": "aot_shared",
+    "median_ns": 143966
+  },
+  {
+    "case": "untyped_fallback",
+    "boundary": "fresh",
+    "mode": "interpreter",
+    "median_ns": 4399
+  },
+  {
+    "case": "untyped_fallback",
+    "boundary": "fresh",
+    "mode": "aot_copied",
+    "median_ns": 4367
+  },
+  {
+    "case": "untyped_fallback",
+    "boundary": "fresh",
+    "mode": "aot_shared",
+    "median_ns": 4380
+  },
+  {
+    "case": "untyped_fallback",
+    "boundary": "retained",
+    "mode": "interpreter",
+    "median_ns": 845
+  },
+  {
+    "case": "untyped_fallback",
+    "boundary": "retained",
+    "mode": "aot_copied",
+    "median_ns": 848
+  },
+  {
+    "case": "untyped_fallback",
+    "boundary": "retained",
+    "mode": "aot_shared",
+    "median_ns": 844
+  }
+]

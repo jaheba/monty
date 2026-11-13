@@ -1,0 +1,58 @@
+{
+  "runtimes": {
+    "default": {
+      "label": "default",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/default-artifacts/bin/monty",
+      "arguments": [],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "typed_match": {
+      "label": "typed_match",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/unified-match-artifacts/bin/monty",
+      "arguments": [
+        "--aot"
+      ],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    }
+  },
+  "timestamp": "2026-11-13T02:54:33.498083+00:00",
+  "options": {
+    "runtime": [
+      "default=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/default-artifacts/bin/monty",
+      "typed_match=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/unified-match-artifacts/bin/monty"
+    ],
+    "runtime_arg": [
+      "typed_match=--aot"
+    ],
+    "verbose": true,
+    "x": 1,
+    "chart_baseline": null,
+    "diff": true,
+    "output": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/full-match-confirmation",
+    "format": [
+      "html",
+      "markdown",
+      "json"
+    ],
+    "benchmark": null,
+    "include_defaults": false,
+    "quick": false,
+    "samples": 15,
+    "memory_samples": 0,
+    "startup_samples": 5,
+    "warmups": 3,
+    "timeout": 30,
+    "threshold": 3.0,
+    "absolute_threshold_ms": 0.01
+  },
+  "completed_at": "2026-11-13T03:05:39.776534+00:00",
+  "elapsed_seconds": 666.2769818333909
+}

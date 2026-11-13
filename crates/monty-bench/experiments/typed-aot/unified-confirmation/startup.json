@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "scenario": "empty_command_process",
+  "samples": 5,
+  "timestamp": "2026-11-13T02:52:04.323721+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "scope": "Fresh process launch through exit; empty -c command; no shell; normal interpreter defaults",
+  "engines": {
+    "before": {
+      "binary_sha256": "e9ab28dba72d38e030019d9985c9815ce386ea064dbae5e0885929afd591d344",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-combined-artifacts/bin/monty",
+        "--aot",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007186167,
+        0.007562375,
+        0.0077225,
+        0.008067708,
+        0.007665375
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.007665375
+    },
+    "combined": {
+      "binary_sha256": "56726a215c9695ca7f5d1fd698826f8cebc84d834d2632f7c849d77a64604349",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/unified-combined-artifacts/bin/monty",
+        "--aot",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007679542,
+        0.00740675,
+        0.007517084,
+        0.008043291,
+        0.007494042
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.007517084
+    },
+    "match_before": {
+      "binary_sha256": "085ae6b44d998b088a68f0d465fa70e1ff56600b87bbafa65c40610a033370a9",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-match-artifacts/bin/monty",
+        "--aot",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007041791,
+        0.007515083,
+        0.007450583,
+        0.00793425,
+        0.008185167
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.007515083
+    },
+    "match": {
+      "binary_sha256": "b43a25c6400d190a0c861a4e0d6c25740821a7ee69d2c17f6f0bca3f7815fc58",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/unified-match-artifacts/bin/monty",
+        "--aot",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007629417,
+        0.008128833,
+        0.007804667,
+        0.0071335,
+        0.007864375
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.007804667
+    },
+    "default": {
+      "binary_sha256": "95519301f2db9abab0a02e0d8b2c69442b3395c4718d351cb847522ee856632f",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/default-artifacts/bin/monty",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.006881167,
+        0.007055,
+        0.007139167,
+        0.006631291,
+        0.006926042
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.006926042
+    },
+    "CPython": {
+      "binary_sha256": "15c72833c1ffc09bc4e05d1e1866784d126721ad548d9c4d8f943641262535cb",
+      "revision": "Python 3.15.0",
+      "command": [
+        "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/bin/python3.15",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.026574709,
+        0.024825167,
+        0.024692167,
+        0.024970167,
+        0.026643209
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.024970167
+    }
+  }
+}

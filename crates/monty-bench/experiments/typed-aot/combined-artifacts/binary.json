@@ -1,0 +1,11 @@
+{
+  "sha256": "dd25a44f3f559f6b9fa5418c485e81b29c01d9ceb6d6720103ec528006e217a2",
+  "bytes": 23584752,
+  "features": [
+    "experimental-aot"
+  ],
+  "profile": "release: fat LTO, one codegen unit, strip=true",
+  "dispatch": "threaded, with guarded AOT entry after frame push",
+  "worktree": "/private/tmp/monty-native-study/threaded-aot",
+  "baseline_commit": "9a9f8784bf6cb36b09f183b53d7d829bcd807bdf"
+}

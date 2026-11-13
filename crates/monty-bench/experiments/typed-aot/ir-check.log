@@ -1,0 +1,113 @@
+    Checking monty v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty)
+warning: fields `dst` and `src` are never read
+  --> crates/monty/src/bytecode/aot/ir.rs:40:12
+   |
+40 |     Copy { dst: usize, src: usize },
+   |     ----   ^^^         ^^^
+   |     |
+   |     fields in this variant
+   |
+   = note: `Operation` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `dst`, `left`, `right`, `op`, `lhs`, and `rhs` are never read
+  --> crates/monty/src/bytecode/aot/ir.rs:41:14
+   |
+41 |     Binary { dst: usize, left: usize, right: usize, op: Opcode, lhs: Kind, rhs: Kind },
+   |     ------   ^^^         ^^^^         ^^^^^         ^^          ^^^        ^^^
+   |     |
+   |     fields in this variant
+   |
+   = note: `Operation` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `dst`, `src`, `op`, and `kind` are never read
+  --> crates/monty/src/bytecode/aot/ir.rs:42:13
+   |
+42 |     Unary { dst: usize, src: usize, op: Opcode, kind: Kind },
+   |     -----   ^^^         ^^^         ^^          ^^^^
+   |     |
+   |     fields in this variant
+   |
+   = note: `Operation` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `ip`, `weight`, and `operation` are never read
+  --> crates/monty/src/bytecode/aot/ir.rs:48:9
+   |
+47 | pub(crate) struct Instruction {
+   |                   ----------- fields in this struct
+48 |     pub ip: usize,
+   |         ^^
+49 |     pub weight: usize,
+   |         ^^^^^^
+50 |     pub operation: Operation,
+   |         ^^^^^^^^^
+   |
+   = note: `Instruction` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: field `0` is never read
+  --> crates/monty/src/bytecode/aot/ir.rs:55:10
+   |
+55 |     Jump(usize),
+   |     ---- ^^^^^
+   |     |
+   |     field in this variant
+   |
+   = note: `Terminator` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+   |
+55 -     Jump(usize),
+55 +     Jump(()),
+   |
+
+warning: fields `condition`, `kind`, `yes`, and `no` are never read
+  --> crates/monty/src/bytecode/aot/ir.rs:56:14
+   |
+56 |     Branch { condition: usize, kind: Kind, yes: usize, no: usize },
+   |     ------   ^^^^^^^^^         ^^^^        ^^^         ^^
+   |     |
+   |     fields in this variant
+   |
+   = note: `Terminator` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `source` and `kind` are never read
+  --> crates/monty/src/bytecode/aot/ir.rs:57:14
+   |
+57 |     Return { source: usize, kind: Kind },
+   |     ------   ^^^^^^         ^^^^
+   |     |
+   |     fields in this variant
+   |
+   = note: `Terminator` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `ip`, `instructions`, `terminal_ip`, `terminal_weight`, and `terminator` are never read
+  --> crates/monty/src/bytecode/aot/ir.rs:62:9
+   |
+61 | pub(crate) struct Block {
+   |                   ----- fields in this struct
+62 |     pub ip: usize,
+   |         ^^
+63 |     pub instructions: Vec<Instruction>,
+   |         ^^^^^^^^^^^^
+64 |     pub terminal_ip: usize,
+   |         ^^^^^^^^^^^
+65 |     pub terminal_weight: usize,
+   |         ^^^^^^^^^^^^^^^
+66 |     pub terminator: Terminator,
+   |         ^^^^^^^^^^
+   |
+   = note: `Block` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `parameters` and `locals` are never read
+  --> crates/monty/src/bytecode/aot/ir.rs:71:9
+   |
+70 | pub(crate) struct Plan {
+   |                   ---- fields in this struct
+71 |     pub parameters: Vec<Kind>,
+   |         ^^^^^^^^^^
+72 |     pub locals: usize,
+   |         ^^^^^^
+   |
+   = note: `Plan` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: `monty` (lib) generated 9 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.48s

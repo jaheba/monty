@@ -1,0 +1,4 @@
+13.882ms ❯ type check passed
+258.96ms ❯ None
+native_stats Stats { compilations: 0, compilation_ns: 0, code_bytes: 0, entries: 0, instructions: 0, dictionary_reads: 0, range_steps: 0 }
+aot_stats Stats { compilations: 1, code_bytes: 2288, entries: 676000, returns: 676000, fallbacks: 0, instructions: 11492000, fast_calls: 676000 }

@@ -1,0 +1,2905 @@
+{
+  "binary": {
+    "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-artifacts/bin/monty",
+    "sha256": "397795d38e7d99da29c73392c26b2de82383f66c6afce7fff91ff68a663c2031"
+  },
+  "harness": {
+    "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/validated_comparison.py",
+    "sha256": "8fc1fdbc28d5a1f6b3e2c5626cf097da8acdc6e7ce1400841a82bdca751fcb10"
+  },
+  "worker_client": {
+    "path": "/Users/jaheba/p/flying-circus/src/flying_circus/workers.py",
+    "sha256": "412a0efca331662cff310ecc7692c5d03d64b8cc5fb5ac5845d3ca3101c50d8a"
+  },
+  "workloads": [
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_short.py",
+      "sha256": "0abb3361c754380a9f4eba501a20479bb7ee647c896212155955cb2932c353be"
+    },
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_batch.py",
+      "sha256": "8c7adf278dfaf8e0159a291a0822313b851de005dc0687e4c81d31f0be005cd7"
+    },
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/portfolio_exposure.py",
+      "sha256": "8fecf54209a2da92541765f22465021f6a6a94619422abbe1b5896b4f6961c0d"
+    },
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/game_spectral_norm.py",
+      "sha256": "b3961c3858ab9f9e01026a209208613b8a5996d5db423d56a74d5b1f120e3cee"
+    },
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/perf_unpack_sequence.py",
+      "sha256": "b932742e5e239f62f44392ed693d54b1b994117c3fce1108313250e36ac8a567"
+    }
+  ],
+  "samples": 15,
+  "warmups": 3,
+  "host": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "python": "3.14.2",
+  "boundary": "Reused workers; fresh Configure and Feed each sample. Submission includes validation when requested; session includes Configure. Startup and Reset excluded.",
+  "records": [
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 0,
+      "configure_ns": 22375,
+      "submission_ns": 483959,
+      "session_ns": 506334
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 0,
+      "configure_ns": 53750,
+      "submission_ns": 422458,
+      "session_ns": 476208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 0,
+      "configure_ns": 26417,
+      "submission_ns": 656791,
+      "session_ns": 683208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 0,
+      "configure_ns": 25625,
+      "submission_ns": 594584,
+      "session_ns": 620209
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 1,
+      "configure_ns": 20083,
+      "submission_ns": 558792,
+      "session_ns": 578875
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 1,
+      "configure_ns": 32042,
+      "submission_ns": 599958,
+      "session_ns": 632000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 1,
+      "configure_ns": 93417,
+      "submission_ns": 444500,
+      "session_ns": 537917
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 1,
+      "configure_ns": 41417,
+      "submission_ns": 545666,
+      "session_ns": 587083
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 2,
+      "configure_ns": 52583,
+      "submission_ns": 503459,
+      "session_ns": 556042
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 2,
+      "configure_ns": 32291,
+      "submission_ns": 411834,
+      "session_ns": 444125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 2,
+      "configure_ns": 30667,
+      "submission_ns": 651250,
+      "session_ns": 681917
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 2,
+      "configure_ns": 32334,
+      "submission_ns": 595916,
+      "session_ns": 628250
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 3,
+      "configure_ns": 31917,
+      "submission_ns": 537083,
+      "session_ns": 569000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 3,
+      "configure_ns": 23084,
+      "submission_ns": 677291,
+      "session_ns": 700375
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 3,
+      "configure_ns": 32583,
+      "submission_ns": 485459,
+      "session_ns": 518042
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 3,
+      "configure_ns": 28583,
+      "submission_ns": 815333,
+      "session_ns": 843916
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 4,
+      "configure_ns": 39084,
+      "submission_ns": 489708,
+      "session_ns": 528792
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 4,
+      "configure_ns": 35500,
+      "submission_ns": 406166,
+      "session_ns": 441666
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 4,
+      "configure_ns": 64542,
+      "submission_ns": 641875,
+      "session_ns": 706417
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 4,
+      "configure_ns": 37208,
+      "submission_ns": 554500,
+      "session_ns": 591708
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 5,
+      "configure_ns": 20458,
+      "submission_ns": 633917,
+      "session_ns": 654375
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 5,
+      "configure_ns": 35167,
+      "submission_ns": 618000,
+      "session_ns": 653167
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 5,
+      "configure_ns": 28500,
+      "submission_ns": 459167,
+      "session_ns": 487667
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 5,
+      "configure_ns": 46333,
+      "submission_ns": 481875,
+      "session_ns": 528208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 6,
+      "configure_ns": 48042,
+      "submission_ns": 567750,
+      "session_ns": 615792
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 6,
+      "configure_ns": 68417,
+      "submission_ns": 471792,
+      "session_ns": 540209
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 6,
+      "configure_ns": 32292,
+      "submission_ns": 663041,
+      "session_ns": 695333
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 6,
+      "configure_ns": 41292,
+      "submission_ns": 613833,
+      "session_ns": 655125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 7,
+      "configure_ns": 23041,
+      "submission_ns": 520250,
+      "session_ns": 543291
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 7,
+      "configure_ns": 37166,
+      "submission_ns": 602209,
+      "session_ns": 639375
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 7,
+      "configure_ns": 30417,
+      "submission_ns": 483208,
+      "session_ns": 513625
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 7,
+      "configure_ns": 61084,
+      "submission_ns": 506958,
+      "session_ns": 568042
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 8,
+      "configure_ns": 29959,
+      "submission_ns": 507791,
+      "session_ns": 537750
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 8,
+      "configure_ns": 40250,
+      "submission_ns": 450875,
+      "session_ns": 491125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 8,
+      "configure_ns": 38292,
+      "submission_ns": 669292,
+      "session_ns": 707584
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 8,
+      "configure_ns": 42375,
+      "submission_ns": 546500,
+      "session_ns": 588875
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 9,
+      "configure_ns": 19000,
+      "submission_ns": 528250,
+      "session_ns": 547250
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 9,
+      "configure_ns": 34750,
+      "submission_ns": 571334,
+      "session_ns": 606084
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 9,
+      "configure_ns": 32625,
+      "submission_ns": 449708,
+      "session_ns": 482333
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 9,
+      "configure_ns": 29625,
+      "submission_ns": 459500,
+      "session_ns": 489125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 10,
+      "configure_ns": 19667,
+      "submission_ns": 442292,
+      "session_ns": 461959
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 10,
+      "configure_ns": 27791,
+      "submission_ns": 399959,
+      "session_ns": 427750
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 10,
+      "configure_ns": 22084,
+      "submission_ns": 537041,
+      "session_ns": 559125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 10,
+      "configure_ns": 24708,
+      "submission_ns": 497500,
+      "session_ns": 522208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 11,
+      "configure_ns": 18041,
+      "submission_ns": 512584,
+      "session_ns": 530625
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 11,
+      "configure_ns": 29750,
+      "submission_ns": 570083,
+      "session_ns": 599833
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 11,
+      "configure_ns": 26292,
+      "submission_ns": 443875,
+      "session_ns": 470167
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 11,
+      "configure_ns": 43667,
+      "submission_ns": 472458,
+      "session_ns": 516125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 12,
+      "configure_ns": 19750,
+      "submission_ns": 421958,
+      "session_ns": 441708
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 12,
+      "configure_ns": 27167,
+      "submission_ns": 388750,
+      "session_ns": 415917
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 12,
+      "configure_ns": 22625,
+      "submission_ns": 590333,
+      "session_ns": 612958
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 12,
+      "configure_ns": 25875,
+      "submission_ns": 520708,
+      "session_ns": 546583
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 13,
+      "configure_ns": 19583,
+      "submission_ns": 482917,
+      "session_ns": 502500
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 13,
+      "configure_ns": 23459,
+      "submission_ns": 572333,
+      "session_ns": 595792
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 13,
+      "configure_ns": 30250,
+      "submission_ns": 407916,
+      "session_ns": 438166
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 13,
+      "configure_ns": 24333,
+      "submission_ns": 427875,
+      "session_ns": 452208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "sample": 14,
+      "configure_ns": 23542,
+      "submission_ns": 443917,
+      "session_ns": 467459
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "sample": 14,
+      "configure_ns": 23292,
+      "submission_ns": 405000,
+      "session_ns": 428292
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "sample": 14,
+      "configure_ns": 20625,
+      "submission_ns": 540625,
+      "session_ns": 561250
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "sample": 14,
+      "configure_ns": 24917,
+      "submission_ns": 533958,
+      "session_ns": 558875
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 0,
+      "configure_ns": 75000,
+      "submission_ns": 8547208,
+      "session_ns": 8622208
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 0,
+      "configure_ns": 50791,
+      "submission_ns": 6576042,
+      "session_ns": 6626833
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 0,
+      "configure_ns": 44917,
+      "submission_ns": 8793250,
+      "session_ns": 8838167
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 0,
+      "configure_ns": 58041,
+      "submission_ns": 6818625,
+      "session_ns": 6876666
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 1,
+      "configure_ns": 49292,
+      "submission_ns": 6612750,
+      "session_ns": 6662042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 1,
+      "configure_ns": 39125,
+      "submission_ns": 8426459,
+      "session_ns": 8465584
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 1,
+      "configure_ns": 59833,
+      "submission_ns": 6659167,
+      "session_ns": 6719000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 1,
+      "configure_ns": 47584,
+      "submission_ns": 8314750,
+      "session_ns": 8362334
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 2,
+      "configure_ns": 47750,
+      "submission_ns": 8483958,
+      "session_ns": 8531708
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 2,
+      "configure_ns": 45458,
+      "submission_ns": 6698542,
+      "session_ns": 6744000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 2,
+      "configure_ns": 47417,
+      "submission_ns": 8604416,
+      "session_ns": 8651833
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 2,
+      "configure_ns": 44875,
+      "submission_ns": 6916333,
+      "session_ns": 6961208
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 3,
+      "configure_ns": 27541,
+      "submission_ns": 6631209,
+      "session_ns": 6658750
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 3,
+      "configure_ns": 42917,
+      "submission_ns": 8418750,
+      "session_ns": 8461667
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 3,
+      "configure_ns": 37542,
+      "submission_ns": 6591708,
+      "session_ns": 6629250
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 3,
+      "configure_ns": 50334,
+      "submission_ns": 8473916,
+      "session_ns": 8524250
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 4,
+      "configure_ns": 50875,
+      "submission_ns": 8260125,
+      "session_ns": 8311000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 4,
+      "configure_ns": 45041,
+      "submission_ns": 6510334,
+      "session_ns": 6555375
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 4,
+      "configure_ns": 67583,
+      "submission_ns": 8415125,
+      "session_ns": 8482708
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 4,
+      "configure_ns": 39916,
+      "submission_ns": 6918959,
+      "session_ns": 6958875
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 5,
+      "configure_ns": 28500,
+      "submission_ns": 6670334,
+      "session_ns": 6698834
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 5,
+      "configure_ns": 55417,
+      "submission_ns": 8705792,
+      "session_ns": 8761209
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 5,
+      "configure_ns": 112792,
+      "submission_ns": 6624625,
+      "session_ns": 6737417
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 5,
+      "configure_ns": 41875,
+      "submission_ns": 8512375,
+      "session_ns": 8554250
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 6,
+      "configure_ns": 27000,
+      "submission_ns": 8384250,
+      "session_ns": 8411250
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 6,
+      "configure_ns": 77708,
+      "submission_ns": 6690625,
+      "session_ns": 6768333
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 6,
+      "configure_ns": 60208,
+      "submission_ns": 8675042,
+      "session_ns": 8735250
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 6,
+      "configure_ns": 42542,
+      "submission_ns": 6957500,
+      "session_ns": 7000042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 7,
+      "configure_ns": 30167,
+      "submission_ns": 6812125,
+      "session_ns": 6842292
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 7,
+      "configure_ns": 103333,
+      "submission_ns": 8541000,
+      "session_ns": 8644333
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 7,
+      "configure_ns": 52208,
+      "submission_ns": 6461833,
+      "session_ns": 6514041
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 7,
+      "configure_ns": 47667,
+      "submission_ns": 8287250,
+      "session_ns": 8334917
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 8,
+      "configure_ns": 28958,
+      "submission_ns": 8457125,
+      "session_ns": 8486083
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 8,
+      "configure_ns": 42042,
+      "submission_ns": 6743833,
+      "session_ns": 6785875
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 8,
+      "configure_ns": 39250,
+      "submission_ns": 8671750,
+      "session_ns": 8711000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 8,
+      "configure_ns": 60833,
+      "submission_ns": 6912084,
+      "session_ns": 6972917
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 9,
+      "configure_ns": 47958,
+      "submission_ns": 6862750,
+      "session_ns": 6910708
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 9,
+      "configure_ns": 56667,
+      "submission_ns": 8350000,
+      "session_ns": 8406667
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 9,
+      "configure_ns": 65834,
+      "submission_ns": 6627958,
+      "session_ns": 6693792
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 9,
+      "configure_ns": 51500,
+      "submission_ns": 8195292,
+      "session_ns": 8246792
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 10,
+      "configure_ns": 31083,
+      "submission_ns": 8614125,
+      "session_ns": 8645208
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 10,
+      "configure_ns": 67958,
+      "submission_ns": 6655458,
+      "session_ns": 6723416
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 10,
+      "configure_ns": 60375,
+      "submission_ns": 8504875,
+      "session_ns": 8565250
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 10,
+      "configure_ns": 45250,
+      "submission_ns": 6708834,
+      "session_ns": 6754084
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 11,
+      "configure_ns": 34958,
+      "submission_ns": 6707750,
+      "session_ns": 6742708
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 11,
+      "configure_ns": 34125,
+      "submission_ns": 8420083,
+      "session_ns": 8454208
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 11,
+      "configure_ns": 48500,
+      "submission_ns": 6602875,
+      "session_ns": 6651375
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 11,
+      "configure_ns": 45417,
+      "submission_ns": 8282125,
+      "session_ns": 8327542
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 12,
+      "configure_ns": 76334,
+      "submission_ns": 8699875,
+      "session_ns": 8776209
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 12,
+      "configure_ns": 43334,
+      "submission_ns": 6739458,
+      "session_ns": 6782792
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 12,
+      "configure_ns": 61584,
+      "submission_ns": 8588708,
+      "session_ns": 8650292
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 12,
+      "configure_ns": 34500,
+      "submission_ns": 6670791,
+      "session_ns": 6705291
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 13,
+      "configure_ns": 33209,
+      "submission_ns": 6547625,
+      "session_ns": 6580834
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 13,
+      "configure_ns": 36417,
+      "submission_ns": 8545625,
+      "session_ns": 8582042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 13,
+      "configure_ns": 67083,
+      "submission_ns": 6627584,
+      "session_ns": 6694667
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 13,
+      "configure_ns": 58084,
+      "submission_ns": 8264541,
+      "session_ns": 8322625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "sample": 14,
+      "configure_ns": 34209,
+      "submission_ns": 8191000,
+      "session_ns": 8225209
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "sample": 14,
+      "configure_ns": 34375,
+      "submission_ns": 6812750,
+      "session_ns": 6847125
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "sample": 14,
+      "configure_ns": 59625,
+      "submission_ns": 8586333,
+      "session_ns": 8645958
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "sample": 14,
+      "configure_ns": 72625,
+      "submission_ns": 6869625,
+      "session_ns": 6942250
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 0,
+      "configure_ns": 20416,
+      "submission_ns": 4608375,
+      "session_ns": 4628791
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 0,
+      "configure_ns": 33167,
+      "submission_ns": 1303291,
+      "session_ns": 1336458
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 0,
+      "configure_ns": 24375,
+      "submission_ns": 4619083,
+      "session_ns": 4643458
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 0,
+      "configure_ns": 36083,
+      "submission_ns": 1454417,
+      "session_ns": 1490500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 1,
+      "configure_ns": 20333,
+      "submission_ns": 1434458,
+      "session_ns": 1454791
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 1,
+      "configure_ns": 45625,
+      "submission_ns": 4775458,
+      "session_ns": 4821083
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 1,
+      "configure_ns": 50584,
+      "submission_ns": 1492041,
+      "session_ns": 1542625
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 1,
+      "configure_ns": 41417,
+      "submission_ns": 4632500,
+      "session_ns": 4673917
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 2,
+      "configure_ns": 36125,
+      "submission_ns": 4532333,
+      "session_ns": 4568458
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 2,
+      "configure_ns": 24667,
+      "submission_ns": 1311833,
+      "session_ns": 1336500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 2,
+      "configure_ns": 37584,
+      "submission_ns": 4694750,
+      "session_ns": 4732334
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 2,
+      "configure_ns": 32084,
+      "submission_ns": 1458416,
+      "session_ns": 1490500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 3,
+      "configure_ns": 25041,
+      "submission_ns": 1345792,
+      "session_ns": 1370833
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 3,
+      "configure_ns": 23375,
+      "submission_ns": 4566041,
+      "session_ns": 4589416
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 3,
+      "configure_ns": 28042,
+      "submission_ns": 1282333,
+      "session_ns": 1310375
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 3,
+      "configure_ns": 29750,
+      "submission_ns": 4628583,
+      "session_ns": 4658333
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 4,
+      "configure_ns": 26042,
+      "submission_ns": 4686041,
+      "session_ns": 4712083
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 4,
+      "configure_ns": 49917,
+      "submission_ns": 1352791,
+      "session_ns": 1402708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 4,
+      "configure_ns": 42500,
+      "submission_ns": 4743292,
+      "session_ns": 4785792
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 4,
+      "configure_ns": 72583,
+      "submission_ns": 1464625,
+      "session_ns": 1537208
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 5,
+      "configure_ns": 23042,
+      "submission_ns": 1488833,
+      "session_ns": 1511875
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 5,
+      "configure_ns": 30709,
+      "submission_ns": 4862291,
+      "session_ns": 4893000
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 5,
+      "configure_ns": 37708,
+      "submission_ns": 1424292,
+      "session_ns": 1462000
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 5,
+      "configure_ns": 47416,
+      "submission_ns": 4596375,
+      "session_ns": 4643791
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 6,
+      "configure_ns": 53209,
+      "submission_ns": 4506208,
+      "session_ns": 4559417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 6,
+      "configure_ns": 52833,
+      "submission_ns": 1480583,
+      "session_ns": 1533416
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 6,
+      "configure_ns": 40875,
+      "submission_ns": 4955250,
+      "session_ns": 4996125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 6,
+      "configure_ns": 47000,
+      "submission_ns": 1630375,
+      "session_ns": 1677375
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 7,
+      "configure_ns": 41125,
+      "submission_ns": 1553375,
+      "session_ns": 1594500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 7,
+      "configure_ns": 59333,
+      "submission_ns": 4714958,
+      "session_ns": 4774291
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 7,
+      "configure_ns": 25958,
+      "submission_ns": 1520000,
+      "session_ns": 1545958
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 7,
+      "configure_ns": 25208,
+      "submission_ns": 4668292,
+      "session_ns": 4693500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 8,
+      "configure_ns": 26750,
+      "submission_ns": 4487708,
+      "session_ns": 4514458
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 8,
+      "configure_ns": 49209,
+      "submission_ns": 1365791,
+      "session_ns": 1415000
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 8,
+      "configure_ns": 55917,
+      "submission_ns": 4769708,
+      "session_ns": 4825625
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 8,
+      "configure_ns": 35667,
+      "submission_ns": 1595958,
+      "session_ns": 1631625
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 9,
+      "configure_ns": 47833,
+      "submission_ns": 1659250,
+      "session_ns": 1707083
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 9,
+      "configure_ns": 58042,
+      "submission_ns": 5222125,
+      "session_ns": 5280167
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 9,
+      "configure_ns": 52333,
+      "submission_ns": 1468750,
+      "session_ns": 1521083
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 9,
+      "configure_ns": 36000,
+      "submission_ns": 4577375,
+      "session_ns": 4613375
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 10,
+      "configure_ns": 34792,
+      "submission_ns": 4632833,
+      "session_ns": 4667625
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 10,
+      "configure_ns": 32209,
+      "submission_ns": 1394916,
+      "session_ns": 1427125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 10,
+      "configure_ns": 38292,
+      "submission_ns": 4690625,
+      "session_ns": 4728917
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 10,
+      "configure_ns": 34500,
+      "submission_ns": 1457708,
+      "session_ns": 1492208
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 11,
+      "configure_ns": 33292,
+      "submission_ns": 1357166,
+      "session_ns": 1390458
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 11,
+      "configure_ns": 28000,
+      "submission_ns": 4542166,
+      "session_ns": 4570166
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 11,
+      "configure_ns": 34375,
+      "submission_ns": 1358917,
+      "session_ns": 1393292
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 11,
+      "configure_ns": 35791,
+      "submission_ns": 4600750,
+      "session_ns": 4636541
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 12,
+      "configure_ns": 26542,
+      "submission_ns": 4684833,
+      "session_ns": 4711375
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 12,
+      "configure_ns": 42458,
+      "submission_ns": 1395250,
+      "session_ns": 1437708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 12,
+      "configure_ns": 36917,
+      "submission_ns": 4692625,
+      "session_ns": 4729542
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 12,
+      "configure_ns": 37625,
+      "submission_ns": 1476791,
+      "session_ns": 1514416
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 13,
+      "configure_ns": 22167,
+      "submission_ns": 1461333,
+      "session_ns": 1483500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 13,
+      "configure_ns": 34250,
+      "submission_ns": 4568417,
+      "session_ns": 4602667
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 13,
+      "configure_ns": 27458,
+      "submission_ns": 1382542,
+      "session_ns": 1410000
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 13,
+      "configure_ns": 37417,
+      "submission_ns": 4583875,
+      "session_ns": 4621292
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "sample": 14,
+      "configure_ns": 22958,
+      "submission_ns": 4585875,
+      "session_ns": 4608833
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "sample": 14,
+      "configure_ns": 36792,
+      "submission_ns": 1506791,
+      "session_ns": 1543583
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "sample": 14,
+      "configure_ns": 35333,
+      "submission_ns": 4999833,
+      "session_ns": 5035166
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "sample": 14,
+      "configure_ns": 60750,
+      "submission_ns": 1532083,
+      "session_ns": 1592833
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 0,
+      "configure_ns": 104167,
+      "submission_ns": 320014375,
+      "session_ns": 320118542
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 0,
+      "configure_ns": 50500,
+      "submission_ns": 255818875,
+      "session_ns": 255869375
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 0,
+      "configure_ns": 74417,
+      "submission_ns": 318691000,
+      "session_ns": 318765417
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 0,
+      "configure_ns": 38792,
+      "submission_ns": 254931250,
+      "session_ns": 254970042
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 1,
+      "configure_ns": 53834,
+      "submission_ns": 254728291,
+      "session_ns": 254782125
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 1,
+      "configure_ns": 43166,
+      "submission_ns": 319634042,
+      "session_ns": 319677208
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 1,
+      "configure_ns": 49917,
+      "submission_ns": 255209041,
+      "session_ns": 255258958
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 1,
+      "configure_ns": 59125,
+      "submission_ns": 319172292,
+      "session_ns": 319231417
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 2,
+      "configure_ns": 56333,
+      "submission_ns": 321722500,
+      "session_ns": 321778833
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 2,
+      "configure_ns": 60125,
+      "submission_ns": 255889917,
+      "session_ns": 255950042
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 2,
+      "configure_ns": 68500,
+      "submission_ns": 318897125,
+      "session_ns": 318965625
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 2,
+      "configure_ns": 38625,
+      "submission_ns": 255972208,
+      "session_ns": 256010833
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 3,
+      "configure_ns": 27917,
+      "submission_ns": 255642541,
+      "session_ns": 255670458
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 3,
+      "configure_ns": 42667,
+      "submission_ns": 319138291,
+      "session_ns": 319180958
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 3,
+      "configure_ns": 41375,
+      "submission_ns": 257632292,
+      "session_ns": 257673667
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 3,
+      "configure_ns": 285125,
+      "submission_ns": 320882583,
+      "session_ns": 321167708
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 4,
+      "configure_ns": 48083,
+      "submission_ns": 320156708,
+      "session_ns": 320204791
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 4,
+      "configure_ns": 51500,
+      "submission_ns": 254733125,
+      "session_ns": 254784625
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 4,
+      "configure_ns": 60000,
+      "submission_ns": 317382375,
+      "session_ns": 317442375
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 4,
+      "configure_ns": 36417,
+      "submission_ns": 254963875,
+      "session_ns": 255000292
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 5,
+      "configure_ns": 37208,
+      "submission_ns": 255202500,
+      "session_ns": 255239708
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 5,
+      "configure_ns": 38708,
+      "submission_ns": 318434375,
+      "session_ns": 318473083
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 5,
+      "configure_ns": 65250,
+      "submission_ns": 255437000,
+      "session_ns": 255502250
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 5,
+      "configure_ns": 53458,
+      "submission_ns": 320307125,
+      "session_ns": 320360583
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 6,
+      "configure_ns": 27292,
+      "submission_ns": 318983916,
+      "session_ns": 319011208
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 6,
+      "configure_ns": 38334,
+      "submission_ns": 254845833,
+      "session_ns": 254884167
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 6,
+      "configure_ns": 63375,
+      "submission_ns": 318055917,
+      "session_ns": 318119292
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 6,
+      "configure_ns": 37292,
+      "submission_ns": 254999041,
+      "session_ns": 255036333
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 7,
+      "configure_ns": 43292,
+      "submission_ns": 254171458,
+      "session_ns": 254214750
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 7,
+      "configure_ns": 41542,
+      "submission_ns": 318627083,
+      "session_ns": 318668625
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 7,
+      "configure_ns": 42417,
+      "submission_ns": 254951666,
+      "session_ns": 254994083
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 7,
+      "configure_ns": 47416,
+      "submission_ns": 318962834,
+      "session_ns": 319010250
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 8,
+      "configure_ns": 46917,
+      "submission_ns": 319235750,
+      "session_ns": 319282667
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 8,
+      "configure_ns": 41542,
+      "submission_ns": 255164166,
+      "session_ns": 255205708
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 8,
+      "configure_ns": 50042,
+      "submission_ns": 318222542,
+      "session_ns": 318272584
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 8,
+      "configure_ns": 60625,
+      "submission_ns": 254380083,
+      "session_ns": 254440708
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 9,
+      "configure_ns": 27167,
+      "submission_ns": 254397250,
+      "session_ns": 254424417
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 9,
+      "configure_ns": 39583,
+      "submission_ns": 317846500,
+      "session_ns": 317886083
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 9,
+      "configure_ns": 43250,
+      "submission_ns": 255478458,
+      "session_ns": 255521708
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 9,
+      "configure_ns": 59875,
+      "submission_ns": 319319875,
+      "session_ns": 319379750
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 10,
+      "configure_ns": 28542,
+      "submission_ns": 319867417,
+      "session_ns": 319895959
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 10,
+      "configure_ns": 41541,
+      "submission_ns": 259420542,
+      "session_ns": 259462083
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 10,
+      "configure_ns": 41084,
+      "submission_ns": 322772708,
+      "session_ns": 322813792
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 10,
+      "configure_ns": 47250,
+      "submission_ns": 262099042,
+      "session_ns": 262146292
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 11,
+      "configure_ns": 42292,
+      "submission_ns": 255329458,
+      "session_ns": 255371750
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 11,
+      "configure_ns": 60666,
+      "submission_ns": 318108042,
+      "session_ns": 318168708
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 11,
+      "configure_ns": 48666,
+      "submission_ns": 256112375,
+      "session_ns": 256161041
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 11,
+      "configure_ns": 80542,
+      "submission_ns": 319156333,
+      "session_ns": 319236875
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 12,
+      "configure_ns": 42625,
+      "submission_ns": 319491458,
+      "session_ns": 319534083
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 12,
+      "configure_ns": 38000,
+      "submission_ns": 255665375,
+      "session_ns": 255703375
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 12,
+      "configure_ns": 60416,
+      "submission_ns": 317749625,
+      "session_ns": 317810041
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 12,
+      "configure_ns": 82750,
+      "submission_ns": 255436625,
+      "session_ns": 255519375
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 13,
+      "configure_ns": 42208,
+      "submission_ns": 254653208,
+      "session_ns": 254695416
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 13,
+      "configure_ns": 62625,
+      "submission_ns": 317499667,
+      "session_ns": 317562292
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 13,
+      "configure_ns": 42625,
+      "submission_ns": 256680834,
+      "session_ns": 256723459
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 13,
+      "configure_ns": 39792,
+      "submission_ns": 319141833,
+      "session_ns": 319181625
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "sample": 14,
+      "configure_ns": 27125,
+      "submission_ns": 319867166,
+      "session_ns": 319894291
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "sample": 14,
+      "configure_ns": 59459,
+      "submission_ns": 255228041,
+      "session_ns": 255287500
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "sample": 14,
+      "configure_ns": 58167,
+      "submission_ns": 318858917,
+      "session_ns": 318917084
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "sample": 14,
+      "configure_ns": 44000,
+      "submission_ns": 254896375,
+      "session_ns": 254940375
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 0,
+      "configure_ns": 47875,
+      "submission_ns": 325678792,
+      "session_ns": 325726667
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 0,
+      "configure_ns": 41125,
+      "submission_ns": 12738375,
+      "session_ns": 12779500
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 0,
+      "configure_ns": 52042,
+      "submission_ns": 321337583,
+      "session_ns": 321389625
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 0,
+      "configure_ns": 56167,
+      "submission_ns": 13507083,
+      "session_ns": 13563250
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 1,
+      "configure_ns": 33417,
+      "submission_ns": 13257958,
+      "session_ns": 13291375
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 1,
+      "configure_ns": 34959,
+      "submission_ns": 320041958,
+      "session_ns": 320076917
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 1,
+      "configure_ns": 44792,
+      "submission_ns": 13019541,
+      "session_ns": 13064333
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 1,
+      "configure_ns": 45291,
+      "submission_ns": 325866334,
+      "session_ns": 325911625
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 2,
+      "configure_ns": 53125,
+      "submission_ns": 328834166,
+      "session_ns": 328887291
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 2,
+      "configure_ns": 60042,
+      "submission_ns": 12694375,
+      "session_ns": 12754417
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 2,
+      "configure_ns": 50542,
+      "submission_ns": 319274042,
+      "session_ns": 319324584
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 2,
+      "configure_ns": 62083,
+      "submission_ns": 13394208,
+      "session_ns": 13456291
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 3,
+      "configure_ns": 46833,
+      "submission_ns": 13350292,
+      "session_ns": 13397125
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 3,
+      "configure_ns": 41250,
+      "submission_ns": 326432959,
+      "session_ns": 326474209
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 3,
+      "configure_ns": 63209,
+      "submission_ns": 13053458,
+      "session_ns": 13116667
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 3,
+      "configure_ns": 87458,
+      "submission_ns": 333790542,
+      "session_ns": 333878000
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 4,
+      "configure_ns": 39959,
+      "submission_ns": 325349291,
+      "session_ns": 325389250
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 4,
+      "configure_ns": 57584,
+      "submission_ns": 13060625,
+      "session_ns": 13118209
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 4,
+      "configure_ns": 43500,
+      "submission_ns": 318523958,
+      "session_ns": 318567458
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 4,
+      "configure_ns": 63708,
+      "submission_ns": 13906625,
+      "session_ns": 13970333
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 5,
+      "configure_ns": 30167,
+      "submission_ns": 13579666,
+      "session_ns": 13609833
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 5,
+      "configure_ns": 44334,
+      "submission_ns": 318866541,
+      "session_ns": 318910875
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 5,
+      "configure_ns": 42542,
+      "submission_ns": 12658708,
+      "session_ns": 12701250
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 5,
+      "configure_ns": 77541,
+      "submission_ns": 326427459,
+      "session_ns": 326505000
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 6,
+      "configure_ns": 35125,
+      "submission_ns": 328194584,
+      "session_ns": 328229709
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 6,
+      "configure_ns": 38334,
+      "submission_ns": 12623416,
+      "session_ns": 12661750
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 6,
+      "configure_ns": 42625,
+      "submission_ns": 319757250,
+      "session_ns": 319799875
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 6,
+      "configure_ns": 46500,
+      "submission_ns": 13678916,
+      "session_ns": 13725416
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 7,
+      "configure_ns": 29583,
+      "submission_ns": 13519500,
+      "session_ns": 13549083
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 7,
+      "configure_ns": 90417,
+      "submission_ns": 320215542,
+      "session_ns": 320305959
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 7,
+      "configure_ns": 45208,
+      "submission_ns": 12971250,
+      "session_ns": 13016458
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 7,
+      "configure_ns": 45833,
+      "submission_ns": 326291417,
+      "session_ns": 326337250
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 8,
+      "configure_ns": 29292,
+      "submission_ns": 324558417,
+      "session_ns": 324587709
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 8,
+      "configure_ns": 57125,
+      "submission_ns": 13174875,
+      "session_ns": 13232000
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 8,
+      "configure_ns": 67708,
+      "submission_ns": 320403250,
+      "session_ns": 320470958
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 8,
+      "configure_ns": 52042,
+      "submission_ns": 13530458,
+      "session_ns": 13582500
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 9,
+      "configure_ns": 27375,
+      "submission_ns": 13392834,
+      "session_ns": 13420209
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 9,
+      "configure_ns": 40167,
+      "submission_ns": 320246167,
+      "session_ns": 320286334
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 9,
+      "configure_ns": 57042,
+      "submission_ns": 12732791,
+      "session_ns": 12789833
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 9,
+      "configure_ns": 51667,
+      "submission_ns": 325696875,
+      "session_ns": 325748542
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 10,
+      "configure_ns": 27000,
+      "submission_ns": 325023209,
+      "session_ns": 325050209
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 10,
+      "configure_ns": 63916,
+      "submission_ns": 13018417,
+      "session_ns": 13082333
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 10,
+      "configure_ns": 44417,
+      "submission_ns": 320862208,
+      "session_ns": 320906625
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 10,
+      "configure_ns": 46334,
+      "submission_ns": 13756875,
+      "session_ns": 13803209
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 11,
+      "configure_ns": 40417,
+      "submission_ns": 13251166,
+      "session_ns": 13291583
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 11,
+      "configure_ns": 42791,
+      "submission_ns": 321080667,
+      "session_ns": 321123458
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 11,
+      "configure_ns": 47959,
+      "submission_ns": 13118291,
+      "session_ns": 13166250
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 11,
+      "configure_ns": 41667,
+      "submission_ns": 325818917,
+      "session_ns": 325860584
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 12,
+      "configure_ns": 29083,
+      "submission_ns": 325774667,
+      "session_ns": 325803750
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 12,
+      "configure_ns": 40625,
+      "submission_ns": 12520458,
+      "session_ns": 12561083
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 12,
+      "configure_ns": 67958,
+      "submission_ns": 320226959,
+      "session_ns": 320294917
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 12,
+      "configure_ns": 90959,
+      "submission_ns": 13892791,
+      "session_ns": 13983750
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 13,
+      "configure_ns": 31583,
+      "submission_ns": 13373875,
+      "session_ns": 13405458
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 13,
+      "configure_ns": 49292,
+      "submission_ns": 320831083,
+      "session_ns": 320880375
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 13,
+      "configure_ns": 40917,
+      "submission_ns": 12813958,
+      "session_ns": 12854875
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 13,
+      "configure_ns": 91583,
+      "submission_ns": 326279584,
+      "session_ns": 326371167
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "sample": 14,
+      "configure_ns": 46917,
+      "submission_ns": 323552458,
+      "session_ns": 323599375
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "sample": 14,
+      "configure_ns": 55458,
+      "submission_ns": 13113834,
+      "session_ns": 13169292
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "sample": 14,
+      "configure_ns": 71584,
+      "submission_ns": 319528291,
+      "session_ns": 319599875
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "sample": 14,
+      "configure_ns": 100208,
+      "submission_ns": 13855250,
+      "session_ns": 13955458
+    }
+  ],
+  "summaries": [
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": false,
+      "configure_ns": 29959,
+      "submission_ns": 483959,
+      "session_ns": 528208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "aot": true,
+      "configure_ns": 32291,
+      "submission_ns": 443875,
+      "session_ns": 476208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": false,
+      "configure_ns": 30667,
+      "submission_ns": 602209,
+      "session_ns": 639375
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "aot": true,
+      "configure_ns": 24917,
+      "submission_ns": 537083,
+      "session_ns": 569000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": false,
+      "configure_ns": 47667,
+      "submission_ns": 8384250,
+      "session_ns": 8411250
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "aot": true,
+      "configure_ns": 50791,
+      "submission_ns": 6627958,
+      "session_ns": 6719000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": false,
+      "configure_ns": 55417,
+      "submission_ns": 8545625,
+      "session_ns": 8644333
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "aot": true,
+      "configure_ns": 42542,
+      "submission_ns": 6812125,
+      "session_ns": 6842292
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": false,
+      "configure_ns": 34792,
+      "submission_ns": 4600750,
+      "session_ns": 4636541
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "aot": true,
+      "configure_ns": 36792,
+      "submission_ns": 1394916,
+      "session_ns": 1427125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": false,
+      "configure_ns": 37584,
+      "submission_ns": 4714958,
+      "session_ns": 4774291
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "aot": true,
+      "configure_ns": 35667,
+      "submission_ns": 1464625,
+      "session_ns": 1511875
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": false,
+      "configure_ns": 48083,
+      "submission_ns": 319491458,
+      "session_ns": 319534083
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": false,
+      "aot": true,
+      "configure_ns": 43250,
+      "submission_ns": 255478458,
+      "session_ns": 255521708
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": false,
+      "configure_ns": 58167,
+      "submission_ns": 318434375,
+      "session_ns": 318473083
+    },
+    {
+      "workload": "game_spectral_norm",
+      "validate": true,
+      "aot": true,
+      "configure_ns": 42208,
+      "submission_ns": 254963875,
+      "session_ns": 255000292
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": false,
+      "configure_ns": 45833,
+      "submission_ns": 325818917,
+      "session_ns": 325860584
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": false,
+      "aot": true,
+      "configure_ns": 47959,
+      "submission_ns": 12971250,
+      "session_ns": 13016458
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": false,
+      "configure_ns": 44417,
+      "submission_ns": 320226959,
+      "session_ns": 320294917
+    },
+    {
+      "workload": "perf_unpack_sequence",
+      "validate": true,
+      "aot": true,
+      "configure_ns": 46500,
+      "submission_ns": 13519500,
+      "session_ns": 13563250
+    }
+  ]
+}

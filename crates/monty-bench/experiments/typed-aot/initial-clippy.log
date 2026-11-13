@@ -1,0 +1,410 @@
+    Checking serde_core v1.0.229
+    Checking libc v0.2.189
+    Checking hashbrown v0.17.1
+   Compiling memchr v2.8.3
+   Compiling syn v3.0.5
+   Compiling syn v2.0.119
+   Compiling getrandom v0.2.17
+    Checking crossbeam-utils v0.8.23
+    Checking scopeguard v1.2.0
+    Checking tracing-core v0.1.36
+    Checking lock_api v0.4.14
+   Compiling rand_core v0.6.4
+    Checking pin-project-lite v0.2.17
+    Checking portable-atomic v1.15.0
+    Checking crossbeam-queue v0.3.14
+   Compiling object v0.39.1
+    Checking indexmap v2.14.2
+   Compiling rand_chacha v0.3.1
+    Checking hashlink v0.12.2
+    Checking typeid v1.0.3
+    Checking inventory v0.3.24
+    Checking boxcar v0.2.14
+    Checking salsa-macro-rules v0.28.2
+    Checking intrusive-collections v0.10.3
+   Compiling rand v0.8.8
+    Checking regex-syntax v0.8.11
+    Checking errno v0.3.14
+    Checking ordermap v1.2.2
+    Checking byteorder v1.5.0
+    Checking rustix v1.1.4
+    Checking getrandom v0.3.4
+    Checking serde_json v1.0.151
+    Checking jiff v0.2.37
+    Checking serde_bytes v0.11.19
+   Compiling phf_generator v0.11.3
+    Checking hash32 v0.2.1
+    Checking wasmtime-internal-core v50.0.0
+   Compiling phf_codegen v0.11.3
+    Checking cpufeatures v0.2.17
+   Compiling unicode_names2_generator v1.3.0
+    Checking sha2 v0.10.9
+    Checking memmap2 v0.9.12
+    Checking wasmtime-internal-jit-icache-coherence v50.0.0
+    Checking getrandom v0.4.3
+    Checking regex-automata v0.4.18
+    Checking console v0.16.6
+   Compiling either v1.18.0
+   Compiling manyhow v0.11.4
+   Compiling synstructure v0.13.2
+    Checking tempfile v3.27.0
+   Compiling generic-array v0.14.7
+   Compiling unicode_names2 v1.3.0
+    Checking insta v1.48.0
+   Compiling aho-corasick v1.1.5
+    Checking anstyle v1.0.14
+   Compiling ar_archive_writer v0.5.3
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty)
+   Compiling ruff_source_file v0.0.14
+   Compiling serde_derive v1.0.229
+   Compiling quote-use-macros v0.8.4
+   Compiling derive-where v1.6.1
+   Compiling thiserror-impl v2.0.20
+   Compiling tracing-attributes v0.1.31
+   Compiling is-macro v0.3.8
+   Compiling quote-use v0.8.4
+   Compiling salsa-macros v0.28.2
+   Compiling psm v0.1.32
+   Compiling zerofrom-derive v0.1.7
+    Checking thiserror v2.0.20
+   Compiling yoke-derive v0.8.2
+   Compiling attribute-derive-macro v0.10.5
+    Checking tracing v0.1.44
+    Checking bstr v1.13.1
+    Checking zerofrom v0.1.8
+   Compiling zerovec-derive v0.11.6
+   Compiling displaydoc v0.2.7
+    Checking serde v1.0.229
+   Compiling strum_macros v0.27.2
+   Compiling attribute-derive v0.10.5
+    Checking stacker v0.1.25
+   Compiling monty-macros v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty-macros)
+    Checking cobs v0.3.0
+    Checking fancy-regex v0.17.0
+   Compiling itertools v0.15.0
+   Compiling rustc-hash v2.1.3
+    Checking rand_core v0.10.1
+   Compiling crypto-common v0.1.7
+    Checking anyhow v1.0.104
+    Checking yoke v0.8.3
+    Checking chacha20 v0.10.2
+   Compiling crc32fast v1.5.2
+    Checking unicode-width v0.2.2
+    Checking rand v0.10.2
+    Checking smallvec v1.16.1
+    Checking strum v0.27.2
+    Checking num-bigint v0.4.8
+    Checking chrono v0.4.45
+   Compiling get-size-derive2 v0.11.0
+    Checking ahash v0.8.12
+    Checking heapless v0.7.17
+    Checking parking_lot_core v0.9.12
+    Checking minicbor-serde v0.7.1
+   Compiling regex v1.13.1
+    Checking parking_lot v0.12.5
+    Checking get-size2 v0.11.0
+    Checking zerovec v0.11.8
+    Checking zerotrie v0.2.5
+    Checking postcard v1.1.3
+   Compiling ruff_python_trivia v0.0.14
+    Checking jiter v0.17.0
+    Checking salsa v0.28.2
+    Checking hashbrown v0.14.5
+    Checking monty-types v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty-types)
+    Checking speedate v0.17.0
+    Checking typed-path v0.12.3
+   Compiling ruff_macros v0.0.14
+    Checking uuid v1.26.1
+    Checking dashmap v6.2.1
+    Checking camino v1.2.5
+    Checking ruff_annotate_snippets v0.0.14
+    Checking zip v8.6.0
+   Compiling block-buffer v0.10.4
+    Checking filetime v0.2.29
+    Checking ruff_text_size v0.0.14
+    Checking char_str v0.0.4
+    Checking ruff_memory_usage v0.0.14
+    Checking arc-swap v1.9.2
+    Checking path-slash v0.2.1
+    Checking tinystr v0.8.4
+    Checking potential_utf v0.1.6
+    Checking ruff_diagnostics v0.0.14
+    Checking pathdiff v0.2.3
+    Checking ty_static v0.0.14
+    Checking similar v3.2.0
+    Checking icu_locale_core v2.3.0
+    Checking matchit v0.9.2
+    Checking icu_collections v2.3.0
+    Checking supports-hyperlinks v3.2.0
+    Checking dunce v1.0.5
+   Compiling digest v0.10.7
+    Checking ruff_python_ast v0.0.14
+   Compiling equivalent v1.0.2
+   Compiling inout v0.1.4
+    Checking winnow v1.0.4
+    Checking icu_provider v2.3.1
+   Compiling password-hash v0.4.2
+   Compiling cipher v0.4.4
+    Checking toml_parser v1.1.3+spec-1.1.0
+    Checking monty-alloc v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty-alloc)
+    Checking icu_properties v2.3.0
+   Compiling hmac v0.12.1
+    Checking ruff_notebook v0.0.14
+   Compiling strum_macros v0.28.0
+    Checking serde_spanned v1.1.1
+    Checking toml_datetime v1.1.1+spec-1.1.0
+    Checking utf8parse v0.2.2
+    Checking toml_writer v1.1.2+spec-1.1.0
+   Compiling pbkdf2 v0.11.0
+   Compiling aes v0.8.4
+    Checking crossbeam-epoch v0.9.21
+   Compiling flate2 v1.1.10
+   Compiling sha1 v0.10.7
+    Checking toml v1.1.6+spec-1.1.0
+    Checking crossbeam-deque v0.8.8
+    Checking colored v3.1.1
+    Checking io-lifetimes v3.0.1
+   Compiling zip v0.6.6
+    Checking io-lifetimes v2.0.4
+    Checking ruff_index v0.0.14
+    Checking rayon-core v1.13.0
+    Checking is_terminal_polyfill v1.70.2
+    Checking anstyle-query v1.1.5
+    Checking colorchoice v1.0.5
+   Compiling ty_vendored v0.0.14
+    Checking strum v0.28.0
+    Checking fs-set-times v0.20.3
+    Checking ruff_python_parser v0.0.14
+    Checking ruff_python_literal v0.0.14
+    Checking ruff_python_edits v0.0.14
+    Checking io-extras v0.19.0
+    Checking anstyle-parse v1.0.0
+    Checking rayon v1.12.0
+   Compiling monty-typeshed v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty-typeshed)
+   Compiling itertools v0.14.0
+    Checking ipnet v2.12.2
+    Checking ambient-authority v0.0.2
+    Checking maybe-owned v0.3.4
+    Checking anstream v1.0.0
+    Checking nibble_vec v0.1.0
+    Checking endian-type v0.1.2
+    Checking clap_lex v1.1.0
+    Checking strsim v0.11.1
+    Checking cap-primitives v4.0.3
+    Checking ruff_python_codegen v0.0.14
+    Checking ruff_db v0.0.14
+    Checking bytes v1.12.1
+    Checking radix_trie v0.2.1
+    Checking nix v0.29.0
+    Checking anstyle-parse v0.2.7
+    Checking clap_builder v4.6.6
+    Checking cap-std v4.0.3
+    Checking ruff_python_importer v0.0.14
+   Compiling clap_derive v4.6.4
+    Checking fd-lock v4.0.4
+    Checking home v0.5.12
+   Compiling prost-derive v0.14.4
+    Checking unicode-segmentation v1.13.3
+    Checking log v0.4.34
+    Checking monty-fs v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty-fs)
+    Checking anstream v0.6.21
+    Checking ruff_ranged_value v0.0.14
+    Checking ty_module_resolver v0.0.14
+    Checking ty_site_packages v0.0.14
+    Checking rustyline v15.0.0
+    Checking ty_combine v0.0.14
+    Checking prost v0.14.4
+    Checking clap v4.6.6
+    Checking ty_python_core v0.0.14
+    Checking ty_python_semantic v0.0.14
+error: consider bringing this path into scope with the `use` keyword
+   --> crates/monty/src/bytecode/aot/hints.rs:100:26
+    |
+100 |     pub range_names: Vec<crate::intern::StringId>,
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+    = note: `-D clippy::absolute-paths` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::absolute_paths)]`
+
+error: casting `u8` to `i8` may wrap around the value
+   --> crates/monty/src/bytecode/aot/ir.rs:203:60
+    |
+203 |         Opcode::LoadSmallInt => Some((Kind::Int, i64::from(instruction.argument as u8 as i8).cast_unsigned())),
+    |                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, use `cast_signed()` instead: `(instruction.argument as u8).cast_signed()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#cast_possible_wrap
+    = note: `-D clippy::cast-possible-wrap` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::cast_possible_wrap)]`
+
+error: casting `usize` to `u8` may truncate the value
+   --> crates/monty/src/bytecode/aot/ir.rs:203:60
+    |
+203 |         Opcode::LoadSmallInt => Some((Kind::Int, i64::from(instruction.argument as u8 as i8).cast_unsigned())),
+    |                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: if this is intentional allow the lint with `#[allow(clippy::cast_possible_truncation)]` ...
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#cast_possible_truncation
+    = note: `-D clippy::cast-possible-truncation` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::cast_possible_truncation)]`
+help: ... or use `try_from` and handle the error accordingly
+    |
+203 -         Opcode::LoadSmallInt => Some((Kind::Int, i64::from(instruction.argument as u8 as i8).cast_unsigned())),
+203 +         Opcode::LoadSmallInt => Some((Kind::Int, i64::from(u8::try_from(instruction.argument) as i8).cast_unsigned())),
+    |
+
+error: consider bringing this path into scope with the `use` keyword
+   --> crates/monty/src/bytecode/aot/ir.rs:341:30
+    |
+341 |                     let id = crate::intern::StringId::from_index(u16::from_le_bytes([bytes[ip + 3], bytes[ip + 4]]));
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: casting `u64` to `usize` may truncate the value on targets with 32-bit wide pointers
+  --> crates/monty/src/bytecode/vm/aot.rs:38:17
+   |
+38 |     let count = patch.immediate as usize & 255;
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: if this is intentional allow the lint with `#[allow(clippy::cast_possible_truncation)]` ...
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#cast_possible_truncation
+help: ... or use `try_from` and handle the error accordingly
+   |
+38 -     let count = patch.immediate as usize & 255;
+38 +     let count = usize::try_from(patch.immediate) & 255;
+   |
+
+error: consider bringing this path into scope with the `use` keyword
+  --> crates/monty/src/bytecode/vm/aot.rs:62:25
+   |
+62 |         let remaining = crate::types::Range::new(start, stop, step).len() as u64;
+   |                         ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider bringing this path into scope with the `use` keyword
+  --> crates/monty/src/bytecode/vm/aot.rs:98:56
+   |
+98 |                 Some(Value::Undefined | Value::Builtin(crate::builtins::Builtins::Type(crate::types::Type::Range)))
+   |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider bringing this path into scope with the `use` keyword
+  --> crates/monty/src/bytecode/vm/aot.rs:98:88
+   |
+98 |                 Some(Value::Undefined | Value::Builtin(crate::builtins::Builtins::Type(crate::types::Type::Range)))
+   |                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider adding a `;` to the last statement for consistent formatting
+   --> crates/monty/src/bytecode/vm/aot.rs:122:17
+    |
+122 |                 s.code_bytes += artifact.code_bytes() as u64
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: add a `;` here: `s.code_bytes += artifact.code_bytes() as u64;`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#semicolon_if_nothing_returned
+    = note: `-D clippy::semicolon-if-nothing-returned` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::semicolon_if_nothing_returned)]`
+
+error: consider adding a `;` to the last statement for consistent formatting
+   --> crates/monty/src/bytecode/vm/aot.rs:172:17
+    |
+172 |                 s.returns += 1
+    |                 ^^^^^^^^^^^^^^ help: add a `;` here: `s.returns += 1;`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#semicolon_if_nothing_returned
+
+error: consider adding a `;` to the last statement for consistent formatting
+   --> crates/monty/src/bytecode/vm/aot.rs:174:17
+    |
+174 |                 s.fallbacks += 1
+    |                 ^^^^^^^^^^^^^^^^ help: add a `;` here: `s.fallbacks += 1;`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#semicolon_if_nothing_returned
+
+error: consider bringing this path into scope with the `use` keyword
+    --> crates/monty/src/bytecode/vm/mod.rs:1306:27
+     |
+1306 |         let aot_enabled = crate::bytecode::aot::enabled();
+     |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider bringing this path into scope with the `use` keyword
+   --> crates/monty/src/expressions.rs:805:30
+    |
+805 |     pub parameter_hints: Vec<crate::bytecode::aot::TypeHint>,
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider bringing this path into scope with the `use` keyword
+   --> crates/monty/src/expressions.rs:808:22
+    |
+808 |     pub return_hint: crate::bytecode::aot::TypeHint,
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider bringing this path into scope with the `use` keyword
+  --> crates/monty/src/parse.rs:78:20
+   |
+78 |     pub type_hint: crate::bytecode::aot::TypeHint,
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider bringing this path into scope with the `use` keyword
+  --> crates/monty/src/parse.rs:94:22
+   |
+94 |     pub return_hint: crate::bytecode::aot::TypeHint,
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider bringing this path into scope with the `use` keyword
+   --> crates/monty/src/parse.rs:109:49
+    |
+109 |     pub(crate) fn parameter_hints(&self) -> Vec<crate::bytecode::aot::TypeHint> {
+    |                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider bringing this path into scope with the `use` keyword
+   --> crates/monty/src/parse.rs:833:26
+    |
+833 |             return_hint: crate::bytecode::aot::TypeHint::from_annotation(function.returns.as_deref()),
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider bringing this path into scope with the `use` keyword
+    --> crates/monty/src/parse.rs:1406:38
+     |
+1406 |                         return_hint: crate::bytecode::aot::TypeHint::Unknown,
+     |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider bringing this path into scope with the `use` keyword
+    --> crates/monty/src/parse.rs:2073:32
+     |
+2073 |                     type_hint: crate::bytecode::aot::TypeHint::from_annotation(p.parameter.annotation.as_deref()),
+     |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: consider bringing this path into scope with the `use` keyword
+    --> crates/monty/src/prepare.rs:1905:26
+     |
+1905 |             return_hint: crate::bytecode::aot::TypeHint::Unknown,
+     |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+
+error: could not compile `monty` (lib) due to 21 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `monty` (lib test) due to 21 previous errors

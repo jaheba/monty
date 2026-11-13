@@ -1,0 +1,11 @@
+{
+  "sha256": "bd99f9980a33c73c11d0e280993b7e4fbdc8cc74ad42ca129fe36d09b3368ad0",
+  "bytes": 23602144,
+  "features": [
+    "experimental-aot"
+  ],
+  "profile": "release: fat LTO, one codegen unit, strip=true",
+  "dispatch": "threaded; compact metadata; separate source fuel and handler depth; shared default",
+  "baseline_commit": "9a9f8784bf6cb36b09f183b53d7d829bcd807bdf",
+  "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)"
+}

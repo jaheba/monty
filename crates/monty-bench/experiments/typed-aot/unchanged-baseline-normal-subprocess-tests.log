@@ -1,0 +1,124 @@
+   Compiling monty-typeshed v1.0.1 (/private/tmp/monty-native-study/baseline-source/crates/monty-typeshed)
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/baseline-source/crates/monty)
+   Compiling monty-type-checking v1.0.1 (/private/tmp/monty-native-study/baseline-source/crates/monty-type-checking)
+   Compiling monty-proto v1.0.1 (/private/tmp/monty-native-study/baseline-source/crates/monty-proto)
+   Compiling monty-runtime v1.0.1 (/private/tmp/monty-native-study/baseline-source/crates/monty-runtime)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.98s
+     Running tests/subprocess.rs (/Users/jaheba/p/monty/target/debug/deps/subprocess-f662533752c0bb25)
+
+running 91 tests
+test abort_feed_round_trip ... ok
+test assert_annotation_custom_limit_survives_dump_and_load ... ok
+test assert_annotation_option_survives_dump_and_load ... ok
+test batched_without_a_size_hint_is_refused_before_the_hard_limit ... ok
+test a_returnable_value_can_also_be_passed_to_a_host_function ... ok
+test call_arguments_share_one_arena ... ok
+test async_accumulation_reaches_the_soft_limit ... ok
+test building_a_deep_gather_nest_reaches_the_soft_limit ... ok
+test clock_and_entropy_are_answered_in_the_worker_by_default ... ok
+test clock_calls_bubble_to_parent_under_call_host ... ok
+test an_export_that_outgrows_the_hard_limit_exits_with_the_oom_code ... ok
+test bounded_deque_extend_is_not_preflighted ... ok
+test deeply_nested_type_check_stubs_are_rejected_on_configure ... ok
+test differing_package_version_is_accepted ... ok
+test empty_product_pool_is_not_preflighted ... ok
+test dump_then_load_into_fresh_child_resumes ... ok
+test exceeding_the_memory_limit_exits_with_the_oom_code ... ok
+test exporting_a_deeply_nested_value_does_not_overflow_the_stack ... ok
+test exporting_a_shared_graph_is_linear_in_heap_objects ... ok
+test exporting_a_small_shared_graph_round_trips ... ok
+test cycles_export_one_placeholder_each ... ok
+test child_enforces_time_limit ... ok
+test external_function_not_found_raises_name_error ... ok
+test copying_an_emptied_set_costs_nothing ... ok
+test exporting_past_the_recursion_guard_degrades_to_a_repr ... ok
+test external_function_round_trip ... ok
+test fixed_clock_and_seed_are_answered_in_the_worker ... ok
+monty subprocess fatal error: malformed request frame: frame of 2147483647 bytes exceeds maximum of 268435456 bytes
+test garbage_stdin_is_a_fatal_error ... ok
+test formatting_generic_value_without_padding_does_not_charge_fill ... ok
+test formatting_without_padding_does_not_charge_fill ... ok
+test host_call_arguments_over_the_limit_still_fail_gracefully ... ok
+test impossible_format_capacity_preserves_the_worker ... ok
+test deep_copy_of_a_near_limit_dict_raises_rather_than_dying ... ok
+test full_bounded_deque_growth_stays_graceful ... ok
+test inputs_are_injected ... ok
+test install_dependencies_is_rejected_but_session_survives ... ok
+test invalid_complex_spec_is_rejected_before_its_precision_is_charged ... ok
+test invalid_os_policy_is_rejected_on_configure ... ok
+test exceeding_the_soft_memory_limit_preserves_the_worker ... ok
+test importing_under_memory_pressure_stays_graceful ... ok
+test iterdir_joins_are_preflighted ... FAILED
+test large_allocations_are_rejected_before_the_hard_limit ... FAILED
+test large_host_call_arguments_survive_being_announced ... ok
+test name_lookup_error_raises_in_sandbox ... ok
+test name_lookup_round_trip ... ok
+test loading_a_dump_applies_its_own_memory_limit ... ok
+test many_references_to_one_object_cost_one_node ... ok
+test non_finite_float_precision_is_not_charged ... ok
+test large_unnested_format_spec_preserves_the_worker ... ok
+test oldest_supported_protocol_version_is_accepted ... ok
+test os_call_bubbles_to_parent_without_mounts ... ok
+test killed_child_is_detected_as_eof ... ok
+test near_limit_suspension_is_refused_cleanly ... ok
+test os_call_error_resume_carries_exception ... ok
+test print_output_is_streamed_in_order ... ok
+test protocol_violations_keep_the_child_alive ... ok
+test copying_a_large_set_fails_softly ... ok
+test container_growth_preflight_leaves_ordinary_work_alone ... ok
+test refused_allocation_exits_with_the_oom_code ... ok
+test committing_a_deep_gather_nest_reaches_the_soft_limit ... ok
+test overlapping_dict_merges_are_not_charged_for_absent_growth ... ok
+test reset_returns_child_to_idle_for_reuse ... ok
+test reading_partial_args_cannot_kill_the_worker ... ok
+test runtime_error_preserves_session ... ok
+test session_state_persists_across_feeds ... ok
+test oversized_split_stays_graceful ... ok
+test shared_inputs_are_one_sandbox_object ... ok
+test sleep_calls_bubble_to_parent_under_call_host ... ok
+test small_batched_n_is_not_preflighted ... ok
+test small_memory_limit_leaves_normal_work_alone ... ok
+test small_tee_group_is_not_preflighted ... ok
+test suspended_call_keeps_its_arguments_for_a_dump ... ok
+test reset_scrubs_type_check_state_from_the_next_session ... ok
+test suspended_generators_remain_charged_to_memory_limit ... ok
+test suspended_os_call_keeps_its_payload_for_a_dump ... ok
+test tee_group_is_charged_before_it_is_built ... ok
+test refused_set_copy_releases_its_source ... ok
+test type_check_format_selects_the_rendering ... ok
+test numeric_formatting_peak_memory_preserves_the_worker ... ok
+test type_checked_session_skips_the_checker_for_deeply_nested_source ... ok
+test undeclared_protocol_version_is_a_fatal_error ... ok
+test type_check_format_survives_dump_and_load ... ok
+test unsupported_protocol_version_on_create_is_a_fatal_error ... ok
+test type_check_state_survives_dump_and_load ... ok
+test snippets_refused_a_frame_are_not_retained ... ok
+test type_checked_session_rejects_bad_snippets_and_remembers_good_ones ... ok
+test a_dropped_tee_consumer_does_not_pin_the_read_ahead ... ok
+test refused_findall_leaves_no_partial_result ... ok
+test rejected_snippets_are_not_retained ... ok
+test native_value_buffers_stay_graceful ... ok
+test incremental_container_growth_stays_graceful ... ok
+
+failures:
+
+---- iterdir_joins_are_preflighted stdout ----
+
+thread 'iterdir_joins_are_preflighted' (71769832) panicked at crates/monty-runtime/tests/subprocess.rs:1957:5:
+from pathlib import Path
+list(Path('/' + 'd' * 100_000).iterdir()): reported 2256413 bytes, expected within 1024 of 2245291
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- large_allocations_are_rejected_before_the_hard_limit stdout ----
+
+thread 'large_allocations_are_rejected_before_the_hard_limit' (71769838) panicked at crates/monty-runtime/tests/subprocess.rs:1957:5:
+'x' * 10_000_000: reported 10037809 bytes, expected within 1024 of 10041930
+
+
+failures:
+    iterdir_joins_are_preflighted
+    large_allocations_are_rejected_before_the_hard_limit
+
+test result: FAILED. 89 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 14.02s
+
+error: test failed, to rerun pass `-p monty-runtime --test subprocess`

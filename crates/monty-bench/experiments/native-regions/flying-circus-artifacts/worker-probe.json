@@ -1,0 +1,30 @@
+{
+  "baseline": {
+    "arguments": [
+      "--no-native"
+    ],
+    "stdout": "999000\n",
+    "stats": {
+      "compilations": 0,
+      "compilation_ns": 0,
+      "code_bytes": 0,
+      "entries": 0,
+      "instructions": 0,
+      "dictionary_reads": 0,
+      "range_steps": 0
+    }
+  },
+  "native": {
+    "arguments": [],
+    "stdout": "999000\n",
+    "stats": {
+      "compilations": 1,
+      "compilation_ns": 12500,
+      "code_bytes": 1668,
+      "entries": 37,
+      "instructions": 8970,
+      "dictionary_reads": 0,
+      "range_steps": 997
+    }
+  }
+}

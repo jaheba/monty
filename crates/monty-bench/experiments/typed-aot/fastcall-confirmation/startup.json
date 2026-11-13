@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "scenario": "empty_command_process",
+  "samples": 5,
+  "timestamp": "2026-11-12T23:17:53.642350+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "scope": "Fresh process launch through exit; empty -c command; no shell; normal interpreter defaults",
+  "engines": {
+    "baseline": {
+      "binary_sha256": "397795d38e7d99da29c73392c26b2de82383f66c6afce7fff91ff68a663c2031",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-artifacts/bin/monty",
+        "--no-native",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.006644334,
+        0.005865166,
+        0.006718208,
+        0.00702475,
+        0.006873375
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.006718208
+    },
+    "previous_aot": {
+      "binary_sha256": "80dd74708ad2d506adbe91683e4b33287f5cd2efa978e1e21882e5a6f6fdb925",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/match-artifacts/bin/monty",
+        "--aot",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.006492209,
+        0.008056834,
+        0.007218958,
+        0.007643917,
+        0.007908791
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.007643917
+    },
+    "aot": {
+      "binary_sha256": "397795d38e7d99da29c73392c26b2de82383f66c6afce7fff91ff68a663c2031",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-artifacts/bin/monty",
+        "--aot",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.008108459,
+        0.007157042,
+        0.006841917,
+        0.008471,
+        0.007204083
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.007204083
+    },
+    "CPython": {
+      "binary_sha256": "15c72833c1ffc09bc4e05d1e1866784d126721ad548d9c4d8f943641262535cb",
+      "revision": "Python 3.15.0",
+      "command": [
+        "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/bin/python3.15",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.025159083,
+        0.025189625,
+        0.025386833,
+        0.024546458,
+        0.026160042
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.025189625
+    }
+  }
+}

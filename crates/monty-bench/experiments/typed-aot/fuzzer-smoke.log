@@ -1,0 +1,5 @@
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 17.40s
+     Running `/Users/jaheba/p/monty/target/debug/examples/aot_differential 20`
+seed=18719336951155115 cases=1 seconds=0.015 returns=[0, 0] entries=[0, 0] fallbacks=[1, 1]
+seed=18719336951155115 cases=20 seconds=0.059 returns=[15, 15] entries=[17, 17] fallbacks=[5, 5]

@@ -1,0 +1,2125 @@
+[
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -2.3300615134701386,
+    "baseline": 319.340625,
+    "candidate": 311.899792,
+    "interval_percent": [
+      -2.991304566542996,
+      2.3750048302995763
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -18.107636947225224,
+    "baseline": 319.340625,
+    "candidate": 261.51558400000005,
+    "interval_percent": [
+      -18.96821201007596,
+      -17.15675408287387
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -18.445077258804766,
+    "baseline": 319.340625,
+    "candidate": 260.438,
+    "interval_percent": [
+      -19.065189307324815,
+      -17.188017533377508
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -16.54744334517414,
+    "baseline": 319.340625,
+    "candidate": 266.497916,
+    "interval_percent": [
+      -17.101859628691386,
+      -14.450760380833927
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -16.360403879086782,
+    "baseline": 319.340625,
+    "candidate": 267.095209,
+    "interval_percent": [
+      -16.90723048807673,
+      -15.465406619841248
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -78.83322079675894,
+    "baseline": 319.340625,
+    "candidate": 67.594125,
+    "interval_percent": [
+      -78.9814941466144,
+      -78.73557540447179
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -2.104503962730797,
+    "baseline": 319.27162500000003,
+    "candidate": 312.552541,
+    "interval_percent": [
+      -5.781326065872161,
+      -1.5942290204317033
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -18.5553733439356,
+    "baseline": 319.27162500000003,
+    "candidate": 260.029583,
+    "interval_percent": [
+      -21.77703932720806,
+      -18.049473956702723
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -18.668443210385522,
+    "baseline": 319.27162500000003,
+    "candidate": 259.668583,
+    "interval_percent": [
+      -21.80416409273237,
+      -18.28892309904179
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -16.00775170671682,
+    "baseline": 319.27162500000003,
+    "candidate": 268.163416,
+    "interval_percent": [
+      -19.286022803114168,
+      -15.355184922209409
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -15.935320904261395,
+    "baseline": 319.27162500000003,
+    "candidate": 268.39466699999997,
+    "interval_percent": [
+      -19.196985167366563,
+      -15.35218366007346
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -79.07831615164673,
+    "baseline": 319.27162500000003,
+    "candidate": 66.797,
+    "interval_percent": [
+      -79.87959630677736,
+      -78.94785841082012
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -0.5706134094151216,
+    "baseline": 10.953125,
+    "candidate": 10.890625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": 1.4265335235378096,
+    "baseline": 10.953125,
+    "candidate": 11.109375,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": 0.7132667617689048,
+    "baseline": 10.953125,
+    "candidate": 11.03125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": 0.7132667617689048,
+    "baseline": 10.953125,
+    "candidate": 11.03125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": 0.8559201141226769,
+    "baseline": 10.953125,
+    "candidate": 11.046875,
+    "status": "unchanged"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": 42.79600570613409,
+    "baseline": 10.953125,
+    "candidate": 15.640625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -2.310541815124323,
+    "baseline": 322.615542,
+    "candidate": 315.161375,
+    "interval_percent": [
+      -4.266154655567522,
+      0.08841712356371101
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -95.91921396024993,
+    "baseline": 322.615542,
+    "candidate": 13.16525,
+    "interval_percent": [
+      -96.02748144155854,
+      -95.83556508025355
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -97.71689052723939,
+    "baseline": 322.615542,
+    "candidate": 7.365666,
+    "interval_percent": [
+      -97.80792187015014,
+      -97.66186157433528
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -96.00508769041264,
+    "baseline": 322.615542,
+    "candidate": 12.888208,
+    "interval_percent": [
+      -96.08393632306274,
+      -95.85257116968035
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -97.71577960741892,
+    "baseline": 322.615542,
+    "candidate": 7.36925,
+    "interval_percent": [
+      -97.78303493891083,
+      -97.66230749481373
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -94.28151914640243,
+    "baseline": 322.615542,
+    "candidate": 18.448708,
+    "interval_percent": [
+      -94.40617968540298,
+      -94.14031822206277
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -2.597682902351961,
+    "baseline": 320.814792,
+    "candidate": 312.481041,
+    "interval_percent": [
+      -3.0682341184647743,
+      -2.1040426699623693
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -96.00789916195635,
+    "baseline": 320.814792,
+    "candidate": 12.80725,
+    "interval_percent": [
+      -96.08418131515475,
+      -95.9096767947446
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -97.83829076060807,
+    "baseline": 320.814792,
+    "candidate": 6.935083,
+    "interval_percent": [
+      -97.87963275701036,
+      -97.76407057966074
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -96.08150081807949,
+    "baseline": 320.814792,
+    "candidate": 12.571125,
+    "interval_percent": [
+      -96.13310686305745,
+      -96.0360420278118
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -97.83538129376528,
+    "baseline": 320.814792,
+    "candidate": 6.944417,
+    "interval_percent": [
+      -97.876355574978,
+      -97.76866143109851
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -94.57681645801419,
+    "baseline": 320.814792,
+    "candidate": 17.398375,
+    "interval_percent": [
+      -94.61425180535012,
+      -94.49125418144277
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": 0.8042895442359255,
+    "baseline": 11.65625,
+    "candidate": 11.75,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": 4.959785522788196,
+    "baseline": 11.65625,
+    "candidate": 12.234375,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": 3.217158176943702,
+    "baseline": 11.65625,
+    "candidate": 12.03125,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": 6.166219839142095,
+    "baseline": 11.65625,
+    "candidate": 12.375,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": 4.289544235924936,
+    "baseline": 11.65625,
+    "candidate": 12.15625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": 69.16890080428955,
+    "baseline": 11.65625,
+    "candidate": 19.71875,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": 2.850544532750088,
+    "baseline": 0.793708,
+    "candidate": 0.8163330000000001,
+    "interval_percent": [
+      -10.367726310038561,
+      10.534767946041423
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -2.173343345411649,
+    "baseline": 0.793708,
+    "candidate": 0.7764580000000001,
+    "interval_percent": [
+      -13.996641967180901,
+      9.740845118142548
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -4.288856859197587,
+    "baseline": 0.793708,
+    "candidate": 0.759667,
+    "interval_percent": [
+      -14.777630335220381,
+      6.569565637212804
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -3.212642432733459,
+    "baseline": 0.793708,
+    "candidate": 0.7682089999999999,
+    "interval_percent": [
+      -13.81063704744302,
+      10.341900519500946
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -4.11032772757739,
+    "baseline": 0.793708,
+    "candidate": 0.761084,
+    "interval_percent": [
+      -16.0539799775293,
+      6.682136860572174
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": 80.52407182490286,
+    "baseline": 0.793708,
+    "candidate": 1.432834,
+    "interval_percent": [
+      54.419447787618715,
+      107.40692005722639
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -2.702759102813368,
+    "baseline": 0.575042,
+    "candidate": 0.5595,
+    "interval_percent": [
+      -15.550031578982903,
+      23.097915607524143
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -5.622893632117298,
+    "baseline": 0.575042,
+    "candidate": 0.5427080000000001,
+    "interval_percent": [
+      -14.22687013477809,
+      20.70364243526699
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -10.071786060844246,
+    "baseline": 0.575042,
+    "candidate": 0.5171250000000001,
+    "interval_percent": [
+      -20.348628990773122,
+      10.004042532340286
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -8.209661207355301,
+    "baseline": 0.575042,
+    "candidate": 0.527833,
+    "interval_percent": [
+      -21.295500190606965,
+      14.387391967463149
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -10.702174797666963,
+    "baseline": 0.575042,
+    "candidate": 0.5135,
+    "interval_percent": [
+      -22.97434273589143,
+      7.072887846943976
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -3.253327583028731,
+    "baseline": 0.575042,
+    "candidate": 0.556334,
+    "interval_percent": [
+      -15.368616553225678,
+      22.301169293340116
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": 1.0101010101010166,
+    "baseline": 10.828125,
+    "candidate": 10.9375,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": 1.443001443001446,
+    "baseline": 10.828125,
+    "candidate": 10.984375,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": 0.8658008658008587,
+    "baseline": 10.828125,
+    "candidate": 10.921875,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": 2.3088023088023046,
+    "baseline": 10.828125,
+    "candidate": 11.078125,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": 2.164502164502169,
+    "baseline": 10.828125,
+    "candidate": 11.0625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": 44.87734487734487,
+    "baseline": 10.828125,
+    "candidate": 15.6875,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -5.3882075818884045,
+    "baseline": 8.708832999999998,
+    "candidate": 8.239583,
+    "interval_percent": [
+      -7.799632056636496,
+      -2.214326661639987
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -18.783607401818347,
+    "baseline": 8.708832999999998,
+    "candidate": 7.073,
+    "interval_percent": [
+      -21.264763295743407,
+      -16.531216226005075
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -19.556764953467344,
+    "baseline": 8.708832999999998,
+    "candidate": 7.005667,
+    "interval_percent": [
+      -21.858806016262456,
+      -17.59672426710083
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -20.701200723449386,
+    "baseline": 8.708832999999998,
+    "candidate": 6.906,
+    "interval_percent": [
+      -23.884673536410528,
+      -18.112278160086937
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -20.690188915093433,
+    "baseline": 8.708832999999998,
+    "candidate": 6.906959,
+    "interval_percent": [
+      -23.847175818843613,
+      -18.659813617706366
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -42.042556103670826,
+    "baseline": 8.708832999999998,
+    "candidate": 5.047417,
+    "interval_percent": [
+      -45.260527757102544,
+      -38.13690691778342
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -5.484374009508697,
+    "baseline": 8.281875,
+    "candidate": 7.827666000000001,
+    "interval_percent": [
+      -9.530670846054544,
+      -1.1319900384876624
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -20.495056976831926,
+    "baseline": 8.281875,
+    "candidate": 6.5845,
+    "interval_percent": [
+      -23.90203257726553,
+      -17.251205092498957
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -21.448947249264204,
+    "baseline": 8.281875,
+    "candidate": 6.5055,
+    "interval_percent": [
+      -24.728033169209983,
+      -19.653259269377298
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -23.898066561014264,
+    "baseline": 8.281875,
+    "candidate": 6.302667,
+    "interval_percent": [
+      -27.11105197177416,
+      -22.045456905107265
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -23.787898271828546,
+    "baseline": 8.281875,
+    "candidate": 6.3117909999999995,
+    "interval_percent": [
+      -27.30679875869393,
+      -22.11953732638299
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -50.976777601690436,
+    "baseline": 8.281875,
+    "candidate": 4.060042,
+    "interval_percent": [
+      -53.19128327707805,
+      -36.3579399653876
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": 0.7017543859649145,
+    "baseline": 13.359375,
+    "candidate": 13.453125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": 1.2865497076023358,
+    "baseline": 13.359375,
+    "candidate": 13.53125,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": 1.1695906432748648,
+    "baseline": 13.359375,
+    "candidate": 13.515625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": 2.1052631578947434,
+    "baseline": 13.359375,
+    "candidate": 13.640625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": 1.7543859649122862,
+    "baseline": 13.359375,
+    "candidate": 13.59375,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": 30.526315789473692,
+    "baseline": 13.359375,
+    "candidate": 17.4375,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -10.061415278730646,
+    "baseline": 4.843583000000001,
+    "candidate": 4.35625,
+    "interval_percent": [
+      -12.636529126213592,
+      -6.00199600250102
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -65.37945153412258,
+    "baseline": 4.843583000000001,
+    "candidate": 1.676875,
+    "interval_percent": [
+      -66.9796691553521,
+      -63.55831393845358
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -65.65300935278698,
+    "baseline": 4.843583000000001,
+    "candidate": 1.663625,
+    "interval_percent": [
+      -67.49004854368931,
+      -63.95064903809373
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -66.11840862435928,
+    "baseline": 4.843583000000001,
+    "candidate": 1.641083,
+    "interval_percent": [
+      -67.77576860841424,
+      -63.13507996043425
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -65.78720752798084,
+    "baseline": 4.843583000000001,
+    "candidate": 1.657125,
+    "interval_percent": [
+      -67.73693193460693,
+      -63.75939669292647
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -49.71784317518664,
+    "baseline": 4.843583000000001,
+    "candidate": 2.435458,
+    "interval_percent": [
+      -52.80457697200824,
+      -47.44691591491171
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -9.876693483097709,
+    "baseline": 4.592458,
+    "candidate": 4.1388750000000005,
+    "interval_percent": [
+      -12.840696117804551,
+      -4.992592178458599
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -69.28387804526464,
+    "baseline": 4.592458,
+    "candidate": 1.410625,
+    "interval_percent": [
+      -70.52548487158597,
+      -67.89292483157688
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -69.01805089997556,
+    "baseline": 4.592458,
+    "candidate": 1.422833,
+    "interval_percent": [
+      -71.48421284654204,
+      -66.66542778562402
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -69.58417474912127,
+    "baseline": 4.592458,
+    "candidate": 1.396834,
+    "interval_percent": [
+      -70.92154406225546,
+      -68.1425284673262
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -69.06521518541922,
+    "baseline": 4.592458,
+    "candidate": 1.4206670000000001,
+    "interval_percent": [
+      -71.60673371228684,
+      -65.84036650037628
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -66.54752204592836,
+    "baseline": 4.592458,
+    "candidate": 1.5362909999999999,
+    "interval_percent": [
+      -69.1926299476922,
+      -64.15451394529717
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": 0.2928257686676483,
+    "baseline": 10.671875,
+    "candidate": 10.703125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": 1.317715959004384,
+    "baseline": 10.671875,
+    "candidate": 10.8125,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": 1.317715959004384,
+    "baseline": 10.671875,
+    "candidate": 10.8125,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": 1.4641288433382194,
+    "baseline": 10.671875,
+    "candidate": 10.828125,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": 1.6105417276720324,
+    "baseline": 10.671875,
+    "candidate": 10.84375,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": 46.85212298682284,
+    "baseline": 10.671875,
+    "candidate": 15.671875,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -5.907703093044969,
+    "baseline": 30.850958000000002,
+    "candidate": 29.028374999999997,
+    "interval_percent": [
+      -7.515378976222353,
+      -4.619921905626789
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -3.2989251095541405,
+    "baseline": 30.850958000000002,
+    "candidate": 29.833208,
+    "interval_percent": [
+      -4.841996030673257,
+      0.14453420894358082
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -3.2713732909039672,
+    "baseline": 30.850958000000002,
+    "candidate": 29.841708,
+    "interval_percent": [
+      -4.846901893287436,
+      -1.5171475479120233
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -5.722538664763677,
+    "baseline": 30.850958000000002,
+    "candidate": 29.0855,
+    "interval_percent": [
+      -7.349314340657354,
+      -4.251699102039641
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -5.361933979489386,
+    "baseline": 30.850958000000002,
+    "candidate": 29.19675,
+    "interval_percent": [
+      -6.794505004143558,
+      -3.5648586085831435
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -68.46356602605339,
+    "baseline": 30.850958000000002,
+    "candidate": 9.729292000000001,
+    "interval_percent": [
+      -69.14946349484568,
+      -67.40966205562509
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -5.466755809886892,
+    "baseline": 30.246458,
+    "candidate": 28.592958000000003,
+    "interval_percent": [
+      -6.316454593995147,
+      -4.298220696891509
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -3.830061688545483,
+    "baseline": 30.246458,
+    "candidate": 29.088,
+    "interval_percent": [
+      -4.683395900932352,
+      -2.9240144136963298
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -3.7201314613433456,
+    "baseline": 30.246458,
+    "candidate": 29.12125,
+    "interval_percent": [
+      -4.974602209717826,
+      -2.5684006912611523
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -3.764212655908339,
+    "baseline": 30.246458,
+    "candidate": 29.107917,
+    "interval_percent": [
+      -4.725566188852836,
+      -3.005862702998152
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -3.835434218446343,
+    "baseline": 30.246458,
+    "candidate": 29.086375,
+    "interval_percent": [
+      -4.64163962705878,
+      -2.2700609015916973
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -71.02856142692808,
+    "baseline": 30.246458,
+    "candidate": 8.762834,
+    "interval_percent": [
+      -71.6637253049657,
+      -70.50436872755094
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": 0.10427528675704956,
+    "baseline": 14.984375,
+    "candidate": 15.0,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": 0.2085505735140769,
+    "baseline": 14.984375,
+    "candidate": 15.015625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": 0.2085505735140769,
+    "baseline": 14.984375,
+    "candidate": 15.015625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": 0.7299270072992803,
+    "baseline": 14.984375,
+    "candidate": 15.09375,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": 0.6256517205422307,
+    "baseline": 14.984375,
+    "candidate": 15.078125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": 17.10114702815433,
+    "baseline": 14.984375,
+    "candidate": 17.546875,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -0.6135928486321496,
+    "baseline": 27.529167,
+    "candidate": 27.36025,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -1.639926119086721,
+    "baseline": 27.529167,
+    "candidate": 27.077709,
+    "interval_percent": [
+      -3.5229213375809643,
+      2.747503360505865
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -1.0417750744147192,
+    "baseline": 27.529167,
+    "candidate": 27.242375,
+    "interval_percent": [
+      -2.842811673949397,
+      1.9755543320915336
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -1.6352365474770814,
+    "baseline": 27.529167,
+    "candidate": 27.079,
+    "interval_percent": [
+      -4.024081566596549,
+      1.9622995047675396
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -1.795975156095364,
+    "baseline": 27.529167,
+    "candidate": 27.03475,
+    "interval_percent": [
+      -3.6319253385121653,
+      2.4982898414514843
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -66.78311043701395,
+    "baseline": 27.529167,
+    "candidate": 9.144333,
+    "interval_percent": [
+      -68.04495392105399,
+      -63.70481998882932
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -0.744040125976897,
+    "baseline": 26.790625,
+    "candidate": 26.591292,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": 0.3154088417123502,
+    "baseline": 26.790625,
+    "candidate": 26.875125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": 0.2278446284847746,
+    "baseline": 26.790625,
+    "candidate": 26.851665999999998,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": -1.1704952758660792,
+    "baseline": 26.790625,
+    "candidate": 26.477042,
+    "interval_percent": [
+      -3.6124705495378606,
+      3.045538537637227
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -1.0079720051323848,
+    "baseline": 26.790625,
+    "candidate": 26.520583000000002,
+    "interval_percent": [
+      -3.8562355383054747,
+      1.8555362646152318
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -74.93354858275983,
+    "baseline": 26.790625,
+    "candidate": 6.715459,
+    "interval_percent": [
+      -75.74910809251779,
+      -72.0104798951195
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": 0.0,
+    "baseline": 14.078125,
+    "candidate": 14.078125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": -0.2219755826859071,
+    "baseline": 14.078125,
+    "candidate": 14.046875,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -0.33296337402886067,
+    "baseline": 14.078125,
+    "candidate": 14.03125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": 0.6659267480577213,
+    "baseline": 14.078125,
+    "candidate": 14.171875,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": 0.33296337402886067,
+    "baseline": 14.078125,
+    "candidate": 14.125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": 23.86237513873475,
+    "baseline": 14.078125,
+    "candidate": 17.4375,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": 1.1218225451759434,
+    "baseline": 220.56741599999998,
+    "candidate": 223.041791,
+    "interval_percent": [
+      0.33598992533077077,
+      1.7853013248339655
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": 0.058863635597039554,
+    "baseline": 220.56741599999998,
+    "candidate": 220.69725000000003,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": 0.19115516137706567,
+    "baseline": 220.56741599999998,
+    "candidate": 220.98904199999998,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": 1.2888544697826188,
+    "baseline": 220.56741599999998,
+    "candidate": 223.410209,
+    "interval_percent": [
+      0.6855275251878012,
+      2.0686561298530526
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": 1.2660909080061122,
+    "baseline": 220.56741599999998,
+    "candidate": 223.36,
+    "interval_percent": [
+      0.5929432342067331,
+      2.289870866510957
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -76.4366827419332,
+    "baseline": 220.56741599999998,
+    "candidate": 51.973,
+    "interval_percent": [
+      -76.775092092781,
+      -76.21840286317502
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": 1.5319414769684903,
+    "baseline": 215.940625,
+    "candidate": 219.24870900000002,
+    "interval_percent": [
+      0.37837104185514114,
+      2.1306198974335055
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": 0.13904285032053654,
+    "baseline": 215.940625,
+    "candidate": 216.240875,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": -0.14789945152748896,
+    "baseline": 215.940625,
+    "candidate": 215.62124999999997,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": 1.343887932157295,
+    "baseline": 215.940625,
+    "candidate": 218.84262500000003,
+    "interval_percent": [
+      0.19010054369039686,
+      2.1524773640256845
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": 1.4254307173557468,
+    "baseline": 215.940625,
+    "candidate": 219.018709,
+    "interval_percent": [
+      0.5455781990603592,
+      2.01321204769922
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -77.12870517069219,
+    "baseline": 215.940625,
+    "candidate": 49.388417,
+    "interval_percent": [
+      -77.69520907461902,
+      -75.39938567138033
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": 3.063457330415753,
+    "baseline": 57.125,
+    "candidate": 58.875,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": 0.6564551422319376,
+    "baseline": 57.125,
+    "candidate": 57.5,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": 0.1367614879649981,
+    "baseline": 57.125,
+    "candidate": 57.203125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": 0.875273522975939,
+    "baseline": 57.125,
+    "candidate": 57.625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": 1.3402625820568836,
+    "baseline": 57.125,
+    "candidate": 57.890625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": -42.99781181619255,
+    "baseline": 57.125,
+    "candidate": 32.5625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded",
+    "change_percent": -3.0506906490935792,
+    "baseline": 6.999792,
+    "candidate": 6.78625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_copied",
+    "change_percent": 8.539539460601109,
+    "baseline": 6.999792,
+    "candidate": 7.597542,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "match_shared",
+    "change_percent": 7.313303023861262,
+    "baseline": 6.999792,
+    "candidate": 7.511708,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_copied",
+    "change_percent": 11.142588236907613,
+    "baseline": 6.999792,
+    "candidate": 7.77975,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "threaded_shared",
+    "change_percent": -1.2542086964869803,
+    "baseline": 6.999792,
+    "candidate": 6.912,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "match",
+    "candidate_label": "CPython",
+    "change_percent": 274.50041372657927,
+    "baseline": 6.999792,
+    "candidate": 26.21425,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  }
+]

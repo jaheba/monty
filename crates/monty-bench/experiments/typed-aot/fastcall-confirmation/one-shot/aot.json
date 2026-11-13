@@ -1,0 +1,1653 @@
+{
+  "schema_version": 1,
+  "revision": "monty-runtime 1.0.1",
+  "runtime_label": "aot",
+  "build_info": "Source revision and compiler flags unverified",
+  "engine": "monty",
+  "runtime_version": "monty-runtime 1.0.1",
+  "binary_sha256": "397795d38e7d99da29c73392c26b2de82383f66c6afce7fff91ff68a663c2031",
+  "manifest_sha256": "94ccf959de19e2eb49cd834bce81d68bc02ae0ecf0800090e32f0e41644960cd",
+  "harness_sha256": "fcb2dd6b2a3b76bae69414591ef71f95c319713285753987c7e64e73910c8bfc",
+  "memory_helper_sha256": "49f453feea639a8a52fa5d5e1aed4f09c4d9e8951677eef52675ec4fbbc4aa06",
+  "timestamp": "2026-11-12T23:17:53.692038+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "harness_python": "3.14.2",
+  "memory_method": "RUSAGE_CHILDREN.ru_maxrss",
+  "supported_protocol_versions": [
+    5,
+    6,
+    7
+  ],
+  "configuration": {
+    "samples": 15,
+    "memory_samples": 3,
+    "warmups": 0,
+    "timeout": 30.0,
+    "legacy_cli_summary": false,
+    "scenario": "warm_worker_one_shot",
+    "suite": "all",
+    "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-artifacts/bin/monty",
+    "arguments": [
+      "--aot"
+    ]
+  },
+  "schedule_seed": 0,
+  "schedule": [
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "policy_scoring_short"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "previous_aot",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ],
+    [
+      "aot",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "CPython",
+      "policy_scoring_batch"
+    ],
+    [
+      "aot",
+      "perf_unpack_sequence"
+    ],
+    [
+      "baseline",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "portfolio_exposure"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_short"
+    ],
+    [
+      "previous_aot",
+      "policy_scoring_batch"
+    ],
+    [
+      "baseline",
+      "perf_unpack_sequence"
+    ],
+    [
+      "aot",
+      "policy_scoring_short"
+    ],
+    [
+      "baseline",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "game_spectral_norm"
+    ],
+    [
+      "CPython",
+      "policy_scoring_short"
+    ]
+  ],
+  "benchmarks": {
+    "game_spectral_norm": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/workloads/game_spectral_norm.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/game_spectral_norm.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "b3961c3858ab9f9e01026a209208613b8a5996d5db423d56a74d5b1f120e3cee",
+      "expected_sha256": "344542309172ca4890f1aff73ffb30b7830a49202654e9d6ba52acf07466bd6b",
+      "wall_seconds": [
+        0.258194375,
+        0.255454375,
+        0.275098625,
+        0.261483209,
+        0.254934458,
+        0.257828334,
+        0.258652291,
+        0.256004459,
+        0.258418583,
+        0.258605,
+        0.25562925,
+        0.255626041,
+        0.259290209,
+        0.255049084,
+        0.258819958
+      ],
+      "worker_ready_seconds": [
+        0.013475709,
+        0.012623791,
+        0.013205959,
+        0.015404458,
+        0.013104167,
+        0.014852041,
+        0.012871542,
+        0.01498475,
+        0.01478275,
+        0.013503583,
+        0.012959459,
+        0.01428225,
+        0.012982458,
+        0.013344625,
+        0.012642291
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        4.3041e-05,
+        3.5792e-05,
+        3.7083e-05,
+        6.5458e-05,
+        8.725e-05,
+        0.0001165,
+        4.9125e-05,
+        4.2166e-05,
+        4.0083e-05,
+        4.475e-05,
+        4.8291e-05,
+        4.1875e-05,
+        4.0333e-05,
+        4.8125e-05,
+        3.2209e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        11534336,
+        11550720,
+        11583488
+      ],
+      "median_peak_rss_bytes": 11550720,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.258194375,
+      "stdev_wall_seconds": 0.004943857829547368,
+      "median_worker_ready_seconds": 0.013344625,
+      "median_session_setup_seconds": 4.3041e-05,
+      "median_session_reset_seconds": null
+    },
+    "perf_unpack_sequence": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/workloads/perf_unpack_sequence.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/perf_unpack_sequence.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "b932742e5e239f62f44392ed693d54b1b994117c3fce1108313250e36ac8a567",
+      "expected_sha256": "bb30125516106bee9464414135b75066f1cfe51ee891209ce6d9a80967f24f69",
+      "wall_seconds": [
+        0.013108083,
+        0.013037667,
+        0.013379708,
+        0.013276334,
+        0.0137735,
+        0.013159542,
+        0.013315417,
+        0.01331025,
+        0.013526375,
+        0.013008458,
+        0.013769292,
+        0.013540042,
+        0.013232958,
+        0.0132715,
+        0.012828417
+      ],
+      "worker_ready_seconds": [
+        0.014854416,
+        0.012780583,
+        0.012612959,
+        0.0134255,
+        0.013459334,
+        0.013403,
+        0.012804916,
+        0.013302583,
+        0.015186584,
+        0.012556709,
+        0.013355708,
+        0.015614125,
+        0.014286333,
+        0.013800459,
+        0.013570916
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        4.3584e-05,
+        3.5875e-05,
+        4.3125e-05,
+        4.2833e-05,
+        3.7333e-05,
+        7.3e-05,
+        3.575e-05,
+        6e-05,
+        3.15e-05,
+        3.85e-05,
+        6.425e-05,
+        6.6833e-05,
+        4.5417e-05,
+        6.6833e-05,
+        5.5667e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        12877824,
+        12910592,
+        12926976
+      ],
+      "median_peak_rss_bytes": 12910592,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.013276334,
+      "stdev_wall_seconds": 0.00026706588147840625,
+      "median_worker_ready_seconds": 0.0134255,
+      "median_session_setup_seconds": 4.3584e-05,
+      "median_session_reset_seconds": null
+    },
+    "policy_scoring_short": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/workloads/policy_scoring_short.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_short.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "0abb3361c754380a9f4eba501a20479bb7ee647c896212155955cb2932c353be",
+      "expected_sha256": "089c8c8d486cab7e8a5606b07447d698c90f69a750c389c635e0d3751016d2b5",
+      "wall_seconds": [
+        0.000923209,
+        0.000742792,
+        0.000739125,
+        0.000807875,
+        0.000792916,
+        0.000789042,
+        0.00112975,
+        0.000804333,
+        0.000781625,
+        0.000785334,
+        0.000738083,
+        0.000808666,
+        0.000810458,
+        0.000752417,
+        0.000738542
+      ],
+      "worker_ready_seconds": [
+        0.013872042,
+        0.013338583,
+        0.013700083,
+        0.013569,
+        0.012081208,
+        0.015455416,
+        0.014332958,
+        0.013230917,
+        0.014284542,
+        0.013306458,
+        0.01434425,
+        0.013891291,
+        0.014401917,
+        0.014554416,
+        0.014608417
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        6.5458e-05,
+        4.3167e-05,
+        3.0167e-05,
+        3.3792e-05,
+        4.5542e-05,
+        5.5667e-05,
+        0.000105417,
+        3.6958e-05,
+        3.9542e-05,
+        4.5375e-05,
+        3.5375e-05,
+        4.4209e-05,
+        4.8583e-05,
+        3.8667e-05,
+        3.4541e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        11517952,
+        11501568,
+        11501568
+      ],
+      "median_peak_rss_bytes": 11501568,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.000789042,
+      "stdev_wall_seconds": 0.00010013263639070119,
+      "median_worker_ready_seconds": 0.013891291,
+      "median_session_setup_seconds": 4.3167e-05,
+      "median_session_reset_seconds": null
+    },
+    "policy_scoring_batch": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/workloads/policy_scoring_batch.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_batch.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "8c7adf278dfaf8e0159a291a0822313b851de005dc0687e4c81d31f0be005cd7",
+      "expected_sha256": "14ab096e797b5c0fe6b5f586628d4d822c618d73326ed0ebd1bbf95f42f676c6",
+      "wall_seconds": [
+        0.006924542,
+        0.007111125,
+        0.007097542,
+        0.007056709,
+        0.00727375,
+        0.007127292,
+        0.007079208,
+        0.007165042,
+        0.007241541,
+        0.007230083,
+        0.0071375,
+        0.007126042,
+        0.007308875,
+        0.007136583,
+        0.007194125
+      ],
+      "worker_ready_seconds": [
+        0.013508167,
+        0.014969167,
+        0.013206917,
+        0.014277792,
+        0.013053125,
+        0.014701708,
+        0.014230792,
+        0.014168875,
+        0.015022666,
+        0.013771833,
+        0.013379208,
+        0.014565792,
+        0.013473417,
+        0.013491458,
+        0.015232875
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        4.1458e-05,
+        3.4667e-05,
+        2.8958e-05,
+        3.1458e-05,
+        3.5125e-05,
+        5.85e-05,
+        7.4e-05,
+        3.8166e-05,
+        4.0959e-05,
+        4.8292e-05,
+        5.7334e-05,
+        9.875e-05,
+        4.7e-05,
+        3.4917e-05,
+        5.0042e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        14237696,
+        14221312,
+        14139392
+      ],
+      "median_peak_rss_bytes": 14221312,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.007136583,
+      "stdev_wall_seconds": 9.548739694460806e-05,
+      "median_worker_ready_seconds": 0.014168875,
+      "median_session_setup_seconds": 4.1458e-05,
+      "median_session_reset_seconds": null
+    },
+    "portfolio_exposure": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/workloads/portfolio_exposure.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/portfolio_exposure.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "8fecf54209a2da92541765f22465021f6a6a94619422abbe1b5896b4f6961c0d",
+      "expected_sha256": "942299379cbb617f54cbc9ed15fe1573004e8e94b2d0d224d947e1cd8a1a310b",
+      "wall_seconds": [
+        0.001666208,
+        0.001687209,
+        0.001705584,
+        0.001616708,
+        0.001586916,
+        0.001576833,
+        0.001639833,
+        0.001655,
+        0.001653167,
+        0.001637042,
+        0.001817417,
+        0.001549958,
+        0.001650625,
+        0.001698959,
+        0.001546916
+      ],
+      "worker_ready_seconds": [
+        0.014024333,
+        0.01472125,
+        0.01459225,
+        0.013846833,
+        0.015247084,
+        0.012834041,
+        0.013612958,
+        0.014459542,
+        0.013859416,
+        0.01509175,
+        0.014610333,
+        0.015250125,
+        0.013603334,
+        0.0133395,
+        0.013229833
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        4.1709e-05,
+        6.6125e-05,
+        6.1e-05,
+        4.2625e-05,
+        4.5e-05,
+        3.4459e-05,
+        5.2042e-05,
+        5.0458e-05,
+        4.5375e-05,
+        3.8875e-05,
+        9.8667e-05,
+        4.4708e-05,
+        4.225e-05,
+        6.9083e-05,
+        3.4292e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [
+        11354112,
+        11419648,
+        11354112
+      ],
+      "median_peak_rss_bytes": 11354112,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "memory_scope": "Whole interpreter process, including startup, in separate one-shot runs",
+      "status": "ok",
+      "median_wall_seconds": 0.001650625,
+      "stdev_wall_seconds": 6.881228021910322e-05,
+      "median_worker_ready_seconds": 0.014024333,
+      "median_session_setup_seconds": 4.5e-05,
+      "median_session_reset_seconds": null
+    }
+  },
+  "run_error": null
+}

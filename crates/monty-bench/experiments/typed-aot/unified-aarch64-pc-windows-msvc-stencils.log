@@ -1,0 +1,9 @@
+cargo:rustc-check-cfg=cfg(monty_native)
+cargo:rerun-if-changed=build.rs
+cargo:rerun-if-changed=src/bytecode/native/abi.rs
+cargo:rerun-if-changed=src/bytecode/native/stencils.rs
+cargo:rerun-if-changed=src/bytecode/aot/abi.rs
+cargo:rerun-if-changed=src/bytecode/aot/stencils.rs
+cargo:rustc-cfg=monty_native
+cargo:rustc-link-search=native=/private/tmp/monty-native-study/stencil-platforms-unified/aarch64-pc-windows-msvc
+cargo:rustc-link-lib=static=monty_aot_stencils

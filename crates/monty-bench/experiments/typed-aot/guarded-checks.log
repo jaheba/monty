@@ -1,0 +1,11 @@
+guarded-clippy.log 0
+guarded-full-tests.log 0
+guarded-match-tests.log 0
+guarded-worker-tests.log 0
+guarded-fixtures.log 0
+guarded-combined-build.log 0
+freeze-guarded-combined.log 0
+guarded-stress-build.log 0
+guarded-match-build.log 0
+freeze-guarded-match.log 0
+guarded-examples-build.log 0

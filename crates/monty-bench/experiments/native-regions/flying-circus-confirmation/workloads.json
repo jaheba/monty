@@ -1,0 +1,82 @@
+{
+  "capacity_planning": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/capacity_planning.py",
+    "suite": "custom",
+    "stdout": "benefit: 23667\ndays: 2396\nprojects: 35\nselected: 0,5,6,7,8,10,15,16,17,18,20,25,26,27,30,34,35,36,39,40,44,45,49,50,54,55,59,60,61,64,69,70,71,78,79\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/capacity_planning.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "fa79337d6de618a0e8aa5669a1e2b36dcf3b1684d586040542595cc576a37c09"
+  },
+  "text_csv_cleanup_medium": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/text_csv_cleanup_medium.py",
+    "suite": "custom",
+    "stdout": "33193 1509 916376 423208\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/text_csv_cleanup_medium.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "c9c9f64526eea6aa54fd3ab2f149cd7cea901b460977f6299c2c516f34435a8d"
+  },
+  "ticket_search": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/ticket_search.py",
+    "suite": "custom",
+    "stdout": "tickets: 1600\nterms: 147\npayments timeout retry: 648=2438484,1096=2438484,0=2435726,456=2089789,1024=2087235\nmissing reports permissions: 907=2709190,1547=2380733,19=2379865,659=2379865,1355=2379865\nwebhooks delayed logs: 1310=2401656,422=2400785,1062=2400785,806=2049998,678=2049403\naccounts invalid credentials: 178=2379620,226=2043314,1370=2042347,578=2031268,1018=2031268\nstorage unavailable connection: 791=2739173,343=2737889,151=2407110,1135=2054352,1583=2051421\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/ticket_search.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "b6ebc7f0f6bf0b65bd64d0d5667584b4179660ee9c17f67225eb2fedcb29d6f8"
+  },
+  "perf_float": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/perf_float.py",
+    "suite": "custom",
+    "stdout": "0.894427189 1.000000000 0.447213595\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/perf_float.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "c4ac4462eaf28c23008f01230385ccca1077e7859700898cf733379b48af0a71"
+  },
+  "rustpython_micro_cmp": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/rustpython_micro_cmp.py",
+    "suite": "custom",
+    "stdout": "",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/rustpython_micro_cmp.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "9eac78b1455b379268a4b2572280c94edd92496f17fdecb7157c5e1ae1c4632c"
+  },
+  "rustpython_micro_addition_900": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/rustpython_micro_addition_900.py",
+    "suite": "custom",
+    "stdout": "404550\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/rustpython_micro_addition_900.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "7281e8e26e237feb05981e9d98dc9bf95f9bf3cb5c7fe2fa790f1ad8bbac7bbc"
+  },
+  "expense_report": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/expense_report.py",
+    "suite": "custom",
+    "stdout": "engineering: 29600\nsales: 39700\nsupport: 23250\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/expense_report.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "52d472edd61a37ce000b2e2a9ae05d91b269bb2b8970150599caf830d37d6a1c"
+  },
+  "text_json_transform_small": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/text_json_transform_small.py",
+    "suite": "custom",
+    "stdout": "{\"count\": 10, \"top_ids\": [65, 63, 62, 61, 59, 58, 57, 55, 54, 53], \"totals\": {\"payments\": 16878, \"search\": 16878, \"support\": 23183}}\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/text_json_transform_small.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "3196972dc69686f972f8978fd23a968cbd2da95402c54ef6fef291d1df9cd74c"
+  }
+}

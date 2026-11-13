@@ -1,0 +1,58 @@
+{
+  "runtimes": {
+    "baseline": {
+      "label": "baseline",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/bin/monty",
+      "arguments": [
+        "--no-native"
+      ],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "native": {
+      "label": "native",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/bin/monty",
+      "arguments": [],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    }
+  },
+  "timestamp": "2026-11-12T19:41:59.122028+00:00",
+  "options": {
+    "runtime": [
+      "baseline=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/bin/monty",
+      "native=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/bin/monty"
+    ],
+    "runtime_arg": [
+      "baseline=--no-native"
+    ],
+    "verbose": true,
+    "x": 1,
+    "chart_baseline": null,
+    "diff": true,
+    "output": "crates/monty-bench/experiments/native-regions/flying-circus-full",
+    "format": [
+      "html",
+      "markdown",
+      "json"
+    ],
+    "benchmark": null,
+    "include_defaults": false,
+    "quick": true,
+    "samples": 3,
+    "memory_samples": 1,
+    "startup_samples": 5,
+    "warmups": 1,
+    "timeout": 60.0,
+    "threshold": 1.0,
+    "absolute_threshold_ms": 0.01
+  },
+  "completed_at": "2026-11-12T19:50:42.302126+00:00",
+  "elapsed_seconds": 523.1799760842696
+}

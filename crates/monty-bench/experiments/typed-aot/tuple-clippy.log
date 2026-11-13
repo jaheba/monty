@@ -1,0 +1,14 @@
+    Checking monty v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty)
+error: consider bringing this path into scope with the `use` keyword
+   --> crates/monty/src/bytecode/aot/ir.rs:451:29
+    |
+451 |                     .extend(std::iter::repeat_n(element.kind(), instruction.argument));
+    |                             ^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#absolute_paths
+    = note: `-D clippy::absolute-paths` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::absolute_paths)]`
+
+error: could not compile `monty` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `monty` (lib test) due to 1 previous error

@@ -1,0 +1,38 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.69s
+     Running tests/subprocess.rs (/Users/jaheba/p/monty/target/debug/deps/subprocess-a69346febba93c79)
+
+running 1 test
+
+thread 'monty-worker' (71759335) panicked at crates/monty/src/value.rs:249:13:
+Value::Ref(HeapId(1)) dropped without calling drop_with() - this is a reference counting bug
+stack backtrace:
+monty worker: allocation of 6291456 bytes exceeds the memory limit
+
+thread 'a_returnable_value_can_also_be_passed_to_a_host_function' (71759265) panicked at crates/monty-runtime/tests/subprocess.rs:256:9:
+child exited with ExitStatus(unix_wait_status(16640))
+stack backtrace:
+   0: __rustc::rust_begin_unwind
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panicking.rs:679:5
+   1: core::panicking::panic_fmt
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/panicking.rs:80:14
+   2: <subprocess::ChildProc>::shutdown
+             at ./tests/subprocess.rs:256:9
+   3: subprocess::a_returnable_value_can_also_be_passed_to_a_host_function
+             at ./tests/subprocess.rs:1446:11
+   4: subprocess::a_returnable_value_can_also_be_passed_to_a_host_function::{closure#0}
+             at ./tests/subprocess.rs:1430:62
+   5: <subprocess::a_returnable_value_can_also_be_passed_to_a_host_function::{closure#0} as core::ops::function::FnOnce<()>>::call_once
+             at /Users/jaheba/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ops/function.rs:250:5
+   6: <fn() -> core::result::Result<(), alloc::string::String> as core::ops::function::FnOnce<()>>::call_once
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/ops/function.rs:250:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+test a_returnable_value_can_also_be_passed_to_a_host_function ... FAILED
+
+failures:
+
+failures:
+    a_returnable_value_can_also_be_passed_to_a_host_function
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 96 filtered out; finished in 2.54s
+
+error: test failed, to rerun pass `-p monty-runtime --test subprocess`

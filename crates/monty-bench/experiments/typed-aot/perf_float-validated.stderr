@@ -1,0 +1,35 @@
+14.814ms ❯ type check failed:
+error[unresolved-attribute]: Attribute `normalize` is not defined on `None` in union `None | Unknown`
+  --> crates/monty-bench/experiments/typed-aot/workloads/perf_float.py:51:9
+   |
+49 |         points[i] = Point(i)
+50 |     for p in points:
+51 |         p.normalize()
+   |         ^^^^^^^^^^^
+52 |     return maximize(points)
+   |
+
+error[invalid-argument-type]: Argument to function `maximize` is incorrect
+  --> crates/monty-bench/experiments/typed-aot/workloads/perf_float.py:52:21
+   |
+50 |     for p in points:
+51 |         p.normalize()
+52 |     return maximize(points)
+   |                     ^^^^^^ Expected `list[Point]`, found `list[None | Unknown]`
+53 |
+54 | result = benchmark(POINTS)
+   |
+info: element `None` of union `None | Unknown` is not assignable to `Point`
+info: Function defined here
+  --> crates/monty-bench/experiments/typed-aot/workloads/perf_float.py:39:5
+   |
+39 | def maximize(points: list[Point]) -> Point:
+   |     ^^^^^^^^ ------------------- Parameter declared here
+40 |     next = points[0]
+41 |     for p in points[1:]:
+   |
+
+
+229.10ms ❯ None
+native_stats Stats { compilations: 0, compilation_ns: 0, code_bytes: 0, entries: 0, instructions: 0, dictionary_reads: 0, range_steps: 0 }
+aot_stats Stats { compilations: 0, code_bytes: 0, entries: 0, returns: 0, fallbacks: 0, instructions: 0 }

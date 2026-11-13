@@ -1,0 +1,2 @@
+rust-lld: error: undefined symbol: _fltused
+>>> referenced by monty_aot_stencils.lib(aot_stencils.o)

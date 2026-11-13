@@ -1,0 +1,22 @@
+[
+  {
+    "target": "x86_64-pc-windows-msvc",
+    "template_build_exit": 0,
+    "build_script": "/Users/jaheba/p/monty/target/debug/build/monty-20e35eb01bb932ff/build-script-build",
+    "compiler": "/private/tmp/monty-native-study/msrv-toolchains/toolchains/1.96.0-aarch64-apple-darwin/bin/rustc",
+    "static_link_exit": 1,
+    "exports": 46,
+    "archive_bytes": 26002,
+    "static_link_with_float_marker_exit": 0,
+    "fixture_note": "Standalone DLL link provides the otherwise unresolved _fltused data marker; this does not claim a full Windows runtime build or execution."
+  },
+  {
+    "target": "aarch64-pc-windows-msvc",
+    "template_build_exit": 0,
+    "build_script": "/Users/jaheba/p/monty/target/debug/build/monty-20e35eb01bb932ff/build-script-build",
+    "compiler": "/private/tmp/monty-native-study/msrv-toolchains/toolchains/1.96.0-aarch64-apple-darwin/bin/rustc",
+    "static_link_exit": 0,
+    "exports": 46,
+    "archive_bytes": 27498
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "sha256": "80dd74708ad2d506adbe91683e4b33287f5cd2efa978e1e21882e5a6f6fdb925",
+  "bytes": 23501648,
+  "features": [
+    "experimental-aot"
+  ],
+  "profile": "release: fat LTO, one codegen unit, strip=true",
+  "dispatch": "match, with guarded AOT entry",
+  "baseline_commit": "9a9f8784bf6cb36b09f183b53d7d829bcd807bdf"
+}

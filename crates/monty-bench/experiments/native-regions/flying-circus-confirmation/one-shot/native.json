@@ -1,0 +1,1617 @@
+{
+  "schema_version": 1,
+  "revision": "monty-runtime 1.0.1",
+  "runtime_label": "native",
+  "build_info": "Source revision and compiler flags unverified",
+  "engine": "monty",
+  "runtime_version": "monty-runtime 1.0.1",
+  "binary_sha256": "bfdfc25c707f9b92f6b10a741bec598364bf08fe6e041dbdbb745c8568a3c1d3",
+  "manifest_sha256": "18e0deac2f3338c9614915d8dd38eb520349d344ddff46199a8081b87fd1cb76",
+  "harness_sha256": "fcb2dd6b2a3b76bae69414591ef71f95c319713285753987c7e64e73910c8bfc",
+  "memory_helper_sha256": "49f453feea639a8a52fa5d5e1aed4f09c4d9e8951677eef52675ec4fbbc4aa06",
+  "timestamp": "2026-11-12T19:52:45.813711+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "harness_python": "3.14.2",
+  "memory_method": null,
+  "supported_protocol_versions": [
+    5,
+    6,
+    7
+  ],
+  "configuration": {
+    "samples": 15,
+    "memory_samples": 0,
+    "warmups": 0,
+    "timeout": 60.0,
+    "legacy_cli_summary": false,
+    "scenario": "warm_worker_one_shot",
+    "suite": "all",
+    "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/bin/monty",
+    "arguments": []
+  },
+  "schedule_seed": 0,
+  "schedule": [
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "expense_report"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "capacity_planning"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "expense_report"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "rustpython_micro_addition_900"
+    ],
+    [
+      "baseline",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ],
+    [
+      "baseline",
+      "text_json_transform_small"
+    ],
+    [
+      "native",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "perf_float"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "baseline",
+      "ticket_search"
+    ],
+    [
+      "native",
+      "capacity_planning"
+    ]
+  ],
+  "benchmarks": {
+    "capacity_planning": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/capacity_planning.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/capacity_planning.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "fa79337d6de618a0e8aa5669a1e2b36dcf3b1684d586040542595cc576a37c09",
+      "expected_sha256": "350aa69b464e0030a3566f9a0ea21b6d25d7804375abef6174e4d24f22ac5eee",
+      "wall_seconds": [
+        0.160300625,
+        0.161010292,
+        0.160603958,
+        0.159194,
+        0.159750792,
+        0.157996584,
+        0.159311333,
+        0.159236958,
+        0.1600015,
+        0.160398708,
+        0.159911208,
+        0.159019917,
+        0.159798125,
+        0.160005,
+        0.158501625
+      ],
+      "worker_ready_seconds": [
+        0.016169916,
+        0.014303834,
+        0.014102625,
+        0.013553291,
+        0.013572916,
+        0.014798208,
+        0.013465042,
+        0.013454375,
+        0.014266959,
+        0.014072625,
+        0.014110959,
+        0.013615083,
+        0.01478075,
+        0.014705709,
+        0.013621292
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.5084e-05,
+        3.2916e-05,
+        4.2625e-05,
+        3.2459e-05,
+        6.4125e-05,
+        3.8625e-05,
+        2.9e-05,
+        4.0167e-05,
+        4.0416e-05,
+        6.55e-05,
+        2.6375e-05,
+        3.1458e-05,
+        5.7791e-05,
+        4.1583e-05,
+        4.4125e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.159798125,
+      "stdev_wall_seconds": 0.0008031799314029366,
+      "median_worker_ready_seconds": 0.014102625,
+      "median_session_setup_seconds": 4.0167e-05,
+      "median_session_reset_seconds": null
+    },
+    "text_csv_cleanup_medium": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/text_csv_cleanup_medium.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/text_csv_cleanup_medium.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "outside request timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "c9c9f64526eea6aa54fd3ab2f149cd7cea901b460977f6299c2c516f34435a8d",
+      "expected_sha256": "144eec576d3b761fcb3358aa249216ff8790ac8468aabf5d60b4507b0c5c52b8",
+      "wall_seconds": [
+        3.8562245,
+        3.835811292,
+        3.856867833,
+        3.85800575,
+        3.847777292,
+        3.853109958,
+        3.848415709,
+        3.84924825,
+        3.857522334,
+        3.85374725,
+        3.852930167,
+        3.86086425,
+        3.857381625,
+        3.922664667,
+        3.848030833
+      ],
+      "worker_ready_seconds": [
+        0.023603667,
+        0.014044417,
+        0.013990375,
+        0.014054042,
+        0.013950625,
+        0.014996958,
+        0.014835333,
+        0.014673875,
+        0.014494833,
+        0.01578325,
+        0.0147835,
+        0.015241166,
+        0.013135292,
+        0.014027708,
+        0.013559084
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        0.006595791,
+        0.004126458,
+        0.004316792,
+        0.004093,
+        0.004247291,
+        0.004491042,
+        0.00423275,
+        0.004370209,
+        0.004552208,
+        0.004308291,
+        0.004485792,
+        0.004067417,
+        0.00420725,
+        0.004390125,
+        0.004337583
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 3.85374725,
+      "stdev_wall_seconds": 0.019120831286861588,
+      "median_worker_ready_seconds": 0.014494833,
+      "median_session_setup_seconds": 0.004316792,
+      "median_session_reset_seconds": null
+    },
+    "ticket_search": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/ticket_search.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/ticket_search.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "b6ebc7f0f6bf0b65bd64d0d5667584b4179660ee9c17f67225eb2fedcb29d6f8",
+      "expected_sha256": "37cffd68def50e3d4a21a8c63b92357bfb128b0673e92a5de643a79145594cdb",
+      "wall_seconds": [
+        0.102044583,
+        0.102080375,
+        0.173389375,
+        0.103255042,
+        0.1026305,
+        0.1016175,
+        0.102660125,
+        0.1024645,
+        0.10163625,
+        0.101727666,
+        0.1020035,
+        0.101729667,
+        0.102378792,
+        0.102925584,
+        0.102347958
+      ],
+      "worker_ready_seconds": [
+        0.014916875,
+        0.015618,
+        0.013228833,
+        0.014742417,
+        0.016098792,
+        0.015665625,
+        0.014304,
+        0.014177584,
+        0.014471125,
+        0.01558475,
+        0.013513084,
+        0.013900334,
+        0.014180042,
+        0.014327625,
+        0.013910708
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        2.6584e-05,
+        3.8625e-05,
+        3.3042e-05,
+        6.5583e-05,
+        3.0291e-05,
+        3.35e-05,
+        3.4209e-05,
+        0.0001505,
+        4.4e-05,
+        3.4875e-05,
+        3.4916e-05,
+        3.5666e-05,
+        5.0833e-05,
+        4.9166e-05,
+        3.4167e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.102347958,
+      "stdev_wall_seconds": 0.018374492573723925,
+      "median_worker_ready_seconds": 0.014327625,
+      "median_session_setup_seconds": 3.4916e-05,
+      "median_session_reset_seconds": null
+    },
+    "perf_float": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/perf_float.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/perf_float.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "c4ac4462eaf28c23008f01230385ccca1077e7859700898cf733379b48af0a71",
+      "expected_sha256": "535aefc45a454bed7e9ab2bec2d9371b4bbce02b8c15e851aafdd73dff7b8a60",
+      "wall_seconds": [
+        1.033514375,
+        1.033664833,
+        1.031688875,
+        1.028086292,
+        1.0325135,
+        1.029161375,
+        1.030100583,
+        1.029860583,
+        1.034694959,
+        1.030694542,
+        1.036241625,
+        1.030000667,
+        1.025062166,
+        1.029363167,
+        1.031760834
+      ],
+      "worker_ready_seconds": [
+        0.013777916,
+        0.016519417,
+        0.013521875,
+        0.014807,
+        0.013628459,
+        0.0137915,
+        0.014556333,
+        0.0158375,
+        0.01290475,
+        0.013910333,
+        0.014379208,
+        0.014635042,
+        0.015844333,
+        0.0136255,
+        0.014293792
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.1667e-05,
+        4.4292e-05,
+        3.7125e-05,
+        4.6792e-05,
+        3.7041e-05,
+        4.9375e-05,
+        6.6e-05,
+        4.3667e-05,
+        3.8375e-05,
+        3.2667e-05,
+        3.9375e-05,
+        5.225e-05,
+        4.2292e-05,
+        3.4458e-05,
+        4.2708e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 1.030694542,
+      "stdev_wall_seconds": 0.002812842485737001,
+      "median_worker_ready_seconds": 0.014293792,
+      "median_session_setup_seconds": 4.2292e-05,
+      "median_session_reset_seconds": null
+    },
+    "rustpython_micro_cmp": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/rustpython_micro_cmp.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/rustpython_micro_cmp.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "outside request timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "9eac78b1455b379268a4b2572280c94edd92496f17fdecb7157c5e1ae1c4632c",
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": [
+        0.00094725,
+        0.000944333,
+        0.000969084,
+        0.000922375,
+        0.001037,
+        0.000972833,
+        0.001032875,
+        0.000935125,
+        0.000952291,
+        0.000954,
+        0.000967959,
+        0.000947209,
+        0.000949417,
+        0.001051709,
+        0.001051667
+      ],
+      "worker_ready_seconds": [
+        0.014250333,
+        0.014604583,
+        0.014301458,
+        0.015798,
+        0.015868791,
+        0.014013417,
+        0.014128042,
+        0.013915625,
+        0.013413125,
+        0.013024583,
+        0.014595916,
+        0.014164583,
+        0.016059917,
+        0.014220417,
+        0.01609875
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        0.000217125,
+        0.000192542,
+        0.000185958,
+        0.000249167,
+        0.000318584,
+        0.000203875,
+        0.000236667,
+        0.000213292,
+        0.000186709,
+        0.000189667,
+        0.000220125,
+        0.000170083,
+        0.000196,
+        0.000211833,
+        0.000196958
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.000954,
+      "stdev_wall_seconds": 4.431342156868289e-05,
+      "median_worker_ready_seconds": 0.014250333,
+      "median_session_setup_seconds": 0.000203875,
+      "median_session_reset_seconds": null
+    },
+    "rustpython_micro_addition_900": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/rustpython_micro_addition_900.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/rustpython_micro_addition_900.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "outside request timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "7281e8e26e237feb05981e9d98dc9bf95f9bf3cb5c7fe2fa790f1ad8bbac7bbc",
+      "expected_sha256": "63804dcf3ffe1ae518efd0dc19ead0706ff7d4524469e25bd5f3352fe62b70fc",
+      "wall_seconds": [
+        0.000213541,
+        0.000184167,
+        0.000184667,
+        0.000203333,
+        0.000235625,
+        0.000207458,
+        0.000202083,
+        0.000206459,
+        0.000189625,
+        0.000211833,
+        0.000192292,
+        0.00018875,
+        0.000224791,
+        0.000254292,
+        0.000205959
+      ],
+      "worker_ready_seconds": [
+        0.013780334,
+        0.014604084,
+        0.012640542,
+        0.01506225,
+        0.014129458,
+        0.013662041,
+        0.015885542,
+        0.015218917,
+        0.012273375,
+        0.01720975,
+        0.015166833,
+        0.012696541,
+        0.016363625,
+        0.017041,
+        0.014018875
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        0.000273375,
+        0.000207666,
+        0.00022025,
+        0.0002225,
+        0.000341667,
+        0.000216709,
+        0.000245625,
+        0.000247083,
+        0.000227792,
+        0.000311458,
+        0.000232375,
+        0.000236875,
+        0.000255875,
+        0.000305,
+        0.000205833
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.000205959,
+      "stdev_wall_seconds": 1.9546980346505352e-05,
+      "median_worker_ready_seconds": 0.014604084,
+      "median_session_setup_seconds": 0.000236875,
+      "median_session_reset_seconds": null
+    },
+    "expense_report": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/expense_report.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/expense_report.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "52d472edd61a37ce000b2e2a9ae05d91b269bb2b8970150599caf830d37d6a1c",
+      "expected_sha256": "5d32c670aff48ac47894a60e28827de52b9b6dc88a2e7aa68f0209d64eb96c2a",
+      "wall_seconds": [
+        0.000430458,
+        0.000393667,
+        0.000409292,
+        0.000405875,
+        0.000446125,
+        0.000408083,
+        0.00043,
+        0.000440959,
+        0.000403167,
+        0.000499167,
+        0.000481625,
+        0.000392,
+        0.00042275,
+        0.000398709,
+        0.000438667
+      ],
+      "worker_ready_seconds": [
+        0.0151985,
+        0.014711042,
+        0.015192208,
+        0.015597417,
+        0.013936584,
+        0.016333708,
+        0.015555625,
+        0.016568125,
+        0.013588083,
+        0.013307041,
+        0.013991,
+        0.016522,
+        0.016424542,
+        0.012549083,
+        0.014234875
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.0084e-05,
+        3.8958e-05,
+        2.8958e-05,
+        3.475e-05,
+        3.6e-05,
+        4.425e-05,
+        4.2584e-05,
+        4.1e-05,
+        3.9583e-05,
+        3.9292e-05,
+        3.4209e-05,
+        3.85e-05,
+        4.3e-05,
+        3.8583e-05,
+        5.2417e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.00042275,
+      "stdev_wall_seconds": 3.133753395454692e-05,
+      "median_worker_ready_seconds": 0.015192208,
+      "median_session_setup_seconds": 3.8958e-05,
+      "median_session_reset_seconds": null
+    },
+    "text_json_transform_small": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-confirmation/workloads/text_json_transform_small.py",
+      "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/workloads/text_json_transform_small.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "outside request timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "3196972dc69686f972f8978fd23a968cbd2da95402c54ef6fef291d1df9cd74c",
+      "expected_sha256": "f14de0411de3d10350f448ce80e476f483473456ed22da1ca0c202a01bf29924",
+      "wall_seconds": [
+        0.000618041,
+        0.000637292,
+        0.000621334,
+        0.00062775,
+        0.000692,
+        0.000645125,
+        0.000647542,
+        0.000630709,
+        0.000711833,
+        0.000688625,
+        0.000654375,
+        0.000637959,
+        0.000622875,
+        0.000658583,
+        0.00065275
+      ],
+      "worker_ready_seconds": [
+        0.0127565,
+        0.017647542,
+        0.012996208,
+        0.013334125,
+        0.015823208,
+        0.013429666,
+        0.013369459,
+        0.012807917,
+        0.014407834,
+        0.013265417,
+        0.015228125,
+        0.015116666,
+        0.014332375,
+        0.015117416,
+        0.015204333
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        0.000256959,
+        0.000282666,
+        0.000262583,
+        0.000264959,
+        0.000325625,
+        0.000278417,
+        0.000265333,
+        0.000348583,
+        0.000329208,
+        0.0002675,
+        0.000287708,
+        0.00027825,
+        0.000278792,
+        0.000302459,
+        0.0002585
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.000645125,
+      "stdev_wall_seconds": 2.7981205743958124e-05,
+      "median_worker_ready_seconds": 0.014332375,
+      "median_session_setup_seconds": 0.000278417,
+      "median_session_reset_seconds": null
+    }
+  },
+  "run_error": null
+}

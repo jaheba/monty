@@ -1,0 +1,10 @@
+{
+  "sha256": "adaf0f707b4387f2fcc60b66bef96cad3334c7f3974e96e31cd818e0c2153ea4",
+  "bytes": 29793896,
+  "profile": "codspeed: fat LTO, one codegen unit, debug=true, strip=false",
+  "features": [
+    "experimental-aot"
+  ],
+  "source": "../source.patch",
+  "notes": "Frozen before inline-buffer/hybrid-view changes. Type checker is enabled for standalone --aot, host-controlled in protocol mode."
+}

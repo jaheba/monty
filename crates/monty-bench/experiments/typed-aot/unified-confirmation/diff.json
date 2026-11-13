@@ -1,0 +1,1567 @@
+[
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": 0.2905464584518791,
+    "baseline": 29.656875,
+    "candidate": 29.743042,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": 0.7683715833175286,
+    "baseline": 29.656875,
+    "candidate": 29.88475,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": 0.23294430043623304,
+    "baseline": 29.656875,
+    "candidate": 29.725959,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": 0.0878110050367864,
+    "baseline": 29.656875,
+    "candidate": 29.682917,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": -66.90424395692398,
+    "baseline": 29.656875,
+    "candidate": 9.815166999999999,
+    "interval_percent": [
+      -68.24401424627511,
+      -65.41294475503004
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": 0.831850577537474,
+    "baseline": 28.991625,
+    "candidate": 29.232792,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": 0.29160835241213157,
+    "baseline": 28.991625,
+    "candidate": 29.076167,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": 0.1273333247101549,
+    "baseline": 28.991625,
+    "candidate": 29.028541,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": 0.38056852625543147,
+    "baseline": 28.991625,
+    "candidate": 29.101958,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": -69.77992092543968,
+    "baseline": 28.991625,
+    "candidate": 8.761292000000001,
+    "interval_percent": [
+      -70.12237656846112,
+      -69.08964041058793
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": 0.5235602094240788,
+    "baseline": 14.921875,
+    "candidate": 15.0,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": 0.0,
+    "baseline": 14.921875,
+    "candidate": 14.921875,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": 0.41884816753927634,
+    "baseline": 14.921875,
+    "candidate": 14.984375,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -1.1518324607329822,
+    "baseline": 14.921875,
+    "candidate": 14.75,
+    "status": "unchanged"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 17.69633507853403,
+    "baseline": 14.921875,
+    "candidate": 17.5625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -2.9731306854645756,
+    "baseline": 245.41750000000002,
+    "candidate": 238.120917,
+    "status": "unchanged"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": 2.6461707090977393,
+    "baseline": 245.41750000000002,
+    "candidate": 251.91166599999997,
+    "status": "unchanged"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": 2.952451638534326,
+    "baseline": 245.41750000000002,
+    "candidate": 252.663333,
+    "status": "unchanged"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": 27.222725763240184,
+    "baseline": 245.41750000000002,
+    "candidate": 312.226833,
+    "interval_percent": [
+      26.496801927030322,
+      31.823993936605042
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": -72.47549257897256,
+    "baseline": 245.41750000000002,
+    "candidate": 67.54995799999999,
+    "interval_percent": [
+      -72.70736248792528,
+      -71.47377983318472
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": 0.5160708392685232,
+    "baseline": 238.25062499999999,
+    "candidate": 239.480167,
+    "status": "unchanged"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": 5.538460602149509,
+    "baseline": 238.25062499999999,
+    "candidate": 251.44604199999998,
+    "interval_percent": [
+      4.755007072682926,
+      6.239052898705721
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": 6.555666747988598,
+    "baseline": 238.25062499999999,
+    "candidate": 253.869542,
+    "interval_percent": [
+      4.995313750460317,
+      7.477225921492914
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": 28.0884534930391,
+    "baseline": 238.25062499999999,
+    "candidate": 305.171541,
+    "interval_percent": [
+      27.175327607456758,
+      28.817670060503374
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": -71.83751690053279,
+    "baseline": 238.25062499999999,
+    "candidate": 67.097292,
+    "interval_percent": [
+      -72.07640982902677,
+      -71.39824205833155
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -0.8450704225352101,
+    "baseline": 11.09375,
+    "candidate": 11.0,
+    "status": "unchanged"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -0.5633802816901401,
+    "baseline": 11.09375,
+    "candidate": 11.03125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -0.8450704225352101,
+    "baseline": 11.09375,
+    "candidate": 11.0,
+    "status": "unchanged"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -3.5211267605633756,
+    "baseline": 11.09375,
+    "candidate": 10.703125,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "game_spectral_norm",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 42.11267605633804,
+    "baseline": 11.09375,
+    "candidate": 15.765625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": 0.6837302832360947,
+    "baseline": 222.364584,
+    "candidate": 223.88495799999998,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -1.7524526297767018,
+    "baseline": 222.364584,
+    "candidate": 218.46775,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -1.5776082399884372,
+    "baseline": 222.364584,
+    "candidate": 218.856542,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -2.8042914423818566,
+    "baseline": 222.364584,
+    "candidate": 216.128833,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": -76.66819685638428,
+    "baseline": 222.364584,
+    "candidate": 51.881667,
+    "interval_percent": [
+      -77.14734016363694,
+      -76.28955036080653
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": 0.33804614076689,
+    "baseline": 219.508792,
+    "candidate": 220.250833,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -2.5649505647135973,
+    "baseline": 219.508792,
+    "candidate": 213.8785,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -2.411995415655155,
+    "baseline": 219.508792,
+    "candidate": 214.21425,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -3.788648702508468,
+    "baseline": 219.508792,
+    "candidate": 211.192375,
+    "interval_percent": [
+      -4.105409976202323,
+      -3.166447159895147
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": -77.58912818398636,
+    "baseline": 219.508792,
+    "candidate": 49.193833999999995,
+    "interval_percent": [
+      -77.9731721402846,
+      -76.23824697113066
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -0.7049891540130138,
+    "baseline": 57.625,
+    "candidate": 57.21875,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -0.7592190889370909,
+    "baseline": 57.625,
+    "candidate": 57.1875,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -0.2169197396963085,
+    "baseline": 57.625,
+    "candidate": 57.5,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -0.6507592190889366,
+    "baseline": 57.625,
+    "candidate": 57.25,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": -43.4652928416486,
+    "baseline": 57.625,
+    "candidate": 32.578125,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -3.872617079168572,
+    "baseline": 7.3335420000000004,
+    "candidate": 7.049542,
+    "interval_percent": [
+      -5.669131650022329,
+      -0.006894613696584173
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -0.6022601356888813,
+    "baseline": 7.3335420000000004,
+    "candidate": 7.289375,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -3.2646843776172663,
+    "baseline": 7.3335420000000004,
+    "candidate": 7.094125,
+    "interval_percent": [
+      -5.236654581754685,
+      -0.13250586681908816
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": 4324.849097475681,
+    "baseline": 7.3335420000000004,
+    "candidate": 324.498167,
+    "interval_percent": [
+      4242.124011535609,
+      4450.165665796874
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 153.15586929208285,
+    "baseline": 7.3335420000000004,
+    "candidate": 18.565292,
+    "interval_percent": [
+      148.13920608124377,
+      160.12888682700856
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -1.0314271018059817,
+    "baseline": 6.948334,
+    "candidate": 6.876667,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -0.10375148920589439,
+    "baseline": 6.948334,
+    "candidate": 6.941125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -2.3159076693780145,
+    "baseline": 6.948334,
+    "candidate": 6.787417,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": 4407.3850220786735,
+    "baseline": 6.948334,
+    "candidate": 313.18816599999997,
+    "interval_percent": [
+      4312.467241934392,
+      4456.306947109293
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 152.11079375286215,
+    "baseline": 6.948334,
+    "candidate": 17.5175,
+    "interval_percent": [
+      145.23725873528406,
+      158.62535941411517
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -0.2580645161290307,
+    "baseline": 12.109375,
+    "candidate": 12.078125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -0.7741935483870921,
+    "baseline": 12.109375,
+    "candidate": 12.015625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -0.3870967741935516,
+    "baseline": 12.109375,
+    "candidate": 12.0625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -4.774193548387096,
+    "baseline": 12.109375,
+    "candidate": 11.53125,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 62.45161290322581,
+    "baseline": 12.109375,
+    "candidate": 19.671875,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": 0.2829460549015339,
+    "baseline": 6.803417,
+    "candidate": 6.822667,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": 1.0693156100824108,
+    "baseline": 6.803417,
+    "candidate": 6.876167,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": 2.0945357310892643,
+    "baseline": 6.803417,
+    "candidate": 6.945917000000001,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": 18.028308422076744,
+    "baseline": 6.803417,
+    "candidate": 8.029958,
+    "interval_percent": [
+      15.471195407698502,
+      21.91120662365602
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": -24.988061146332775,
+    "baseline": 6.803417,
+    "candidate": 5.103375000000001,
+    "interval_percent": [
+      -27.560175054704604,
+      -20.79738792282042
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -2.763226541537178,
+    "baseline": 6.482458,
+    "candidate": 6.303333,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -0.9448576450476032,
+    "baseline": 6.482458,
+    "candidate": 6.421208,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": 1.9957707400495295,
+    "baseline": 6.482458,
+    "candidate": 6.611833,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": 18.156060556042174,
+    "baseline": 6.482458,
+    "candidate": 7.659417,
+    "interval_percent": [
+      12.80899422737627,
+      23.364870990737096
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": -36.899583460471334,
+    "baseline": 6.482458,
+    "candidate": 4.090458,
+    "interval_percent": [
+      -40.182905278846526,
+      -26.397344608338724
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -0.8009153318077833,
+    "baseline": 13.65625,
+    "candidate": 13.546875,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -1.258581235697942,
+    "baseline": 13.65625,
+    "candidate": 13.484375,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -0.6864988558352381,
+    "baseline": 13.65625,
+    "candidate": 13.5625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -3.661327231121281,
+    "baseline": 13.65625,
+    "candidate": 13.15625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_batch",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 27.57437070938216,
+    "baseline": 13.65625,
+    "candidate": 17.421875,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": 0.46067785455741195,
+    "baseline": 0.75975,
+    "candidate": 0.76325,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": 0.9542612701546549,
+    "baseline": 0.75975,
+    "candidate": 0.767,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": 4.518986508719958,
+    "baseline": 0.75975,
+    "candidate": 0.794083,
+    "interval_percent": [
+      -12.287606542016826,
+      13.238065326633164
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -0.032905561039831,
+    "baseline": 0.75975,
+    "candidate": 0.7595,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 87.78650871997368,
+    "baseline": 0.75975,
+    "candidate": 1.426708,
+    "interval_percent": [
+      55.205957113993364,
+      106.5317538664034
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -3.1854862483382207,
+    "baseline": 0.525791,
+    "candidate": 0.509042,
+    "interval_percent": [
+      -15.566483662693809,
+      6.954145591173999
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -2.1869906483754975,
+    "baseline": 0.525791,
+    "candidate": 0.514292,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -0.07911888944466261,
+    "baseline": 0.525791,
+    "candidate": 0.525375,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": 4.279266856983099,
+    "baseline": 0.525791,
+    "candidate": 0.548291,
+    "interval_percent": [
+      -10.489523956247126,
+      16.790113980888034
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 6.672613262684224,
+    "baseline": 0.525791,
+    "candidate": 0.560875,
+    "interval_percent": [
+      -12.685046427921186,
+      29.498488132292966
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -0.4213483146067398,
+    "baseline": 11.125,
+    "candidate": 11.078125,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -0.98314606741573,
+    "baseline": 11.125,
+    "candidate": 11.015625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -0.98314606741573,
+    "baseline": 11.125,
+    "candidate": 11.015625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -4.35393258426966,
+    "baseline": 11.125,
+    "candidate": 10.640625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "policy_scoring_short",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 40.4494382022472,
+    "baseline": 11.125,
+    "candidate": 15.625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -2.4986031362923433,
+    "baseline": 1.612541,
+    "candidate": 1.5722500000000001,
+    "status": "unchanged"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -2.7724566383118376,
+    "baseline": 1.612541,
+    "candidate": 1.567834,
+    "status": "unchanged"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": 3.12395157704517,
+    "baseline": 1.612541,
+    "candidate": 1.662916,
+    "interval_percent": [
+      -8.065913818722137,
+      11.21674392614873
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": 187.26140916727076,
+    "baseline": 1.612541,
+    "candidate": 4.632207999999999,
+    "interval_percent": [
+      168.66026745913817,
+      200.19458777120315
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 47.215915750359216,
+    "baseline": 1.612541,
+    "candidate": 2.373917,
+    "interval_percent": [
+      37.99904903417535,
+      56.715350725649905
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -2.9189503345748324,
+    "baseline": 1.407458,
+    "candidate": 1.366375,
+    "status": "unchanged"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -1.71408312006468,
+    "baseline": 1.407458,
+    "candidate": 1.3833330000000001,
+    "status": "unchanged"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -5.290246671659126,
+    "baseline": 1.407458,
+    "candidate": 1.333,
+    "interval_percent": [
+      -13.446187313013825,
+      0.570640743329931
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": 208.47570584699503,
+    "baseline": 1.407458,
+    "candidate": 4.341666,
+    "interval_percent": [
+      188.6221543519124,
+      234.23664824908198
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 10.539071148126599,
+    "baseline": 1.407458,
+    "candidate": 1.555791,
+    "interval_percent": [
+      2.407501267105938,
+      19.245203369355156
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -0.42979942693409656,
+    "baseline": 10.90625,
+    "candidate": 10.859375,
+    "status": "unchanged"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -1.2893982808022897,
+    "baseline": 10.90625,
+    "candidate": 10.765625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -1.2893982808022897,
+    "baseline": 10.90625,
+    "candidate": 10.765625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -4.584527220630374,
+    "baseline": 10.90625,
+    "candidate": 10.40625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "portfolio_exposure",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 43.553008595988544,
+    "baseline": 10.90625,
+    "candidate": 15.65625,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -0.3618751752790139,
+    "baseline": 27.392042,
+    "candidate": 27.292917,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -0.8081726802258937,
+    "baseline": 27.392042,
+    "candidate": 27.170666999999998,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -2.8079943802656215,
+    "baseline": 27.392042,
+    "candidate": 26.622875,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -0.4814354475653926,
+    "baseline": 27.392042,
+    "candidate": 27.260167,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": -64.66309448561739,
+    "baseline": 27.392042,
+    "candidate": 9.6795,
+    "interval_percent": [
+      -67.22943520584414,
+      -63.38388164748918
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": 0.1210881278655318,
+    "baseline": 27.046416999999998,
+    "candidate": 27.079167,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -1.412235121568961,
+    "baseline": 27.046416999999998,
+    "candidate": 26.664458,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -2.976057789835884,
+    "baseline": 27.046416999999998,
+    "candidate": 26.241500000000002,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -3.4788970383766493,
+    "baseline": 27.046416999999998,
+    "candidate": 26.1055,
+    "interval_percent": [
+      -5.688075085355681,
+      -0.5736662610485443
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": -74.06310787857777,
+    "baseline": 27.046416999999998,
+    "candidate": 7.015000000000001,
+    "interval_percent": [
+      -75.44993470379472,
+      -71.27710295490466
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -1.0964912280701733,
+    "baseline": 14.25,
+    "candidate": 14.09375,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -1.6447368421052655,
+    "baseline": 14.25,
+    "candidate": 14.015625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": -0.43859649122807154,
+    "baseline": 14.25,
+    "candidate": 14.1875,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -2.5219298245614086,
+    "baseline": 14.25,
+    "candidate": 13.890625,
+    "status": "unchanged"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 22.478070175438592,
+    "baseline": 14.25,
+    "candidate": 17.453125,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "combined",
+    "change_percent": -1.9345563654746156,
+    "baseline": 7.665375,
+    "candidate": 7.5170840000000005,
+    "status": "unchanged"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match_before",
+    "change_percent": -1.960660763498201,
+    "baseline": 7.665375,
+    "candidate": 7.515083,
+    "status": "unchanged"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "match",
+    "change_percent": 1.8171583255874646,
+    "baseline": 7.665375,
+    "candidate": 7.804667,
+    "status": "unchanged"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "default",
+    "change_percent": -9.645098902532478,
+    "baseline": 7.665375,
+    "candidate": 6.926042000000001,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "before",
+    "candidate_label": "CPython",
+    "change_percent": 225.75271268528937,
+    "baseline": 7.665375,
+    "candidate": 24.970167,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  }
+]

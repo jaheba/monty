@@ -1,0 +1,6 @@
+diff --git a/crates/monty/src/modules/json/string_cache.rs b/crates/monty/src/modules/json/string_cache.rs
+--- a/crates/monty/src/modules/json/string_cache.rs
++++ b/crates/monty/src/modules/json/string_cache.rs
+@@ -98 +98 @@
+-            for entry in &mut inner.entries {
++            for entry in inner.entries.iter_mut() {

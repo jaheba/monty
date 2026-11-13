@@ -1,0 +1,329 @@
+[
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 452.3398243241493,
+    "baseline": 28.931124999999998,
+    "candidate": 159.79812500000003,
+    "interval_percent": [
+      448.18403169035184,
+      456.42176360601167
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 461.9014992961177,
+    "baseline": 28.396792,
+    "candidate": 159.562,
+    "interval_percent": [
+      457.66475180329644,
+      468.490687473854
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "capacity_planning",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "status": "unavailable"
+  },
+  {
+    "workload": "text_csv_cleanup_medium",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 447.5529180169016,
+    "baseline": 703.8127499999999,
+    "candidate": 3853.74725,
+    "interval_percent": [
+      444.6789789787665,
+      449.5230995487562
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "text_csv_cleanup_medium",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 446.47633982327346,
+    "baseline": 698.947125,
+    "candidate": 3819.580666,
+    "interval_percent": [
+      444.3921357482806,
+      447.61908198573354
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "text_csv_cleanup_medium",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "status": "unavailable"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 274.5716512955644,
+    "baseline": 27.324,
+    "candidate": 102.347958,
+    "interval_percent": [
+      266.8673264480074,
+      280.3870952629491
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 281.14476980644156,
+    "baseline": 26.518292,
+    "candidate": 101.073083,
+    "interval_percent": [
+      273.3339213483665,
+      288.00788102765375
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "ticket_search",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "status": "unavailable"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 366.9236848947988,
+    "baseline": 220.741542,
+    "candidate": 1030.694542,
+    "interval_percent": [
+      365.28426710674006,
+      369.4897441107975
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 377.0390988217519,
+    "baseline": 215.400583,
+    "candidate": 1027.5449999999998,
+    "interval_percent": [
+      373.7683064756715,
+      382.0531318591642
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "perf_float",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "status": "unavailable"
+  },
+  {
+    "workload": "rustpython_micro_cmp",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": -51.84960116933799,
+    "baseline": 1.981292,
+    "candidate": 0.954,
+    "interval_percent": [
+      -52.84674257980213,
+      -46.92372575995808
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "rustpython_micro_cmp",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": -53.06060767590619,
+    "baseline": 1.8760000000000001,
+    "candidate": 0.880583,
+    "interval_percent": [
+      -56.12014255334261,
+      -50.33749579971285
+    ],
+    "confidence_family": 0.95,
+    "status": "improvement"
+  },
+  {
+    "workload": "rustpython_micro_cmp",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "status": "unavailable"
+  },
+  {
+    "workload": "rustpython_micro_addition_900",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": -1.865872543180458,
+    "baseline": 0.20987499999999998,
+    "candidate": 0.205959,
+    "status": "unchanged"
+  },
+  {
+    "workload": "rustpython_micro_addition_900",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": -11.511511511511518,
+    "baseline": 0.12487500000000001,
+    "candidate": 0.1105,
+    "interval_percent": [
+      -32.6117222723174,
+      14.161049445005048
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "rustpython_micro_addition_900",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "status": "unavailable"
+  },
+  {
+    "workload": "expense_report",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 14.398672948333214,
+    "baseline": 0.36954099999999995,
+    "candidate": 0.42275,
+    "interval_percent": [
+      4.136131973918555,
+      22.933072521116273
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "expense_report",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 20.82108262108262,
+    "baseline": 0.17550000000000002,
+    "candidate": 0.212041,
+    "interval_percent": [
+      -25.130890052356015,
+      125.79260845560557
+    ],
+    "confidence_family": 0.95,
+    "status": "inconclusive"
+  },
+  {
+    "workload": "expense_report",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "status": "unavailable"
+  },
+  {
+    "workload": "text_json_transform_small",
+    "scenario": "one-shot",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 13.921111230798289,
+    "baseline": 0.566291,
+    "candidate": 0.645125,
+    "interval_percent": [
+      6.888907051347548,
+      24.151067216906718
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "text_json_transform_small",
+    "scenario": "repeated",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 37.55740459996393,
+    "baseline": 0.315959,
+    "candidate": 0.434625,
+    "interval_percent": [
+      7.557205969222069,
+      63.35489833641403
+    ],
+    "confidence_family": 0.95,
+    "status": "regression"
+  },
+  {
+    "workload": "text_json_transform_small",
+    "scenario": "one-shot",
+    "metric": "rss_mib",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "status": "unavailable"
+  },
+  {
+    "workload": "Process startup",
+    "scenario": "empty command",
+    "metric": "ms",
+    "baseline_label": "baseline",
+    "candidate_label": "native",
+    "change_percent": 6.3815240023687325,
+    "baseline": 6.543625,
+    "candidate": 6.961208,
+    "status": "inconclusive",
+    "reason": "At least 10 samples per runtime required"
+  }
+]

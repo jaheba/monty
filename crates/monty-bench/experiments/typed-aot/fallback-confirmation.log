@@ -1,0 +1,1494 @@
+Preparing custom benchmarks: capturing expected output with harness CPython
+Measuring empty-command startup
+before: startup sample 1/5
+before: startup 7.73 ms
+before: startup sample 2/5
+before: startup 7.72 ms
+default: startup sample 1/5
+default: startup 6.84 ms
+match: startup sample 1/5
+match: startup 9.3 ms
+match: startup sample 2/5
+match: startup 8.19 ms
+match: startup sample 3/5
+match: startup 10.7 ms
+default: startup sample 2/5
+default: startup 8.15 ms
+before: startup sample 3/5
+before: startup 7.32 ms
+match: startup sample 4/5
+match: startup 8.8 ms
+before: startup sample 4/5
+before: startup 7.85 ms
+default: startup sample 3/5
+default: startup 13.2 ms
+match: startup sample 5/5
+match: startup 8.15 ms
+default: startup sample 4/5
+default: startup 7.71 ms
+default: startup sample 5/5
+default: startup 9.69 ms
+before: startup sample 5/5
+before: startup 7.97 ms
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+Running one-shot: default, before, match
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+default/portfolio_risk: checking compatibility
+default/portfolio_risk: supported 
+default/text_csv_cleanup_medium: checking compatibility
+default/text_csv_cleanup_medium: supported 
+default/perf_richards: checking compatibility
+default/perf_richards: supported 
+default/rustpython_pystone: checking compatibility
+default/rustpython_pystone: supported 
+default/rustpython_micro_cmp: checking compatibility
+default/rustpython_micro_cmp: supported 
+default/rustpython_micro_sorted_900: checking compatibility
+default/rustpython_micro_sorted_900: supported 
+default/stdout_lines: checking compatibility
+default/stdout_lines: supported 
+before/portfolio_risk: checking compatibility
+before/portfolio_risk: supported 
+before/text_csv_cleanup_medium: checking compatibility
+before/text_csv_cleanup_medium: supported 
+before/perf_richards: checking compatibility
+before/perf_richards: supported 
+before/rustpython_pystone: checking compatibility
+before/rustpython_pystone: supported 
+before/rustpython_micro_cmp: checking compatibility
+before/rustpython_micro_cmp: supported 
+before/rustpython_micro_sorted_900: checking compatibility
+before/rustpython_micro_sorted_900: supported 
+before/stdout_lines: checking compatibility
+before/stdout_lines: supported 
+match/portfolio_risk: checking compatibility
+match/portfolio_risk: supported 
+match/text_csv_cleanup_medium: checking compatibility
+match/text_csv_cleanup_medium: supported 
+match/perf_richards: checking compatibility
+match/perf_richards: supported 
+match/rustpython_pystone: checking compatibility
+match/rustpython_pystone: supported 
+match/rustpython_micro_cmp: checking compatibility
+match/rustpython_micro_cmp: supported 
+match/rustpython_micro_sorted_900: checking compatibility
+match/rustpython_micro_sorted_900: supported 
+match/stdout_lines: checking compatibility
+match/stdout_lines: supported 
+before/portfolio_risk: timing sample 1/15
+before/portfolio_risk: 60.3 ms
+default/perf_richards: timing sample 1/15
+default/perf_richards: 170 ms
+match/rustpython_pystone: timing sample 1/15
+match/rustpython_pystone: 295 ms
+default/rustpython_micro_sorted_900: timing sample 1/15
+default/rustpython_micro_sorted_900: 0.994 ms
+default/stdout_lines: timing sample 1/15
+default/stdout_lines: 2.06 ms
+before/perf_richards: timing sample 1/15
+before/perf_richards: 177 ms
+match/perf_richards: timing sample 1/15
+match/perf_richards: 178 ms
+before/rustpython_pystone: timing sample 1/15
+before/rustpython_pystone: 289 ms
+before/rustpython_micro_cmp: timing sample 1/15
+before/rustpython_micro_cmp: 2.03 ms
+before/rustpython_micro_sorted_900: timing sample 1/15
+before/rustpython_micro_sorted_900: 1.02 ms
+match/text_csv_cleanup_medium: timing sample 1/15
+match/text_csv_cleanup_medium: 695 ms
+default/perf_richards: timing sample 2/15
+default/perf_richards: 172 ms
+match/rustpython_micro_cmp: timing sample 1/15
+match/rustpython_micro_cmp: 2.06 ms
+default/rustpython_pystone: timing sample 1/15
+default/rustpython_pystone: 282 ms
+default/rustpython_pystone: timing sample 2/15
+default/rustpython_pystone: 280 ms
+match/perf_richards: timing sample 2/15
+match/perf_richards: 181 ms
+default/rustpython_micro_sorted_900: timing sample 2/15
+default/rustpython_micro_sorted_900: 1.1 ms
+before/rustpython_micro_sorted_900: timing sample 2/15
+before/rustpython_micro_sorted_900: 1.1 ms
+match/perf_richards: timing sample 3/15
+match/perf_richards: 181 ms
+match/stdout_lines: timing sample 1/15
+match/stdout_lines: 2.36 ms
+before/stdout_lines: timing sample 1/15
+before/stdout_lines: 2.46 ms
+before/rustpython_micro_sorted_900: timing sample 3/15
+before/rustpython_micro_sorted_900: 1.05 ms
+before/rustpython_micro_cmp: timing sample 2/15
+before/rustpython_micro_cmp: 1.99 ms
+before/portfolio_risk: timing sample 2/15
+before/portfolio_risk: 60.3 ms
+before/stdout_lines: timing sample 2/15
+before/stdout_lines: 2.22 ms
+default/stdout_lines: timing sample 2/15
+default/stdout_lines: 2.37 ms
+match/rustpython_micro_cmp: timing sample 2/15
+match/rustpython_micro_cmp: 2 ms
+default/text_csv_cleanup_medium: timing sample 1/15
+default/text_csv_cleanup_medium: 668 ms
+default/rustpython_micro_cmp: timing sample 1/15
+default/rustpython_micro_cmp: 1.73 ms
+default/text_csv_cleanup_medium: timing sample 2/15
+default/text_csv_cleanup_medium: 671 ms
+match/rustpython_micro_sorted_900: timing sample 1/15
+match/rustpython_micro_sorted_900: 1.19 ms
+default/rustpython_micro_sorted_900: timing sample 3/15
+default/rustpython_micro_sorted_900: 1.12 ms
+default/rustpython_pystone: timing sample 3/15
+default/rustpython_pystone: 283 ms
+default/rustpython_micro_cmp: timing sample 2/15
+default/rustpython_micro_cmp: 1.8 ms
+match/stdout_lines: timing sample 2/15
+match/stdout_lines: 2.25 ms
+match/text_csv_cleanup_medium: timing sample 2/15
+match/text_csv_cleanup_medium: 695 ms
+match/text_csv_cleanup_medium: timing sample 3/15
+match/text_csv_cleanup_medium: 696 ms
+default/rustpython_micro_cmp: timing sample 3/15
+default/rustpython_micro_cmp: 1.77 ms
+before/perf_richards: timing sample 2/15
+before/perf_richards: 181 ms
+match/perf_richards: timing sample 4/15
+match/perf_richards: 180 ms
+match/stdout_lines: timing sample 3/15
+match/stdout_lines: 2.18 ms
+before/perf_richards: timing sample 3/15
+before/perf_richards: 179 ms
+before/rustpython_micro_cmp: timing sample 3/15
+before/rustpython_micro_cmp: 1.98 ms
+match/rustpython_pystone: timing sample 2/15
+match/rustpython_pystone: 298 ms
+default/portfolio_risk: timing sample 1/15
+default/portfolio_risk: 58.6 ms
+before/rustpython_pystone: timing sample 2/15
+before/rustpython_pystone: 294 ms
+match/text_csv_cleanup_medium: timing sample 4/15
+match/text_csv_cleanup_medium: 700 ms
+default/text_csv_cleanup_medium: timing sample 3/15
+default/text_csv_cleanup_medium: 669 ms
+default/rustpython_micro_sorted_900: timing sample 4/15
+default/rustpython_micro_sorted_900: 0.998 ms
+before/rustpython_micro_sorted_900: timing sample 4/15
+before/rustpython_micro_sorted_900: 1.07 ms
+default/perf_richards: timing sample 3/15
+default/perf_richards: 171 ms
+default/rustpython_pystone: timing sample 4/15
+default/rustpython_pystone: 283 ms
+default/perf_richards: timing sample 4/15
+default/perf_richards: 171 ms
+before/perf_richards: timing sample 4/15
+before/perf_richards: 179 ms
+before/rustpython_micro_sorted_900: timing sample 5/15
+before/rustpython_micro_sorted_900: 1.04 ms
+default/text_csv_cleanup_medium: timing sample 4/15
+default/text_csv_cleanup_medium: 668 ms
+match/rustpython_pystone: timing sample 3/15
+match/rustpython_pystone: 295 ms
+before/stdout_lines: timing sample 3/15
+before/stdout_lines: 2.28 ms
+match/rustpython_micro_cmp: timing sample 3/15
+match/rustpython_micro_cmp: 1.96 ms
+before/portfolio_risk: timing sample 3/15
+before/portfolio_risk: 60 ms
+match/rustpython_micro_sorted_900: timing sample 2/15
+match/rustpython_micro_sorted_900: 1.04 ms
+match/portfolio_risk: timing sample 1/15
+match/portfolio_risk: 58.5 ms
+match/rustpython_micro_sorted_900: timing sample 3/15
+match/rustpython_micro_sorted_900: 1.12 ms
+match/text_csv_cleanup_medium: timing sample 5/15
+match/text_csv_cleanup_medium: 695 ms
+default/stdout_lines: timing sample 3/15
+default/stdout_lines: 2.32 ms
+default/rustpython_pystone: timing sample 5/15
+default/rustpython_pystone: 286 ms
+default/text_csv_cleanup_medium: timing sample 5/15
+default/text_csv_cleanup_medium: 669 ms
+match/rustpython_micro_sorted_900: timing sample 4/15
+match/rustpython_micro_sorted_900: 1.23 ms
+before/rustpython_micro_sorted_900: timing sample 6/15
+before/rustpython_micro_sorted_900: 1.01 ms
+before/rustpython_micro_cmp: timing sample 4/15
+before/rustpython_micro_cmp: 1.96 ms
+before/text_csv_cleanup_medium: timing sample 1/15
+before/text_csv_cleanup_medium: 691 ms
+match/perf_richards: timing sample 5/15
+match/perf_richards: 178 ms
+default/rustpython_pystone: timing sample 6/15
+default/rustpython_pystone: 282 ms
+match/text_csv_cleanup_medium: timing sample 6/15
+match/text_csv_cleanup_medium: 695 ms
+default/stdout_lines: timing sample 4/15
+default/stdout_lines: 2.22 ms
+default/rustpython_micro_cmp: timing sample 4/15
+default/rustpython_micro_cmp: 1.76 ms
+default/portfolio_risk: timing sample 2/15
+default/portfolio_risk: 57 ms
+match/portfolio_risk: timing sample 2/15
+match/portfolio_risk: 59 ms
+match/portfolio_risk: timing sample 3/15
+match/portfolio_risk: 58.5 ms
+match/portfolio_risk: timing sample 4/15
+match/portfolio_risk: 59 ms
+match/rustpython_micro_sorted_900: timing sample 5/15
+match/rustpython_micro_sorted_900: 1.09 ms
+default/portfolio_risk: timing sample 3/15
+default/portfolio_risk: 56.8 ms
+default/rustpython_micro_cmp: timing sample 5/15
+default/rustpython_micro_cmp: 1.77 ms
+match/perf_richards: timing sample 6/15
+match/perf_richards: 181 ms
+before/rustpython_micro_cmp: timing sample 5/15
+before/rustpython_micro_cmp: 2.05 ms
+default/rustpython_micro_sorted_900: timing sample 5/15
+default/rustpython_micro_sorted_900: 1.05 ms
+match/rustpython_micro_sorted_900: timing sample 6/15
+match/rustpython_micro_sorted_900: 1.22 ms
+before/rustpython_micro_cmp: timing sample 6/15
+before/rustpython_micro_cmp: 2.02 ms
+default/portfolio_risk: timing sample 4/15
+default/portfolio_risk: 56.6 ms
+default/rustpython_micro_cmp: timing sample 6/15
+default/rustpython_micro_cmp: 1.79 ms
+match/stdout_lines: timing sample 4/15
+match/stdout_lines: 2.19 ms
+default/rustpython_pystone: timing sample 7/15
+default/rustpython_pystone: 283 ms
+match/rustpython_micro_cmp: timing sample 4/15
+match/rustpython_micro_cmp: 1.95 ms
+default/perf_richards: timing sample 5/15
+default/perf_richards: 170 ms
+before/stdout_lines: timing sample 4/15
+before/stdout_lines: 2.28 ms
+match/rustpython_micro_cmp: timing sample 5/15
+match/rustpython_micro_cmp: 2.01 ms
+default/rustpython_pystone: timing sample 8/15
+default/rustpython_pystone: 282 ms
+before/rustpython_micro_sorted_900: timing sample 7/15
+before/rustpython_micro_sorted_900: 1.02 ms
+default/text_csv_cleanup_medium: timing sample 6/15
+default/text_csv_cleanup_medium: 669 ms
+before/stdout_lines: timing sample 5/15
+before/stdout_lines: 2.19 ms
+before/text_csv_cleanup_medium: timing sample 2/15
+before/text_csv_cleanup_medium: 692 ms
+default/stdout_lines: timing sample 5/15
+default/stdout_lines: 2.16 ms
+before/stdout_lines: timing sample 6/15
+before/stdout_lines: 2.2 ms
+match/portfolio_risk: timing sample 5/15
+match/portfolio_risk: 58.3 ms
+match/rustpython_pystone: timing sample 4/15
+match/rustpython_pystone: 297 ms
+default/rustpython_micro_cmp: timing sample 7/15
+default/rustpython_micro_cmp: 1.88 ms
+before/perf_richards: timing sample 5/15
+before/perf_richards: 179 ms
+before/portfolio_risk: timing sample 4/15
+before/portfolio_risk: 59.6 ms
+match/rustpython_pystone: timing sample 5/15
+match/rustpython_pystone: 295 ms
+default/stdout_lines: timing sample 6/15
+default/stdout_lines: 2.26 ms
+match/text_csv_cleanup_medium: timing sample 7/15
+match/text_csv_cleanup_medium: 698 ms
+match/rustpython_pystone: timing sample 6/15
+match/rustpython_pystone: 295 ms
+default/rustpython_micro_cmp: timing sample 8/15
+default/rustpython_micro_cmp: 1.72 ms
+before/portfolio_risk: timing sample 5/15
+before/portfolio_risk: 60.1 ms
+default/rustpython_micro_sorted_900: timing sample 6/15
+default/rustpython_micro_sorted_900: 1.01 ms
+default/perf_richards: timing sample 6/15
+default/perf_richards: 171 ms
+match/stdout_lines: timing sample 5/15
+match/stdout_lines: 2.35 ms
+before/rustpython_micro_cmp: timing sample 7/15
+before/rustpython_micro_cmp: 1.98 ms
+before/stdout_lines: timing sample 7/15
+before/stdout_lines: 2.32 ms
+before/rustpython_micro_sorted_900: timing sample 8/15
+before/rustpython_micro_sorted_900: 1.12 ms
+default/portfolio_risk: timing sample 5/15
+default/portfolio_risk: 56.8 ms
+before/stdout_lines: timing sample 8/15
+before/stdout_lines: 2.29 ms
+match/rustpython_pystone: timing sample 7/15
+match/rustpython_pystone: 297 ms
+before/perf_richards: timing sample 6/15
+before/perf_richards: 178 ms
+before/rustpython_pystone: timing sample 3/15
+before/rustpython_pystone: 292 ms
+default/rustpython_pystone: timing sample 9/15
+default/rustpython_pystone: 282 ms
+before/rustpython_pystone: timing sample 4/15
+before/rustpython_pystone: 291 ms
+match/text_csv_cleanup_medium: timing sample 8/15
+match/text_csv_cleanup_medium: 698 ms
+before/rustpython_pystone: timing sample 5/15
+before/rustpython_pystone: 291 ms
+match/perf_richards: timing sample 7/15
+match/perf_richards: 180 ms
+before/rustpython_pystone: timing sample 6/15
+before/rustpython_pystone: 290 ms
+match/portfolio_risk: timing sample 6/15
+match/portfolio_risk: 58.8 ms
+default/rustpython_pystone: timing sample 10/15
+default/rustpython_pystone: 284 ms
+match/stdout_lines: timing sample 6/15
+match/stdout_lines: 2.34 ms
+before/rustpython_micro_cmp: timing sample 8/15
+before/rustpython_micro_cmp: 2.04 ms
+before/perf_richards: timing sample 7/15
+before/perf_richards: 179 ms
+default/rustpython_micro_sorted_900: timing sample 7/15
+default/rustpython_micro_sorted_900: 1 ms
+match/portfolio_risk: timing sample 7/15
+match/portfolio_risk: 61.9 ms
+match/rustpython_micro_cmp: timing sample 6/15
+match/rustpython_micro_cmp: 1.97 ms
+default/rustpython_pystone: timing sample 11/15
+default/rustpython_pystone: 282 ms
+match/portfolio_risk: timing sample 8/15
+match/portfolio_risk: 58.8 ms
+before/text_csv_cleanup_medium: timing sample 3/15
+before/text_csv_cleanup_medium: 692 ms
+before/text_csv_cleanup_medium: timing sample 4/15
+before/text_csv_cleanup_medium: 691 ms
+default/rustpython_pystone: timing sample 12/15
+default/rustpython_pystone: 380 ms
+before/stdout_lines: timing sample 9/15
+before/stdout_lines: 2.34 ms
+before/perf_richards: timing sample 8/15
+before/perf_richards: 179 ms
+default/rustpython_micro_cmp: timing sample 9/15
+default/rustpython_micro_cmp: 1.77 ms
+before/rustpython_micro_cmp: timing sample 9/15
+before/rustpython_micro_cmp: 2.07 ms
+before/portfolio_risk: timing sample 6/15
+before/portfolio_risk: 59.5 ms
+match/perf_richards: timing sample 8/15
+match/perf_richards: 180 ms
+match/stdout_lines: timing sample 7/15
+match/stdout_lines: 2.32 ms
+before/portfolio_risk: timing sample 7/15
+before/portfolio_risk: 59.8 ms
+default/rustpython_micro_sorted_900: timing sample 8/15
+default/rustpython_micro_sorted_900: 1.04 ms
+before/text_csv_cleanup_medium: timing sample 5/15
+before/text_csv_cleanup_medium: 693 ms
+match/portfolio_risk: timing sample 9/15
+match/portfolio_risk: 58.5 ms
+before/rustpython_pystone: timing sample 7/15
+before/rustpython_pystone: 289 ms
+match/rustpython_pystone: timing sample 8/15
+match/rustpython_pystone: 298 ms
+default/text_csv_cleanup_medium: timing sample 7/15
+default/text_csv_cleanup_medium: 669 ms
+before/perf_richards: timing sample 9/15
+before/perf_richards: 179 ms
+match/stdout_lines: timing sample 8/15
+match/stdout_lines: 2.24 ms
+before/stdout_lines: timing sample 10/15
+before/stdout_lines: 2.33 ms
+match/rustpython_pystone: timing sample 9/15
+match/rustpython_pystone: 300 ms
+match/rustpython_pystone: timing sample 10/15
+match/rustpython_pystone: 295 ms
+default/rustpython_micro_sorted_900: timing sample 9/15
+default/rustpython_micro_sorted_900: 1.03 ms
+default/stdout_lines: timing sample 7/15
+default/stdout_lines: 2.11 ms
+match/rustpython_micro_cmp: timing sample 7/15
+match/rustpython_micro_cmp: 2.1 ms
+match/text_csv_cleanup_medium: timing sample 9/15
+match/text_csv_cleanup_medium: 698 ms
+before/rustpython_pystone: timing sample 8/15
+before/rustpython_pystone: 290 ms
+match/text_csv_cleanup_medium: timing sample 10/15
+match/text_csv_cleanup_medium: 698 ms
+match/stdout_lines: timing sample 9/15
+match/stdout_lines: 2.33 ms
+before/rustpython_micro_cmp: timing sample 10/15
+before/rustpython_micro_cmp: 2.09 ms
+default/stdout_lines: timing sample 8/15
+default/stdout_lines: 2.37 ms
+match/rustpython_micro_sorted_900: timing sample 7/15
+match/rustpython_micro_sorted_900: 1.07 ms
+default/rustpython_micro_cmp: timing sample 10/15
+default/rustpython_micro_cmp: 1.81 ms
+match/text_csv_cleanup_medium: timing sample 11/15
+match/text_csv_cleanup_medium: 694 ms
+default/rustpython_micro_cmp: timing sample 11/15
+default/rustpython_micro_cmp: 1.86 ms
+match/rustpython_micro_cmp: timing sample 8/15
+match/rustpython_micro_cmp: 1.95 ms
+default/text_csv_cleanup_medium: timing sample 8/15
+default/text_csv_cleanup_medium: 669 ms
+before/rustpython_micro_cmp: timing sample 11/15
+before/rustpython_micro_cmp: 2.16 ms
+match/portfolio_risk: timing sample 10/15
+match/portfolio_risk: 58.5 ms
+default/portfolio_risk: timing sample 6/15
+default/portfolio_risk: 56.5 ms
+default/text_csv_cleanup_medium: timing sample 9/15
+default/text_csv_cleanup_medium: 667 ms
+default/stdout_lines: timing sample 9/15
+default/stdout_lines: 2.29 ms
+default/rustpython_micro_cmp: timing sample 12/15
+default/rustpython_micro_cmp: 1.9 ms
+match/stdout_lines: timing sample 10/15
+match/stdout_lines: 2.29 ms
+default/text_csv_cleanup_medium: timing sample 10/15
+default/text_csv_cleanup_medium: 666 ms
+default/text_csv_cleanup_medium: timing sample 11/15
+default/text_csv_cleanup_medium: 669 ms
+before/rustpython_micro_sorted_900: timing sample 9/15
+before/rustpython_micro_sorted_900: 1.1 ms
+match/portfolio_risk: timing sample 11/15
+match/portfolio_risk: 58.5 ms
+match/rustpython_micro_sorted_900: timing sample 8/15
+match/rustpython_micro_sorted_900: 1.15 ms
+before/text_csv_cleanup_medium: timing sample 6/15
+before/text_csv_cleanup_medium: 691 ms
+match/rustpython_micro_cmp: timing sample 9/15
+match/rustpython_micro_cmp: 1.99 ms
+match/stdout_lines: timing sample 11/15
+match/stdout_lines: 2.23 ms
+default/portfolio_risk: timing sample 7/15
+default/portfolio_risk: 56.8 ms
+before/portfolio_risk: timing sample 8/15
+before/portfolio_risk: 59.8 ms
+before/portfolio_risk: timing sample 9/15
+before/portfolio_risk: 60.7 ms
+match/rustpython_pystone: timing sample 11/15
+match/rustpython_pystone: 296 ms
+match/rustpython_micro_cmp: timing sample 10/15
+match/rustpython_micro_cmp: 1.99 ms
+default/portfolio_risk: timing sample 8/15
+default/portfolio_risk: 56.6 ms
+before/rustpython_pystone: timing sample 9/15
+before/rustpython_pystone: 288 ms
+default/portfolio_risk: timing sample 9/15
+default/portfolio_risk: 56.8 ms
+default/text_csv_cleanup_medium: timing sample 12/15
+default/text_csv_cleanup_medium: 668 ms
+default/perf_richards: timing sample 7/15
+default/perf_richards: 171 ms
+before/rustpython_pystone: timing sample 10/15
+before/rustpython_pystone: 290 ms
+match/perf_richards: timing sample 9/15
+match/perf_richards: 180 ms
+before/text_csv_cleanup_medium: timing sample 7/15
+before/text_csv_cleanup_medium: 691 ms
+match/rustpython_micro_cmp: timing sample 11/15
+match/rustpython_micro_cmp: 2.04 ms
+default/stdout_lines: timing sample 10/15
+default/stdout_lines: 2.21 ms
+before/portfolio_risk: timing sample 10/15
+before/portfolio_risk: 60.6 ms
+before/text_csv_cleanup_medium: timing sample 8/15
+before/text_csv_cleanup_medium: 697 ms
+before/rustpython_micro_sorted_900: timing sample 10/15
+before/rustpython_micro_sorted_900: 1.01 ms
+match/perf_richards: timing sample 10/15
+match/perf_richards: 178 ms
+default/stdout_lines: timing sample 11/15
+default/stdout_lines: 2.15 ms
+before/portfolio_risk: timing sample 11/15
+before/portfolio_risk: 60 ms
+default/perf_richards: timing sample 8/15
+default/perf_richards: 173 ms
+before/rustpython_micro_cmp: timing sample 12/15
+before/rustpython_micro_cmp: 2.02 ms
+match/rustpython_micro_cmp: timing sample 12/15
+match/rustpython_micro_cmp: 1.98 ms
+match/rustpython_micro_sorted_900: timing sample 9/15
+match/rustpython_micro_sorted_900: 1.1 ms
+before/perf_richards: timing sample 10/15
+before/perf_richards: 179 ms
+match/rustpython_pystone: timing sample 12/15
+match/rustpython_pystone: 298 ms
+before/rustpython_micro_sorted_900: timing sample 11/15
+before/rustpython_micro_sorted_900: 1.04 ms
+default/rustpython_micro_cmp: timing sample 13/15
+default/rustpython_micro_cmp: 1.92 ms
+default/rustpython_micro_sorted_900: timing sample 10/15
+default/rustpython_micro_sorted_900: 0.998 ms
+default/text_csv_cleanup_medium: timing sample 13/15
+default/text_csv_cleanup_medium: 668 ms
+match/rustpython_pystone: timing sample 13/15
+match/rustpython_pystone: 297 ms
+match/perf_richards: timing sample 11/15
+match/perf_richards: 180 ms
+default/rustpython_pystone: timing sample 13/15
+default/rustpython_pystone: 283 ms
+default/portfolio_risk: timing sample 10/15
+default/portfolio_risk: 56.4 ms
+before/perf_richards: timing sample 11/15
+before/perf_richards: 179 ms
+before/text_csv_cleanup_medium: timing sample 9/15
+before/text_csv_cleanup_medium: 694 ms
+default/perf_richards: timing sample 9/15
+default/perf_richards: 172 ms
+default/portfolio_risk: timing sample 11/15
+default/portfolio_risk: 57.1 ms
+before/rustpython_pystone: timing sample 11/15
+before/rustpython_pystone: 289 ms
+default/rustpython_pystone: timing sample 14/15
+default/rustpython_pystone: 283 ms
+before/rustpython_micro_cmp: timing sample 13/15
+before/rustpython_micro_cmp: 2.04 ms
+match/rustpython_micro_sorted_900: timing sample 10/15
+match/rustpython_micro_sorted_900: 1.07 ms
+default/portfolio_risk: timing sample 12/15
+default/portfolio_risk: 57 ms
+match/rustpython_micro_cmp: timing sample 13/15
+match/rustpython_micro_cmp: 1.98 ms
+match/portfolio_risk: timing sample 12/15
+match/portfolio_risk: 58.4 ms
+match/perf_richards: timing sample 12/15
+match/perf_richards: 179 ms
+default/rustpython_micro_sorted_900: timing sample 11/15
+default/rustpython_micro_sorted_900: 0.971 ms
+default/perf_richards: timing sample 10/15
+default/perf_richards: 170 ms
+match/text_csv_cleanup_medium: timing sample 12/15
+match/text_csv_cleanup_medium: 701 ms
+before/rustpython_pystone: timing sample 12/15
+before/rustpython_pystone: 292 ms
+default/rustpython_pystone: timing sample 15/15
+default/rustpython_pystone: 282 ms
+default/perf_richards: timing sample 11/15
+default/perf_richards: 171 ms
+default/rustpython_micro_sorted_900: timing sample 12/15
+default/rustpython_micro_sorted_900: 1.05 ms
+default/perf_richards: timing sample 12/15
+default/perf_richards: 171 ms
+match/text_csv_cleanup_medium: timing sample 13/15
+match/text_csv_cleanup_medium: 698 ms
+before/rustpython_pystone: timing sample 13/15
+before/rustpython_pystone: 291 ms
+before/rustpython_micro_sorted_900: timing sample 12/15
+before/rustpython_micro_sorted_900: 1.09 ms
+default/rustpython_micro_sorted_900: timing sample 13/15
+default/rustpython_micro_sorted_900: 0.998 ms
+match/rustpython_micro_sorted_900: timing sample 11/15
+match/rustpython_micro_sorted_900: 1.06 ms
+default/text_csv_cleanup_medium: timing sample 14/15
+default/text_csv_cleanup_medium: 669 ms
+match/portfolio_risk: timing sample 13/15
+match/portfolio_risk: 58.5 ms
+default/portfolio_risk: timing sample 13/15
+default/portfolio_risk: 56.9 ms
+default/perf_richards: timing sample 13/15
+default/perf_richards: 170 ms
+before/portfolio_risk: timing sample 12/15
+before/portfolio_risk: 59.8 ms
+before/stdout_lines: timing sample 11/15
+before/stdout_lines: 2.18 ms
+match/rustpython_micro_sorted_900: timing sample 12/15
+match/rustpython_micro_sorted_900: 1.07 ms
+before/text_csv_cleanup_medium: timing sample 10/15
+before/text_csv_cleanup_medium: 695 ms
+match/perf_richards: timing sample 13/15
+match/perf_richards: 179 ms
+match/stdout_lines: timing sample 12/15
+match/stdout_lines: 2.27 ms
+default/rustpython_micro_cmp: timing sample 14/15
+default/rustpython_micro_cmp: 1.78 ms
+match/rustpython_micro_sorted_900: timing sample 13/15
+match/rustpython_micro_sorted_900: 1.07 ms
+before/perf_richards: timing sample 12/15
+before/perf_richards: 179 ms
+match/rustpython_pystone: timing sample 14/15
+match/rustpython_pystone: 298 ms
+before/text_csv_cleanup_medium: timing sample 11/15
+before/text_csv_cleanup_medium: 696 ms
+before/stdout_lines: timing sample 12/15
+before/stdout_lines: 2.32 ms
+before/rustpython_micro_cmp: timing sample 14/15
+before/rustpython_micro_cmp: 2.01 ms
+match/rustpython_micro_sorted_900: timing sample 14/15
+match/rustpython_micro_sorted_900: 1.04 ms
+match/rustpython_micro_sorted_900: timing sample 15/15
+match/rustpython_micro_sorted_900: 1.08 ms
+default/perf_richards: timing sample 14/15
+default/perf_richards: 173 ms
+default/portfolio_risk: timing sample 14/15
+default/portfolio_risk: 57 ms
+default/portfolio_risk: timing sample 15/15
+default/portfolio_risk: 57 ms
+match/text_csv_cleanup_medium: timing sample 14/15
+match/text_csv_cleanup_medium: 709 ms
+default/rustpython_micro_sorted_900: timing sample 14/15
+default/rustpython_micro_sorted_900: 1.04 ms
+before/portfolio_risk: timing sample 13/15
+before/portfolio_risk: 61 ms
+before/rustpython_pystone: timing sample 14/15
+before/rustpython_pystone: 292 ms
+before/portfolio_risk: timing sample 14/15
+before/portfolio_risk: 59.7 ms
+match/portfolio_risk: timing sample 14/15
+match/portfolio_risk: 58.6 ms
+match/perf_richards: timing sample 14/15
+match/perf_richards: 181 ms
+before/rustpython_micro_sorted_900: timing sample 13/15
+before/rustpython_micro_sorted_900: 1.01 ms
+before/perf_richards: timing sample 13/15
+before/perf_richards: 178 ms
+match/stdout_lines: timing sample 13/15
+match/stdout_lines: 2.21 ms
+match/portfolio_risk: timing sample 15/15
+match/portfolio_risk: 58.3 ms
+before/rustpython_micro_sorted_900: timing sample 14/15
+before/rustpython_micro_sorted_900: 1.03 ms
+before/stdout_lines: timing sample 13/15
+before/stdout_lines: 2.32 ms
+before/perf_richards: timing sample 14/15
+before/perf_richards: 179 ms
+before/stdout_lines: timing sample 14/15
+before/stdout_lines: 2.22 ms
+before/rustpython_pystone: timing sample 15/15
+before/rustpython_pystone: 288 ms
+default/text_csv_cleanup_medium: timing sample 15/15
+default/text_csv_cleanup_medium: 673 ms
+match/perf_richards: timing sample 15/15
+match/perf_richards: 179 ms
+before/text_csv_cleanup_medium: timing sample 12/15
+before/text_csv_cleanup_medium: 695 ms
+before/rustpython_micro_cmp: timing sample 15/15
+before/rustpython_micro_cmp: 2.07 ms
+before/rustpython_micro_sorted_900: timing sample 15/15
+before/rustpython_micro_sorted_900: 1.15 ms
+match/stdout_lines: timing sample 14/15
+match/stdout_lines: 2.27 ms
+default/perf_richards: timing sample 15/15
+default/perf_richards: 171 ms
+default/stdout_lines: timing sample 12/15
+default/stdout_lines: 2.19 ms
+before/portfolio_risk: timing sample 15/15
+before/portfolio_risk: 60.8 ms
+match/rustpython_micro_cmp: timing sample 14/15
+match/rustpython_micro_cmp: 1.96 ms
+before/text_csv_cleanup_medium: timing sample 13/15
+before/text_csv_cleanup_medium: 694 ms
+default/stdout_lines: timing sample 13/15
+default/stdout_lines: 2.13 ms
+default/stdout_lines: timing sample 14/15
+default/stdout_lines: 2.18 ms
+default/rustpython_micro_cmp: timing sample 15/15
+default/rustpython_micro_cmp: 1.85 ms
+match/text_csv_cleanup_medium: timing sample 15/15
+match/text_csv_cleanup_medium: 697 ms
+before/stdout_lines: timing sample 15/15
+before/stdout_lines: 2.3 ms
+before/text_csv_cleanup_medium: timing sample 14/15
+before/text_csv_cleanup_medium: 694 ms
+match/rustpython_micro_cmp: timing sample 15/15
+match/rustpython_micro_cmp: 1.95 ms
+match/rustpython_pystone: timing sample 15/15
+match/rustpython_pystone: 299 ms
+before/perf_richards: timing sample 15/15
+before/perf_richards: 179 ms
+default/stdout_lines: timing sample 15/15
+default/stdout_lines: 2.2 ms
+match/stdout_lines: timing sample 15/15
+match/stdout_lines: 2.23 ms
+default/rustpython_micro_sorted_900: timing sample 15/15
+default/rustpython_micro_sorted_900: 0.968 ms
+before/text_csv_cleanup_medium: timing sample 15/15
+before/text_csv_cleanup_medium: 693 ms
+default/portfolio_risk: ok, median 56.8 ms
+default/text_csv_cleanup_medium: ok, median 669 ms
+default/perf_richards: ok, median 171 ms
+default/rustpython_pystone: ok, median 283 ms
+default/rustpython_micro_cmp: ok, median 1.79 ms
+default/rustpython_micro_sorted_900: ok, median 1.01 ms
+default/stdout_lines: ok, median 2.2 ms
+before/portfolio_risk: ok, median 60 ms
+before/text_csv_cleanup_medium: ok, median 693 ms
+before/perf_richards: ok, median 179 ms
+before/rustpython_pystone: ok, median 290 ms
+before/rustpython_micro_cmp: ok, median 2.03 ms
+before/rustpython_micro_sorted_900: ok, median 1.04 ms
+before/stdout_lines: ok, median 2.29 ms
+match/portfolio_risk: ok, median 58.5 ms
+match/text_csv_cleanup_medium: ok, median 698 ms
+match/perf_richards: ok, median 180 ms
+match/rustpython_pystone: ok, median 297 ms
+match/rustpython_micro_cmp: ok, median 1.98 ms
+match/rustpython_micro_sorted_900: ok, median 1.08 ms
+match/stdout_lines: ok, median 2.27 ms
+Running repeated: default, before, match
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+default/portfolio_risk: checking compatibility
+default/portfolio_risk: supported 
+default/text_csv_cleanup_medium: checking compatibility
+default/text_csv_cleanup_medium: supported 
+default/perf_richards: checking compatibility
+default/perf_richards: supported 
+default/rustpython_pystone: checking compatibility
+default/rustpython_pystone: supported 
+default/rustpython_micro_cmp: checking compatibility
+default/rustpython_micro_cmp: supported 
+default/rustpython_micro_sorted_900: checking compatibility
+default/rustpython_micro_sorted_900: supported 
+default/stdout_lines: checking compatibility
+default/stdout_lines: supported 
+before/portfolio_risk: checking compatibility
+before/portfolio_risk: supported 
+before/text_csv_cleanup_medium: checking compatibility
+before/text_csv_cleanup_medium: supported 
+before/perf_richards: checking compatibility
+before/perf_richards: supported 
+before/rustpython_pystone: checking compatibility
+before/rustpython_pystone: supported 
+before/rustpython_micro_cmp: checking compatibility
+before/rustpython_micro_cmp: supported 
+before/rustpython_micro_sorted_900: checking compatibility
+before/rustpython_micro_sorted_900: supported 
+before/stdout_lines: checking compatibility
+before/stdout_lines: supported 
+match/portfolio_risk: checking compatibility
+match/portfolio_risk: supported 
+match/text_csv_cleanup_medium: checking compatibility
+match/text_csv_cleanup_medium: supported 
+match/perf_richards: checking compatibility
+match/perf_richards: supported 
+match/rustpython_pystone: checking compatibility
+match/rustpython_pystone: supported 
+match/rustpython_micro_cmp: checking compatibility
+match/rustpython_micro_cmp: supported 
+match/rustpython_micro_sorted_900: checking compatibility
+match/rustpython_micro_sorted_900: supported 
+match/stdout_lines: checking compatibility
+match/stdout_lines: supported 
+default/portfolio_risk: warmup 1/3
+default/text_csv_cleanup_medium: warmup 1/3
+default/perf_richards: warmup 1/3
+default/rustpython_pystone: warmup 1/3
+default/rustpython_micro_cmp: warmup 1/3
+default/rustpython_micro_sorted_900: warmup 1/3
+default/stdout_lines: warmup 1/3
+before/portfolio_risk: warmup 1/3
+before/text_csv_cleanup_medium: warmup 1/3
+before/perf_richards: warmup 1/3
+before/rustpython_pystone: warmup 1/3
+before/rustpython_micro_cmp: warmup 1/3
+before/rustpython_micro_sorted_900: warmup 1/3
+before/stdout_lines: warmup 1/3
+match/portfolio_risk: warmup 1/3
+match/text_csv_cleanup_medium: warmup 1/3
+match/perf_richards: warmup 1/3
+match/rustpython_pystone: warmup 1/3
+match/rustpython_micro_cmp: warmup 1/3
+match/rustpython_micro_sorted_900: warmup 1/3
+match/stdout_lines: warmup 1/3
+default/portfolio_risk: warmup 2/3
+default/text_csv_cleanup_medium: warmup 2/3
+default/perf_richards: warmup 2/3
+default/rustpython_pystone: warmup 2/3
+default/rustpython_micro_cmp: warmup 2/3
+default/rustpython_micro_sorted_900: warmup 2/3
+default/stdout_lines: warmup 2/3
+before/portfolio_risk: warmup 2/3
+before/text_csv_cleanup_medium: warmup 2/3
+before/perf_richards: warmup 2/3
+before/rustpython_pystone: warmup 2/3
+before/rustpython_micro_cmp: warmup 2/3
+before/rustpython_micro_sorted_900: warmup 2/3
+before/stdout_lines: warmup 2/3
+match/portfolio_risk: warmup 2/3
+match/text_csv_cleanup_medium: warmup 2/3
+match/perf_richards: warmup 2/3
+match/rustpython_pystone: warmup 2/3
+match/rustpython_micro_cmp: warmup 2/3
+match/rustpython_micro_sorted_900: warmup 2/3
+match/stdout_lines: warmup 2/3
+default/portfolio_risk: warmup 3/3
+default/text_csv_cleanup_medium: warmup 3/3
+default/perf_richards: warmup 3/3
+default/rustpython_pystone: warmup 3/3
+default/rustpython_micro_cmp: warmup 3/3
+default/rustpython_micro_sorted_900: warmup 3/3
+default/stdout_lines: warmup 3/3
+before/portfolio_risk: warmup 3/3
+before/text_csv_cleanup_medium: warmup 3/3
+before/perf_richards: warmup 3/3
+before/rustpython_pystone: warmup 3/3
+before/rustpython_micro_cmp: warmup 3/3
+before/rustpython_micro_sorted_900: warmup 3/3
+before/stdout_lines: warmup 3/3
+match/portfolio_risk: warmup 3/3
+match/text_csv_cleanup_medium: warmup 3/3
+match/perf_richards: warmup 3/3
+match/rustpython_pystone: warmup 3/3
+match/rustpython_micro_cmp: warmup 3/3
+match/rustpython_micro_sorted_900: warmup 3/3
+match/stdout_lines: warmup 3/3
+before/portfolio_risk: timing sample 1/15
+before/portfolio_risk: 59.5 ms
+default/perf_richards: timing sample 1/15
+default/perf_richards: 174 ms
+match/rustpython_pystone: timing sample 1/15
+match/rustpython_pystone: 301 ms
+default/rustpython_micro_sorted_900: timing sample 1/15
+default/rustpython_micro_sorted_900: 0.936 ms
+default/stdout_lines: timing sample 1/15
+default/stdout_lines: 1.99 ms
+before/perf_richards: timing sample 1/15
+before/perf_richards: 183 ms
+match/perf_richards: timing sample 1/15
+match/perf_richards: 181 ms
+before/rustpython_pystone: timing sample 1/15
+before/rustpython_pystone: 293 ms
+before/rustpython_micro_cmp: timing sample 1/15
+before/rustpython_micro_cmp: 1.88 ms
+before/rustpython_micro_sorted_900: timing sample 1/15
+before/rustpython_micro_sorted_900: 0.948 ms
+match/text_csv_cleanup_medium: timing sample 1/15
+match/text_csv_cleanup_medium: 796 ms
+default/perf_richards: timing sample 2/15
+default/perf_richards: 170 ms
+match/rustpython_micro_cmp: timing sample 1/15
+match/rustpython_micro_cmp: 2.01 ms
+default/rustpython_pystone: timing sample 1/15
+default/rustpython_pystone: 284 ms
+default/rustpython_pystone: timing sample 2/15
+default/rustpython_pystone: 281 ms
+match/perf_richards: timing sample 2/15
+match/perf_richards: 178 ms
+default/rustpython_micro_sorted_900: timing sample 2/15
+default/rustpython_micro_sorted_900: 0.932 ms
+before/rustpython_micro_sorted_900: timing sample 2/15
+before/rustpython_micro_sorted_900: 1.02 ms
+match/perf_richards: timing sample 3/15
+match/perf_richards: 179 ms
+match/stdout_lines: timing sample 1/15
+match/stdout_lines: 1.96 ms
+before/stdout_lines: timing sample 1/15
+before/stdout_lines: 1.93 ms
+before/rustpython_micro_sorted_900: timing sample 3/15
+before/rustpython_micro_sorted_900: 0.985 ms
+before/rustpython_micro_cmp: timing sample 2/15
+before/rustpython_micro_cmp: 1.95 ms
+before/portfolio_risk: timing sample 2/15
+before/portfolio_risk: 59 ms
+before/stdout_lines: timing sample 2/15
+before/stdout_lines: 2.1 ms
+default/stdout_lines: timing sample 2/15
+default/stdout_lines: 1.89 ms
+match/rustpython_micro_cmp: timing sample 2/15
+match/rustpython_micro_cmp: 1.96 ms
+default/text_csv_cleanup_medium: timing sample 1/15
+default/text_csv_cleanup_medium: 661 ms
+default/rustpython_micro_cmp: timing sample 1/15
+default/rustpython_micro_cmp: 1.75 ms
+default/text_csv_cleanup_medium: timing sample 2/15
+default/text_csv_cleanup_medium: 661 ms
+match/rustpython_micro_sorted_900: timing sample 1/15
+match/rustpython_micro_sorted_900: 1.1 ms
+default/rustpython_micro_sorted_900: timing sample 3/15
+default/rustpython_micro_sorted_900: 0.937 ms
+default/rustpython_pystone: timing sample 3/15
+default/rustpython_pystone: 282 ms
+default/rustpython_micro_cmp: timing sample 2/15
+default/rustpython_micro_cmp: 1.8 ms
+match/stdout_lines: timing sample 2/15
+match/stdout_lines: 1.97 ms
+match/text_csv_cleanup_medium: timing sample 2/15
+match/text_csv_cleanup_medium: 689 ms
+match/text_csv_cleanup_medium: timing sample 3/15
+match/text_csv_cleanup_medium: 693 ms
+default/rustpython_micro_cmp: timing sample 3/15
+default/rustpython_micro_cmp: 1.82 ms
+before/perf_richards: timing sample 2/15
+before/perf_richards: 180 ms
+match/perf_richards: timing sample 4/15
+match/perf_richards: 178 ms
+match/stdout_lines: timing sample 3/15
+match/stdout_lines: 1.91 ms
+before/perf_richards: timing sample 3/15
+before/perf_richards: 180 ms
+before/rustpython_micro_cmp: timing sample 3/15
+before/rustpython_micro_cmp: 1.99 ms
+match/rustpython_pystone: timing sample 2/15
+match/rustpython_pystone: 299 ms
+default/portfolio_risk: timing sample 1/15
+default/portfolio_risk: 56.8 ms
+before/rustpython_pystone: timing sample 2/15
+before/rustpython_pystone: 295 ms
+match/text_csv_cleanup_medium: timing sample 4/15
+match/text_csv_cleanup_medium: 692 ms
+default/text_csv_cleanup_medium: timing sample 3/15
+default/text_csv_cleanup_medium: 663 ms
+default/rustpython_micro_sorted_900: timing sample 4/15
+default/rustpython_micro_sorted_900: 0.972 ms
+before/rustpython_micro_sorted_900: timing sample 4/15
+before/rustpython_micro_sorted_900: 0.984 ms
+default/perf_richards: timing sample 3/15
+default/perf_richards: 170 ms
+default/rustpython_pystone: timing sample 4/15
+default/rustpython_pystone: 281 ms
+default/perf_richards: timing sample 4/15
+default/perf_richards: 170 ms
+before/perf_richards: timing sample 4/15
+before/perf_richards: 180 ms
+before/rustpython_micro_sorted_900: timing sample 5/15
+before/rustpython_micro_sorted_900: 1.03 ms
+default/text_csv_cleanup_medium: timing sample 4/15
+default/text_csv_cleanup_medium: 662 ms
+match/rustpython_pystone: timing sample 3/15
+match/rustpython_pystone: 298 ms
+before/stdout_lines: timing sample 3/15
+before/stdout_lines: 2.05 ms
+match/rustpython_micro_cmp: timing sample 3/15
+match/rustpython_micro_cmp: 1.9 ms
+before/portfolio_risk: timing sample 3/15
+before/portfolio_risk: 60 ms
+match/rustpython_micro_sorted_900: timing sample 2/15
+match/rustpython_micro_sorted_900: 1.12 ms
+match/portfolio_risk: timing sample 1/15
+match/portfolio_risk: 58.9 ms
+match/rustpython_micro_sorted_900: timing sample 3/15
+match/rustpython_micro_sorted_900: 0.994 ms
+match/text_csv_cleanup_medium: timing sample 5/15
+match/text_csv_cleanup_medium: 692 ms
+default/stdout_lines: timing sample 3/15
+default/stdout_lines: 1.97 ms
+default/rustpython_pystone: timing sample 5/15
+default/rustpython_pystone: 287 ms
+default/text_csv_cleanup_medium: timing sample 5/15
+default/text_csv_cleanup_medium: 663 ms
+match/rustpython_micro_sorted_900: timing sample 4/15
+match/rustpython_micro_sorted_900: 1.08 ms
+before/rustpython_micro_sorted_900: timing sample 6/15
+before/rustpython_micro_sorted_900: 0.965 ms
+before/rustpython_micro_cmp: timing sample 4/15
+before/rustpython_micro_cmp: 1.87 ms
+before/text_csv_cleanup_medium: timing sample 1/15
+before/text_csv_cleanup_medium: 687 ms
+match/perf_richards: timing sample 5/15
+match/perf_richards: 182 ms
+default/rustpython_pystone: timing sample 6/15
+default/rustpython_pystone: 282 ms
+match/text_csv_cleanup_medium: timing sample 6/15
+match/text_csv_cleanup_medium: 693 ms
+default/stdout_lines: timing sample 4/15
+default/stdout_lines: 1.91 ms
+default/rustpython_micro_cmp: timing sample 4/15
+default/rustpython_micro_cmp: 1.69 ms
+default/portfolio_risk: timing sample 2/15
+default/portfolio_risk: 57.2 ms
+match/portfolio_risk: timing sample 2/15
+match/portfolio_risk: 58.6 ms
+match/portfolio_risk: timing sample 3/15
+match/portfolio_risk: 58.3 ms
+match/portfolio_risk: timing sample 4/15
+match/portfolio_risk: 58.2 ms
+match/rustpython_micro_sorted_900: timing sample 5/15
+match/rustpython_micro_sorted_900: 0.995 ms
+default/portfolio_risk: timing sample 3/15
+default/portfolio_risk: 57 ms
+default/rustpython_micro_cmp: timing sample 5/15
+default/rustpython_micro_cmp: 1.67 ms
+match/perf_richards: timing sample 6/15
+match/perf_richards: 180 ms
+before/rustpython_micro_cmp: timing sample 5/15
+before/rustpython_micro_cmp: 2 ms
+default/rustpython_micro_sorted_900: timing sample 5/15
+default/rustpython_micro_sorted_900: 1.09 ms
+match/rustpython_micro_sorted_900: timing sample 6/15
+match/rustpython_micro_sorted_900: 1.07 ms
+before/rustpython_micro_cmp: timing sample 6/15
+before/rustpython_micro_cmp: 1.92 ms
+default/portfolio_risk: timing sample 4/15
+default/portfolio_risk: 56.3 ms
+default/rustpython_micro_cmp: timing sample 6/15
+default/rustpython_micro_cmp: 1.71 ms
+match/stdout_lines: timing sample 4/15
+match/stdout_lines: 1.96 ms
+default/rustpython_pystone: timing sample 7/15
+default/rustpython_pystone: 282 ms
+match/rustpython_micro_cmp: timing sample 4/15
+match/rustpython_micro_cmp: 1.89 ms
+default/perf_richards: timing sample 5/15
+default/perf_richards: 171 ms
+before/stdout_lines: timing sample 4/15
+before/stdout_lines: 1.92 ms
+match/rustpython_micro_cmp: timing sample 5/15
+match/rustpython_micro_cmp: 1.89 ms
+default/rustpython_pystone: timing sample 8/15
+default/rustpython_pystone: 283 ms
+before/rustpython_micro_sorted_900: timing sample 7/15
+before/rustpython_micro_sorted_900: 0.988 ms
+default/text_csv_cleanup_medium: timing sample 6/15
+default/text_csv_cleanup_medium: 663 ms
+before/stdout_lines: timing sample 5/15
+before/stdout_lines: 1.97 ms
+before/text_csv_cleanup_medium: timing sample 2/15
+before/text_csv_cleanup_medium: 686 ms
+default/stdout_lines: timing sample 5/15
+default/stdout_lines: 1.92 ms
+before/stdout_lines: timing sample 6/15
+before/stdout_lines: 2.01 ms
+match/portfolio_risk: timing sample 5/15
+match/portfolio_risk: 58.5 ms
+match/rustpython_pystone: timing sample 4/15
+match/rustpython_pystone: 297 ms
+default/rustpython_micro_cmp: timing sample 7/15
+default/rustpython_micro_cmp: 1.82 ms
+before/perf_richards: timing sample 5/15
+before/perf_richards: 180 ms
+before/portfolio_risk: timing sample 4/15
+before/portfolio_risk: 59.7 ms
+match/rustpython_pystone: timing sample 5/15
+match/rustpython_pystone: 302 ms
+default/stdout_lines: timing sample 6/15
+default/stdout_lines: 1.87 ms
+match/text_csv_cleanup_medium: timing sample 7/15
+match/text_csv_cleanup_medium: 692 ms
+match/rustpython_pystone: timing sample 6/15
+match/rustpython_pystone: 297 ms
+default/rustpython_micro_cmp: timing sample 8/15
+default/rustpython_micro_cmp: 1.75 ms
+before/portfolio_risk: timing sample 5/15
+before/portfolio_risk: 59.7 ms
+default/rustpython_micro_sorted_900: timing sample 6/15
+default/rustpython_micro_sorted_900: 0.952 ms
+default/perf_richards: timing sample 6/15
+default/perf_richards: 171 ms
+match/stdout_lines: timing sample 5/15
+match/stdout_lines: 1.92 ms
+before/rustpython_micro_cmp: timing sample 7/15
+before/rustpython_micro_cmp: 1.87 ms
+before/stdout_lines: timing sample 7/15
+before/stdout_lines: 1.95 ms
+before/rustpython_micro_sorted_900: timing sample 8/15
+before/rustpython_micro_sorted_900: 1.02 ms
+default/portfolio_risk: timing sample 5/15
+default/portfolio_risk: 56.5 ms
+before/stdout_lines: timing sample 8/15
+before/stdout_lines: 2 ms
+match/rustpython_pystone: timing sample 7/15
+match/rustpython_pystone: 298 ms
+before/perf_richards: timing sample 6/15
+before/perf_richards: 178 ms
+before/rustpython_pystone: timing sample 3/15
+before/rustpython_pystone: 295 ms
+default/rustpython_pystone: timing sample 9/15
+default/rustpython_pystone: 283 ms
+before/rustpython_pystone: timing sample 4/15
+before/rustpython_pystone: 292 ms
+match/text_csv_cleanup_medium: timing sample 8/15
+match/text_csv_cleanup_medium: 693 ms
+before/rustpython_pystone: timing sample 5/15
+before/rustpython_pystone: 292 ms
+match/perf_richards: timing sample 7/15
+match/perf_richards: 180 ms
+before/rustpython_pystone: timing sample 6/15
+before/rustpython_pystone: 292 ms
+match/portfolio_risk: timing sample 6/15
+match/portfolio_risk: 59.1 ms
+default/rustpython_pystone: timing sample 10/15
+default/rustpython_pystone: 283 ms
+match/stdout_lines: timing sample 6/15
+match/stdout_lines: 2.05 ms
+before/rustpython_micro_cmp: timing sample 8/15
+before/rustpython_micro_cmp: 1.92 ms
+before/perf_richards: timing sample 7/15
+before/perf_richards: 179 ms
+default/rustpython_micro_sorted_900: timing sample 7/15
+default/rustpython_micro_sorted_900: 0.935 ms
+match/portfolio_risk: timing sample 7/15
+match/portfolio_risk: 59.4 ms
+match/rustpython_micro_cmp: timing sample 6/15
+match/rustpython_micro_cmp: 2.14 ms
+default/rustpython_pystone: timing sample 11/15
+default/rustpython_pystone: 283 ms
+match/portfolio_risk: timing sample 8/15
+match/portfolio_risk: 59.2 ms
+before/text_csv_cleanup_medium: timing sample 3/15
+before/text_csv_cleanup_medium: 687 ms
+before/text_csv_cleanup_medium: timing sample 4/15
+before/text_csv_cleanup_medium: 689 ms
+default/rustpython_pystone: timing sample 12/15
+default/rustpython_pystone: 285 ms
+before/stdout_lines: timing sample 9/15
+before/stdout_lines: 1.99 ms
+before/perf_richards: timing sample 8/15
+before/perf_richards: 180 ms
+default/rustpython_micro_cmp: timing sample 9/15
+default/rustpython_micro_cmp: 1.72 ms
+before/rustpython_micro_cmp: timing sample 9/15
+before/rustpython_micro_cmp: 1.91 ms
+before/portfolio_risk: timing sample 6/15
+before/portfolio_risk: 59.8 ms
+match/perf_richards: timing sample 8/15
+match/perf_richards: 180 ms
+match/stdout_lines: timing sample 7/15
+match/stdout_lines: 1.95 ms
+before/portfolio_risk: timing sample 7/15
+before/portfolio_risk: 60.2 ms
+default/rustpython_micro_sorted_900: timing sample 8/15
+default/rustpython_micro_sorted_900: 0.963 ms
+before/text_csv_cleanup_medium: timing sample 5/15
+before/text_csv_cleanup_medium: 689 ms
+match/portfolio_risk: timing sample 9/15
+match/portfolio_risk: 58.2 ms
+before/rustpython_pystone: timing sample 7/15
+before/rustpython_pystone: 294 ms
+match/rustpython_pystone: timing sample 8/15
+match/rustpython_pystone: 298 ms
+default/text_csv_cleanup_medium: timing sample 7/15
+default/text_csv_cleanup_medium: 663 ms
+before/perf_richards: timing sample 9/15
+before/perf_richards: 178 ms
+match/stdout_lines: timing sample 8/15
+match/stdout_lines: 1.94 ms
+before/stdout_lines: timing sample 10/15
+before/stdout_lines: 1.98 ms
+match/rustpython_pystone: timing sample 9/15
+match/rustpython_pystone: 301 ms
+match/rustpython_pystone: timing sample 10/15
+match/rustpython_pystone: 297 ms
+default/rustpython_micro_sorted_900: timing sample 9/15
+default/rustpython_micro_sorted_900: 0.966 ms
+default/stdout_lines: timing sample 7/15
+default/stdout_lines: 1.93 ms
+match/rustpython_micro_cmp: timing sample 7/15
+match/rustpython_micro_cmp: 2.05 ms
+match/text_csv_cleanup_medium: timing sample 9/15
+match/text_csv_cleanup_medium: 693 ms
+before/rustpython_pystone: timing sample 8/15
+before/rustpython_pystone: 292 ms
+match/text_csv_cleanup_medium: timing sample 10/15
+match/text_csv_cleanup_medium: 692 ms
+match/stdout_lines: timing sample 9/15
+match/stdout_lines: 1.98 ms
+before/rustpython_micro_cmp: timing sample 10/15
+before/rustpython_micro_cmp: 1.98 ms
+default/stdout_lines: timing sample 8/15
+default/stdout_lines: 1.94 ms
+match/rustpython_micro_sorted_900: timing sample 7/15
+match/rustpython_micro_sorted_900: 1.01 ms
+default/rustpython_micro_cmp: timing sample 10/15
+default/rustpython_micro_cmp: 1.82 ms
+match/text_csv_cleanup_medium: timing sample 11/15
+match/text_csv_cleanup_medium: 694 ms
+default/rustpython_micro_cmp: timing sample 11/15
+default/rustpython_micro_cmp: 1.66 ms
+match/rustpython_micro_cmp: timing sample 8/15
+match/rustpython_micro_cmp: 1.99 ms
+default/text_csv_cleanup_medium: timing sample 8/15
+default/text_csv_cleanup_medium: 661 ms
+before/rustpython_micro_cmp: timing sample 11/15
+before/rustpython_micro_cmp: 1.93 ms
+match/portfolio_risk: timing sample 10/15
+match/portfolio_risk: 58.4 ms
+default/portfolio_risk: timing sample 6/15
+default/portfolio_risk: 58.2 ms
+default/text_csv_cleanup_medium: timing sample 9/15
+default/text_csv_cleanup_medium: 661 ms
+default/stdout_lines: timing sample 9/15
+default/stdout_lines: 1.88 ms
+default/rustpython_micro_cmp: timing sample 12/15
+default/rustpython_micro_cmp: 1.82 ms
+match/stdout_lines: timing sample 10/15
+match/stdout_lines: 2.01 ms
+default/text_csv_cleanup_medium: timing sample 10/15
+default/text_csv_cleanup_medium: 664 ms
+default/text_csv_cleanup_medium: timing sample 11/15
+default/text_csv_cleanup_medium: 662 ms
+before/rustpython_micro_sorted_900: timing sample 9/15
+before/rustpython_micro_sorted_900: 0.983 ms
+match/portfolio_risk: timing sample 11/15
+match/portfolio_risk: 58.1 ms
+match/rustpython_micro_sorted_900: timing sample 8/15
+match/rustpython_micro_sorted_900: 1.02 ms
+before/text_csv_cleanup_medium: timing sample 6/15
+before/text_csv_cleanup_medium: 689 ms
+match/rustpython_micro_cmp: timing sample 9/15
+match/rustpython_micro_cmp: 1.87 ms
+match/stdout_lines: timing sample 11/15
+match/stdout_lines: 1.99 ms
+default/portfolio_risk: timing sample 7/15
+default/portfolio_risk: 57.1 ms
+before/portfolio_risk: timing sample 8/15
+before/portfolio_risk: 59.8 ms
+before/portfolio_risk: timing sample 9/15
+before/portfolio_risk: 59.9 ms
+match/rustpython_pystone: timing sample 11/15
+match/rustpython_pystone: 299 ms
+match/rustpython_micro_cmp: timing sample 10/15
+match/rustpython_micro_cmp: 1.88 ms
+default/portfolio_risk: timing sample 8/15
+default/portfolio_risk: 56.8 ms
+before/rustpython_pystone: timing sample 9/15
+before/rustpython_pystone: 292 ms
+default/portfolio_risk: timing sample 9/15
+default/portfolio_risk: 56.8 ms
+default/text_csv_cleanup_medium: timing sample 12/15
+default/text_csv_cleanup_medium: 662 ms
+default/perf_richards: timing sample 7/15
+default/perf_richards: 171 ms
+before/rustpython_pystone: timing sample 10/15
+before/rustpython_pystone: 293 ms
+match/perf_richards: timing sample 9/15
+match/perf_richards: 179 ms
+before/text_csv_cleanup_medium: timing sample 7/15
+before/text_csv_cleanup_medium: 694 ms
+match/rustpython_micro_cmp: timing sample 11/15
+match/rustpython_micro_cmp: 1.88 ms
+default/stdout_lines: timing sample 10/15
+default/stdout_lines: 1.9 ms
+before/portfolio_risk: timing sample 10/15
+before/portfolio_risk: 59.7 ms
+before/text_csv_cleanup_medium: timing sample 8/15
+before/text_csv_cleanup_medium: 685 ms
+before/rustpython_micro_sorted_900: timing sample 10/15
+before/rustpython_micro_sorted_900: 1.05 ms
+match/perf_richards: timing sample 10/15
+match/perf_richards: 179 ms
+default/stdout_lines: timing sample 11/15
+default/stdout_lines: 1.86 ms
+before/portfolio_risk: timing sample 11/15
+before/portfolio_risk: 59.8 ms
+default/perf_richards: timing sample 8/15
+default/perf_richards: 171 ms
+before/rustpython_micro_cmp: timing sample 12/15
+before/rustpython_micro_cmp: 1.89 ms
+match/rustpython_micro_cmp: timing sample 12/15
+match/rustpython_micro_cmp: 1.92 ms
+match/rustpython_micro_sorted_900: timing sample 9/15
+match/rustpython_micro_sorted_900: 0.978 ms
+before/perf_richards: timing sample 10/15
+before/perf_richards: 179 ms
+match/rustpython_pystone: timing sample 12/15
+match/rustpython_pystone: 298 ms
+before/rustpython_micro_sorted_900: timing sample 11/15
+before/rustpython_micro_sorted_900: 1.03 ms
+default/rustpython_micro_cmp: timing sample 13/15
+default/rustpython_micro_cmp: 1.79 ms
+default/rustpython_micro_sorted_900: timing sample 10/15
+default/rustpython_micro_sorted_900: 0.957 ms
+default/text_csv_cleanup_medium: timing sample 13/15
+default/text_csv_cleanup_medium: 663 ms
+match/rustpython_pystone: timing sample 13/15
+match/rustpython_pystone: 298 ms
+match/perf_richards: timing sample 11/15
+match/perf_richards: 177 ms
+default/rustpython_pystone: timing sample 13/15
+default/rustpython_pystone: 282 ms
+default/portfolio_risk: timing sample 10/15
+default/portfolio_risk: 57.2 ms
+before/perf_richards: timing sample 11/15
+before/perf_richards: 179 ms
+before/text_csv_cleanup_medium: timing sample 9/15
+before/text_csv_cleanup_medium: 687 ms
+default/perf_richards: timing sample 9/15
+default/perf_richards: 171 ms
+default/portfolio_risk: timing sample 11/15
+default/portfolio_risk: 56.9 ms
+before/rustpython_pystone: timing sample 11/15
+before/rustpython_pystone: 295 ms
+default/rustpython_pystone: timing sample 14/15
+default/rustpython_pystone: 283 ms
+before/rustpython_micro_cmp: timing sample 13/15
+before/rustpython_micro_cmp: 2.03 ms
+match/rustpython_micro_sorted_900: timing sample 10/15
+match/rustpython_micro_sorted_900: 1.04 ms
+default/portfolio_risk: timing sample 12/15
+default/portfolio_risk: 56.4 ms
+match/rustpython_micro_cmp: timing sample 13/15
+match/rustpython_micro_cmp: 1.89 ms
+match/portfolio_risk: timing sample 12/15
+match/portfolio_risk: 59.6 ms
+match/perf_richards: timing sample 12/15
+match/perf_richards: 179 ms
+default/rustpython_micro_sorted_900: timing sample 11/15
+default/rustpython_micro_sorted_900: 0.982 ms
+default/perf_richards: timing sample 10/15
+default/perf_richards: 171 ms
+match/text_csv_cleanup_medium: timing sample 12/15
+match/text_csv_cleanup_medium: 695 ms
+before/rustpython_pystone: timing sample 12/15
+before/rustpython_pystone: 295 ms
+default/rustpython_pystone: timing sample 15/15
+default/rustpython_pystone: 284 ms
+default/perf_richards: timing sample 11/15
+default/perf_richards: 170 ms
+default/rustpython_micro_sorted_900: timing sample 12/15
+default/rustpython_micro_sorted_900: 0.941 ms
+default/perf_richards: timing sample 12/15
+default/perf_richards: 170 ms
+match/text_csv_cleanup_medium: timing sample 13/15
+match/text_csv_cleanup_medium: 691 ms
+before/rustpython_pystone: timing sample 13/15
+before/rustpython_pystone: 292 ms
+before/rustpython_micro_sorted_900: timing sample 12/15
+before/rustpython_micro_sorted_900: 0.981 ms
+default/rustpython_micro_sorted_900: timing sample 13/15
+default/rustpython_micro_sorted_900: 0.907 ms
+match/rustpython_micro_sorted_900: timing sample 11/15
+match/rustpython_micro_sorted_900: 1 ms
+default/text_csv_cleanup_medium: timing sample 14/15
+default/text_csv_cleanup_medium: 664 ms
+match/portfolio_risk: timing sample 13/15
+match/portfolio_risk: 58.3 ms
+default/portfolio_risk: timing sample 13/15
+default/portfolio_risk: 56.7 ms
+default/perf_richards: timing sample 13/15
+default/perf_richards: 171 ms
+before/portfolio_risk: timing sample 12/15
+before/portfolio_risk: 59.7 ms
+before/stdout_lines: timing sample 11/15
+before/stdout_lines: 1.92 ms
+match/rustpython_micro_sorted_900: timing sample 12/15
+match/rustpython_micro_sorted_900: 1.07 ms
+before/text_csv_cleanup_medium: timing sample 10/15
+before/text_csv_cleanup_medium: 688 ms
+match/perf_richards: timing sample 13/15
+match/perf_richards: 180 ms
+match/stdout_lines: timing sample 12/15
+match/stdout_lines: 1.98 ms
+default/rustpython_micro_cmp: timing sample 14/15
+default/rustpython_micro_cmp: 1.76 ms
+match/rustpython_micro_sorted_900: timing sample 13/15
+match/rustpython_micro_sorted_900: 0.996 ms
+before/perf_richards: timing sample 12/15
+before/perf_richards: 179 ms
+match/rustpython_pystone: timing sample 14/15
+match/rustpython_pystone: 298 ms
+before/text_csv_cleanup_medium: timing sample 11/15
+before/text_csv_cleanup_medium: 688 ms
+before/stdout_lines: timing sample 12/15
+before/stdout_lines: 2.05 ms
+before/rustpython_micro_cmp: timing sample 14/15
+before/rustpython_micro_cmp: 1.88 ms
+match/rustpython_micro_sorted_900: timing sample 14/15
+match/rustpython_micro_sorted_900: 0.98 ms
+match/rustpython_micro_sorted_900: timing sample 15/15
+match/rustpython_micro_sorted_900: 0.946 ms
+default/perf_richards: timing sample 14/15
+default/perf_richards: 171 ms
+default/portfolio_risk: timing sample 14/15
+default/portfolio_risk: 56.9 ms
+default/portfolio_risk: timing sample 15/15
+default/portfolio_risk: 56.5 ms
+match/text_csv_cleanup_medium: timing sample 14/15
+match/text_csv_cleanup_medium: 691 ms
+default/rustpython_micro_sorted_900: timing sample 14/15
+default/rustpython_micro_sorted_900: 0.962 ms
+before/portfolio_risk: timing sample 13/15
+before/portfolio_risk: 59.8 ms
+before/rustpython_pystone: timing sample 14/15
+before/rustpython_pystone: 294 ms
+before/portfolio_risk: timing sample 14/15
+before/portfolio_risk: 59.5 ms
+match/portfolio_risk: timing sample 14/15
+match/portfolio_risk: 58.7 ms
+match/perf_richards: timing sample 14/15
+match/perf_richards: 179 ms
+before/rustpython_micro_sorted_900: timing sample 13/15
+before/rustpython_micro_sorted_900: 0.962 ms
+before/perf_richards: timing sample 13/15
+before/perf_richards: 178 ms
+match/stdout_lines: timing sample 13/15
+match/stdout_lines: 1.99 ms
+match/portfolio_risk: timing sample 15/15
+match/portfolio_risk: 57.9 ms
+before/rustpython_micro_sorted_900: timing sample 14/15
+before/rustpython_micro_sorted_900: 0.978 ms
+before/stdout_lines: timing sample 13/15
+before/stdout_lines: 1.85 ms
+before/perf_richards: timing sample 14/15
+before/perf_richards: 178 ms
+before/stdout_lines: timing sample 14/15
+before/stdout_lines: 2.1 ms
+before/rustpython_pystone: timing sample 15/15
+before/rustpython_pystone: 293 ms
+default/text_csv_cleanup_medium: timing sample 15/15
+default/text_csv_cleanup_medium: 663 ms
+match/perf_richards: timing sample 15/15
+match/perf_richards: 178 ms
+before/text_csv_cleanup_medium: timing sample 12/15
+before/text_csv_cleanup_medium: 687 ms
+before/rustpython_micro_cmp: timing sample 15/15
+before/rustpython_micro_cmp: 1.93 ms
+before/rustpython_micro_sorted_900: timing sample 15/15
+before/rustpython_micro_sorted_900: 0.961 ms
+match/stdout_lines: timing sample 14/15
+match/stdout_lines: 1.93 ms
+default/perf_richards: timing sample 15/15
+default/perf_richards: 171 ms
+default/stdout_lines: timing sample 12/15
+default/stdout_lines: 1.82 ms
+before/portfolio_risk: timing sample 15/15
+before/portfolio_risk: 59.9 ms
+match/rustpython_micro_cmp: timing sample 14/15
+match/rustpython_micro_cmp: 1.98 ms
+before/text_csv_cleanup_medium: timing sample 13/15
+before/text_csv_cleanup_medium: 689 ms
+default/stdout_lines: timing sample 13/15
+default/stdout_lines: 1.92 ms
+default/stdout_lines: timing sample 14/15
+default/stdout_lines: 1.81 ms
+default/rustpython_micro_cmp: timing sample 15/15
+default/rustpython_micro_cmp: 1.68 ms
+match/text_csv_cleanup_medium: timing sample 15/15
+match/text_csv_cleanup_medium: 693 ms
+before/stdout_lines: timing sample 15/15
+before/stdout_lines: 1.94 ms
+before/text_csv_cleanup_medium: timing sample 14/15
+before/text_csv_cleanup_medium: 767 ms
+match/rustpython_micro_cmp: timing sample 15/15
+match/rustpython_micro_cmp: 2.07 ms
+match/rustpython_pystone: timing sample 15/15
+match/rustpython_pystone: 300 ms
+before/perf_richards: timing sample 15/15
+before/perf_richards: 180 ms
+default/stdout_lines: timing sample 15/15
+default/stdout_lines: 1.87 ms
+match/stdout_lines: timing sample 15/15
+match/stdout_lines: 2.07 ms
+default/rustpython_micro_sorted_900: timing sample 15/15
+default/rustpython_micro_sorted_900: 0.952 ms
+before/text_csv_cleanup_medium: timing sample 15/15
+before/text_csv_cleanup_medium: 687 ms
+default/portfolio_risk: ok, median 56.8 ms
+default/text_csv_cleanup_medium: ok, median 663 ms
+default/perf_richards: ok, median 171 ms
+default/rustpython_pystone: ok, median 283 ms
+default/rustpython_micro_cmp: ok, median 1.75 ms
+default/rustpython_micro_sorted_900: ok, median 0.952 ms
+default/stdout_lines: ok, median 1.9 ms
+before/portfolio_risk: ok, median 59.8 ms
+before/text_csv_cleanup_medium: ok, median 688 ms
+before/perf_richards: ok, median 179 ms
+before/rustpython_pystone: ok, median 293 ms
+before/rustpython_micro_cmp: ok, median 1.92 ms
+before/rustpython_micro_sorted_900: ok, median 0.984 ms
+before/stdout_lines: ok, median 1.98 ms
+match/portfolio_risk: ok, median 58.5 ms
+match/text_csv_cleanup_medium: ok, median 693 ms
+match/perf_richards: ok, median 179 ms
+match/rustpython_pystone: ok, median 298 ms
+match/rustpython_micro_cmp: ok, median 1.92 ms
+match/rustpython_micro_sorted_900: ok, median 1.01 ms
+match/stdout_lines: ok, median 1.97 ms
+regression: 22
+improvement: 0
+inconclusive: 5
+failure: 0
+compatibility change: 0
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fallback-confirmation/report.html
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fallback-confirmation/report.md
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fallback-confirmation/report.json

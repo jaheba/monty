@@ -1,0 +1,25 @@
+    Checking monty-types v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty-types)
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty)
+    Checking monty-alloc v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty-alloc)
+error[E0499]: cannot borrow `*self` as mutable more than once at a time
+  --> crates/monty/examples/aot_differential.rs:37:42
+   |
+37 |         let expression=self.expression(1+self.pick(3),variables);
+   |                        ---- ----------   ^^^^ second mutable borrow occurs here
+   |                        |    |
+   |                        |    first borrow later used by call
+   |                        first mutable borrow occurs here
+   |
+help: try adding a local storing this argument...
+  --> crates/monty/examples/aot_differential.rs:37:42
+   |
+37 |         let expression=self.expression(1+self.pick(3),variables);
+   |                                          ^^^^^^^^^^^^
+help: ...and then using that local as the argument to this call
+  --> crates/monty/examples/aot_differential.rs:37:24
+   |
+37 |         let expression=self.expression(1+self.pick(3),variables);
+   |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0499`.
+error: could not compile `monty` (example "aot_differential") due to 1 previous error

@@ -1,0 +1,120 @@
+{
+  "runtimes": {
+    "default": {
+      "label": "default",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/default-artifacts/bin/monty",
+      "arguments": [],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "threaded": {
+      "label": "threaded",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-combined-artifacts/bin/monty",
+      "arguments": [
+        "--no-native"
+      ],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "before": {
+      "label": "before",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/final-combined-artifacts/bin/monty",
+      "arguments": [
+        "--aot"
+      ],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "live": {
+      "label": "live",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-combined-artifacts/bin/monty",
+      "arguments": [
+        "--aot"
+      ],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "match": {
+      "label": "match",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-match-artifacts/bin/monty",
+      "arguments": [
+        "--aot"
+      ],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "CPython": {
+      "label": "CPython",
+      "binary": "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/bin/python3.15",
+      "arguments": [],
+      "engine": "cpython",
+      "version": "Python 3.15.0",
+      "revision": "Python 3.15.0",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    }
+  },
+  "timestamp": "2026-11-13T02:05:37.455992+00:00",
+  "options": {
+    "runtime": [
+      "default=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/default-artifacts/bin/monty",
+      "threaded=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-combined-artifacts/bin/monty",
+      "before=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/final-combined-artifacts/bin/monty",
+      "live=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-combined-artifacts/bin/monty",
+      "match=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-match-artifacts/bin/monty",
+      "CPython=/opt/homebrew/bin/python3"
+    ],
+    "runtime_arg": [
+      "threaded=--no-native",
+      "before=--aot",
+      "live=--aot",
+      "match=--aot"
+    ],
+    "verbose": true,
+    "x": 1,
+    "chart_baseline": null,
+    "diff": true,
+    "output": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-confirmation",
+    "format": [
+      "html",
+      "markdown",
+      "json"
+    ],
+    "benchmark": [
+      "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/capacity_planning.py",
+      "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/game_spectral_norm.py",
+      "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/perf_float.py",
+      "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/perf_unpack_sequence.py",
+      "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_batch.py",
+      "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_short.py",
+      "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/portfolio_exposure.py",
+      "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/ticket_search.py"
+    ],
+    "include_defaults": false,
+    "quick": false,
+    "samples": 15,
+    "memory_samples": 3,
+    "startup_samples": 5,
+    "warmups": 3,
+    "timeout": 30,
+    "threshold": 3.0,
+    "absolute_threshold_ms": 0.01
+  },
+  "completed_at": "2026-11-13T02:08:21.314355+00:00",
+  "elapsed_seconds": 163.85797729203478
+}

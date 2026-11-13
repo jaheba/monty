@@ -1,0 +1,72 @@
+{
+  "runtimes": {
+    "default": {
+      "label": "default",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/default-artifacts/bin/monty",
+      "arguments": [],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "threaded": {
+      "label": "threaded",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-combined-artifacts/bin/monty",
+      "arguments": [
+        "--no-native"
+      ],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    },
+    "typed": {
+      "label": "typed",
+      "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-combined-artifacts/bin/monty",
+      "arguments": [
+        "--aot"
+      ],
+      "engine": "monty",
+      "version": "monty-runtime 1.0.1",
+      "revision": "monty-runtime 1.0.1",
+      "build_info": "Source revision and compiler flags unverified",
+      "legacy_cli_summary": false
+    }
+  },
+  "timestamp": "2026-11-13T02:08:24.920208+00:00",
+  "options": {
+    "runtime": [
+      "default=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/default-artifacts/bin/monty",
+      "threaded=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-combined-artifacts/bin/monty",
+      "typed=/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/liveness-combined-artifacts/bin/monty"
+    ],
+    "runtime_arg": [
+      "threaded=--no-native",
+      "typed=--aot"
+    ],
+    "verbose": true,
+    "x": 1,
+    "chart_baseline": null,
+    "diff": true,
+    "output": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/full-confirmation",
+    "format": [
+      "html",
+      "markdown",
+      "json"
+    ],
+    "benchmark": null,
+    "include_defaults": false,
+    "quick": false,
+    "samples": 15,
+    "memory_samples": 0,
+    "startup_samples": 5,
+    "warmups": 3,
+    "timeout": 30,
+    "threshold": 3.0,
+    "absolute_threshold_ms": 0.01
+  },
+  "completed_at": "2026-11-13T02:24:55.610265+00:00",
+  "elapsed_seconds": 990.687669582665
+}

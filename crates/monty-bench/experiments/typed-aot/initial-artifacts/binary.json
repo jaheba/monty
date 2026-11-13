@@ -1,0 +1,9 @@
+{
+  "sha256": "1ff3d3e1f761d0f0f1d375adcbb9dc7c9121bb5055fe1e799450e6d8414722c5",
+  "head": "9a9f8784bf6cb36b09f183b53d7d829bcd807bdf",
+  "features": [
+    "experimental-aot"
+  ],
+  "samples": 9,
+  "validation": "Differential result check before each sample; type checker excluded."
+}

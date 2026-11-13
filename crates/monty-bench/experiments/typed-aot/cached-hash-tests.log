@@ -1,0 +1,24 @@
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty)
+error[E0425]: cannot find type `HashValue` in this scope
+   --> crates/monty/src/types/dict.rs:193:15
+    |
+193 |         hash: HashValue,
+    |               ^^^^^^^^^
+    |
+   ::: /Users/jaheba/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashbrown-0.16.1/src/table.rs:48:1
+    |
+ 48 | pub struct HashTable<T, A = Global>
+    | ----------------------------------- similarly named struct `HashTable` defined here
+    |
+help: a struct with a similar name exists
+    |
+193 -         hash: HashValue,
+193 +         hash: HashTable,
+    |
+help: consider importing this struct
+    |
+  1 + use crate::hash::HashValue;
+    |
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `monty` (lib) due to 1 previous error

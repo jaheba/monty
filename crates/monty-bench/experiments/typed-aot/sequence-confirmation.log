@@ -1,0 +1,1170 @@
+Preparing custom benchmarks: capturing expected output with harness CPython
+Measuring empty-command startup
+typed: startup sample 1/5
+typed: startup 7.71 ms
+typed: startup sample 2/5
+typed: startup 7.49 ms
+baseline: startup sample 1/5
+baseline: startup 6.81 ms
+CPython: startup sample 1/5
+CPython: startup 25 ms
+CPython: startup sample 2/5
+CPython: startup 26.5 ms
+CPython: startup sample 3/5
+CPython: startup 25.1 ms
+baseline: startup sample 2/5
+baseline: startup 7.28 ms
+typed: startup sample 3/5
+typed: startup 7.6 ms
+CPython: startup sample 4/5
+CPython: startup 25.7 ms
+typed: startup sample 4/5
+typed: startup 7.73 ms
+baseline: startup sample 3/5
+baseline: startup 6.33 ms
+CPython: startup sample 5/5
+CPython: startup 25.3 ms
+baseline: startup sample 4/5
+baseline: startup 6.67 ms
+baseline: startup sample 5/5
+baseline: startup 6.65 ms
+typed: startup sample 5/5
+typed: startup 7.88 ms
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+Running one-shot: baseline, typed, CPython
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+baseline/perf_unpack_sequence: checking compatibility
+baseline/perf_unpack_sequence: supported 
+baseline/game_spectral_norm: checking compatibility
+baseline/game_spectral_norm: supported 
+baseline/capacity_planning: checking compatibility
+baseline/capacity_planning: supported 
+baseline/perf_float: checking compatibility
+baseline/perf_float: supported 
+baseline/ticket_search: checking compatibility
+baseline/ticket_search: supported 
+typed/perf_unpack_sequence: checking compatibility
+typed/perf_unpack_sequence: supported 
+typed/game_spectral_norm: checking compatibility
+typed/game_spectral_norm: supported 
+typed/capacity_planning: checking compatibility
+typed/capacity_planning: supported 
+typed/perf_float: checking compatibility
+typed/perf_float: supported 
+typed/ticket_search: checking compatibility
+typed/ticket_search: supported 
+CPython/perf_unpack_sequence: checking compatibility
+CPython/perf_unpack_sequence: supported 
+CPython/game_spectral_norm: checking compatibility
+CPython/game_spectral_norm: supported 
+CPython/capacity_planning: checking compatibility
+CPython/capacity_planning: supported 
+CPython/perf_float: checking compatibility
+CPython/perf_float: supported 
+CPython/ticket_search: checking compatibility
+CPython/ticket_search: supported 
+typed/perf_unpack_sequence: timing sample 1/15
+typed/perf_unpack_sequence: 14 ms
+CPython/game_spectral_norm: timing sample 1/15
+CPython/game_spectral_norm: 68 ms
+baseline/ticket_search: timing sample 1/15
+baseline/ticket_search: 28 ms
+baseline/perf_unpack_sequence: timing sample 1/15
+baseline/perf_unpack_sequence: 319 ms
+baseline/ticket_search: timing sample 2/15
+baseline/ticket_search: 28 ms
+CPython/perf_unpack_sequence: timing sample 1/15
+CPython/perf_unpack_sequence: 18.5 ms
+CPython/perf_unpack_sequence: timing sample 2/15
+CPython/perf_unpack_sequence: 18.3 ms
+CPython/ticket_search: timing sample 1/15
+CPython/ticket_search: 9.25 ms
+baseline/ticket_search: timing sample 3/15
+baseline/ticket_search: 27 ms
+typed/capacity_planning: timing sample 1/15
+typed/capacity_planning: 35.3 ms
+typed/game_spectral_norm: timing sample 1/15
+typed/game_spectral_norm: 329 ms
+baseline/perf_float: timing sample 1/15
+baseline/perf_float: 229 ms
+baseline/game_spectral_norm: timing sample 1/15
+baseline/game_spectral_norm: 314 ms
+baseline/capacity_planning: timing sample 1/15
+baseline/capacity_planning: 35 ms
+typed/game_spectral_norm: timing sample 2/15
+typed/game_spectral_norm: 325 ms
+baseline/game_spectral_norm: timing sample 2/15
+baseline/game_spectral_norm: 312 ms
+typed/capacity_planning: timing sample 2/15
+typed/capacity_planning: 35.2 ms
+baseline/perf_float: timing sample 2/15
+baseline/perf_float: 231 ms
+CPython/capacity_planning: timing sample 1/15
+CPython/capacity_planning: 9.89 ms
+baseline/ticket_search: timing sample 4/15
+baseline/ticket_search: 27 ms
+baseline/perf_unpack_sequence: timing sample 2/15
+baseline/perf_unpack_sequence: 321 ms
+CPython/game_spectral_norm: timing sample 2/15
+CPython/game_spectral_norm: 67.3 ms
+typed/capacity_planning: timing sample 3/15
+typed/capacity_planning: 34.8 ms
+baseline/perf_float: timing sample 3/15
+baseline/perf_float: 228 ms
+baseline/capacity_planning: timing sample 2/15
+baseline/capacity_planning: 35.2 ms
+baseline/ticket_search: timing sample 5/15
+baseline/ticket_search: 27.5 ms
+typed/ticket_search: timing sample 1/15
+typed/ticket_search: 28.3 ms
+baseline/capacity_planning: timing sample 3/15
+baseline/capacity_planning: 35.3 ms
+baseline/capacity_planning: timing sample 4/15
+baseline/capacity_planning: 35.2 ms
+typed/capacity_planning: timing sample 4/15
+typed/capacity_planning: 34.8 ms
+typed/capacity_planning: timing sample 5/15
+typed/capacity_planning: 35.1 ms
+CPython/ticket_search: timing sample 2/15
+CPython/ticket_search: 9.06 ms
+baseline/perf_unpack_sequence: timing sample 3/15
+baseline/perf_unpack_sequence: 319 ms
+CPython/ticket_search: timing sample 3/15
+CPython/ticket_search: 9.89 ms
+CPython/capacity_planning: timing sample 2/15
+CPython/capacity_planning: 10.1 ms
+typed/capacity_planning: timing sample 6/15
+typed/capacity_planning: 34.8 ms
+typed/perf_float: timing sample 1/15
+typed/perf_float: 229 ms
+typed/capacity_planning: timing sample 7/15
+typed/capacity_planning: 35 ms
+baseline/game_spectral_norm: timing sample 3/15
+baseline/game_spectral_norm: 384 ms
+CPython/ticket_search: timing sample 4/15
+CPython/ticket_search: 15.8 ms
+baseline/perf_float: timing sample 4/15
+baseline/perf_float: 230 ms
+typed/game_spectral_norm: timing sample 3/15
+typed/game_spectral_norm: 325 ms
+typed/ticket_search: timing sample 2/15
+typed/ticket_search: 27.2 ms
+baseline/perf_unpack_sequence: timing sample 4/15
+baseline/perf_unpack_sequence: 319 ms
+typed/ticket_search: timing sample 3/15
+typed/ticket_search: 27.1 ms
+CPython/ticket_search: timing sample 5/15
+CPython/ticket_search: 9.47 ms
+CPython/perf_float: timing sample 1/15
+CPython/perf_float: 52.1 ms
+CPython/game_spectral_norm: timing sample 3/15
+CPython/game_spectral_norm: 67.6 ms
+baseline/game_spectral_norm: timing sample 4/15
+baseline/game_spectral_norm: 312 ms
+CPython/perf_float: timing sample 2/15
+CPython/perf_float: 52.3 ms
+CPython/ticket_search: timing sample 6/15
+CPython/ticket_search: 10 ms
+CPython/perf_float: timing sample 3/15
+CPython/perf_float: 52 ms
+baseline/capacity_planning: timing sample 5/15
+baseline/capacity_planning: 35.2 ms
+baseline/capacity_planning: timing sample 6/15
+baseline/capacity_planning: 35 ms
+CPython/game_spectral_norm: timing sample 4/15
+CPython/game_spectral_norm: 67.7 ms
+baseline/game_spectral_norm: timing sample 5/15
+baseline/game_spectral_norm: 310 ms
+typed/perf_float: timing sample 2/15
+typed/perf_float: 231 ms
+typed/perf_unpack_sequence: timing sample 2/15
+typed/perf_unpack_sequence: 13.7 ms
+CPython/perf_float: timing sample 4/15
+CPython/perf_float: 52.3 ms
+CPython/perf_unpack_sequence: timing sample 3/15
+CPython/perf_unpack_sequence: 18.8 ms
+typed/ticket_search: timing sample 4/15
+typed/ticket_search: 27.7 ms
+typed/capacity_planning: timing sample 8/15
+typed/capacity_planning: 35.3 ms
+typed/perf_float: timing sample 3/15
+typed/perf_float: 229 ms
+typed/perf_unpack_sequence: timing sample 3/15
+typed/perf_unpack_sequence: 13.7 ms
+CPython/ticket_search: timing sample 7/15
+CPython/ticket_search: 9.42 ms
+CPython/game_spectral_norm: timing sample 5/15
+CPython/game_spectral_norm: 67.5 ms
+typed/ticket_search: timing sample 5/15
+typed/ticket_search: 27.1 ms
+typed/ticket_search: timing sample 6/15
+typed/ticket_search: 27.6 ms
+typed/perf_float: timing sample 4/15
+typed/perf_float: 229 ms
+typed/perf_unpack_sequence: timing sample 4/15
+typed/perf_unpack_sequence: 13.4 ms
+baseline/perf_float: timing sample 5/15
+baseline/perf_float: 229 ms
+typed/ticket_search: timing sample 7/15
+typed/ticket_search: 27.2 ms
+CPython/capacity_planning: timing sample 3/15
+CPython/capacity_planning: 10.2 ms
+typed/capacity_planning: timing sample 9/15
+typed/capacity_planning: 34.5 ms
+typed/ticket_search: timing sample 8/15
+typed/ticket_search: 28.4 ms
+typed/perf_unpack_sequence: timing sample 5/15
+typed/perf_unpack_sequence: 14 ms
+typed/game_spectral_norm: timing sample 4/15
+typed/game_spectral_norm: 326 ms
+CPython/game_spectral_norm: timing sample 6/15
+CPython/game_spectral_norm: 68.5 ms
+CPython/perf_float: timing sample 5/15
+CPython/perf_float: 51.6 ms
+CPython/perf_float: timing sample 6/15
+CPython/perf_float: 52.1 ms
+baseline/ticket_search: timing sample 6/15
+baseline/ticket_search: 27.2 ms
+baseline/capacity_planning: timing sample 7/15
+baseline/capacity_planning: 35.2 ms
+CPython/game_spectral_norm: timing sample 7/15
+CPython/game_spectral_norm: 68.3 ms
+typed/perf_float: timing sample 5/15
+typed/perf_float: 229 ms
+CPython/capacity_planning: timing sample 4/15
+CPython/capacity_planning: 9.75 ms
+typed/perf_unpack_sequence: timing sample 6/15
+typed/perf_unpack_sequence: 13.5 ms
+CPython/game_spectral_norm: timing sample 8/15
+CPython/game_spectral_norm: 67.5 ms
+baseline/perf_unpack_sequence: timing sample 5/15
+baseline/perf_unpack_sequence: 321 ms
+CPython/ticket_search: timing sample 8/15
+CPython/ticket_search: 9.62 ms
+baseline/perf_float: timing sample 6/15
+baseline/perf_float: 228 ms
+CPython/game_spectral_norm: timing sample 9/15
+CPython/game_spectral_norm: 67.9 ms
+CPython/capacity_planning: timing sample 5/15
+CPython/capacity_planning: 9.76 ms
+baseline/perf_unpack_sequence: timing sample 6/15
+baseline/perf_unpack_sequence: 323 ms
+CPython/perf_unpack_sequence: timing sample 4/15
+CPython/perf_unpack_sequence: 18.7 ms
+typed/capacity_planning: timing sample 10/15
+typed/capacity_planning: 35.1 ms
+CPython/game_spectral_norm: timing sample 10/15
+CPython/game_spectral_norm: 67.2 ms
+baseline/perf_float: timing sample 7/15
+baseline/perf_float: 231 ms
+CPython/capacity_planning: timing sample 6/15
+CPython/capacity_planning: 9.79 ms
+typed/perf_unpack_sequence: timing sample 7/15
+typed/perf_unpack_sequence: 13.7 ms
+CPython/ticket_search: timing sample 9/15
+CPython/ticket_search: 8.96 ms
+typed/perf_float: timing sample 6/15
+typed/perf_float: 228 ms
+baseline/perf_unpack_sequence: timing sample 7/15
+baseline/perf_unpack_sequence: 321 ms
+baseline/game_spectral_norm: timing sample 6/15
+baseline/game_spectral_norm: 310 ms
+baseline/perf_unpack_sequence: timing sample 8/15
+baseline/perf_unpack_sequence: 319 ms
+baseline/perf_unpack_sequence: timing sample 9/15
+baseline/perf_unpack_sequence: 320 ms
+CPython/ticket_search: timing sample 10/15
+CPython/ticket_search: 9.87 ms
+CPython/perf_float: timing sample 7/15
+CPython/perf_float: 52.5 ms
+CPython/perf_unpack_sequence: timing sample 5/15
+CPython/perf_unpack_sequence: 18.5 ms
+typed/capacity_planning: timing sample 11/15
+typed/capacity_planning: 35.6 ms
+typed/capacity_planning: timing sample 12/15
+typed/capacity_planning: 35 ms
+CPython/perf_unpack_sequence: timing sample 6/15
+CPython/perf_unpack_sequence: 18.7 ms
+typed/perf_unpack_sequence: timing sample 8/15
+typed/perf_unpack_sequence: 13.7 ms
+CPython/capacity_planning: timing sample 7/15
+CPython/capacity_planning: 9.89 ms
+typed/ticket_search: timing sample 9/15
+typed/ticket_search: 27.3 ms
+baseline/game_spectral_norm: timing sample 7/15
+baseline/game_spectral_norm: 314 ms
+CPython/ticket_search: timing sample 11/15
+CPython/ticket_search: 9.68 ms
+baseline/perf_float: timing sample 8/15
+baseline/perf_float: 231 ms
+CPython/perf_unpack_sequence: timing sample 7/15
+CPython/perf_unpack_sequence: 19 ms
+CPython/game_spectral_norm: timing sample 11/15
+CPython/game_spectral_norm: 67.1 ms
+baseline/ticket_search: timing sample 7/15
+baseline/ticket_search: 28 ms
+CPython/perf_float: timing sample 8/15
+CPython/perf_float: 51.3 ms
+baseline/ticket_search: timing sample 8/15
+baseline/ticket_search: 27.2 ms
+typed/capacity_planning: timing sample 13/15
+typed/capacity_planning: 35.2 ms
+baseline/perf_float: timing sample 9/15
+baseline/perf_float: 230 ms
+typed/game_spectral_norm: timing sample 5/15
+typed/game_spectral_norm: 331 ms
+CPython/game_spectral_norm: timing sample 12/15
+CPython/game_spectral_norm: 67.7 ms
+CPython/game_spectral_norm: timing sample 13/15
+CPython/game_spectral_norm: 67.5 ms
+baseline/capacity_planning: timing sample 8/15
+baseline/capacity_planning: 35 ms
+baseline/game_spectral_norm: timing sample 8/15
+baseline/game_spectral_norm: 310 ms
+CPython/capacity_planning: timing sample 8/15
+CPython/capacity_planning: 9.64 ms
+typed/perf_float: timing sample 7/15
+typed/perf_float: 228 ms
+CPython/perf_float: timing sample 9/15
+CPython/perf_float: 50.6 ms
+CPython/capacity_planning: timing sample 9/15
+CPython/capacity_planning: 10.3 ms
+baseline/capacity_planning: timing sample 9/15
+baseline/capacity_planning: 35.3 ms
+CPython/capacity_planning: timing sample 10/15
+CPython/capacity_planning: 9.84 ms
+typed/ticket_search: timing sample 10/15
+typed/ticket_search: 27.3 ms
+baseline/perf_float: timing sample 10/15
+baseline/perf_float: 230 ms
+CPython/perf_float: timing sample 10/15
+CPython/perf_float: 52.3 ms
+typed/perf_unpack_sequence: timing sample 9/15
+typed/perf_unpack_sequence: 13.5 ms
+CPython/ticket_search: timing sample 12/15
+CPython/ticket_search: 9.29 ms
+CPython/perf_float: timing sample 11/15
+CPython/perf_float: 51.5 ms
+CPython/game_spectral_norm: timing sample 14/15
+CPython/game_spectral_norm: 68 ms
+baseline/capacity_planning: timing sample 10/15
+baseline/capacity_planning: 35.1 ms
+baseline/perf_float: timing sample 11/15
+baseline/perf_float: 228 ms
+baseline/game_spectral_norm: timing sample 9/15
+baseline/game_spectral_norm: 312 ms
+CPython/capacity_planning: timing sample 11/15
+CPython/capacity_planning: 9.9 ms
+baseline/game_spectral_norm: timing sample 10/15
+baseline/game_spectral_norm: 311 ms
+CPython/ticket_search: timing sample 13/15
+CPython/ticket_search: 9.41 ms
+baseline/game_spectral_norm: timing sample 11/15
+baseline/game_spectral_norm: 312 ms
+baseline/perf_float: timing sample 12/15
+baseline/perf_float: 230 ms
+CPython/capacity_planning: timing sample 12/15
+CPython/capacity_planning: 9.81 ms
+typed/perf_unpack_sequence: timing sample 10/15
+typed/perf_unpack_sequence: 14.1 ms
+typed/perf_float: timing sample 8/15
+typed/perf_float: 229 ms
+typed/game_spectral_norm: timing sample 6/15
+typed/game_spectral_norm: 330 ms
+typed/perf_unpack_sequence: timing sample 11/15
+typed/perf_unpack_sequence: 13.3 ms
+typed/perf_float: timing sample 9/15
+typed/perf_float: 229 ms
+typed/ticket_search: timing sample 11/15
+typed/ticket_search: 28.2 ms
+baseline/ticket_search: timing sample 9/15
+baseline/ticket_search: 27.9 ms
+typed/game_spectral_norm: timing sample 7/15
+typed/game_spectral_norm: 328 ms
+baseline/game_spectral_norm: timing sample 12/15
+baseline/game_spectral_norm: 311 ms
+CPython/game_spectral_norm: timing sample 15/15
+CPython/game_spectral_norm: 67.4 ms
+CPython/perf_unpack_sequence: timing sample 8/15
+CPython/perf_unpack_sequence: 18.6 ms
+baseline/perf_float: timing sample 13/15
+baseline/perf_float: 231 ms
+baseline/game_spectral_norm: timing sample 13/15
+baseline/game_spectral_norm: 311 ms
+typed/perf_float: timing sample 10/15
+typed/perf_float: 230 ms
+baseline/capacity_planning: timing sample 11/15
+baseline/capacity_planning: 35.3 ms
+CPython/perf_unpack_sequence: timing sample 9/15
+CPython/perf_unpack_sequence: 18.7 ms
+typed/game_spectral_norm: timing sample 8/15
+typed/game_spectral_norm: 326 ms
+baseline/ticket_search: timing sample 10/15
+baseline/ticket_search: 27.5 ms
+baseline/perf_unpack_sequence: timing sample 10/15
+baseline/perf_unpack_sequence: 320 ms
+CPython/perf_unpack_sequence: timing sample 10/15
+CPython/perf_unpack_sequence: 18.6 ms
+typed/game_spectral_norm: timing sample 9/15
+typed/game_spectral_norm: 327 ms
+CPython/capacity_planning: timing sample 13/15
+CPython/capacity_planning: 9.9 ms
+typed/perf_float: timing sample 11/15
+typed/perf_float: 229 ms
+baseline/perf_float: timing sample 14/15
+baseline/perf_float: 229 ms
+typed/perf_unpack_sequence: timing sample 12/15
+typed/perf_unpack_sequence: 13.7 ms
+baseline/perf_unpack_sequence: timing sample 11/15
+baseline/perf_unpack_sequence: 318 ms
+typed/ticket_search: timing sample 12/15
+typed/ticket_search: 27.5 ms
+CPython/perf_float: timing sample 12/15
+CPython/perf_float: 52 ms
+typed/perf_float: timing sample 12/15
+typed/perf_float: 230 ms
+baseline/ticket_search: timing sample 11/15
+baseline/ticket_search: 27.7 ms
+typed/game_spectral_norm: timing sample 10/15
+typed/game_spectral_norm: 333 ms
+typed/capacity_planning: timing sample 14/15
+typed/capacity_planning: 35 ms
+CPython/perf_float: timing sample 13/15
+CPython/perf_float: 51.5 ms
+typed/game_spectral_norm: timing sample 11/15
+typed/game_spectral_norm: 325 ms
+typed/perf_unpack_sequence: timing sample 13/15
+typed/perf_unpack_sequence: 13.5 ms
+typed/game_spectral_norm: timing sample 12/15
+typed/game_spectral_norm: 327 ms
+baseline/perf_unpack_sequence: timing sample 12/15
+baseline/perf_unpack_sequence: 318 ms
+baseline/perf_unpack_sequence: timing sample 13/15
+baseline/perf_unpack_sequence: 324 ms
+typed/perf_float: timing sample 13/15
+typed/perf_float: 229 ms
+baseline/perf_unpack_sequence: timing sample 14/15
+baseline/perf_unpack_sequence: 318 ms
+typed/ticket_search: timing sample 13/15
+typed/ticket_search: 27.7 ms
+CPython/perf_unpack_sequence: timing sample 11/15
+CPython/perf_unpack_sequence: 18.5 ms
+baseline/perf_float: timing sample 15/15
+baseline/perf_float: 229 ms
+typed/game_spectral_norm: timing sample 13/15
+typed/game_spectral_norm: 325 ms
+CPython/perf_unpack_sequence: timing sample 12/15
+CPython/perf_unpack_sequence: 18.6 ms
+baseline/ticket_search: timing sample 12/15
+baseline/ticket_search: 29.1 ms
+typed/capacity_planning: timing sample 15/15
+typed/capacity_planning: 34.9 ms
+baseline/ticket_search: timing sample 13/15
+baseline/ticket_search: 27.6 ms
+baseline/perf_unpack_sequence: timing sample 15/15
+baseline/perf_unpack_sequence: 320 ms
+baseline/game_spectral_norm: timing sample 14/15
+baseline/game_spectral_norm: 311 ms
+baseline/ticket_search: timing sample 14/15
+baseline/ticket_search: 27.5 ms
+typed/perf_float: timing sample 14/15
+typed/perf_float: 228 ms
+typed/ticket_search: timing sample 14/15
+typed/ticket_search: 27.4 ms
+CPython/perf_float: timing sample 14/15
+CPython/perf_float: 52.1 ms
+CPython/capacity_planning: timing sample 14/15
+CPython/capacity_planning: 9.53 ms
+CPython/capacity_planning: timing sample 15/15
+CPython/capacity_planning: 9.69 ms
+typed/perf_unpack_sequence: timing sample 14/15
+typed/perf_unpack_sequence: 13.5 ms
+typed/ticket_search: timing sample 15/15
+typed/ticket_search: 27 ms
+CPython/perf_unpack_sequence: timing sample 13/15
+CPython/perf_unpack_sequence: 18.4 ms
+CPython/ticket_search: timing sample 14/15
+CPython/ticket_search: 9.85 ms
+baseline/game_spectral_norm: timing sample 15/15
+baseline/game_spectral_norm: 315 ms
+baseline/capacity_planning: timing sample 12/15
+baseline/capacity_planning: 35.3 ms
+baseline/capacity_planning: timing sample 13/15
+baseline/capacity_planning: 35.2 ms
+baseline/capacity_planning: timing sample 14/15
+baseline/capacity_planning: 35.1 ms
+typed/perf_unpack_sequence: timing sample 15/15
+typed/perf_unpack_sequence: 13.6 ms
+CPython/perf_float: timing sample 15/15
+CPython/perf_float: 52.8 ms
+baseline/ticket_search: timing sample 15/15
+baseline/ticket_search: 28.2 ms
+CPython/perf_unpack_sequence: timing sample 14/15
+CPython/perf_unpack_sequence: 18.2 ms
+typed/game_spectral_norm: timing sample 14/15
+typed/game_spectral_norm: 327 ms
+CPython/perf_unpack_sequence: timing sample 15/15
+CPython/perf_unpack_sequence: 18.9 ms
+baseline/capacity_planning: timing sample 15/15
+baseline/capacity_planning: 35.6 ms
+CPython/ticket_search: timing sample 15/15
+CPython/ticket_search: 9.45 ms
+typed/perf_float: timing sample 15/15
+typed/perf_float: 229 ms
+typed/game_spectral_norm: timing sample 15/15
+typed/game_spectral_norm: 323 ms
+baseline/perf_unpack_sequence: RSS sample 1/3
+baseline/perf_unpack_sequence: RSS 11.6 MiB
+baseline/perf_unpack_sequence: RSS sample 2/3
+baseline/perf_unpack_sequence: RSS 11.6 MiB
+baseline/perf_unpack_sequence: RSS sample 3/3
+baseline/perf_unpack_sequence: RSS 11.6 MiB
+baseline/game_spectral_norm: RSS sample 1/3
+baseline/game_spectral_norm: RSS 10.9 MiB
+baseline/game_spectral_norm: RSS sample 2/3
+baseline/game_spectral_norm: RSS 10.9 MiB
+baseline/game_spectral_norm: RSS sample 3/3
+baseline/game_spectral_norm: RSS 10.8 MiB
+baseline/capacity_planning: RSS sample 1/3
+baseline/capacity_planning: RSS 14.8 MiB
+baseline/capacity_planning: RSS sample 2/3
+baseline/capacity_planning: RSS 14.9 MiB
+baseline/capacity_planning: RSS sample 3/3
+baseline/capacity_planning: RSS 14.9 MiB
+baseline/perf_float: RSS sample 1/3
+baseline/perf_float: RSS 57.1 MiB
+baseline/perf_float: RSS sample 2/3
+baseline/perf_float: RSS 58.7 MiB
+baseline/perf_float: RSS sample 3/3
+baseline/perf_float: RSS 57.4 MiB
+baseline/ticket_search: RSS sample 1/3
+baseline/ticket_search: RSS 14 MiB
+baseline/ticket_search: RSS sample 2/3
+baseline/ticket_search: RSS 14.1 MiB
+baseline/ticket_search: RSS sample 3/3
+baseline/ticket_search: RSS 14 MiB
+typed/perf_unpack_sequence: RSS sample 1/3
+typed/perf_unpack_sequence: RSS 12.2 MiB
+typed/perf_unpack_sequence: RSS sample 2/3
+typed/perf_unpack_sequence: RSS 12.2 MiB
+typed/perf_unpack_sequence: RSS sample 3/3
+typed/perf_unpack_sequence: RSS 12.2 MiB
+typed/game_spectral_norm: RSS sample 1/3
+typed/game_spectral_norm: RSS 11 MiB
+typed/game_spectral_norm: RSS sample 2/3
+typed/game_spectral_norm: RSS 11 MiB
+typed/game_spectral_norm: RSS sample 3/3
+typed/game_spectral_norm: RSS 11 MiB
+typed/capacity_planning: RSS sample 1/3
+typed/capacity_planning: RSS 14.9 MiB
+typed/capacity_planning: RSS sample 2/3
+typed/capacity_planning: RSS 14.9 MiB
+typed/capacity_planning: RSS sample 3/3
+typed/capacity_planning: RSS 14.8 MiB
+typed/perf_float: RSS sample 1/3
+typed/perf_float: RSS 58.7 MiB
+typed/perf_float: RSS sample 2/3
+typed/perf_float: RSS 56.9 MiB
+typed/perf_float: RSS sample 3/3
+typed/perf_float: RSS 57.1 MiB
+typed/ticket_search: RSS sample 1/3
+typed/ticket_search: RSS 14.1 MiB
+typed/ticket_search: RSS sample 2/3
+typed/ticket_search: RSS 14.1 MiB
+typed/ticket_search: RSS sample 3/3
+typed/ticket_search: RSS 14.1 MiB
+CPython/perf_unpack_sequence: RSS sample 1/3
+CPython/perf_unpack_sequence: RSS 19.8 MiB
+CPython/perf_unpack_sequence: RSS sample 2/3
+CPython/perf_unpack_sequence: RSS 19.7 MiB
+CPython/perf_unpack_sequence: RSS sample 3/3
+CPython/perf_unpack_sequence: RSS 19.6 MiB
+CPython/game_spectral_norm: RSS sample 1/3
+CPython/game_spectral_norm: RSS 15.6 MiB
+CPython/game_spectral_norm: RSS sample 2/3
+CPython/game_spectral_norm: RSS 15.6 MiB
+CPython/game_spectral_norm: RSS sample 3/3
+CPython/game_spectral_norm: RSS 15.7 MiB
+CPython/capacity_planning: RSS sample 1/3
+CPython/capacity_planning: RSS 17.5 MiB
+CPython/capacity_planning: RSS sample 2/3
+CPython/capacity_planning: RSS 17.7 MiB
+CPython/capacity_planning: RSS sample 3/3
+CPython/capacity_planning: RSS 17.5 MiB
+CPython/perf_float: RSS sample 1/3
+CPython/perf_float: RSS 32.7 MiB
+CPython/perf_float: RSS sample 2/3
+CPython/perf_float: RSS 32.6 MiB
+CPython/perf_float: RSS sample 3/3
+CPython/perf_float: RSS 32.7 MiB
+CPython/ticket_search: RSS sample 1/3
+CPython/ticket_search: RSS 17.4 MiB
+CPython/ticket_search: RSS sample 2/3
+CPython/ticket_search: RSS 17.5 MiB
+CPython/ticket_search: RSS sample 3/3
+CPython/ticket_search: RSS 17.5 MiB
+baseline/perf_unpack_sequence: ok, median 320 ms
+baseline/game_spectral_norm: ok, median 312 ms
+baseline/capacity_planning: ok, median 35.2 ms
+baseline/perf_float: ok, median 230 ms
+baseline/ticket_search: ok, median 27.6 ms
+typed/perf_unpack_sequence: ok, median 13.7 ms
+typed/game_spectral_norm: ok, median 327 ms
+typed/capacity_planning: ok, median 35 ms
+typed/perf_float: ok, median 229 ms
+typed/ticket_search: ok, median 27.4 ms
+CPython/perf_unpack_sequence: ok, median 18.6 ms
+CPython/game_spectral_norm: ok, median 67.6 ms
+CPython/capacity_planning: ok, median 9.84 ms
+CPython/perf_float: ok, median 52.1 ms
+CPython/ticket_search: ok, median 9.47 ms
+Running repeated: baseline, typed, CPython
+sysctl: sysctl fmt -1 1024 1: Operation not permitted
+baseline/perf_unpack_sequence: checking compatibility
+baseline/perf_unpack_sequence: supported 
+baseline/game_spectral_norm: checking compatibility
+baseline/game_spectral_norm: supported 
+baseline/capacity_planning: checking compatibility
+baseline/capacity_planning: supported 
+baseline/perf_float: checking compatibility
+baseline/perf_float: supported 
+baseline/ticket_search: checking compatibility
+baseline/ticket_search: supported 
+typed/perf_unpack_sequence: checking compatibility
+typed/perf_unpack_sequence: supported 
+typed/game_spectral_norm: checking compatibility
+typed/game_spectral_norm: supported 
+typed/capacity_planning: checking compatibility
+typed/capacity_planning: supported 
+typed/perf_float: checking compatibility
+typed/perf_float: supported 
+typed/ticket_search: checking compatibility
+typed/ticket_search: supported 
+CPython/perf_unpack_sequence: checking compatibility
+CPython/perf_unpack_sequence: supported 
+CPython/game_spectral_norm: checking compatibility
+CPython/game_spectral_norm: supported 
+CPython/capacity_planning: checking compatibility
+CPython/capacity_planning: supported 
+CPython/perf_float: checking compatibility
+CPython/perf_float: supported 
+CPython/ticket_search: checking compatibility
+CPython/ticket_search: supported 
+baseline/perf_unpack_sequence: warmup 1/3
+baseline/game_spectral_norm: warmup 1/3
+baseline/capacity_planning: warmup 1/3
+baseline/perf_float: warmup 1/3
+baseline/ticket_search: warmup 1/3
+typed/perf_unpack_sequence: warmup 1/3
+typed/game_spectral_norm: warmup 1/3
+typed/capacity_planning: warmup 1/3
+typed/perf_float: warmup 1/3
+typed/ticket_search: warmup 1/3
+CPython/perf_unpack_sequence: warmup 1/3
+CPython/game_spectral_norm: warmup 1/3
+CPython/capacity_planning: warmup 1/3
+CPython/perf_float: warmup 1/3
+CPython/ticket_search: warmup 1/3
+baseline/perf_unpack_sequence: warmup 2/3
+baseline/game_spectral_norm: warmup 2/3
+baseline/capacity_planning: warmup 2/3
+baseline/perf_float: warmup 2/3
+baseline/ticket_search: warmup 2/3
+typed/perf_unpack_sequence: warmup 2/3
+typed/game_spectral_norm: warmup 2/3
+typed/capacity_planning: warmup 2/3
+typed/perf_float: warmup 2/3
+typed/ticket_search: warmup 2/3
+CPython/perf_unpack_sequence: warmup 2/3
+CPython/game_spectral_norm: warmup 2/3
+CPython/capacity_planning: warmup 2/3
+CPython/perf_float: warmup 2/3
+CPython/ticket_search: warmup 2/3
+baseline/perf_unpack_sequence: warmup 3/3
+baseline/game_spectral_norm: warmup 3/3
+baseline/capacity_planning: warmup 3/3
+baseline/perf_float: warmup 3/3
+baseline/ticket_search: warmup 3/3
+typed/perf_unpack_sequence: warmup 3/3
+typed/game_spectral_norm: warmup 3/3
+typed/capacity_planning: warmup 3/3
+typed/perf_float: warmup 3/3
+typed/ticket_search: warmup 3/3
+CPython/perf_unpack_sequence: warmup 3/3
+CPython/game_spectral_norm: warmup 3/3
+CPython/capacity_planning: warmup 3/3
+CPython/perf_float: warmup 3/3
+CPython/ticket_search: warmup 3/3
+typed/perf_unpack_sequence: timing sample 1/15
+typed/perf_unpack_sequence: 13.4 ms
+CPython/game_spectral_norm: timing sample 1/15
+CPython/game_spectral_norm: 66.6 ms
+baseline/ticket_search: timing sample 1/15
+baseline/ticket_search: 26.9 ms
+baseline/perf_unpack_sequence: timing sample 1/15
+baseline/perf_unpack_sequence: 325 ms
+baseline/ticket_search: timing sample 2/15
+baseline/ticket_search: 27.6 ms
+CPython/perf_unpack_sequence: timing sample 1/15
+CPython/perf_unpack_sequence: 17.7 ms
+CPython/perf_unpack_sequence: timing sample 2/15
+CPython/perf_unpack_sequence: 17.5 ms
+CPython/ticket_search: timing sample 1/15
+CPython/ticket_search: 7.05 ms
+baseline/ticket_search: timing sample 3/15
+baseline/ticket_search: 27.2 ms
+typed/capacity_planning: timing sample 1/15
+typed/capacity_planning: 34.8 ms
+typed/game_spectral_norm: timing sample 1/15
+typed/game_spectral_norm: 318 ms
+baseline/perf_float: timing sample 1/15
+baseline/perf_float: 225 ms
+baseline/game_spectral_norm: timing sample 1/15
+baseline/game_spectral_norm: 314 ms
+baseline/capacity_planning: timing sample 1/15
+baseline/capacity_planning: 34.7 ms
+typed/game_spectral_norm: timing sample 2/15
+typed/game_spectral_norm: 317 ms
+baseline/game_spectral_norm: timing sample 2/15
+baseline/game_spectral_norm: 315 ms
+typed/capacity_planning: timing sample 2/15
+typed/capacity_planning: 34.2 ms
+baseline/perf_float: timing sample 2/15
+baseline/perf_float: 224 ms
+CPython/capacity_planning: timing sample 1/15
+CPython/capacity_planning: 9.03 ms
+baseline/ticket_search: timing sample 4/15
+baseline/ticket_search: 27 ms
+baseline/perf_unpack_sequence: timing sample 2/15
+baseline/perf_unpack_sequence: 322 ms
+CPython/game_spectral_norm: timing sample 2/15
+CPython/game_spectral_norm: 66.6 ms
+typed/capacity_planning: timing sample 3/15
+typed/capacity_planning: 34.1 ms
+baseline/perf_float: timing sample 3/15
+baseline/perf_float: 226 ms
+baseline/capacity_planning: timing sample 2/15
+baseline/capacity_planning: 34.8 ms
+baseline/ticket_search: timing sample 5/15
+baseline/ticket_search: 26.3 ms
+typed/ticket_search: timing sample 1/15
+typed/ticket_search: 26.4 ms
+baseline/capacity_planning: timing sample 3/15
+baseline/capacity_planning: 34.5 ms
+baseline/capacity_planning: timing sample 4/15
+baseline/capacity_planning: 34.9 ms
+typed/capacity_planning: timing sample 4/15
+typed/capacity_planning: 34.2 ms
+typed/capacity_planning: timing sample 5/15
+typed/capacity_planning: 34.5 ms
+CPython/ticket_search: timing sample 2/15
+CPython/ticket_search: 7.12 ms
+baseline/perf_unpack_sequence: timing sample 3/15
+baseline/perf_unpack_sequence: 323 ms
+CPython/ticket_search: timing sample 3/15
+CPython/ticket_search: 6.82 ms
+CPython/capacity_planning: timing sample 2/15
+CPython/capacity_planning: 8.91 ms
+typed/capacity_planning: timing sample 6/15
+typed/capacity_planning: 34.1 ms
+typed/perf_float: timing sample 1/15
+typed/perf_float: 225 ms
+typed/capacity_planning: timing sample 7/15
+typed/capacity_planning: 34.6 ms
+baseline/game_spectral_norm: timing sample 3/15
+baseline/game_spectral_norm: 315 ms
+CPython/ticket_search: timing sample 4/15
+CPython/ticket_search: 6.67 ms
+baseline/perf_float: timing sample 4/15
+baseline/perf_float: 224 ms
+typed/game_spectral_norm: timing sample 3/15
+typed/game_spectral_norm: 318 ms
+typed/ticket_search: timing sample 2/15
+typed/ticket_search: 26.8 ms
+baseline/perf_unpack_sequence: timing sample 4/15
+baseline/perf_unpack_sequence: 334 ms
+typed/ticket_search: timing sample 3/15
+typed/ticket_search: 27.6 ms
+CPython/ticket_search: timing sample 5/15
+CPython/ticket_search: 6.75 ms
+CPython/perf_float: timing sample 1/15
+CPython/perf_float: 50.2 ms
+CPython/game_spectral_norm: timing sample 3/15
+CPython/game_spectral_norm: 66.9 ms
+baseline/game_spectral_norm: timing sample 4/15
+baseline/game_spectral_norm: 316 ms
+CPython/perf_float: timing sample 2/15
+CPython/perf_float: 50.8 ms
+CPython/ticket_search: timing sample 6/15
+CPython/ticket_search: 6.8 ms
+CPython/perf_float: timing sample 3/15
+CPython/perf_float: 49.1 ms
+baseline/capacity_planning: timing sample 5/15
+baseline/capacity_planning: 34.5 ms
+baseline/capacity_planning: timing sample 6/15
+baseline/capacity_planning: 34.3 ms
+CPython/game_spectral_norm: timing sample 4/15
+CPython/game_spectral_norm: 67 ms
+baseline/game_spectral_norm: timing sample 5/15
+baseline/game_spectral_norm: 318 ms
+typed/perf_float: timing sample 2/15
+typed/perf_float: 224 ms
+typed/perf_unpack_sequence: timing sample 2/15
+typed/perf_unpack_sequence: 13.3 ms
+CPython/perf_float: timing sample 4/15
+CPython/perf_float: 53.5 ms
+CPython/perf_unpack_sequence: timing sample 3/15
+CPython/perf_unpack_sequence: 17.7 ms
+typed/ticket_search: timing sample 4/15
+typed/ticket_search: 26.2 ms
+typed/capacity_planning: timing sample 8/15
+typed/capacity_planning: 34.4 ms
+typed/perf_float: timing sample 3/15
+typed/perf_float: 224 ms
+typed/perf_unpack_sequence: timing sample 3/15
+typed/perf_unpack_sequence: 13.4 ms
+CPython/ticket_search: timing sample 7/15
+CPython/ticket_search: 6.71 ms
+CPython/game_spectral_norm: timing sample 5/15
+CPython/game_spectral_norm: 66.6 ms
+typed/ticket_search: timing sample 5/15
+typed/ticket_search: 27.2 ms
+typed/ticket_search: timing sample 6/15
+typed/ticket_search: 27.1 ms
+typed/perf_float: timing sample 4/15
+typed/perf_float: 223 ms
+typed/perf_unpack_sequence: timing sample 4/15
+typed/perf_unpack_sequence: 13.2 ms
+baseline/perf_float: timing sample 5/15
+baseline/perf_float: 226 ms
+typed/ticket_search: timing sample 7/15
+typed/ticket_search: 26.9 ms
+CPython/capacity_planning: timing sample 3/15
+CPython/capacity_planning: 8.84 ms
+typed/capacity_planning: timing sample 9/15
+typed/capacity_planning: 34.2 ms
+typed/ticket_search: timing sample 8/15
+typed/ticket_search: 26.8 ms
+typed/perf_unpack_sequence: timing sample 5/15
+typed/perf_unpack_sequence: 13.5 ms
+typed/game_spectral_norm: timing sample 4/15
+typed/game_spectral_norm: 317 ms
+CPython/game_spectral_norm: timing sample 6/15
+CPython/game_spectral_norm: 66.3 ms
+CPython/perf_float: timing sample 5/15
+CPython/perf_float: 48.6 ms
+CPython/perf_float: timing sample 6/15
+CPython/perf_float: 48.3 ms
+baseline/ticket_search: timing sample 6/15
+baseline/ticket_search: 26.9 ms
+baseline/capacity_planning: timing sample 7/15
+baseline/capacity_planning: 34.7 ms
+CPython/game_spectral_norm: timing sample 7/15
+CPython/game_spectral_norm: 67 ms
+typed/perf_float: timing sample 5/15
+typed/perf_float: 224 ms
+CPython/capacity_planning: timing sample 4/15
+CPython/capacity_planning: 8.76 ms
+typed/perf_unpack_sequence: timing sample 6/15
+typed/perf_unpack_sequence: 13.1 ms
+CPython/game_spectral_norm: timing sample 8/15
+CPython/game_spectral_norm: 66.9 ms
+baseline/perf_unpack_sequence: timing sample 5/15
+baseline/perf_unpack_sequence: 322 ms
+CPython/ticket_search: timing sample 8/15
+CPython/ticket_search: 6.72 ms
+baseline/perf_float: timing sample 6/15
+baseline/perf_float: 223 ms
+CPython/game_spectral_norm: timing sample 9/15
+CPython/game_spectral_norm: 67.2 ms
+CPython/capacity_planning: timing sample 5/15
+CPython/capacity_planning: 8.77 ms
+baseline/perf_unpack_sequence: timing sample 6/15
+baseline/perf_unpack_sequence: 321 ms
+CPython/perf_unpack_sequence: timing sample 4/15
+CPython/perf_unpack_sequence: 17.5 ms
+typed/capacity_planning: timing sample 10/15
+typed/capacity_planning: 34.1 ms
+CPython/game_spectral_norm: timing sample 10/15
+CPython/game_spectral_norm: 66.6 ms
+baseline/perf_float: timing sample 7/15
+baseline/perf_float: 225 ms
+CPython/capacity_planning: timing sample 6/15
+CPython/capacity_planning: 8.98 ms
+typed/perf_unpack_sequence: timing sample 7/15
+typed/perf_unpack_sequence: 13.5 ms
+CPython/ticket_search: timing sample 9/15
+CPython/ticket_search: 6.74 ms
+typed/perf_float: timing sample 6/15
+typed/perf_float: 223 ms
+baseline/perf_unpack_sequence: timing sample 7/15
+baseline/perf_unpack_sequence: 321 ms
+baseline/game_spectral_norm: timing sample 6/15
+baseline/game_spectral_norm: 314 ms
+baseline/perf_unpack_sequence: timing sample 8/15
+baseline/perf_unpack_sequence: 322 ms
+baseline/perf_unpack_sequence: timing sample 9/15
+baseline/perf_unpack_sequence: 320 ms
+CPython/ticket_search: timing sample 10/15
+CPython/ticket_search: 7.83 ms
+CPython/perf_float: timing sample 7/15
+CPython/perf_float: 49.2 ms
+CPython/perf_unpack_sequence: timing sample 5/15
+CPython/perf_unpack_sequence: 17.3 ms
+typed/capacity_planning: timing sample 11/15
+typed/capacity_planning: 34.3 ms
+typed/capacity_planning: timing sample 12/15
+typed/capacity_planning: 34.4 ms
+CPython/perf_unpack_sequence: timing sample 6/15
+CPython/perf_unpack_sequence: 17.5 ms
+typed/perf_unpack_sequence: timing sample 8/15
+typed/perf_unpack_sequence: 13 ms
+CPython/capacity_planning: timing sample 7/15
+CPython/capacity_planning: 8.98 ms
+typed/ticket_search: timing sample 9/15
+typed/ticket_search: 26.3 ms
+baseline/game_spectral_norm: timing sample 7/15
+baseline/game_spectral_norm: 318 ms
+CPython/ticket_search: timing sample 11/15
+CPython/ticket_search: 6.67 ms
+baseline/perf_float: timing sample 8/15
+baseline/perf_float: 224 ms
+CPython/perf_unpack_sequence: timing sample 7/15
+CPython/perf_unpack_sequence: 17.5 ms
+CPython/game_spectral_norm: timing sample 11/15
+CPython/game_spectral_norm: 66.7 ms
+baseline/ticket_search: timing sample 7/15
+baseline/ticket_search: 26.4 ms
+CPython/perf_float: timing sample 8/15
+CPython/perf_float: 49.2 ms
+baseline/ticket_search: timing sample 8/15
+baseline/ticket_search: 27.5 ms
+typed/capacity_planning: timing sample 13/15
+typed/capacity_planning: 34.4 ms
+baseline/perf_float: timing sample 9/15
+baseline/perf_float: 224 ms
+typed/game_spectral_norm: timing sample 5/15
+typed/game_spectral_norm: 318 ms
+CPython/game_spectral_norm: timing sample 12/15
+CPython/game_spectral_norm: 66.8 ms
+CPython/game_spectral_norm: timing sample 13/15
+CPython/game_spectral_norm: 66.2 ms
+baseline/capacity_planning: timing sample 8/15
+baseline/capacity_planning: 34.4 ms
+baseline/game_spectral_norm: timing sample 8/15
+baseline/game_spectral_norm: 315 ms
+CPython/capacity_planning: timing sample 8/15
+CPython/capacity_planning: 9.06 ms
+typed/perf_float: timing sample 7/15
+typed/perf_float: 224 ms
+CPython/perf_float: timing sample 9/15
+CPython/perf_float: 51 ms
+CPython/capacity_planning: timing sample 9/15
+CPython/capacity_planning: 8.76 ms
+baseline/capacity_planning: timing sample 9/15
+baseline/capacity_planning: 34.8 ms
+CPython/capacity_planning: timing sample 10/15
+CPython/capacity_planning: 9.23 ms
+typed/ticket_search: timing sample 10/15
+typed/ticket_search: 26.1 ms
+baseline/perf_float: timing sample 10/15
+baseline/perf_float: 224 ms
+CPython/perf_float: timing sample 10/15
+CPython/perf_float: 48.6 ms
+typed/perf_unpack_sequence: timing sample 9/15
+typed/perf_unpack_sequence: 13.2 ms
+CPython/ticket_search: timing sample 12/15
+CPython/ticket_search: 6.7 ms
+CPython/perf_float: timing sample 11/15
+CPython/perf_float: 48.5 ms
+CPython/game_spectral_norm: timing sample 14/15
+CPython/game_spectral_norm: 66.6 ms
+baseline/capacity_planning: timing sample 10/15
+baseline/capacity_planning: 34 ms
+baseline/perf_float: timing sample 11/15
+baseline/perf_float: 221 ms
+baseline/game_spectral_norm: timing sample 9/15
+baseline/game_spectral_norm: 313 ms
+CPython/capacity_planning: timing sample 11/15
+CPython/capacity_planning: 8.74 ms
+baseline/game_spectral_norm: timing sample 10/15
+baseline/game_spectral_norm: 314 ms
+CPython/ticket_search: timing sample 13/15
+CPython/ticket_search: 7.85 ms
+baseline/game_spectral_norm: timing sample 11/15
+baseline/game_spectral_norm: 315 ms
+baseline/perf_float: timing sample 12/15
+baseline/perf_float: 224 ms
+CPython/capacity_planning: timing sample 12/15
+CPython/capacity_planning: 9.19 ms
+typed/perf_unpack_sequence: timing sample 10/15
+typed/perf_unpack_sequence: 13.2 ms
+typed/perf_float: timing sample 8/15
+typed/perf_float: 224 ms
+typed/game_spectral_norm: timing sample 6/15
+typed/game_spectral_norm: 318 ms
+typed/perf_unpack_sequence: timing sample 11/15
+typed/perf_unpack_sequence: 13.1 ms
+typed/perf_float: timing sample 9/15
+typed/perf_float: 224 ms
+typed/ticket_search: timing sample 11/15
+typed/ticket_search: 27.5 ms
+baseline/ticket_search: timing sample 9/15
+baseline/ticket_search: 26.7 ms
+typed/game_spectral_norm: timing sample 7/15
+typed/game_spectral_norm: 318 ms
+baseline/game_spectral_norm: timing sample 12/15
+baseline/game_spectral_norm: 314 ms
+CPython/game_spectral_norm: timing sample 15/15
+CPython/game_spectral_norm: 67.3 ms
+CPython/perf_unpack_sequence: timing sample 8/15
+CPython/perf_unpack_sequence: 17.4 ms
+baseline/perf_float: timing sample 13/15
+baseline/perf_float: 225 ms
+baseline/game_spectral_norm: timing sample 13/15
+baseline/game_spectral_norm: 314 ms
+typed/perf_float: timing sample 10/15
+typed/perf_float: 223 ms
+baseline/capacity_planning: timing sample 11/15
+baseline/capacity_planning: 34.6 ms
+CPython/perf_unpack_sequence: timing sample 9/15
+CPython/perf_unpack_sequence: 17.6 ms
+typed/game_spectral_norm: timing sample 8/15
+typed/game_spectral_norm: 318 ms
+baseline/ticket_search: timing sample 10/15
+baseline/ticket_search: 27.6 ms
+baseline/perf_unpack_sequence: timing sample 10/15
+baseline/perf_unpack_sequence: 321 ms
+CPython/perf_unpack_sequence: timing sample 10/15
+CPython/perf_unpack_sequence: 17.5 ms
+typed/game_spectral_norm: timing sample 9/15
+typed/game_spectral_norm: 319 ms
+CPython/capacity_planning: timing sample 13/15
+CPython/capacity_planning: 8.77 ms
+typed/perf_float: timing sample 11/15
+typed/perf_float: 224 ms
+baseline/perf_float: timing sample 14/15
+baseline/perf_float: 226 ms
+typed/perf_unpack_sequence: timing sample 12/15
+typed/perf_unpack_sequence: 13.2 ms
+baseline/perf_unpack_sequence: timing sample 11/15
+baseline/perf_unpack_sequence: 321 ms
+typed/ticket_search: timing sample 12/15
+typed/ticket_search: 27.4 ms
+CPython/perf_float: timing sample 12/15
+CPython/perf_float: 49.4 ms
+typed/perf_float: timing sample 12/15
+typed/perf_float: 223 ms
+baseline/ticket_search: timing sample 11/15
+baseline/ticket_search: 27.3 ms
+typed/game_spectral_norm: timing sample 10/15
+typed/game_spectral_norm: 318 ms
+typed/capacity_planning: timing sample 14/15
+typed/capacity_planning: 34.2 ms
+CPython/perf_float: timing sample 13/15
+CPython/perf_float: 48.8 ms
+typed/game_spectral_norm: timing sample 11/15
+typed/game_spectral_norm: 317 ms
+typed/perf_unpack_sequence: timing sample 13/15
+typed/perf_unpack_sequence: 13.1 ms
+typed/game_spectral_norm: timing sample 12/15
+typed/game_spectral_norm: 319 ms
+baseline/perf_unpack_sequence: timing sample 12/15
+baseline/perf_unpack_sequence: 322 ms
+baseline/perf_unpack_sequence: timing sample 13/15
+baseline/perf_unpack_sequence: 320 ms
+typed/perf_float: timing sample 13/15
+typed/perf_float: 224 ms
+baseline/perf_unpack_sequence: timing sample 14/15
+baseline/perf_unpack_sequence: 321 ms
+typed/ticket_search: timing sample 13/15
+typed/ticket_search: 26.1 ms
+CPython/perf_unpack_sequence: timing sample 11/15
+CPython/perf_unpack_sequence: 17.6 ms
+baseline/perf_float: timing sample 15/15
+baseline/perf_float: 225 ms
+typed/game_spectral_norm: timing sample 13/15
+typed/game_spectral_norm: 317 ms
+CPython/perf_unpack_sequence: timing sample 12/15
+CPython/perf_unpack_sequence: 17.2 ms
+baseline/ticket_search: timing sample 12/15
+baseline/ticket_search: 26.6 ms
+typed/capacity_planning: timing sample 15/15
+typed/capacity_planning: 34.3 ms
+baseline/ticket_search: timing sample 13/15
+baseline/ticket_search: 27 ms
+baseline/perf_unpack_sequence: timing sample 15/15
+baseline/perf_unpack_sequence: 321 ms
+baseline/game_spectral_norm: timing sample 14/15
+baseline/game_spectral_norm: 314 ms
+baseline/ticket_search: timing sample 14/15
+baseline/ticket_search: 27.8 ms
+typed/perf_float: timing sample 14/15
+typed/perf_float: 223 ms
+typed/ticket_search: timing sample 14/15
+typed/ticket_search: 26.5 ms
+CPython/perf_float: timing sample 14/15
+CPython/perf_float: 51.8 ms
+CPython/capacity_planning: timing sample 14/15
+CPython/capacity_planning: 9.07 ms
+CPython/capacity_planning: timing sample 15/15
+CPython/capacity_planning: 8.72 ms
+typed/perf_unpack_sequence: timing sample 14/15
+typed/perf_unpack_sequence: 13.3 ms
+typed/ticket_search: timing sample 15/15
+typed/ticket_search: 26.7 ms
+CPython/perf_unpack_sequence: timing sample 13/15
+CPython/perf_unpack_sequence: 17.5 ms
+CPython/ticket_search: timing sample 14/15
+CPython/ticket_search: 6.83 ms
+baseline/game_spectral_norm: timing sample 15/15
+baseline/game_spectral_norm: 314 ms
+baseline/capacity_planning: timing sample 12/15
+baseline/capacity_planning: 34.4 ms
+baseline/capacity_planning: timing sample 13/15
+baseline/capacity_planning: 34.3 ms
+baseline/capacity_planning: timing sample 14/15
+baseline/capacity_planning: 35.4 ms
+typed/perf_unpack_sequence: timing sample 15/15
+typed/perf_unpack_sequence: 13.4 ms
+CPython/perf_float: timing sample 15/15
+CPython/perf_float: 49 ms
+baseline/ticket_search: timing sample 15/15
+baseline/ticket_search: 27.5 ms
+CPython/perf_unpack_sequence: timing sample 14/15
+CPython/perf_unpack_sequence: 17.5 ms
+typed/game_spectral_norm: timing sample 14/15
+typed/game_spectral_norm: 318 ms
+CPython/perf_unpack_sequence: timing sample 15/15
+CPython/perf_unpack_sequence: 17.6 ms
+baseline/capacity_planning: timing sample 15/15
+baseline/capacity_planning: 34.2 ms
+CPython/ticket_search: timing sample 15/15
+CPython/ticket_search: 7.39 ms
+typed/perf_float: timing sample 15/15
+typed/perf_float: 220 ms
+typed/game_spectral_norm: timing sample 15/15
+typed/game_spectral_norm: 312 ms
+baseline/perf_unpack_sequence: ok, median 321 ms
+baseline/game_spectral_norm: ok, median 314 ms
+baseline/capacity_planning: ok, median 34.5 ms
+baseline/perf_float: ok, median 224 ms
+baseline/ticket_search: ok, median 27 ms
+typed/perf_unpack_sequence: ok, median 13.2 ms
+typed/game_spectral_norm: ok, median 318 ms
+typed/capacity_planning: ok, median 34.3 ms
+typed/perf_float: ok, median 224 ms
+typed/ticket_search: ok, median 26.8 ms
+CPython/perf_unpack_sequence: ok, median 17.5 ms
+CPython/game_spectral_norm: ok, median 66.7 ms
+CPython/capacity_planning: ok, median 8.91 ms
+CPython/perf_float: ok, median 49.2 ms
+CPython/ticket_search: ok, median 6.8 ms
+regression: 2
+improvement: 12
+inconclusive: 9
+failure: 0
+compatibility change: 0
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-confirmation/report.html
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-confirmation/report.md
+Report: /private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-confirmation/report.json

@@ -1,0 +1,17 @@
+Extracted from the final tests.log run.
+
+     Running tests/native_regions.rs (/Users/jaheba/p/monty/target/debug/deps/native_regions-511fd4d8ca6f2076)
+
+running 9 tests
+test configured_memory_limits_use_the_interpreter ... ok
+test generators_can_resume_between_native_regions ... ok
+test advanced_range_cursor_survives_suspension_and_serialization ... ok
+test suspension_dump_and_resume_rebuild_native_artifacts ... ok
+test range_cursors_preserve_aliases_and_partial_progress ... ok
+test guards_preserve_results_and_exception_locations ... ok
+test dictionary_reads_and_protocol_fallbacks ... ok
+test native_loops_keep_deadline_checkpoints ... ok
+test varied_control_flow_and_arithmetic ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

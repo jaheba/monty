@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "scenario": "empty_command_process",
+  "samples": 5,
+  "timestamp": "2026-11-13T01:25:04.262688+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "scope": "Fresh process launch through exit; empty -c command; no shell; normal interpreter defaults",
+  "engines": {
+    "threaded": {
+      "binary_sha256": "1a683ea6d70bf975c665e662845cab0d1c2a3fb25a31443d3f7b0d8413c98360",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/combined-budget-artifacts/bin/monty",
+        "--no-native",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.006988791,
+        0.006934459,
+        0.006622959,
+        0.005964666,
+        0.005920625
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.006622959
+    },
+    "typed": {
+      "binary_sha256": "1a683ea6d70bf975c665e662845cab0d1c2a3fb25a31443d3f7b0d8413c98360",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/combined-budget-artifacts/bin/monty",
+        "--aot",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007749,
+        0.00734375,
+        0.0083455,
+        0.007024917,
+        0.006492833
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.00734375
+    }
+  }
+}

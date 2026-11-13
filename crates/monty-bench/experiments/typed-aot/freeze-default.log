@@ -1,0 +1,1 @@
+{"sha256": "95519301f2db9abab0a02e0d8b2c69442b3395c4718d351cb847522ee856632f", "bytes": 23336224, "features": [], "profile": "release: fat LTO, one codegen unit, strip=true", "dispatch": "match; no experimental features", "baseline_commit": "9a9f8784bf6cb36b09f183b53d7d829bcd807bdf", "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)"}

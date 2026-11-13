@@ -1,0 +1,18 @@
+   Compiling monty-typeshed v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty-typeshed)
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty)
+   Compiling monty-type-checking v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty-type-checking)
+   Compiling monty-proto v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty-proto)
+   Compiling monty-runtime v1.0.1 (/private/tmp/monty-native-study/monty/crates/monty-runtime)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.86s
+     Running tests/subprocess.rs (/Users/jaheba/p/monty/target/debug/deps/subprocess-a69346febba93c79)
+
+running 6 tests
+test typed_aot::executable_memory_is_refunded_on_reset ... ok
+test typed_aot::typed_execution_respects_limits_and_the_worker_recovers ... ok
+test typed_aot::cli_rejects_invalid_types_before_running_the_program ... ok
+test typed_aot::validation_and_dynamic_fallback_are_independent ... ok
+test typed_aot::suspended_dump_rebuilds_helpers_in_either_backend ... ok
+test typed_aot::repeated_host_replies_keep_container_roots_and_fallback ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 91 filtered out; finished in 2.33s
+

@@ -1,0 +1,52 @@
+{
+  "game_spectral_norm": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/workloads/game_spectral_norm.py",
+    "suite": "custom",
+    "stdout": "1.274222210\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/game_spectral_norm.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "b3961c3858ab9f9e01026a209208613b8a5996d5db423d56a74d5b1f120e3cee"
+  },
+  "perf_unpack_sequence": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/workloads/perf_unpack_sequence.py",
+    "suite": "custom",
+    "stdout": "(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)\n(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/perf_unpack_sequence.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "b932742e5e239f62f44392ed693d54b1b994117c3fce1108313250e36ac8a567"
+  },
+  "policy_scoring_short": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/workloads/policy_scoring_short.py",
+    "suite": "custom",
+    "stdout": "200 0 59316.209\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_short.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "0abb3361c754380a9f4eba501a20479bb7ee647c896212155955cb2932c353be"
+  },
+  "policy_scoring_batch": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/workloads/policy_scoring_batch.py",
+    "suite": "custom",
+    "stdout": "5000 373 2296966.597\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_batch.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "8c7adf278dfaf8e0159a291a0822313b851de005dc0687e4c81d31f0be005cd7"
+  },
+  "portfolio_exposure": {
+    "file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fastcall-confirmation/workloads/portfolio_exposure.py",
+    "suite": "custom",
+    "stdout": "2000 19.083623\n",
+    "compatibility_probe": true,
+    "original_source": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/portfolio_exposure.py",
+    "reference_python": "3.14.2 (main, Dec  9 2025, 19:29:30) [Clang 21.1.4 ]",
+    "reference_binary": "/Users/jaheba/.local/share/uv/tools/flying-circus/bin/python",
+    "source_sha256": "8fecf54209a2da92541765f22465021f6a6a94619422abbe1b5896b4f6961c0d"
+  }
+}

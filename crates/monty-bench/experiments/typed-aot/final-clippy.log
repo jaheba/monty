@@ -1,0 +1,4 @@
+    Checking monty v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty)
+    Checking monty-proto v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-proto)
+    Checking monty-runtime v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-runtime)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 14.67s

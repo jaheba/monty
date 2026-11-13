@@ -1,0 +1,1842 @@
+{
+  "schema_version": 1,
+  "revision": "monty-runtime 1.0.1",
+  "runtime_label": "before",
+  "build_info": "Source revision and compiler flags unverified",
+  "engine": "monty",
+  "runtime_version": "monty-runtime 1.0.1",
+  "binary_sha256": "b43a25c6400d190a0c861a4e0d6c25740821a7ee69d2c17f6f0bca3f7815fc58",
+  "manifest_sha256": "1189ff3bf20ae8eaf9c2d5f974d3058c5c412997581f6860562ae9f68b1fa7a5",
+  "harness_sha256": "fcb2dd6b2a3b76bae69414591ef71f95c319713285753987c7e64e73910c8bfc",
+  "memory_helper_sha256": "49f453feea639a8a52fa5d5e1aed4f09c4d9e8951677eef52675ec4fbbc4aa06",
+  "timestamp": "2026-11-13T03:28:27.638145+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "harness_python": "3.14.2",
+  "memory_method": null,
+  "supported_protocol_versions": [
+    5,
+    6,
+    7
+  ],
+  "configuration": {
+    "samples": 15,
+    "memory_samples": 0,
+    "warmups": 0,
+    "timeout": 30.0,
+    "legacy_cli_summary": false,
+    "scenario": "warm_worker_one_shot",
+    "suite": "all",
+    "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/unified-match-artifacts/bin/monty",
+    "arguments": [
+      "--aot"
+    ]
+  },
+  "schedule_seed": 0,
+  "schedule": [
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "match",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "default",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "portfolio_risk"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "rustpython_pystone"
+    ],
+    [
+      "default",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "perf_richards"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "portfolio_risk"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "before",
+      "stdout_lines"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ],
+    [
+      "match",
+      "rustpython_micro_cmp"
+    ],
+    [
+      "match",
+      "rustpython_pystone"
+    ],
+    [
+      "before",
+      "perf_richards"
+    ],
+    [
+      "default",
+      "stdout_lines"
+    ],
+    [
+      "match",
+      "stdout_lines"
+    ],
+    [
+      "default",
+      "rustpython_micro_sorted_900"
+    ],
+    [
+      "before",
+      "text_csv_cleanup_medium"
+    ]
+  ],
+  "benchmarks": {
+    "portfolio_risk": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fallback-confirmation/workloads/portfolio_risk.py",
+      "original_source": "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/portfolio_risk.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "837aea2c3b76496eec36581c07eb1c0c0687b30f10d29202f4dd2c31b7380d50",
+      "expected_sha256": "e36682f778c298fa5d9f78dfc1ae8594ab83c383459d499ee0ac9b2434bb7615",
+      "wall_seconds": [
+        0.060299375,
+        0.060295125,
+        0.059985958,
+        0.059589583,
+        0.060053125,
+        0.059514125,
+        0.059821,
+        0.059843458,
+        0.06066325,
+        0.060565083,
+        0.060015625,
+        0.059831666,
+        0.060953959,
+        0.059732167,
+        0.060792167
+      ],
+      "worker_ready_seconds": [
+        0.014425334,
+        0.01452175,
+        0.014653709,
+        0.015038458,
+        0.012988958,
+        0.016036583,
+        0.013829625,
+        0.014114333,
+        0.015503667,
+        0.013546042,
+        0.014188,
+        0.0135865,
+        0.014439708,
+        0.013661042,
+        0.013344875
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.8583e-05,
+        4.7583e-05,
+        3.025e-05,
+        3.3167e-05,
+        3.5292e-05,
+        5.45e-05,
+        3.4083e-05,
+        4.0167e-05,
+        5.2458e-05,
+        4.7375e-05,
+        4.875e-05,
+        3.1e-05,
+        3.8333e-05,
+        4.3208e-05,
+        5.25e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.060015625,
+      "stdev_wall_seconds": 0.00044584846943047284,
+      "median_worker_ready_seconds": 0.014188,
+      "median_session_setup_seconds": 4.0167e-05,
+      "median_session_reset_seconds": null
+    },
+    "text_csv_cleanup_medium": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fallback-confirmation/workloads/text_csv_cleanup_medium.py",
+      "original_source": "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/text_csv_cleanup_medium.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "outside request timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "c9c9f64526eea6aa54fd3ab2f149cd7cea901b460977f6299c2c516f34435a8d",
+      "expected_sha256": "144eec576d3b761fcb3358aa249216ff8790ac8468aabf5d60b4507b0c5c52b8",
+      "wall_seconds": [
+        0.690652875,
+        0.692195959,
+        0.692012917,
+        0.691158708,
+        0.693295792,
+        0.690880791,
+        0.69115525,
+        0.69650875,
+        0.693918041,
+        0.6953555,
+        0.695934709,
+        0.694906458,
+        0.694196416,
+        0.694382625,
+        0.692717625
+      ],
+      "worker_ready_seconds": [
+        0.014770125,
+        0.012491833,
+        0.014196375,
+        0.014034792,
+        0.013488917,
+        0.01438575,
+        0.014783666,
+        0.014566,
+        0.014468125,
+        0.013943709,
+        0.013977208,
+        0.014458208,
+        0.014283333,
+        0.014113291,
+        0.013255666
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        0.003942208,
+        0.004101125,
+        0.004237333,
+        0.0042365,
+        0.004159041,
+        0.004254042,
+        0.00396475,
+        0.004059167,
+        0.003905042,
+        0.003928916,
+        0.003956625,
+        0.004355917,
+        0.004179917,
+        0.00398325,
+        0.004361292
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.693295792,
+      "stdev_wall_seconds": 0.001920887264311147,
+      "median_worker_ready_seconds": 0.014196375,
+      "median_session_setup_seconds": 0.004101125,
+      "median_session_reset_seconds": null
+    },
+    "perf_richards": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fallback-confirmation/workloads/perf_richards.py",
+      "original_source": "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/perf_richards.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "60e1639d1ca13be9eb11cd5bcde29feefdefd43dae179a6ca1982ef8c44d486a",
+      "expected_sha256": "555b49fa81bccb30b7fd7ead9d67090427296b7608077a5f3c25063d152f54ae",
+      "wall_seconds": [
+        0.17696725,
+        0.181196917,
+        0.178716333,
+        0.179280417,
+        0.179480458,
+        0.177750375,
+        0.179462375,
+        0.179441333,
+        0.178938833,
+        0.178636584,
+        0.179112833,
+        0.179044625,
+        0.178499208,
+        0.179043084,
+        0.178886041
+      ],
+      "worker_ready_seconds": [
+        0.013813959,
+        0.012898916,
+        0.016053459,
+        0.012940125,
+        0.013968458,
+        0.013738542,
+        0.01525875,
+        0.013424541,
+        0.013619042,
+        0.012924625,
+        0.015757375,
+        0.014329583,
+        0.014504292,
+        0.01516475,
+        0.016135583
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.3375e-05,
+        3.7667e-05,
+        5.2375e-05,
+        3.1917e-05,
+        6.3084e-05,
+        4.1458e-05,
+        7.2541e-05,
+        3.8667e-05,
+        3.0375e-05,
+        4.725e-05,
+        4.9042e-05,
+        4.4292e-05,
+        3.8417e-05,
+        3.4333e-05,
+        4.5417e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.179043084,
+      "stdev_wall_seconds": 0.0009147628696042757,
+      "median_worker_ready_seconds": 0.013968458,
+      "median_session_setup_seconds": 4.1458e-05,
+      "median_session_reset_seconds": null
+    },
+    "rustpython_pystone": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fallback-confirmation/workloads/rustpython_pystone.py",
+      "original_source": "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/rustpython_pystone.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "f26c13602af0fe8d1df1bfc738f68473c6fa907d39ceb1f7b9984bbb95ffa891",
+      "expected_sha256": "56272ca9ce3a52d40e8ab171e0850d84a40ac7a9121573c66772f69eca5b1724",
+      "wall_seconds": [
+        0.289305667,
+        0.293562208,
+        0.291602292,
+        0.290866209,
+        0.29115475,
+        0.289581875,
+        0.289173666,
+        0.290452708,
+        0.288490125,
+        0.290096667,
+        0.289348708,
+        0.291904417,
+        0.29093975,
+        0.291658875,
+        0.2883325
+      ],
+      "worker_ready_seconds": [
+        0.014700292,
+        0.014653333,
+        0.015164042,
+        0.015154375,
+        0.013365042,
+        0.013462875,
+        0.014493459,
+        0.014592375,
+        0.013873542,
+        0.013871416,
+        0.014280709,
+        0.014609292,
+        0.014972459,
+        0.01479725,
+        0.015366042
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        8.0083e-05,
+        4.5709e-05,
+        3.775e-05,
+        3.9666e-05,
+        3.875e-05,
+        4.5417e-05,
+        2.9625e-05,
+        3.15e-05,
+        3.4041e-05,
+        0.000100167,
+        4.1708e-05,
+        4.8416e-05,
+        3.9166e-05,
+        3.125e-05,
+        4.1291e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.290452708,
+      "stdev_wall_seconds": 0.0014355100859867556,
+      "median_worker_ready_seconds": 0.014609292,
+      "median_session_setup_seconds": 3.9666e-05,
+      "median_session_reset_seconds": null
+    },
+    "rustpython_micro_cmp": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fallback-confirmation/workloads/rustpython_micro_cmp.py",
+      "original_source": "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/rustpython_micro_cmp.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "outside request timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "9eac78b1455b379268a4b2572280c94edd92496f17fdecb7157c5e1ae1c4632c",
+      "expected_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "wall_seconds": [
+        0.002027042,
+        0.001990542,
+        0.001975667,
+        0.001956417,
+        0.002049042,
+        0.002024209,
+        0.001978333,
+        0.002040875,
+        0.0020705,
+        0.002092417,
+        0.002162709,
+        0.002023125,
+        0.002038083,
+        0.002008334,
+        0.002070083
+      ],
+      "worker_ready_seconds": [
+        0.014274958,
+        0.01436825,
+        0.01420925,
+        0.013728875,
+        0.01513375,
+        0.014560291,
+        0.013176917,
+        0.013635833,
+        0.014421333,
+        0.014891459,
+        0.015156834,
+        0.014441833,
+        0.013885,
+        0.01445975,
+        0.014141833
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        0.0001525,
+        0.000155667,
+        0.00019325,
+        0.000165375,
+        0.000213916,
+        0.00023225,
+        0.000219542,
+        0.000194667,
+        0.000240333,
+        0.000172833,
+        0.000164916,
+        0.000157375,
+        0.000172667,
+        0.000197875,
+        0.000159625
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.002027042,
+      "stdev_wall_seconds": 5.225834551834077e-05,
+      "median_worker_ready_seconds": 0.01436825,
+      "median_session_setup_seconds": 0.000172833,
+      "median_session_reset_seconds": null
+    },
+    "rustpython_micro_sorted_900": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fallback-confirmation/workloads/rustpython_micro_sorted_900.py",
+      "original_source": "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/rustpython_micro_sorted_900.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "outside request timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "b8f27321e77a3eb6333f00a53af62427aeea8461a91e20ef47c461510d3d6dd4",
+      "expected_sha256": "57d5b2f4b904b110c1287771800e2021d2442d6979896858ba13b870e1b72701",
+      "wall_seconds": [
+        0.001021833,
+        0.001098167,
+        0.001046458,
+        0.001069583,
+        0.00104475,
+        0.001005292,
+        0.001019541,
+        0.001124667,
+        0.001095584,
+        0.001013708,
+        0.001037708,
+        0.001092167,
+        0.0010095,
+        0.001026833,
+        0.001145083
+      ],
+      "worker_ready_seconds": [
+        0.013947625,
+        0.014087541,
+        0.0137025,
+        0.015362,
+        0.014382459,
+        0.013009125,
+        0.014163125,
+        0.013185917,
+        0.014359458,
+        0.013446292,
+        0.014169041,
+        0.01363,
+        0.016877041,
+        0.014080875,
+        0.014612041
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        0.000588459,
+        0.000769667,
+        0.000580042,
+        0.000567542,
+        0.000577958,
+        0.000555208,
+        0.000523125,
+        0.000622708,
+        0.000574375,
+        0.000519667,
+        0.000644084,
+        0.000527458,
+        0.000550292,
+        0.000587584,
+        0.000568417
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.00104475,
+      "stdev_wall_seconds": 4.464325584239487e-05,
+      "median_worker_ready_seconds": 0.014087541,
+      "median_session_setup_seconds": 0.000574375,
+      "median_session_reset_seconds": null
+    },
+    "stdout_lines": {
+      "source_file": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/fallback-confirmation/workloads/stdout_lines.py",
+      "original_source": "/Users/jaheba/p/flying-circus/src/flying_circus/workloads/stdout_lines.py",
+      "input_bytes": null,
+      "fixture_sha256": null,
+      "fixture_setup": "included in process timing",
+      "scenario": "warm_worker_one_shot",
+      "upstream": null,
+      "workload_sha256": "5361d1d65721eb5b1c4f4428132488b42de3f2c2d0179409bf70e86bf0abc02b",
+      "expected_sha256": "c18b769f3909aa9a1387f48a59388ad497f77cd4fd83dc91b25dcda3caecba13",
+      "wall_seconds": [
+        0.0024595,
+        0.002218,
+        0.002277417,
+        0.002284792,
+        0.002185875,
+        0.002195416,
+        0.0023165,
+        0.00229075,
+        0.002336167,
+        0.002332916,
+        0.00218275,
+        0.002316167,
+        0.0023225,
+        0.002217958,
+        0.002304709
+      ],
+      "worker_ready_seconds": [
+        0.013680292,
+        0.013663917,
+        0.014561125,
+        0.015404292,
+        0.013945292,
+        0.014485625,
+        0.012843792,
+        0.013993709,
+        0.016539125,
+        0.0129655,
+        0.013095584,
+        0.014279875,
+        0.014826,
+        0.014996958,
+        0.0132195
+      ],
+      "warmup_wall_seconds": [],
+      "session_setup_seconds": [
+        3.1083e-05,
+        3.4333e-05,
+        4.8791e-05,
+        3.1333e-05,
+        3.4375e-05,
+        4.1e-05,
+        3.5083e-05,
+        8.425e-05,
+        2.9875e-05,
+        5.475e-05,
+        3.0166e-05,
+        7.1125e-05,
+        4.2375e-05,
+        3.6834e-05,
+        5.1083e-05
+      ],
+      "session_reset_seconds": [],
+      "peak_rss_bytes": [],
+      "median_peak_rss_bytes": null,
+      "errors": [],
+      "compatibility": {
+        "status": "supported",
+        "reason": ""
+      },
+      "status": "ok",
+      "median_wall_seconds": 0.00229075,
+      "stdev_wall_seconds": 7.388589284146843e-05,
+      "median_worker_ready_seconds": 0.013993709,
+      "median_session_setup_seconds": 3.6834e-05,
+      "median_session_reset_seconds": null
+    }
+  },
+  "run_error": null
+}

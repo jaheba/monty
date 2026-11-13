@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "scenario": "empty_command_process",
+  "samples": 5,
+  "timestamp": "2026-11-12T19:52:45.772851+00:00",
+  "machine": "MacBookPro.fritz.box",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "cpu": "arm \u00b7 10 logical CPUs",
+  "scope": "Fresh process launch through exit; empty -c command; no shell; normal interpreter defaults",
+  "engines": {
+    "baseline": {
+      "binary_sha256": "bfdfc25c707f9b92f6b10a741bec598364bf08fe6e041dbdbb745c8568a3c1d3",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/bin/monty",
+        "--no-native",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.006543625,
+        0.006826208,
+        0.005945042,
+        0.006394,
+        0.007057333
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.006543625
+    },
+    "native": {
+      "binary_sha256": "bfdfc25c707f9b92f6b10a741bec598364bf08fe6e041dbdbb745c8568a3c1d3",
+      "revision": "monty-runtime 1.0.1",
+      "command": [
+        "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/native-regions/flying-circus-artifacts/bin/monty",
+        "-c",
+        ""
+      ],
+      "wall_seconds": [
+        0.007294542,
+        0.006054041,
+        0.007273417,
+        0.00686875,
+        0.006961208
+      ],
+      "errors": [],
+      "median_wall_seconds": 0.006961208
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "mode": "memory-model-checks",
+  "monty_baseline": "9a9f8784bf6cb36b09f183b53d7d829bcd807bdf",
+  "baseline_source": "Unchanged git archive; lock refreshed offline for the same archived sibling spam dependency",
+  "runs": [
+    {
+      "log": "unified-all-subprocess-tests.log",
+      "failures": [
+        "a_dropped_tee_consumer_does_not_pin_the_read_ahead",
+        "a_returnable_value_can_also_be_passed_to_a_host_function",
+        "call_arguments_share_one_arena",
+        "iterdir_joins_are_preflighted",
+        "large_allocations_are_rejected_before_the_hard_limit",
+        "small_tee_group_is_not_preflighted"
+      ]
+    },
+    {
+      "log": "baseline-all-subprocess-tests.log",
+      "failures": [
+        "a_dropped_tee_consumer_does_not_pin_the_read_ahead",
+        "a_returnable_value_can_also_be_passed_to_a_host_function",
+        "call_arguments_share_one_arena",
+        "iterdir_joins_are_preflighted",
+        "large_allocations_are_rejected_before_the_hard_limit",
+        "small_tee_group_is_not_preflighted"
+      ]
+    },
+    {
+      "log": "unchanged-baseline-subprocess-tests.log",
+      "failures": [
+        "a_dropped_tee_consumer_does_not_pin_the_read_ahead",
+        "a_returnable_value_can_also_be_passed_to_a_host_function",
+        "call_arguments_share_one_arena",
+        "iterdir_joins_are_preflighted",
+        "large_allocations_are_rejected_before_the_hard_limit",
+        "small_tee_group_is_not_preflighted"
+      ]
+    }
+  ],
+  "normal_mode": [
+    {
+      "log": "unified-normal-subprocess-tests.log",
+      "failures": [
+        "iterdir_joins_are_preflighted",
+        "large_allocations_are_rejected_before_the_hard_limit"
+      ]
+    },
+    {
+      "log": "unchanged-baseline-normal-subprocess-tests.log",
+      "failures": [
+        "iterdir_joins_are_preflighted",
+        "large_allocations_are_rejected_before_the_hard_limit"
+      ]
+    }
+  ]
+}

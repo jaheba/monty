@@ -1,0 +1,3475 @@
+{
+  "binary": {
+    "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-match-artifacts/bin/monty",
+    "sha256": "e57f05511b42b70a1d18967ac3c75c5b96e4c78f86c315c47ef77071a5044761"
+  },
+  "harness": {
+    "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/validated_comparison.py",
+    "sha256": "91a5b4376922aa011c07eecb98eb898a5092ab92249d354a00b309b94419281a"
+  },
+  "worker_client": {
+    "path": "/Users/jaheba/p/flying-circus/src/flying_circus/workers.py",
+    "sha256": "412a0efca331662cff310ecc7692c5d03d64b8cc5fb5ac5845d3ca3101c50d8a"
+  },
+  "workloads": [
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_short.py",
+      "sha256": "0abb3361c754380a9f4eba501a20479bb7ee647c896212155955cb2932c353be"
+    },
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/policy_scoring_batch.py",
+      "sha256": "8c7adf278dfaf8e0159a291a0822313b851de005dc0687e4c81d31f0be005cd7"
+    },
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/portfolio_exposure.py",
+      "sha256": "8fecf54209a2da92541765f22465021f6a6a94619422abbe1b5896b4f6961c0d"
+    },
+    {
+      "path": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/workloads/dictionary_long_keys.py",
+      "sha256": "47991561e5c65cc0fe6180a1ed10b73889d2c7b333c723ba3ae0a0a07623c288"
+    }
+  ],
+  "samples": 15,
+  "warmups": 0,
+  "worker": "cold",
+  "varied_source": true,
+  "host": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "python": "3.14.2",
+  "boundary": "Fresh Configure and Feed each sample. Submission includes validation when requested; session includes Configure. Startup, readiness negotiation and Reset excluded.",
+  "records": [
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 32917,
+      "submission_ns": 7547083,
+      "session_ns": 7580000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 28416,
+      "submission_ns": 891625,
+      "session_ns": 920041
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 36500,
+      "submission_ns": 707708,
+      "session_ns": 744208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 33166,
+      "submission_ns": 38050834,
+      "session_ns": 38084000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 39916,
+      "submission_ns": 13981084,
+      "session_ns": 14021000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 23875,
+      "submission_ns": 13472625,
+      "session_ns": 13496500
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 60833,
+      "submission_ns": 16347625,
+      "session_ns": 16408458
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 26833,
+      "submission_ns": 13743583,
+      "session_ns": 13770416
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 32875,
+      "submission_ns": 13330292,
+      "session_ns": 13363167
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 24750,
+      "submission_ns": 731208,
+      "session_ns": 755958
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 21792,
+      "submission_ns": 756666,
+      "session_ns": 778458
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 30500,
+      "submission_ns": 788709,
+      "session_ns": 819209
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 27292,
+      "submission_ns": 729292,
+      "session_ns": 756584
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 33750,
+      "submission_ns": 738292,
+      "session_ns": 772042
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 29584,
+      "submission_ns": 808250,
+      "session_ns": 837834
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 28625,
+      "submission_ns": 13416959,
+      "session_ns": 13445584
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 28125,
+      "submission_ns": 13358875,
+      "session_ns": 13387000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 25333,
+      "submission_ns": 14195792,
+      "session_ns": 14221125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 34333,
+      "submission_ns": 14414500,
+      "session_ns": 14448833
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 31250,
+      "submission_ns": 13794583,
+      "session_ns": 13825833
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 26584,
+      "submission_ns": 13140625,
+      "session_ns": 13167209
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 25542,
+      "submission_ns": 718292,
+      "session_ns": 743834
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 30792,
+      "submission_ns": 727625,
+      "session_ns": 758417
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 37541,
+      "submission_ns": 748334,
+      "session_ns": 785875
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 37625,
+      "submission_ns": 740167,
+      "session_ns": 777792
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 37958,
+      "submission_ns": 741083,
+      "session_ns": 779041
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 24000,
+      "submission_ns": 926208,
+      "session_ns": 950208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 27125,
+      "submission_ns": 13478833,
+      "session_ns": 13505958
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 33792,
+      "submission_ns": 13738791,
+      "session_ns": 13772583
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 26375,
+      "submission_ns": 13597625,
+      "session_ns": 13624000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 32209,
+      "submission_ns": 14090041,
+      "session_ns": 14122250
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 25208,
+      "submission_ns": 13858917,
+      "session_ns": 13884125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 32417,
+      "submission_ns": 14308458,
+      "session_ns": 14340875
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 36375,
+      "submission_ns": 833458,
+      "session_ns": 869833
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 33500,
+      "submission_ns": 721041,
+      "session_ns": 754541
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 28375,
+      "submission_ns": 795375,
+      "session_ns": 823750
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 28500,
+      "submission_ns": 817625,
+      "session_ns": 846125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 30833,
+      "submission_ns": 763625,
+      "session_ns": 794458
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 48084,
+      "submission_ns": 744958,
+      "session_ns": 793042
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 24625,
+      "submission_ns": 14093375,
+      "session_ns": 14118000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 50833,
+      "submission_ns": 13470417,
+      "session_ns": 13521250
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 28583,
+      "submission_ns": 14118959,
+      "session_ns": 14147542
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 37959,
+      "submission_ns": 14117916,
+      "session_ns": 14155875
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 34000,
+      "submission_ns": 13706458,
+      "session_ns": 13740458
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 22709,
+      "submission_ns": 13679875,
+      "session_ns": 13702584
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 26917,
+      "submission_ns": 730083,
+      "session_ns": 757000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 28458,
+      "submission_ns": 800667,
+      "session_ns": 829125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 30459,
+      "submission_ns": 799000,
+      "session_ns": 829459
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 34167,
+      "submission_ns": 794125,
+      "session_ns": 828292
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 27709,
+      "submission_ns": 733208,
+      "session_ns": 760917
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 38959,
+      "submission_ns": 791958,
+      "session_ns": 830917
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 39292,
+      "submission_ns": 13919375,
+      "session_ns": 13958667
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 44666,
+      "submission_ns": 14055750,
+      "session_ns": 14100416
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 30667,
+      "submission_ns": 13532416,
+      "session_ns": 13563083
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 25708,
+      "submission_ns": 13017584,
+      "session_ns": 13043292
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 34584,
+      "submission_ns": 14287458,
+      "session_ns": 14322042
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 39625,
+      "submission_ns": 13055166,
+      "session_ns": 13094791
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 33167,
+      "submission_ns": 738208,
+      "session_ns": 771375
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 32667,
+      "submission_ns": 732250,
+      "session_ns": 764917
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 62000,
+      "submission_ns": 886833,
+      "session_ns": 948833
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 27375,
+      "submission_ns": 892875,
+      "session_ns": 920250
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 109041,
+      "submission_ns": 773917,
+      "session_ns": 882958
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 38583,
+      "submission_ns": 736500,
+      "session_ns": 775083
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 34583,
+      "submission_ns": 14330750,
+      "session_ns": 14365333
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 23209,
+      "submission_ns": 13323875,
+      "session_ns": 13347084
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 28667,
+      "submission_ns": 12906417,
+      "session_ns": 12935084
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 26958,
+      "submission_ns": 13101459,
+      "session_ns": 13128417
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 31083,
+      "submission_ns": 13707042,
+      "session_ns": 13738125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 31709,
+      "submission_ns": 13443000,
+      "session_ns": 13474709
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 43542,
+      "submission_ns": 787708,
+      "session_ns": 831250
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 39000,
+      "submission_ns": 860792,
+      "session_ns": 899792
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 38792,
+      "submission_ns": 788416,
+      "session_ns": 827208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 52500,
+      "submission_ns": 871500,
+      "session_ns": 924000
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 39291,
+      "submission_ns": 818584,
+      "session_ns": 857875
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 37709,
+      "submission_ns": 728333,
+      "session_ns": 766042
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 28292,
+      "submission_ns": 13819375,
+      "session_ns": 13847667
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 34291,
+      "submission_ns": 13885792,
+      "session_ns": 13920083
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 30209,
+      "submission_ns": 12775625,
+      "session_ns": 12805834
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 25083,
+      "submission_ns": 12816292,
+      "session_ns": 12841375
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 55500,
+      "submission_ns": 13476708,
+      "session_ns": 13532208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 41667,
+      "submission_ns": 13763541,
+      "session_ns": 13805208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 38625,
+      "submission_ns": 795250,
+      "session_ns": 833875
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 44833,
+      "submission_ns": 797292,
+      "session_ns": 842125
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 30000,
+      "submission_ns": 780542,
+      "session_ns": 810542
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 37541,
+      "submission_ns": 775125,
+      "session_ns": 812666
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 36125,
+      "submission_ns": 766167,
+      "session_ns": 802292
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 34625,
+      "submission_ns": 770292,
+      "session_ns": 804917
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 23083,
+      "submission_ns": 13194000,
+      "session_ns": 13217083
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 27166,
+      "submission_ns": 14249792,
+      "session_ns": 14276958
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 33875,
+      "submission_ns": 13348292,
+      "session_ns": 13382167
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 26167,
+      "submission_ns": 8222541,
+      "session_ns": 8248708
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 57750,
+      "submission_ns": 6696709,
+      "session_ns": 6754459
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 31875,
+      "submission_ns": 6625042,
+      "session_ns": 6656917
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 65834,
+      "submission_ns": 20702375,
+      "session_ns": 20768209
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 25208,
+      "submission_ns": 19126792,
+      "session_ns": 19152000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 25625,
+      "submission_ns": 18356375,
+      "session_ns": 18382000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 62125,
+      "submission_ns": 18365000,
+      "session_ns": 18427125
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 29625,
+      "submission_ns": 18985375,
+      "session_ns": 19015000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 29709,
+      "submission_ns": 20491958,
+      "session_ns": 20521667
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 31542,
+      "submission_ns": 6523875,
+      "session_ns": 6555417
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 63833,
+      "submission_ns": 6539250,
+      "session_ns": 6603083
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 27541,
+      "submission_ns": 8546667,
+      "session_ns": 8574208
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 29042,
+      "submission_ns": 8332583,
+      "session_ns": 8361625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 29209,
+      "submission_ns": 6400541,
+      "session_ns": 6429750
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 79875,
+      "submission_ns": 6649583,
+      "session_ns": 6729458
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 28875,
+      "submission_ns": 21949541,
+      "session_ns": 21978416
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 34250,
+      "submission_ns": 18896916,
+      "session_ns": 18931166
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 40708,
+      "submission_ns": 18818958,
+      "session_ns": 18859666
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 33375,
+      "submission_ns": 18893042,
+      "session_ns": 18926417
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 37166,
+      "submission_ns": 19040292,
+      "session_ns": 19077458
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 25625,
+      "submission_ns": 20804292,
+      "session_ns": 20829917
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 28458,
+      "submission_ns": 6554000,
+      "session_ns": 6582458
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 26167,
+      "submission_ns": 6402917,
+      "session_ns": 6429084
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 43042,
+      "submission_ns": 8479792,
+      "session_ns": 8522834
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 24541,
+      "submission_ns": 8618709,
+      "session_ns": 8643250
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 35250,
+      "submission_ns": 6336792,
+      "session_ns": 6372042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 37416,
+      "submission_ns": 6534417,
+      "session_ns": 6571833
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 25875,
+      "submission_ns": 21125917,
+      "session_ns": 21151792
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 28292,
+      "submission_ns": 19177917,
+      "session_ns": 19206209
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 39708,
+      "submission_ns": 19569125,
+      "session_ns": 19608833
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 27458,
+      "submission_ns": 19339125,
+      "session_ns": 19366583
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 29500,
+      "submission_ns": 19797791,
+      "session_ns": 19827291
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 27958,
+      "submission_ns": 22007417,
+      "session_ns": 22035375
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 28333,
+      "submission_ns": 6646000,
+      "session_ns": 6674333
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 24542,
+      "submission_ns": 6399666,
+      "session_ns": 6424208
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 40417,
+      "submission_ns": 8310167,
+      "session_ns": 8350584
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 35083,
+      "submission_ns": 8677875,
+      "session_ns": 8712958
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 28750,
+      "submission_ns": 6408041,
+      "session_ns": 6436791
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 29041,
+      "submission_ns": 6254625,
+      "session_ns": 6283666
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 39167,
+      "submission_ns": 21856875,
+      "session_ns": 21896042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 29125,
+      "submission_ns": 18903750,
+      "session_ns": 18932875
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 35583,
+      "submission_ns": 18521459,
+      "session_ns": 18557042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 23500,
+      "submission_ns": 18932167,
+      "session_ns": 18955667
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 25542,
+      "submission_ns": 19692083,
+      "session_ns": 19717625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 39667,
+      "submission_ns": 21334542,
+      "session_ns": 21374209
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 56000,
+      "submission_ns": 6349542,
+      "session_ns": 6405542
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 33417,
+      "submission_ns": 6762208,
+      "session_ns": 6795625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 25333,
+      "submission_ns": 8310458,
+      "session_ns": 8335791
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 37458,
+      "submission_ns": 8584458,
+      "session_ns": 8621916
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 58209,
+      "submission_ns": 6670458,
+      "session_ns": 6728667
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 43375,
+      "submission_ns": 6860042,
+      "session_ns": 6903417
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 46791,
+      "submission_ns": 20239334,
+      "session_ns": 20286125
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 45500,
+      "submission_ns": 20066917,
+      "session_ns": 20112417
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 25375,
+      "submission_ns": 18507958,
+      "session_ns": 18533333
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 67917,
+      "submission_ns": 18969458,
+      "session_ns": 19037375
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 95250,
+      "submission_ns": 18787708,
+      "session_ns": 18882958
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 23458,
+      "submission_ns": 20494834,
+      "session_ns": 20518292
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 27125,
+      "submission_ns": 6357541,
+      "session_ns": 6384666
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 27541,
+      "submission_ns": 6176042,
+      "session_ns": 6203583
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 36791,
+      "submission_ns": 8874834,
+      "session_ns": 8911625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 35167,
+      "submission_ns": 8390125,
+      "session_ns": 8425292
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 49125,
+      "submission_ns": 6844459,
+      "session_ns": 6893584
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 32167,
+      "submission_ns": 6502583,
+      "session_ns": 6534750
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 25083,
+      "submission_ns": 20823542,
+      "session_ns": 20848625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 26666,
+      "submission_ns": 18763834,
+      "session_ns": 18790500
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 36458,
+      "submission_ns": 19413875,
+      "session_ns": 19450333
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 26459,
+      "submission_ns": 20013291,
+      "session_ns": 20039750
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 28958,
+      "submission_ns": 19684875,
+      "session_ns": 19713833
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 38750,
+      "submission_ns": 20763333,
+      "session_ns": 20802083
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 25791,
+      "submission_ns": 6403875,
+      "session_ns": 6429666
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 32583,
+      "submission_ns": 6397458,
+      "session_ns": 6430041
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 53167,
+      "submission_ns": 8804666,
+      "session_ns": 8857833
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 51125,
+      "submission_ns": 8529250,
+      "session_ns": 8580375
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 74291,
+      "submission_ns": 6220000,
+      "session_ns": 6294291
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 26667,
+      "submission_ns": 7952291,
+      "session_ns": 7978958
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 25875,
+      "submission_ns": 21638750,
+      "session_ns": 21664625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 28708,
+      "submission_ns": 18956542,
+      "session_ns": 18985250
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 34166,
+      "submission_ns": 19276500,
+      "session_ns": 19310666
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 28667,
+      "submission_ns": 19065708,
+      "session_ns": 19094375
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 25709,
+      "submission_ns": 19742750,
+      "session_ns": 19768459
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 27459,
+      "submission_ns": 21357916,
+      "session_ns": 21385375
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 34958,
+      "submission_ns": 6718209,
+      "session_ns": 6753167
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 25208,
+      "submission_ns": 6331375,
+      "session_ns": 6356583
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 30666,
+      "submission_ns": 8306375,
+      "session_ns": 8337041
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 34666,
+      "submission_ns": 8761000,
+      "session_ns": 8795666
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 40958,
+      "submission_ns": 6824667,
+      "session_ns": 6865625
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 24500,
+      "submission_ns": 6367292,
+      "session_ns": 6391792
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 36500,
+      "submission_ns": 21640792,
+      "session_ns": 21677292
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 37834,
+      "submission_ns": 19287208,
+      "session_ns": 19325042
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 29167,
+      "submission_ns": 18320292,
+      "session_ns": 18349459
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 31042,
+      "submission_ns": 4867833,
+      "session_ns": 4898875
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 26458,
+      "submission_ns": 1560792,
+      "session_ns": 1587250
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 31333,
+      "submission_ns": 1546750,
+      "session_ns": 1578083
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 39708,
+      "submission_ns": 16871459,
+      "session_ns": 16911167
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 72208,
+      "submission_ns": 14354375,
+      "session_ns": 14426583
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 43375,
+      "submission_ns": 13853667,
+      "session_ns": 13897042
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 31916,
+      "submission_ns": 13852792,
+      "session_ns": 13884708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 27375,
+      "submission_ns": 14884125,
+      "session_ns": 14911500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 26042,
+      "submission_ns": 17539541,
+      "session_ns": 17565583
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 37875,
+      "submission_ns": 1493917,
+      "session_ns": 1531792
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 38083,
+      "submission_ns": 1565334,
+      "session_ns": 1603417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 37459,
+      "submission_ns": 4640791,
+      "session_ns": 4678250
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 62000,
+      "submission_ns": 4804333,
+      "session_ns": 4866333
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 32667,
+      "submission_ns": 1601375,
+      "session_ns": 1634042
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 70791,
+      "submission_ns": 1665250,
+      "session_ns": 1736041
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 45291,
+      "submission_ns": 18099375,
+      "session_ns": 18144666
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 26791,
+      "submission_ns": 14609584,
+      "session_ns": 14636375
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 25334,
+      "submission_ns": 13752583,
+      "session_ns": 13777917
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 43041,
+      "submission_ns": 15150792,
+      "session_ns": 15193833
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 36708,
+      "submission_ns": 13965542,
+      "session_ns": 14002250
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 38000,
+      "submission_ns": 16733750,
+      "session_ns": 16771750
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 49458,
+      "submission_ns": 1638000,
+      "session_ns": 1687458
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 29291,
+      "submission_ns": 1536875,
+      "session_ns": 1566166
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 41250,
+      "submission_ns": 4655500,
+      "session_ns": 4696750
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 31250,
+      "submission_ns": 4829333,
+      "session_ns": 4860583
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 32250,
+      "submission_ns": 1546916,
+      "session_ns": 1579166
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 33584,
+      "submission_ns": 1570625,
+      "session_ns": 1604209
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 30167,
+      "submission_ns": 17925417,
+      "session_ns": 17955584
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 33083,
+      "submission_ns": 13718125,
+      "session_ns": 13751208
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 30291,
+      "submission_ns": 13652375,
+      "session_ns": 13682666
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 41125,
+      "submission_ns": 14683667,
+      "session_ns": 14724792
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 25667,
+      "submission_ns": 14899417,
+      "session_ns": 14925084
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 25542,
+      "submission_ns": 17388166,
+      "session_ns": 17413708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 38208,
+      "submission_ns": 1725959,
+      "session_ns": 1764167
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 30959,
+      "submission_ns": 1628250,
+      "session_ns": 1659209
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 25584,
+      "submission_ns": 4923250,
+      "session_ns": 4948834
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 35833,
+      "submission_ns": 4809167,
+      "session_ns": 4845000
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 66000,
+      "submission_ns": 1527292,
+      "session_ns": 1593292
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 25959,
+      "submission_ns": 1534125,
+      "session_ns": 1560084
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 49500,
+      "submission_ns": 17937667,
+      "session_ns": 17987167
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 30000,
+      "submission_ns": 15148042,
+      "session_ns": 15178042
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 38167,
+      "submission_ns": 14170583,
+      "session_ns": 14208750
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 25625,
+      "submission_ns": 13758417,
+      "session_ns": 13784042
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 26208,
+      "submission_ns": 13547709,
+      "session_ns": 13573917
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 43833,
+      "submission_ns": 16805500,
+      "session_ns": 16849333
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 33917,
+      "submission_ns": 1588458,
+      "session_ns": 1622375
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 39834,
+      "submission_ns": 1674583,
+      "session_ns": 1714417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 31000,
+      "submission_ns": 4651208,
+      "session_ns": 4682208
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 37417,
+      "submission_ns": 4684792,
+      "session_ns": 4722209
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 25167,
+      "submission_ns": 1515375,
+      "session_ns": 1540542
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 28333,
+      "submission_ns": 1520083,
+      "session_ns": 1548416
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 24958,
+      "submission_ns": 17469125,
+      "session_ns": 17494083
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 57125,
+      "submission_ns": 14367292,
+      "session_ns": 14424417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 44583,
+      "submission_ns": 14569125,
+      "session_ns": 14613708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 32209,
+      "submission_ns": 14083708,
+      "session_ns": 14115917
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 47333,
+      "submission_ns": 15072792,
+      "session_ns": 15120125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 29583,
+      "submission_ns": 17464584,
+      "session_ns": 17494167
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 31208,
+      "submission_ns": 1529667,
+      "session_ns": 1560875
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 28291,
+      "submission_ns": 1600500,
+      "session_ns": 1628791
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 27833,
+      "submission_ns": 4781625,
+      "session_ns": 4809458
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 45083,
+      "submission_ns": 4723417,
+      "session_ns": 4768500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 38500,
+      "submission_ns": 1601625,
+      "session_ns": 1640125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 41417,
+      "submission_ns": 1565125,
+      "session_ns": 1606542
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 64875,
+      "submission_ns": 17833500,
+      "session_ns": 17898375
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 29333,
+      "submission_ns": 13893042,
+      "session_ns": 13922375
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 22542,
+      "submission_ns": 14307417,
+      "session_ns": 14329959
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 26709,
+      "submission_ns": 13847875,
+      "session_ns": 13874584
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 29292,
+      "submission_ns": 13598333,
+      "session_ns": 13627625
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 27958,
+      "submission_ns": 17349833,
+      "session_ns": 17377791
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 42167,
+      "submission_ns": 1635542,
+      "session_ns": 1677709
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 42000,
+      "submission_ns": 1591917,
+      "session_ns": 1633917
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 26333,
+      "submission_ns": 4811500,
+      "session_ns": 4837833
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 32792,
+      "submission_ns": 4619458,
+      "session_ns": 4652250
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 30917,
+      "submission_ns": 1573792,
+      "session_ns": 1604709
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 30000,
+      "submission_ns": 1592917,
+      "session_ns": 1622917
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 42750,
+      "submission_ns": 17266375,
+      "session_ns": 17309125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 27875,
+      "submission_ns": 14590417,
+      "session_ns": 14618292
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 43167,
+      "submission_ns": 14770250,
+      "session_ns": 14813417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 62625,
+      "submission_ns": 14114083,
+      "session_ns": 14176708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 32208,
+      "submission_ns": 13277917,
+      "session_ns": 13310125
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 41333,
+      "submission_ns": 16541083,
+      "session_ns": 16582416
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 37584,
+      "submission_ns": 1558625,
+      "session_ns": 1596209
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 42458,
+      "submission_ns": 1554084,
+      "session_ns": 1596542
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 26792,
+      "submission_ns": 4905166,
+      "session_ns": 4931958
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 81458,
+      "submission_ns": 4781084,
+      "session_ns": 4862542
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 28750,
+      "submission_ns": 1546500,
+      "session_ns": 1575250
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 30542,
+      "submission_ns": 1509917,
+      "session_ns": 1540459
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 26500,
+      "submission_ns": 16382000,
+      "session_ns": 16408500
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 38334,
+      "submission_ns": 13745375,
+      "session_ns": 13783709
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 36583,
+      "submission_ns": 15043750,
+      "session_ns": 15080333
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 25334,
+      "submission_ns": 579625,
+      "session_ns": 604959
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 24709,
+      "submission_ns": 439250,
+      "session_ns": 463959
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 22834,
+      "submission_ns": 404291,
+      "session_ns": 427125
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 0,
+      "configure_ns": 24750,
+      "submission_ns": 12114125,
+      "session_ns": 12138875
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 0,
+      "configure_ns": 25083,
+      "submission_ns": 11144084,
+      "session_ns": 11169167
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 0,
+      "configure_ns": 32416,
+      "submission_ns": 11610250,
+      "session_ns": 11642666
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 99791,
+      "submission_ns": 12011167,
+      "session_ns": 12110958
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 27667,
+      "submission_ns": 12032958,
+      "session_ns": 12060625
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 29000,
+      "submission_ns": 11476500,
+      "session_ns": 11505500
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 1,
+      "configure_ns": 43541,
+      "submission_ns": 485542,
+      "session_ns": 529083
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 1,
+      "configure_ns": 37541,
+      "submission_ns": 455000,
+      "session_ns": 492541
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 1,
+      "configure_ns": 45000,
+      "submission_ns": 685541,
+      "session_ns": 730541
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 46542,
+      "submission_ns": 566416,
+      "session_ns": 612958
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 43459,
+      "submission_ns": 475708,
+      "session_ns": 519167
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 33667,
+      "submission_ns": 417250,
+      "session_ns": 450917
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 2,
+      "configure_ns": 27458,
+      "submission_ns": 11904042,
+      "session_ns": 11931500
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 2,
+      "configure_ns": 40500,
+      "submission_ns": 11593084,
+      "session_ns": 11633584
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 2,
+      "configure_ns": 64166,
+      "submission_ns": 11642542,
+      "session_ns": 11706708
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 53750,
+      "submission_ns": 11171000,
+      "session_ns": 11224750
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 30792,
+      "submission_ns": 11898125,
+      "session_ns": 11928917
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 36584,
+      "submission_ns": 11615333,
+      "session_ns": 11651917
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 3,
+      "configure_ns": 27042,
+      "submission_ns": 430125,
+      "session_ns": 457167
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 3,
+      "configure_ns": 28084,
+      "submission_ns": 433458,
+      "session_ns": 461542
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 3,
+      "configure_ns": 33417,
+      "submission_ns": 554208,
+      "session_ns": 587625
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 35125,
+      "submission_ns": 551375,
+      "session_ns": 586500
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 28875,
+      "submission_ns": 457833,
+      "session_ns": 486708
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 43416,
+      "submission_ns": 458459,
+      "session_ns": 501875
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 4,
+      "configure_ns": 25458,
+      "submission_ns": 12129750,
+      "session_ns": 12155208
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 4,
+      "configure_ns": 36417,
+      "submission_ns": 11441541,
+      "session_ns": 11477958
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 4,
+      "configure_ns": 27667,
+      "submission_ns": 11246417,
+      "session_ns": 11274084
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 69958,
+      "submission_ns": 11936875,
+      "session_ns": 12006833
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 46375,
+      "submission_ns": 12418625,
+      "session_ns": 12465000
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 29333,
+      "submission_ns": 12268459,
+      "session_ns": 12297792
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 5,
+      "configure_ns": 28041,
+      "submission_ns": 436084,
+      "session_ns": 464125
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 5,
+      "configure_ns": 36209,
+      "submission_ns": 505833,
+      "session_ns": 542042
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 5,
+      "configure_ns": 62667,
+      "submission_ns": 677208,
+      "session_ns": 739875
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 56125,
+      "submission_ns": 677000,
+      "session_ns": 733125
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 28416,
+      "submission_ns": 488834,
+      "session_ns": 517250
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 23416,
+      "submission_ns": 392667,
+      "session_ns": 416083
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 6,
+      "configure_ns": 26792,
+      "submission_ns": 11389583,
+      "session_ns": 11416375
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 6,
+      "configure_ns": 73625,
+      "submission_ns": 12472584,
+      "session_ns": 12546209
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 6,
+      "configure_ns": 28583,
+      "submission_ns": 12084833,
+      "session_ns": 12113416
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 25042,
+      "submission_ns": 11878375,
+      "session_ns": 11903417
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 31000,
+      "submission_ns": 11788000,
+      "session_ns": 11819000
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 24542,
+      "submission_ns": 11790542,
+      "session_ns": 11815084
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 7,
+      "configure_ns": 41500,
+      "submission_ns": 487041,
+      "session_ns": 528541
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 7,
+      "configure_ns": 40458,
+      "submission_ns": 440125,
+      "session_ns": 480583
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 7,
+      "configure_ns": 30792,
+      "submission_ns": 574208,
+      "session_ns": 605000
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 25625,
+      "submission_ns": 565333,
+      "session_ns": 590958
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 24667,
+      "submission_ns": 434375,
+      "session_ns": 459042
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 27666,
+      "submission_ns": 406959,
+      "session_ns": 434625
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 8,
+      "configure_ns": 38667,
+      "submission_ns": 11547042,
+      "session_ns": 11585709
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 8,
+      "configure_ns": 25250,
+      "submission_ns": 11946833,
+      "session_ns": 11972083
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 8,
+      "configure_ns": 26125,
+      "submission_ns": 11520583,
+      "session_ns": 11546708
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 28292,
+      "submission_ns": 11613958,
+      "session_ns": 11642250
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 25333,
+      "submission_ns": 11484375,
+      "session_ns": 11509708
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 89209,
+      "submission_ns": 12067291,
+      "session_ns": 12156500
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 9,
+      "configure_ns": 33167,
+      "submission_ns": 438541,
+      "session_ns": 471708
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 9,
+      "configure_ns": 29708,
+      "submission_ns": 443917,
+      "session_ns": 473625
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 9,
+      "configure_ns": 38250,
+      "submission_ns": 581709,
+      "session_ns": 619959
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 43708,
+      "submission_ns": 632417,
+      "session_ns": 676125
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 29792,
+      "submission_ns": 416875,
+      "session_ns": 446667
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 31125,
+      "submission_ns": 414875,
+      "session_ns": 446000
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 10,
+      "configure_ns": 68834,
+      "submission_ns": 11560125,
+      "session_ns": 11628959
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 10,
+      "configure_ns": 28583,
+      "submission_ns": 11924292,
+      "session_ns": 11952875
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 10,
+      "configure_ns": 32583,
+      "submission_ns": 12108250,
+      "session_ns": 12140833
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 46542,
+      "submission_ns": 12192333,
+      "session_ns": 12238875
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 30375,
+      "submission_ns": 11751458,
+      "session_ns": 11781833
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 36417,
+      "submission_ns": 12326291,
+      "session_ns": 12362708
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 11,
+      "configure_ns": 32292,
+      "submission_ns": 504500,
+      "session_ns": 536792
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 11,
+      "configure_ns": 24667,
+      "submission_ns": 425083,
+      "session_ns": 449750
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 11,
+      "configure_ns": 62666,
+      "submission_ns": 632917,
+      "session_ns": 695583
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 34083,
+      "submission_ns": 553875,
+      "session_ns": 587958
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 45334,
+      "submission_ns": 416791,
+      "session_ns": 462125
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 49000,
+      "submission_ns": 439834,
+      "session_ns": 488834
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 12,
+      "configure_ns": 25000,
+      "submission_ns": 12274417,
+      "session_ns": 12299417
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 12,
+      "configure_ns": 25166,
+      "submission_ns": 11290084,
+      "session_ns": 11315250
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 12,
+      "configure_ns": 44209,
+      "submission_ns": 11912666,
+      "session_ns": 11956875
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 38375,
+      "submission_ns": 12020792,
+      "session_ns": 12059167
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 35541,
+      "submission_ns": 12244542,
+      "session_ns": 12280083
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 27708,
+      "submission_ns": 11560750,
+      "session_ns": 11588458
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 13,
+      "configure_ns": 34417,
+      "submission_ns": 442792,
+      "session_ns": 477209
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 13,
+      "configure_ns": 43416,
+      "submission_ns": 589875,
+      "session_ns": 633291
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 13,
+      "configure_ns": 45208,
+      "submission_ns": 626084,
+      "session_ns": 671292
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 38666,
+      "submission_ns": 615875,
+      "session_ns": 654541
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 27792,
+      "submission_ns": 470416,
+      "session_ns": 498208
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 27542,
+      "submission_ns": 392500,
+      "session_ns": 420042
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "sample": 14,
+      "configure_ns": 42500,
+      "submission_ns": 11775208,
+      "session_ns": 11817708
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "sample": 14,
+      "configure_ns": 24875,
+      "submission_ns": 12241375,
+      "session_ns": 12266250
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "sample": 14,
+      "configure_ns": 35708,
+      "submission_ns": 11583750,
+      "session_ns": 11619458
+    }
+  ],
+  "summaries": [
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "interpreter",
+      "configure_ns": 32917,
+      "submission_ns": 794125,
+      "session_ns": 827208
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "copied",
+      "configure_ns": 33500,
+      "submission_ns": 763625,
+      "session_ns": 794458
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": false,
+      "backend": "shared",
+      "configure_ns": 36375,
+      "submission_ns": 744958,
+      "session_ns": 793042
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "interpreter",
+      "configure_ns": 31709,
+      "submission_ns": 13679875,
+      "session_ns": 13702584
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "copied",
+      "configure_ns": 33792,
+      "submission_ns": 13743583,
+      "session_ns": 13772583
+    },
+    {
+      "workload": "policy_scoring_short",
+      "validate": true,
+      "backend": "shared",
+      "configure_ns": 28667,
+      "submission_ns": 13532416,
+      "session_ns": 13563083
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "interpreter",
+      "configure_ns": 35083,
+      "submission_ns": 8529250,
+      "session_ns": 8574208
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "copied",
+      "configure_ns": 33417,
+      "submission_ns": 6402917,
+      "session_ns": 6430041
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": false,
+      "backend": "shared",
+      "configure_ns": 31542,
+      "submission_ns": 6534417,
+      "session_ns": 6571833
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "interpreter",
+      "configure_ns": 28875,
+      "submission_ns": 21125917,
+      "session_ns": 21151792
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "copied",
+      "configure_ns": 29125,
+      "submission_ns": 19126792,
+      "session_ns": 19152000
+    },
+    {
+      "workload": "policy_scoring_batch",
+      "validate": true,
+      "backend": "shared",
+      "configure_ns": 33375,
+      "submission_ns": 18932167,
+      "session_ns": 18955667
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "interpreter",
+      "configure_ns": 32792,
+      "submission_ns": 4781625,
+      "session_ns": 4837833
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "copied",
+      "configure_ns": 32250,
+      "submission_ns": 1565334,
+      "session_ns": 1603417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": false,
+      "backend": "shared",
+      "configure_ns": 33917,
+      "submission_ns": 1565125,
+      "session_ns": 1604209
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "interpreter",
+      "configure_ns": 38000,
+      "submission_ns": 17388166,
+      "session_ns": 17413708
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "copied",
+      "configure_ns": 30000,
+      "submission_ns": 14354375,
+      "session_ns": 14424417
+    },
+    {
+      "workload": "portfolio_exposure",
+      "validate": true,
+      "backend": "shared",
+      "configure_ns": 36583,
+      "submission_ns": 14114083,
+      "session_ns": 14176708
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "interpreter",
+      "configure_ns": 38666,
+      "submission_ns": 581709,
+      "session_ns": 619959
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "copied",
+      "configure_ns": 29708,
+      "submission_ns": 443917,
+      "session_ns": 480583
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": false,
+      "backend": "shared",
+      "configure_ns": 32292,
+      "submission_ns": 436084,
+      "session_ns": 464125
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "interpreter",
+      "configure_ns": 29000,
+      "submission_ns": 11790542,
+      "session_ns": 11817708
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "copied",
+      "configure_ns": 30375,
+      "submission_ns": 11898125,
+      "session_ns": 11928917
+    },
+    {
+      "workload": "dictionary_long_keys",
+      "validate": true,
+      "backend": "shared",
+      "configure_ns": 35708,
+      "submission_ns": 11878375,
+      "session_ns": 11903417
+    }
+  ]
+}

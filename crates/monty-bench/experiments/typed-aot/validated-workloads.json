@@ -1,0 +1,42 @@
+[
+  {
+    "workload": "capacity_planning",
+    "exit_code": 0,
+    "elapsed_seconds": 0.0604764586314559,
+    "source_sha256": "88dc5d29c457d64c6735be5f8d8008e7e0f7ac3d78765ac007e110379c313156",
+    "stderr": "16.299ms \u276f type check passed\n34.969ms \u276f None\nnative_stats Stats { compilations: 0, compilation_ns: 0, code_bytes: 0, entries: 0, instructions: 0, dictionary_reads: 0, range_steps: 0 }\naot_stats Stats { compilations: 0, code_bytes: 0, entries: 0, returns: 0, fallbacks: 0, instructions: 0 }\n",
+    "accepted_by_checker": true
+  },
+  {
+    "workload": "game_spectral_norm",
+    "exit_code": 0,
+    "elapsed_seconds": 0.3471418749541044,
+    "source_sha256": "b3961c3858ab9f9e01026a209208613b8a5996d5db423d56a74d5b1f120e3cee",
+    "stderr": "13.353ms \u276f type check passed\n324.61ms \u276f None\nnative_stats Stats { compilations: 0, compilation_ns: 0, code_bytes: 0, entries: 0, instructions: 0, dictionary_reads: 0, range_steps: 0 }\naot_stats Stats { compilations: 1, code_bytes: 2288, entries: 676000, returns: 676000, fallbacks: 0, instructions: 11492000 }\n",
+    "accepted_by_checker": true
+  },
+  {
+    "workload": "perf_float",
+    "exit_code": 0,
+    "elapsed_seconds": 0.25377870770171285,
+    "source_sha256": "542193ceaa5a7521f5d3a5ed6ba46f854e53225923f018262ea79bee93cf1ebc",
+    "stderr": "14.814ms \u276f type check failed:\nerror[unresolved-attribute]: Attribute `normalize` is not defined on `None` in union `None | Unknown`\n  --> crates/monty-bench/experiments/typed-aot/workloads/perf_float.py:51:9\n   |\n49 |         points[i] = Point(i)\n50 |     for p in points:\n51 |         p.normalize()\n   |         ^^^^^^^^^^^\n52 |     return maximize(points)\n   |\n\nerror[invalid-argument-type]: Argument to function `maximize` is incorrect\n  --> crates/monty-bench/experiments/typed-aot/workloads/perf_float.py:52:21\n   |\n50 |     for p in points:\n51 |         p.normalize()\n52 |     return maximize(points)\n   |                     ^^^^^^ Expected `list[Point]`, found `list[None | Unknown]`\n53 |\n54 | result = benchmark(POINTS)\n   |\ninfo: element `None` of union `None | Unknown` is not assignable to `Point`\ninfo: Function defined here\n  --> crates/monty-bench/experiments/typed-aot/workloads/perf_float.py:39:5\n   |\n39 | def maximize(points: list[Point]) -> Point:\n   |     ^^^^^^^^ ------------------- Parameter declared here\n40 |     next = points[0]\n41 |     for p in points[1:]:\n   |\n\n\n229.10ms \u276f None\nnative_stats Stats { compilations: 0, compilation_ns: 0, code_bytes: 0, entries: 0, instructions: 0, dictionary_reads: 0, range_steps: 0 }\naot_stats Stats { compilations: 0, code_bytes: 0, entries: 0, returns: 0, fallbacks: 0, instructions: 0 }\n",
+    "accepted_by_checker": false
+  },
+  {
+    "workload": "perf_unpack_sequence",
+    "exit_code": 0,
+    "elapsed_seconds": 0.044567958917468786,
+    "source_sha256": "b932742e5e239f62f44392ed693d54b1b994117c3fce1108313250e36ac8a567",
+    "stderr": "23.427ms \u276f type check passed\n11.466ms \u276f None\nnative_stats Stats { compilations: 0, compilation_ns: 0, code_bytes: 0, entries: 0, instructions: 0, dictionary_reads: 0, range_steps: 0 }\naot_stats Stats { compilations: 1, code_bytes: 213248, entries: 2, returns: 2, fallbacks: 0, instructions: 9606036 }\n",
+    "accepted_by_checker": true
+  },
+  {
+    "workload": "ticket_search",
+    "exit_code": 0,
+    "elapsed_seconds": 0.05597620829939842,
+    "source_sha256": "6c14d8c2575f0c780a15b95534659804f3b1e7e83f9c3c187a123de5725e63f1",
+    "stderr": "17.798ms \u276f type check passed\n28.714ms \u276f None\nnative_stats Stats { compilations: 0, compilation_ns: 0, code_bytes: 0, entries: 0, instructions: 0, dictionary_reads: 0, range_steps: 0 }\naot_stats Stats { compilations: 0, code_bytes: 0, entries: 0, returns: 0, fallbacks: 0, instructions: 0 }\n",
+    "accepted_by_checker": true
+  }
+]

@@ -1,0 +1,252 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling serde v1.0.229
+   Compiling smallvec v1.16.1
+   Compiling zerocopy v0.8.57
+    Checking foldhash v0.2.0
+    Checking cfg-if v1.0.4
+   Compiling libc v0.2.189
+   Compiling rustversion v1.0.23
+    Checking stable_deref_trait v1.2.1
+   Compiling interpolator v0.5.0
+   Compiling zmij v1.0.23
+    Checking hashbrown v0.17.1
+    Checking equivalent v1.0.2
+   Compiling collection_literals v1.0.3
+    Checking memchr v2.8.3
+   Compiling object v0.39.1
+   Compiling version_check v0.9.5
+    Checking indexmap v2.14.2
+   Compiling heck v0.5.0
+    Checking static_assertions v1.1.0
+    Checking itoa v1.0.18
+   Compiling autocfg v1.5.1
+   Compiling shlex v2.0.1
+   Compiling getrandom v0.2.17
+    Checking ordermap v1.2.2
+   Compiling syn v2.0.119
+   Compiling syn v3.0.5
+   Compiling proc-macro-utils v0.10.0
+    Checking castaway v0.2.4
+   Compiling rand_core v0.6.4
+    Checking thin-vec v0.2.19
+   Compiling find-msvc-tools v0.1.12
+   Compiling phf_shared v0.11.3
+   Compiling num-traits v0.2.19
+    Checking compact_str v0.10.0
+   Compiling cc v1.4.6
+   Compiling manyhow-macros v0.11.4
+   Compiling thiserror v2.0.20
+    Checking windows-link v0.2.1
+    Checking aho-corasick v1.1.5
+    Checking either v1.18.0
+   Compiling unicode-width v0.2.2
+   Compiling generic-array v0.14.7
+   Compiling getopts v0.2.24
+    Checking unicode-ident v1.0.24
+   Compiling log v0.4.34
+    Checking itertools v0.15.0
+    Checking rustc-hash v2.1.3
+    Checking typenum v1.20.1
+   Compiling semver v1.0.28
+    Checking writeable v0.6.4
+    Checking litemap v0.8.3
+    Checking siphasher v1.0.3
+    Checking ryu v1.0.23
+    Checking bitflags v2.13.2
+    Checking regex-syntax v0.8.11
+   Compiling icu_properties_data v2.3.0
+   Compiling ppv-lite86 v0.2.21
+   Compiling stacker v0.1.25
+   Compiling rand_chacha v0.3.1
+   Compiling rustc_version v0.4.1
+   Compiling rand v0.8.8
+    Checking num-integer v0.1.47
+   Compiling synstructure v0.13.2
+   Compiling manyhow v0.11.4
+   Compiling ar_archive_writer v0.5.3
+    Checking windows-sys v0.61.2
+   Compiling unicode-general-category v1.1.0
+   Compiling phf_generator v0.11.3
+   Compiling serde_derive v1.0.229
+   Compiling zerovec-derive v0.11.6
+   Compiling displaydoc v0.2.7
+   Compiling thiserror-impl v2.0.20
+   Compiling phf_codegen v0.11.3
+   Compiling unicode_names2_generator v1.3.0
+    Checking regex-automata v0.4.18
+   Compiling libm v0.2.16
+   Compiling getrandom v0.3.4
+    Checking tinyvec_macros v0.1.1
+   Compiling radium v0.7.0
+   Compiling psm v0.1.32
+    Checking scopeguard v1.2.0
+    Checking utf8_iter v1.0.4
+    Checking lexical-util v1.0.7
+    Checking arrayvec v0.7.8
+    Checking lock_api v0.4.14
+   Compiling unicode_names2 v1.3.0
+    Checking tinyvec v1.13.2
+    Checking lexical-parse-integer v1.0.6
+   Compiling heapless v0.7.17
+    Checking phf v0.11.3
+   Compiling ahash v0.8.12
+error: failed to run custom build command for `psm v0.1.32`
+
+Caused by:
+  process didn't exit successfully: `/private/tmp/monty-native-study/msrv-target/debug/build/psm-95bbb9f293d95a66/build-script-build` (exit status: 1)
+  --- stdout
+  cargo:rustc-check-cfg=cfg(switchable_stack,asm,link_asm)
+  cargo:rerun-if-env-changed=VCINSTALLDIR
+  VCINSTALLDIR = None
+  cargo:rerun-if-env-changed=CC_x86_64-pc-windows-msvc
+  CC_x86_64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CC_x86_64_pc_windows_msvc
+  CC_x86_64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=TARGET_CC
+  TARGET_CC = None
+  cargo:rerun-if-env-changed=CC
+  CC = None
+  cargo:rerun-if-env-changed=CROSS_COMPILE
+  CROSS_COMPILE = None
+  cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=TARGET_CFLAGS
+  TARGET_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64_pc_windows_msvc
+  CFLAGS_x86_64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64-pc-windows-msvc
+  CFLAGS_x86_64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=TARGET_CFLAGS
+  TARGET_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64_pc_windows_msvc
+  CFLAGS_x86_64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64-pc-windows-msvc
+  CFLAGS_x86_64-pc-windows-msvc = None
+  cargo:rustc-cfg=asm
+  cargo:rustc-cfg=link_asm
+  cargo:rerun-if-env-changed=CC_FORCE_DISABLE
+  CC_FORCE_DISABLE = None
+  cargo:rerun-if-env-changed=VCINSTALLDIR
+  VCINSTALLDIR = None
+  cargo:rerun-if-env-changed=CC_x86_64-pc-windows-msvc
+  CC_x86_64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CC_x86_64_pc_windows_msvc
+  CC_x86_64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=TARGET_CC
+  TARGET_CC = None
+  cargo:rerun-if-env-changed=CC
+  CC = None
+  cargo:rerun-if-env-changed=CROSS_COMPILE
+  CROSS_COMPILE = None
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=TARGET_CFLAGS
+  TARGET_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64_pc_windows_msvc
+  CFLAGS_x86_64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64-pc-windows-msvc
+  CFLAGS_x86_64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=AR_x86_64-pc-windows-msvc
+  AR_x86_64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=AR_x86_64_pc_windows_msvc
+  AR_x86_64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=TARGET_AR
+  TARGET_AR = None
+  cargo:rerun-if-env-changed=AR
+  AR = None
+  cargo:rerun-if-env-changed=VCINSTALLDIR
+  VCINSTALLDIR = None
+  cargo:rerun-if-env-changed=CC_x86_64-pc-windows-msvc
+  CC_x86_64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CC_x86_64_pc_windows_msvc
+  CC_x86_64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=TARGET_CC
+  TARGET_CC = None
+  cargo:rerun-if-env-changed=CC
+  CC = None
+  cargo:rerun-if-env-changed=CROSS_COMPILE
+  CROSS_COMPILE = None
+  cargo:rerun-if-env-changed=VCINSTALLDIR
+  VCINSTALLDIR = None
+  cargo:rerun-if-env-changed=ARFLAGS
+  ARFLAGS = None
+  cargo:rerun-if-env-changed=TARGET_ARFLAGS
+  TARGET_ARFLAGS = None
+  cargo:rerun-if-env-changed=ARFLAGS_x86_64_pc_windows_msvc
+  ARFLAGS_x86_64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=ARFLAGS_x86_64-pc-windows-msvc
+  ARFLAGS_x86_64-pc-windows-msvc = None
+
+  --- stderr
+
+
+  error occurred in cc-rs: failed to find tool "lib.exe": No such file or directory (os error 2)
+
+
+warning: build failed, waiting for other jobs to finish...
+warning: stacker@0.1.25: src/arch/windows.c:1:10: fatal error: 'windows.h' file not found
+warning: stacker@0.1.25:     1 | #include <windows.h>
+warning: stacker@0.1.25:       |          ^~~~~~~~~~~
+warning: stacker@0.1.25: 1 error generated.
+error: failed to run custom build command for `stacker v0.1.25`
+
+Caused by:
+  process didn't exit successfully: `/private/tmp/monty-native-study/msrv-target/debug/build/stacker-5d68b656a1317727/build-script-build` (exit status: 1)
+  --- stdout
+  cargo:rerun-if-env-changed=CC_FORCE_DISABLE
+  CC_FORCE_DISABLE = None
+  cargo:rerun-if-env-changed=VCINSTALLDIR
+  VCINSTALLDIR = None
+  cargo:rerun-if-env-changed=CC_x86_64-pc-windows-msvc
+  CC_x86_64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CC_x86_64_pc_windows_msvc
+  CC_x86_64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=TARGET_CC
+  TARGET_CC = None
+  cargo:rerun-if-env-changed=CC
+  CC = None
+  cargo:rerun-if-env-changed=CROSS_COMPILE
+  CROSS_COMPILE = None
+  cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=TARGET_CFLAGS
+  TARGET_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64_pc_windows_msvc
+  CFLAGS_x86_64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64-pc-windows-msvc
+  CFLAGS_x86_64-pc-windows-msvc = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=TARGET_CFLAGS
+  TARGET_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64_pc_windows_msvc
+  CFLAGS_x86_64_pc_windows_msvc = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64-pc-windows-msvc
+  CFLAGS_x86_64-pc-windows-msvc = None
+  cargo:warning=src/arch/windows.c:1:10: fatal error: 'windows.h' file not found
+  cargo:warning=    1 | #include <windows.h>
+  cargo:warning=      |          ^~~~~~~~~~~
+  cargo:warning=1 error generated.
+
+  --- stderr
+
+
+  error occurred in cc-rs: command did not execute successfully (status code exit status: 1): LC_ALL="C" "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-g" "-fno-omit-frame-pointer" "-mno-omit-leaf-frame-pointer" "-m64" "--target=x86_64-pc-windows-msvc" "-I" "src/arch" "-Wall" "-Wextra" "-DWINDOWS" "-o" "/private/tmp/monty-native-study/msrv-target/x86_64-pc-windows-msvc/debug/build/stacker-b3ce0e68eea522fc/out/2d87c5a413c3c6c5-windows.o" "-c" "src/arch/windows.c"
+
+

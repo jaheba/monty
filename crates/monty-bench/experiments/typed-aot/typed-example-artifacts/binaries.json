@@ -1,0 +1,10 @@
+{
+  "typed_aot": {
+    "sha256": "af3503d94a820f9507b724a180d4b41615abb4473c19ae69c0ef2cbe9324ea2d",
+    "bytes": 7136032
+  },
+  "aot_differential": {
+    "sha256": "373e874b4209586d7494032ebb619a0583fe7cb956a294d1cdc8b32ae231f193",
+    "bytes": 7400432
+  }
+}

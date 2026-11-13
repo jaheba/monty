@@ -1,0 +1,27 @@
+{
+  "liveness-full-tests.log": {
+    "passed": 908,
+    "failed": 0,
+    "ignored": 2
+  },
+  "liveness-fusion-tests.log": {
+    "passed": 9,
+    "failed": 0,
+    "ignored": 0
+  },
+  "liveness-worker-tests.log": {
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0
+  },
+  "liveness-fixtures.log": {
+    "passed": 642,
+    "failed": 0,
+    "ignored": 0
+  },
+  "liveness-msrv-tests.log": {
+    "passed": 30,
+    "failed": 0,
+    "ignored": 0
+  }
+}

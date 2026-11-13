@@ -1,0 +1,193 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Performance changes</title><style>
+:root{color-scheme:light dark;--ink:#172b3a;--accent:#087ca7;--sky:#dff3ff;--circus-red:#c92b38;--paper:#fffdf9;--page:#eef3f6;--card-shadow:0 12px 36px #172b3a14;--stripe-white:#fffdf9;--table:#fff;--header-ink:#16405a;--line:#dfedf5;--outline:#bddded;--row:#f4faff;--hover:#e9f6ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:15px/1.6 system-ui,sans-serif}
+main{width:calc(100% - 48px);max-width:1180px;min-width:0;overflow-wrap:anywhere;position:relative;z-index:1;margin:-64px auto;padding:38px max(4vw,24px) 70px;background:var(--paper);border:1px solid var(--outline);border-top:5px solid #64c7f2;border-radius:8px;box-shadow:var(--card-shadow)}
+body::before,body::after{content:"";display:block;height:112px;background:repeating-linear-gradient(90deg,var(--circus-red) 0 24px,var(--stripe-white) 24px 48px)}
+h1{font:700 36px/1.2 Georgia,serif;letter-spacing:-.025em;margin:0 0 24px}
+h2{font-size:21px;margin:40px 0 16px}
+p{max-width:960px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(270px,100%),1fr));gap:16px 30px;margin:24px 0}
+.facts div{border-bottom:1px solid var(--line);padding-bottom:10px}
+.facts dt{font:700 11px ui-monospace,monospace;text-transform:uppercase;color:var(--accent)}
+.facts dd{margin:6px 0 0;font:13px/1.6 ui-monospace,monospace}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+details{margin-top:24px}summary{cursor:pointer;color:var(--accent)}
+.table-wrap{max-width:100%;overflow-x:auto;margin:20px 0 40px;border:1px solid var(--outline);border-radius:8px;overflow-wrap:normal}
+table{border-collapse:collapse;width:100%;background:var(--table);font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;font-variant-numeric:tabular-nums}
+th,td{text-align:center;padding:14px 18px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--sky);color:var(--header-ink);font-size:12px}
+.runtime-info{font:13px/1.6 ui-monospace,monospace;color:var(--ink)}
+table:not(.startup) th:first-child,table:not(.startup) td:first-child{text-align:left}
+td:first-child{font-weight:500}
+td.unavailable{text-align:center}
+tbody tr:nth-child(even){background:var(--row)}
+tbody tr:hover{background:var(--hover)}
+td[title]{cursor:help;text-decoration:underline dotted;text-underline-offset:4px}
+th button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+th button+button{margin-left:12px}
+th button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+th .sort-controls{display:block;margin-top:6px;font-size:10px;font-weight:400}
+strong{font-weight:800}
+code{font-size:12px;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+.diff-filter{display:flex;align-items:center;flex-wrap:wrap;gap:12px 24px;margin-top:24px}
+.diff-filter label{cursor:pointer}.diff-filter input{accent-color:var(--accent);margin-right:8px}
+#benchmark-count{font-size:13px;color:var(--accent)}
+.chart-legend{font-size:12px;color:var(--accent)}
+.inline-measurement{display:inline-flex;align-items:center;gap:7px}
+.inline-chart{display:inline-block;position:relative;width:9px;height:28px;background:var(--row);border-radius:2px;vertical-align:middle}
+.chart-bar{position:absolute;left:0;width:100%;background:var(--accent);border-radius:2px}
+.inline-chart.better .chart-bar{background:#269bd0}
+.inline-chart.worse .chart-bar{background:#dd5967}
+.chart-reference{position:absolute;bottom:50%;left:-2px;right:-2px;border-top:1px solid var(--ink);z-index:1}
+@media(max-width:850px){th,td{padding:12px}main{width:calc(100% - 24px);margin:-64px auto;padding:26px 18px 40px}h1{font-size:28px}}
+@media(max-width:600px){main{padding:24px 12px 32px}h2{font-size:18px}th,td{padding:10px 12px}table:not(.startup) th:first-child,table:not(.startup) td:first-child{position:sticky;left:0;z-index:1;min-width:120px;max-width:150px;white-space:normal;overflow-wrap:anywhere;background:var(--table);border-right:1px solid var(--outline)}table:not(.startup) th:first-child{background:var(--sky)}table:not(.startup) tbody tr:nth-child(even) td:first-child{background:var(--row)}table:not(.startup) tbody tr:hover td:first-child{background:var(--hover)}}
+@media screen and (prefers-color-scheme:dark){:root{--ink:#e5edf3;--accent:#7dd3fc;--sky:#203a4e;--circus-red:#8c3a46;--paper:#17212b;--page:#0e151d;--card-shadow:0 12px 36px #0004;--stripe-white:#c8c3ba;--table:#1c2936;--header-ink:#d3efff;--line:#344b5c;--outline:#456174;--row:#20303e;--hover:#294255}}
+@media print{:root{color-scheme:light}body::before,body::after{display:none}body{background:white;border:0}main{width:100%;max-width:none;margin:0;padding:20px;border:0;box-shadow:none}th{background:#eee;color:#222}}
+</style></head><body><main><h1>Performance changes</h1><dl class="facts"><div><dt>CPU</dt><dd>arm · 10 logical CPUs</dd></div><div><dt>OS</dt><dd>macOS-27.0-arm64-arm-64bit-Mach-O</dd></div><div><dt>Samples</dt><dd>15</dd></div><div><dt>Parallel jobs</dt><dd>1</dd></div><div><dt>Run duration</dt><dd>1m 14s</dd></div></dl><details><summary>Measurement details</summary><dl class="facts"><div><dt>Repeated warmups</dt><dd>3</dd></div><div><dt>Timing</dt><dd>Median ms · one-shot / repeated · startup excluded</dd></div><div><dt>RSS</dt><dd>Median MiB · separate one-shot processes including startup</dd></div><div><dt>Startup</dt><dd>Empty -c command · launch through exit · normal defaults</dd></div><div><dt>Sort</dt><dd>Percentage advantage vs chart reference · largest improvement first; click headers to reorder</dd></div><div><dt>Reference</dt><dd>baseline</dd></div><div><dt>Threshold</dt><dd>1% and 0.01 ms for timings</dd></div><div><dt>Evidence</dt><dd>Bootstrap median-ratio bounds · 95% family level · Bonferroni correction</dd></div></dl></details><p class="runtime-info">baseline: Monty 1.0.1 · typed: Monty 1.0.1 · CPython 3.15.0</p><details><summary>Runtimes and build details</summary><p><strong>baseline</strong> · monty · monty-runtime 1.0.1<br>/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-artifacts/bin/monty --no-native<br>Source revision and compiler flags unverified<br><code>adaf0f707b4387f2fcc60b66bef96cad3334c7f3974e96e31cd818e0c2153ea4</code></p><p><strong>typed</strong> · monty · monty-runtime 1.0.1<br>/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/sequence-artifacts/bin/monty --aot<br>Source revision and compiler flags unverified<br><code>adaf0f707b4387f2fcc60b66bef96cad3334c7f3974e96e31cd818e0c2153ea4</code></p><p><strong>CPython</strong> · cpython · Python 3.15.0<br>/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/bin/python3.15 <br>Source revision and compiler flags unverified<br><code>15c72833c1ffc09bc4e05d1e1866784d126721ad548d9c4d8f943641262535cb</code></p></details><p>Reference: baseline · 14 changes or failures · 9 inconclusive</p><div class="diff-filter"><label><input type="checkbox" id="significant-only"> Significant changes only</label><span id="benchmark-count" role="status" aria-live="polite"></span></div><details><summary>Comparison evidence</summary><p>The checkbox filters to meaningful changes, failures or compatibility changes. Paired values include both modes for context. All classifications and confidence bounds are retained in diff.json.</p></details><section data-diff-section><h2>Process startup · ms</h2><div class="table-wrap"><table class="startup"><thead><tr><th>baseline</th><th>typed</th><th>CPython</th></tr></thead><tbody><tr data-significant="false"><td data-runtime="baseline" data-values="[0.006667333]" data-metric="startup"><span class="inline-measurement"><strong>6.67</strong></span></td><td data-runtime="typed" data-values="[0.007708209]" data-metric="startup"><span class="inline-measurement">7.71<span class="inline-chart worse" role="img" aria-label="startup: +15.61% vs baseline runtime (1.16×); lower is faster" title="startup: +15.61% vs baseline runtime (1.16×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:30.322128%;height:19.677872%"></i></span></span></td><td data-runtime="CPython" data-values="[0.025307459]" data-metric="startup"><span class="inline-measurement">25.3<span class="inline-chart worse" role="img" aria-label="startup: +279.57% vs baseline runtime (3.8×); lower is faster" title="startup: +279.57% vs baseline runtime (3.8×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:0.000000%;height:50.000000%"></i></span></span></td></tr></tbody></table></div></section><section data-diff-section><h2>Runtime · ms · one-shot / repeated</h2><p class="chart-legend">Bars: baseline = midpoint · blue above = faster, red below = slower · shared asinh scale (5% transition)</p><div class="table-wrap"><table data-paired="true"><thead><tr><th>Workload</th><th>baseline</th><th>typed</th><th>CPython</th></tr></thead><tbody><tr data-benchmark="perf_unpack_sequence" data-significant="true"><td>perf_unpack_sequence</td><td data-runtime="baseline" data-values="[0.319586583, 0.321445875]" data-metric="runtime" data-one-shot="320" data-repeated="321" data-relative-one-shot="1.0" data-relative-repeated="1.0">320 / 321</td><td title="one-shot: improvement -95.73%; repeated: improvement -95.88%" data-runtime="typed" data-values="[0.013654625, 0.013228083]" data-metric="runtime" data-one-shot="13.7" data-repeated="13.2" data-relative-one-shot="0.04272590191935561" data-relative-repeated="0.04115182066032112"><span class="inline-measurement"><strong>13.7</strong><span class="inline-chart better" role="img" aria-label="one-shot: -95.73% vs baseline runtime (0.0427×); lower is faster" title="one-shot: -95.73% vs baseline runtime (0.0427×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:49.977509%"></i></span></span> / <span class="inline-measurement"><strong>13.2</strong><span class="inline-chart better" role="img" aria-label="repeated: -95.88% vs baseline runtime (0.0412×); lower is faster" title="repeated: -95.88% vs baseline runtime (0.0412×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:50.000000%"></i></span></span></td><td title="one-shot: improvement -94.19%; repeated: improvement -94.56%" data-runtime="CPython" data-values="[0.018565458, 0.017498333]" data-metric="runtime" data-one-shot="18.6" data-repeated="17.5" data-relative-one-shot="0.05809210707697326" data-relative-repeated="0.05443632773324592"><span class="inline-measurement">18.6<span class="inline-chart better" role="img" aria-label="one-shot: -94.19% vs baseline runtime (0.0581×); lower is faster" title="one-shot: -94.19% vs baseline runtime (0.0581×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:49.755991%"></i></span></span> / <span class="inline-measurement">17.5<span class="inline-chart better" role="img" aria-label="repeated: -94.56% vs baseline runtime (0.0544×); lower is faster" title="repeated: -94.56% vs baseline runtime (0.0544×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:49.809017%"></i></span></span></td></tr><tr data-benchmark="game_spectral_norm" data-significant="true"><td>game_spectral_norm</td><td data-runtime="baseline" data-values="[0.311787625, 0.314494208]" data-metric="runtime" data-one-shot="312" data-repeated="314" data-relative-one-shot="1.0" data-relative-repeated="1.0">312 / 314</td><td title="one-shot: regression +4.73%; repeated: regression +1.06%" data-runtime="typed" data-values="[0.326549125, 0.317828208]" data-metric="runtime" data-one-shot="327" data-repeated="318" data-relative-one-shot="1.0473447270397598" data-relative-repeated="1.0106011491314968"><span class="inline-measurement">327<span class="inline-chart worse" role="img" aria-label="one-shot: +4.73% vs baseline runtime (1.05×); lower is faster" title="one-shot: +4.73% vs baseline runtime (1.05×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:38.439874%;height:11.560126%"></i></span></span> / <span class="inline-measurement">318<span class="inline-chart worse" role="img" aria-label="repeated: +1.06% vs baseline runtime (1.01×); lower is faster" title="repeated: +1.06% vs baseline runtime (1.01×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:47.114960%;height:2.885040%"></i></span></span></td><td title="one-shot: improvement -78.31%; repeated: improvement -78.80%" data-runtime="CPython" data-values="[0.067627625, 0.066684584]" data-metric="runtime" data-one-shot="67.6" data-repeated="66.7" data-relative-one-shot="0.21690285174082838" data-relative-repeated="0.21203755841506627"><span class="inline-measurement"><strong>67.6</strong><span class="inline-chart better" role="img" aria-label="one-shot: -78.31% vs baseline runtime (0.217×); lower is faster" title="one-shot: -78.31% vs baseline runtime (0.217×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:47.229123%"></i></span></span> / <span class="inline-measurement"><strong>66.7</strong><span class="inline-chart better" role="img" aria-label="repeated: -78.80% vs baseline runtime (0.212×); lower is faster" title="repeated: -78.80% vs baseline runtime (0.212×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:47.313854%"></i></span></span></td></tr><tr data-benchmark="perf_float" data-significant="true"><td>perf_float</td><td data-runtime="baseline" data-values="[0.229582875, 0.224399292]" data-metric="runtime" data-one-shot="230" data-repeated="224" data-relative-one-shot="1.0" data-relative-repeated="1.0">230 / 224</td><td title="one-shot: unchanged -0.25%; repeated: unchanged -0.10%" data-runtime="typed" data-values="[0.229001541, 0.224167]" data-metric="runtime" data-one-shot="229" data-repeated="224" data-relative-one-shot="0.9974678686291388" data-relative-repeated="0.9989648273934839"><span class="inline-measurement">229<span class="inline-chart better" role="img" aria-label="one-shot: -0.25% vs baseline runtime (0.997×); lower is faster" title="one-shot: -0.25% vs baseline runtime (0.997×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:0.693907%"></i></span></span> / <span class="inline-measurement">224<span class="inline-chart better" role="img" aria-label="repeated: -0.10% vs baseline runtime (0.999×); lower is faster" title="repeated: -0.10% vs baseline runtime (0.999×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:0.283780%"></i></span></span></td><td title="one-shot: improvement -77.32%; repeated: improvement -78.08%" data-runtime="CPython" data-values="[0.052061041, 0.049178625]" data-metric="runtime" data-one-shot="52.1" data-repeated="49.2" data-relative-one-shot="0.2267636076950426" data-relative-repeated="0.219156774344903"><span class="inline-measurement"><strong>52.1</strong><span class="inline-chart better" role="img" aria-label="one-shot: -77.32% vs baseline runtime (0.227×); lower is faster" title="one-shot: -77.32% vs baseline runtime (0.227×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:47.055775%"></i></span></span> / <span class="inline-measurement"><strong>49.2</strong><span class="inline-chart better" role="img" aria-label="repeated: -78.08% vs baseline runtime (0.219×); lower is faster" title="repeated: -78.08% vs baseline runtime (0.219×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:47.189692%"></i></span></span></td></tr><tr data-benchmark="ticket_search" data-significant="true"><td>ticket_search</td><td data-runtime="baseline" data-values="[0.027553458, 0.027040542]" data-metric="runtime" data-one-shot="27.6" data-repeated="27.0" data-relative-one-shot="1.0" data-relative-repeated="1.0">27.6 / 27.0</td><td title="one-shot: unchanged -0.43%; repeated: unchanged -0.81%" data-runtime="typed" data-values="[0.027435875, 0.026820667]" data-metric="runtime" data-one-shot="27.4" data-repeated="26.8" data-relative-one-shot="0.9957325501575882" data-relative-repeated="0.9918686910935438"><span class="inline-measurement">27.4<span class="inline-chart better" role="img" aria-label="one-shot: -0.43% vs baseline runtime (0.996×); lower is faster" title="one-shot: -0.43% vs baseline runtime (0.996×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:1.168538%"></i></span></span> / <span class="inline-measurement">26.8<span class="inline-chart better" role="img" aria-label="repeated: -0.81% vs baseline runtime (0.992×); lower is faster" title="repeated: -0.81% vs baseline runtime (0.992×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:2.219550%"></i></span></span></td><td title="one-shot: improvement -65.62%; repeated: improvement -74.84%" data-runtime="CPython" data-values="[0.009474, 0.006804625]" data-metric="runtime" data-one-shot="9.47" data-repeated="6.80" data-relative-one-shot="0.3438406896150748" data-relative-repeated="0.251645288766771"><span class="inline-measurement"><strong>9.47</strong><span class="inline-chart better" role="img" aria-label="one-shot: -65.62% vs baseline runtime (0.344×); lower is faster" title="one-shot: -65.62% vs baseline runtime (0.344×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:44.810747%"></i></span></span> / <span class="inline-measurement"><strong>6.80</strong><span class="inline-chart better" role="img" aria-label="repeated: -74.84% vs baseline runtime (0.252×); lower is faster" title="repeated: -74.84% vs baseline runtime (0.252×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:46.608387%"></i></span></span></td></tr><tr data-benchmark="capacity_planning" data-significant="true"><td>capacity_planning</td><td data-runtime="baseline" data-values="[0.035225958, 0.034544959]" data-metric="runtime" data-one-shot="35.2" data-repeated="34.5" data-relative-one-shot="1.0" data-relative-repeated="1.0">35.2 / 34.5</td><td title="one-shot: unchanged -0.54%; repeated: unchanged -0.65%" data-runtime="typed" data-values="[0.035037459, 0.034319333]" data-metric="runtime" data-one-shot="35.0" data-repeated="34.3" data-relative-one-shot="0.9946488609337466" data-relative-repeated="0.9934686273618099"><span class="inline-measurement">35.0<span class="inline-chart better" role="img" aria-label="one-shot: -0.54% vs baseline runtime (0.995×); lower is faster" title="one-shot: -0.54% vs baseline runtime (0.995×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:1.464270%"></i></span></span> / <span class="inline-measurement">34.3<span class="inline-chart better" role="img" aria-label="repeated: -0.65% vs baseline runtime (0.993×); lower is faster" title="repeated: -0.65% vs baseline runtime (0.993×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:1.785572%"></i></span></span></td><td title="one-shot: improvement -72.05%; repeated: improvement -74.22%" data-runtime="CPython" data-values="[0.009844292, 0.008907125]" data-metric="runtime" data-one-shot="9.84" data-repeated="8.91" data-relative-one-shot="0.2794612995337131" data-relative-repeated="0.257841527616229"><span class="inline-measurement"><strong>9.84</strong><span class="inline-chart better" role="img" aria-label="one-shot: -72.05% vs baseline runtime (0.279×); lower is faster" title="one-shot: -72.05% vs baseline runtime (0.279×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:46.090360%"></i></span></span> / <span class="inline-measurement"><strong>8.91</strong><span class="inline-chart better" role="img" aria-label="repeated: -74.22% vs baseline runtime (0.258×); lower is faster" title="repeated: -74.22% vs baseline runtime (0.258×); lower is faster"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:46.494671%"></i></span></span></td></tr></tbody></table></div></section><section data-diff-section><h2>Peak RSS · MiB · one-shot</h2><p class="chart-legend">Bars: baseline = midpoint · blue above = less memory, red below = more memory · shared asinh scale (5% transition)</p><div class="table-wrap"><table><thead><tr><th>Workload</th><th>baseline</th><th>typed</th><th>CPython</th></tr></thead><tbody><tr data-benchmark="perf_float" data-significant="false"><td>perf_float</td><td data-runtime="baseline" data-values="[60194816]" data-metric="RSS" data-relative="1.0">57.4</td><td title="one-shot: unchanged -0.52%" data-runtime="typed" data-values="[59883520]" data-metric="RSS" data-relative="0.9948285247686446"><span class="inline-measurement">57.1<span class="inline-chart better" role="img" aria-label="one-shot: -0.52% vs baseline RSS (0.995×); lower is less memory" title="one-shot: -0.52% vs baseline RSS (0.995×); lower is less memory"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:1.551125%"></i></span></span></td><td title="one-shot: inconclusive -43.11%" data-runtime="CPython" data-values="[34242560]" data-metric="RSS" data-relative="0.5688622754491018"><span class="inline-measurement"><strong>32.7</strong><span class="inline-chart better" role="img" aria-label="one-shot: -43.11% vs baseline RSS (0.569×); lower is less memory" title="one-shot: -43.11% vs baseline RSS (0.569×); lower is less memory"><i class="chart-reference"></i><i class="chart-bar" style="bottom:50.000000%;height:42.830697%"></i></span></span></td></tr><tr data-benchmark="capacity_planning" data-significant="false"><td>capacity_planning</td><td data-runtime="baseline" data-values="[15597568]" data-metric="RSS" data-relative="1.0"><strong>14.9</strong></td><td title="one-shot: unchanged +0.11%" data-runtime="typed" data-values="[15613952]" data-metric="RSS" data-relative="1.0010504201680672"><span class="inline-measurement"><strong>14.9</strong><span class="inline-chart worse" role="img" aria-label="one-shot: +0.11% vs baseline RSS (1×); lower is less memory" title="one-shot: +0.11% vs baseline RSS (1×); lower is less memory"><i class="chart-reference"></i><i class="chart-bar" style="bottom:49.684402%;height:0.315598%"></i></span></span></td><td title="one-shot: inconclusive +17.96%" data-runtime="CPython" data-values="[18399232]" data-metric="RSS" data-relative="1.1796218487394958"><span class="inline-measurement">17.5<span class="inline-chart worse" role="img" aria-label="one-shot: +17.96% vs baseline RSS (1.18×); lower is less memory" title="one-shot: +17.96% vs baseline RSS (1.18×); lower is less memory"><i class="chart-reference"></i><i class="chart-bar" style="bottom:20.090903%;height:29.909097%"></i></span></span></td></tr><tr data-benchmark="ticket_search" data-significant="false"><td>ticket_search</td><td data-runtime="baseline" data-values="[14712832]" data-metric="RSS" data-relative="1.0"><strong>14.0</strong></td><td title="one-shot: unchanged +0.22%" data-runtime="typed" data-values="[14745600]" data-metric="RSS" data-relative="1.0022271714922049"><span class="inline-measurement">14.1<span class="inline-chart worse" role="img" aria-label="one-shot: +0.22% vs baseline RSS (1×); lower is less memory" title="one-shot: +0.22% vs baseline RSS (1×); lower is less memory"><i class="chart-reference"></i><i class="chart-bar" style="bottom:49.331019%;height:0.668981%"></i></span></span></td><td title="one-shot: inconclusive +24.61%" data-runtime="CPython" data-values="[18333696]" data-metric="RSS" data-relative="1.2461024498886415"><span class="inline-measurement">17.5<span class="inline-chart worse" role="img" aria-label="one-shot: +24.61% vs baseline RSS (1.25×); lower is less memory" title="one-shot: +24.61% vs baseline RSS (1.25×); lower is less memory"><i class="chart-reference"></i><i class="chart-bar" style="bottom:15.490297%;height:34.509703%"></i></span></span></td></tr><tr data-benchmark="game_spectral_norm" data-significant="false"><td>game_spectral_norm</td><td data-runtime="baseline" data-values="[11386880]" data-metric="RSS" data-relative="1.0"><strong>10.9</strong></td><td title="one-shot: inconclusive +1.58%" data-runtime="typed" data-values="[11567104]" data-metric="RSS" data-relative="1.0158273381294964"><span class="inline-measurement">11.0<span class="inline-chart worse" role="img" aria-label="one-shot: +1.58% vs baseline RSS (1.02×); lower is less memory" title="one-shot: +1.58% vs baseline RSS (1.02×); lower is less memory"><i class="chart-reference"></i><i class="chart-bar" style="bottom:45.320373%;height:4.679627%"></i></span></span></td><td title="one-shot: inconclusive +44.03%" data-runtime="CPython" data-values="[16400384]" data-metric="RSS" data-relative="1.4402877697841727"><span class="inline-measurement">15.6<span class="inline-chart worse" role="img" aria-label="one-shot: +44.03% vs baseline RSS (1.44×); lower is less memory" title="one-shot: +44.03% vs baseline RSS (1.44×); lower is less memory"><i class="chart-reference"></i><i class="chart-bar" style="bottom:6.855851%;height:43.144149%"></i></span></span></td></tr><tr data-benchmark="perf_unpack_sequence" data-significant="false"><td>perf_unpack_sequence</td><td data-runtime="baseline" data-values="[12189696]" data-metric="RSS" data-relative="1.0"><strong>11.6</strong></td><td title="one-shot: inconclusive +5.11%" data-runtime="typed" data-values="[12812288]" data-metric="RSS" data-relative="1.0510752688172043"><span class="inline-measurement">12.2<span class="inline-chart worse" role="img" aria-label="one-shot: +5.11% vs baseline RSS (1.05×); lower is less memory" title="one-shot: +5.11% vs baseline RSS (1.05×); lower is less memory"><i class="chart-reference"></i><i class="chart-bar" style="bottom:36.531375%;height:13.468625%"></i></span></span></td><td title="one-shot: inconclusive +69.62%" data-runtime="CPython" data-values="[20676608]" data-metric="RSS" data-relative="1.696236559139785"><span class="inline-measurement">19.7<span class="inline-chart worse" role="img" aria-label="one-shot: +69.62% vs baseline RSS (1.7×); lower is less memory" title="one-shot: +69.62% vs baseline RSS (1.7×); lower is less memory"><i class="chart-reference"></i><i class="chart-bar" style="bottom:0.000000%;height:50.000000%"></i></span></span></td></tr></tbody></table></div></section></main>
+<script>
+document.querySelectorAll('table').forEach(table => {
+  const body = table.tBodies[0];
+  if (!body) return;
+  const headers = Array.from(table.querySelectorAll('thead th'));
+  headers.forEach((header, column) => {
+    const version = header.querySelector('.runtime-version');
+    if (version) version.remove();
+    const label = header.textContent.trim();
+    const paired = table.dataset.paired === 'true' && column > 0;
+    if (paired) {
+      header.textContent = label;
+      if (version) header.append(version);
+      const controls = document.createElement('span');
+      controls.className = 'sort-controls';
+      header.append(controls);
+    } else header.textContent = '';
+    const target = paired ? header.querySelector('.sort-controls') : header;
+    (paired ? ['oneShot', 'repeated'] : ['']).forEach(part => {
+      const button = document.createElement('button');
+      const name = part === 'oneShot' ? 'One-shot' : part === 'repeated' ? 'Repeated' : label;
+      button.type = 'button';
+      button.dataset.label = name;
+      button.textContent = name + ' ↕';
+      button.setAttribute('aria-label', 'Sort ' + label + (part ? ' ' + name : ''));
+      target.append(button);
+      button.addEventListener('click', () => {
+        const ascending = button.dataset.direction !== 'ascending';
+        headers.forEach(h => {
+          h.removeAttribute('aria-sort');
+          h.querySelectorAll('button').forEach(b => {
+            delete b.dataset.direction;
+            b.textContent = b.dataset.label + ' ↕';
+          });
+        });
+        button.dataset.direction = ascending ? 'ascending' : 'descending';
+        header.setAttribute('aria-sort', ascending ? 'ascending' : 'descending');
+        button.textContent = name + (ascending ? ' ↑' : ' ↓');
+        const rows = Array.from(body.rows);
+        rows.sort((a, b) => {
+          const cell = row => {
+            const td = row.cells[column];
+            const relative = part === 'oneShot' ? 'relativeOneShot' : part === 'repeated' ? 'relativeRepeated' : 'relative';
+            if (Object.hasOwn(td.dataset, relative)) return td.dataset[relative];
+            return part ? td.dataset[part] : td.textContent.trim();
+          };
+          const x = cell(a), y = cell(b);
+          const missing = v => v === 'n/a' || v === '—' || v === '';
+          if (missing(x) || missing(y)) return Number(missing(x)) - Number(missing(y));
+          const number = v => Number(v.replace(/[%×]$/, ''));
+          const result = Number.isFinite(number(x)) && Number.isFinite(number(y))
+            ? number(x) - number(y) : x.localeCompare(y, undefined, {numeric:true});
+          return ascending ? result : -result;
+        });
+        body.append(...rows);
+      });
+    });
+    if (version && !paired) header.append(version);
+  });
+});
+const baselineSelector = document.getElementById('chart-baseline');
+if (baselineSelector) {
+  const updateBaseline = () => {
+    const reference = baselineSelector.value;
+    const label = baselineSelector.selectedOptions[0].textContent;
+    document.querySelectorAll('table').forEach(table => {
+      const cells = Array.from(table.querySelectorAll('td[data-values]'));
+      const ratios = new Map();
+      cells.forEach(cell => {
+        const baseline = Array.from(cell.parentElement.cells).find(td => td.dataset.runtime === reference);
+        const values = JSON.parse(cell.dataset.values);
+        const denominators = baseline ? JSON.parse(baseline.dataset.values) : [];
+        ratios.set(cell, values.map((v, i) => v > 0 && denominators[i] > 0 ? v / denominators[i] : null));
+      });
+      const extent = Math.max(1, ...Array.from(ratios.values()).flat().filter(v => v !== null).map(v => Math.abs(Math.asinh((v - 1) / .05))));
+      cells.forEach(cell => {
+        cell.querySelectorAll('.inline-chart').forEach(chart => chart.remove());
+        let spans = Array.from(cell.querySelectorAll('.inline-measurement'));
+        const values = ratios.get(cell);
+        if (!spans.length) {
+          const parts = cell.innerHTML.split(' / ');
+          cell.innerHTML = '';
+          values.forEach((_, i) => {
+            if (i) cell.append(' / ');
+            const span = document.createElement('span');
+            span.className = 'inline-measurement';
+            span.innerHTML = parts[i] || parts[0];
+            cell.append(span);
+          });
+          spans = Array.from(cell.querySelectorAll('.inline-measurement'));
+        }
+        values.forEach((ratio, i) => {
+          const mode = cell.dataset.metric === 'startup' ? 'startup' : i ? 'repeated' : 'one-shot';
+          const attribute = values.length > 1 ? i ? 'relativeRepeated' : 'relativeOneShot' : 'relative';
+          cell.dataset[attribute] = ratio === null ? '' : ratio;
+          if (ratio === null || cell.dataset.runtime === reference) return;
+          const offset = 50 * Math.asinh((ratio - 1) / .05) / extent;
+          const chart = document.createElement('span');
+          chart.className = 'inline-chart ' + (ratio < 1 ? 'better' : ratio > 1 ? 'worse' : 'equal');
+          const description = mode + ': ' + ((ratio - 1) * 100).toFixed(2) + '% vs ' + label + ' ' + cell.dataset.metric + ' (' + ratio.toPrecision(3) + '×); lower is better';
+          chart.setAttribute('role', 'img');
+          chart.setAttribute('aria-label', description);
+          chart.title = description;
+          chart.innerHTML = '<i class="chart-reference"></i><i class="chart-bar"></i>';
+          const bar = chart.lastElementChild;
+          bar.style.bottom = (50 + Math.min(0, -offset)) + '%';
+          bar.style.height = Math.abs(offset) + '%';
+          spans[i].append(chart);
+        });
+      });
+      const body = table.tBodies[0];
+      const advantage = row => Math.min(Infinity, ...Array.from(row.cells).filter(cell => cell.dataset.runtime !== reference).flatMap(cell => ratios.get(cell) || []).filter(v => v !== null));
+      body.append(...Array.from(body.rows).sort((a, b) => advantage(a) - advantage(b)));
+      table.querySelectorAll('th').forEach(header => {
+        header.removeAttribute('aria-sort');
+        header.querySelectorAll('button').forEach(button => {
+          delete button.dataset.direction;
+          button.textContent = button.dataset.label + ' ↕';
+        });
+      });
+      const legend = table.closest('section').querySelector('.chart-legend');
+      if (legend) legend.textContent = legend.textContent.replace(/^Bars: .*? = midpoint/, 'Bars: ' + label + ' = midpoint');
+    });
+  };
+  baselineSelector.addEventListener('change', updateBaseline);
+}
+const filter = document.getElementById('significant-only');
+if (filter) {
+  const rows = Array.from(document.querySelectorAll('tr[data-significant]'));
+  const benchmarkRows = rows.filter(row => row.dataset.benchmark !== undefined);
+  const total = new Set(benchmarkRows.map(row => row.dataset.benchmark)).size;
+  const update = () => {
+    rows.forEach(row => { row.hidden = filter.checked && row.dataset.significant !== 'true'; });
+    document.querySelectorAll('[data-diff-section]').forEach(section => {
+      section.hidden = !Array.from(section.querySelectorAll('tbody tr')).some(row => !row.hidden);
+    });
+    const visible = new Set(benchmarkRows.filter(row => !row.hidden).map(row => row.dataset.benchmark)).size;
+    document.getElementById('benchmark-count').textContent = visible + ' of ' + total + ' benchmarks';
+  };
+  filter.addEventListener('change', update);
+  update();
+}
+</script>
+</body></html>

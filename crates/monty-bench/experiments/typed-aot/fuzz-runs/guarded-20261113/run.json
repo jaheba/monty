@@ -1,0 +1,27 @@
+{
+  "binary": "/private/tmp/monty-native-study/monty/crates/monty-bench/experiments/typed-aot/guarded-combined-artifacts/aot_differential",
+  "sha256": "7071333b9fd167db727663ed0c374c8c6554a1b9ca91245997c9819470bc0e90",
+  "count": 1000000,
+  "seed": 20261113,
+  "max_seconds": 300,
+  "skip_cases": 0,
+  "status": "passed",
+  "completed_cases": 1000000,
+  "seconds": 179.773,
+  "backend_returns": [
+    800900,
+    800900
+  ],
+  "backend_entries": [
+    1051551,
+    1051551
+  ],
+  "backend_fallbacks": [
+    824100,
+    824100
+  ],
+  "backend_fast_calls": [
+    67776,
+    67776
+  ]
+}

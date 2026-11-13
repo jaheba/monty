@@ -1,0 +1,57 @@
+[
+  {
+    "workload": "perf_unpack_sequence",
+    "original_sha256": "185b58df1b463b755a592cf390a45b5a720d3e07c55182554324c0f214558e41",
+    "typed_sha256": "b932742e5e239f62f44392ed693d54b1b994117c3fce1108313250e36ac8a567",
+    "only_annotations_changed": true,
+    "replacements": {
+      "def do_unpacking(loops, to_unpack):": "def do_unpacking(loops: int, to_unpack: tuple[int, ...] | list[int]) -> tuple[int, ...]:",
+      "def bench_tuple_unpacking(loops):": "def bench_tuple_unpacking(loops: int) -> tuple[int, ...]:",
+      "def bench_list_unpacking(loops):": "def bench_list_unpacking(loops: int) -> tuple[int, ...]:",
+      "def bench_all(loops):": "def bench_all(loops: int) -> tuple[int, ...]:"
+    }
+  },
+  {
+    "workload": "game_spectral_norm",
+    "original_sha256": "061d9fda1400f679758f86e5912bd916ffb185e97879e79262ddef23d2c74e50",
+    "typed_sha256": "b3961c3858ab9f9e01026a209208613b8a5996d5db423d56a74d5b1f120e3cee",
+    "only_annotations_changed": true,
+    "replacements": {
+      "def eval_A(i, j):": "def eval_A(i: int, j: int) -> float:",
+      "def part_A_times_u(i_u):": "def part_A_times_u(i_u: tuple[int, list[float]]) -> float:",
+      "def part_At_times_u(i_u):": "def part_At_times_u(i_u: tuple[int, list[float]]) -> float:",
+      "def bench_spectral_norm(loops):": "def bench_spectral_norm(loops: int) -> float:"
+    }
+  },
+  {
+    "workload": "capacity_planning",
+    "original_sha256": "fa79337d6de618a0e8aa5669a1e2b36dcf3b1684d586040542595cc576a37c09",
+    "typed_sha256": "88dc5d29c457d64c6735be5f8d8008e7e0f7ac3d78765ac007e110379c313156",
+    "only_annotations_changed": true,
+    "replacements": {
+      "def allocate(projects, budget):": "def allocate(projects: list[tuple[int, int]], budget: int) -> tuple[int, list[int]]:",
+      "def plan():": "def plan() -> None:"
+    }
+  },
+  {
+    "workload": "perf_float",
+    "original_sha256": "c4ac4462eaf28c23008f01230385ccca1077e7859700898cf733379b48af0a71",
+    "typed_sha256": "542193ceaa5a7521f5d3a5ed6ba46f854e53225923f018262ea79bee93cf1ebc",
+    "only_annotations_changed": true,
+    "replacements": {
+      "    def __init__(self, i):": "    def __init__(self, i: float) -> None:",
+      "    def normalize(self):": "    def normalize(self) -> None:",
+      "def benchmark(n):": "def benchmark(n: int) -> Point:",
+      "def maximize(points):": "def maximize(points: list[Point]) -> Point:"
+    }
+  },
+  {
+    "workload": "ticket_search",
+    "original_sha256": "b6ebc7f0f6bf0b65bd64d0d5667584b4179660ee9c17f67225eb2fedcb29d6f8",
+    "typed_sha256": "6c14d8c2575f0c780a15b95534659804f3b1e7e83f9c3c187a123de5725e63f1",
+    "only_annotations_changed": true,
+    "replacements": {
+      "def search():": "def search() -> None:"
+    }
+  }
+]

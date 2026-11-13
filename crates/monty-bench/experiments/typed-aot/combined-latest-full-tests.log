@@ -1,0 +1,714 @@
+   Compiling monty-types v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-types)
+   Compiling monty v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty)
+   Compiling monty-alloc v1.0.1 (/private/tmp/monty-native-study/threaded-aot/crates/monty-alloc)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 29.75s
+     Running unittests src/lib.rs (/Users/jaheba/p/monty/target/debug/deps/monty-7c37434359358b04)
+
+running 47 tests
+test bytecode::vm::dispatch_threaded::tests::every_opcode_has_a_handler ... ok
+test bytecode::op::tests::test_assert_flags_roundtrip ... ok
+test bytecode::builder::tests::test_add_const ... ok
+test bytecode::builder::tests::test_forward_jump ... ok
+test bytecode::builder::tests::test_load_local_specialization ... ok
+test bytecode::builder::tests::test_emit_u16_operand ... ok
+test bytecode::builder::tests::test_emit_u8_operand ... ok
+test bytecode::builder::tests::test_emit_basic ... ok
+test bytecode::builder::tests::test_backward_jump ... ok
+test heap::stable_heap::tests::allocate_while_reference_alive ... ok
+test heap::stable_heap::tests::allocate_triggers_new_page_while_reference_alive ... ok
+test heap::stable_heap::tests::multiple_live_references_during_allocation ... ok
+test heap::stable_heap::tests::free_list_reuse_while_reference_alive ... ok
+test heap::stable_heap::tests::allocate_into_freed_slot_does_not_alias_other_slots ... ok
+test heap::tests::dec_ref_must_not_invalidate_live_heap_read ... ok
+test heap::tests::heap_read_rooted_cycle_survives_collection ... ok
+test heap::tests::isolated_cycle_with_duplicate_child_refs_is_collected ... ok
+test heap::tests::callable_iterator_traces_callable_and_sentinel ... ok
+test heap::tests::empty_tuple_singleton_survives_collection ... ok
+test heap::tests::callable_iterator_cycle_is_collected ... ok
+test heap::tests::cstack_only_cycle_survives_collection ... ok
+test heap::tests::cstack_rooted_cycle_with_duplicate_child_refs_collects_after_pin_dropped ... ok
+test heap::tests::isolated_simple_cycle_is_collected ... ok
+test dump_format::tests::type_checking_format_variants_match_dump_version ... ok
+test dump_format::tests::serialized_components_match_dump_version ... ok
+test modules::re::tests::compile_error_caches_nothing ... ok
+test modules::re::tests::long_source_pattern_does_not_disturb_cached_entries ... ok
+test modules::re::tests::long_source_pattern_compiles_but_is_not_retained ... ok
+test heap::tests::pending_purple_cycle_round_trips_through_serde ... ok
+test types::list::tests::py_setitem_longint_fits_in_i64 ... ok
+test types::list::tests::py_setitem_longint_at_i64_max ... ok
+test types::list::tests::py_setitem_longint_negative_fits_in_i64 ... ok
+test value::tests::as_index_longint_at_i64_max ... ok
+test value::tests::as_index_longint_at_i64_min ... ok
+test value::tests::as_index_longint_fits_in_i64 ... ok
+test value::tests::as_index_longint_just_over_i64_max ... ok
+test modules::re::tests::flags_key_the_entry ... ok
+test value::tests::as_index_longint_just_under_i64_min ... ok
+test value::tests::as_index_longint_negative_fits_in_i64 ... ok
+test value::tests::as_int_longint_fits_in_i64 ... ok
+test value::tests::as_index_longint_too_large ... ok
+test value::tests::as_int_longint_too_large ... ok
+test modules::re::tests::hit_shares_one_entry ... ok
+test intern::tests::static_ids_match_discriminants_across_compilation_and_snapshots ... ok
+test modules::re::tests::oversize_pattern_does_not_disturb_cached_entries ... ok
+test modules::re::tests::oversize_pattern_compiles_but_is_not_retained ... ok
+test modules::re::tests::occupancy_is_bounded_by_capacity ... ok
+
+test result: ok. 47 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/abort.rs (/Users/jaheba/p/monty/target/debug/deps/abort-e9d005691cf6268d)
+
+running 7 tests
+test abort_name_lookup ... ok
+test abort_os_call_after_open ... ok
+test repl_abort_keeps_the_session_usable ... ok
+test abort_resolve_futures_while_parked ... ok
+test abort_external_call_is_uncatchable ... ok
+test abort_resolve_futures_after_partial_resolution ... ok
+test repl_abort_resolve_futures_while_parked ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests/assert_messages.rs (/Users/jaheba/p/monty/target/debug/deps/assert_messages-c52c42e160b2716b)
+
+running 27 tests
+test deserialization_preserves_nonzero_limit_representation ... ok
+test assert_inside_repl_gets_messages ... ok
+test custom_limit_survives_repl_snippets ... ok
+test failing_repr_falls_back_to_bare_error ... ok
+test failing_message_str_keeps_detail ... ok
+test failing_repr_keeps_explicit_message ... ok
+test failing_repr_mid_stream_falls_back_to_bare_error ... ok
+test max_bytes_round_trips_through_the_wire_encoding ... ok
+test false_test_value_carries_no_message ... ok
+test message_expression_only_evaluated_on_failure ... ok
+test message_visible_via_str_in_sandbox ... ok
+test operands_evaluated_once ... ok
+test opt_out_restores_cpython_behavior ... ok
+test huge_operand_repr_is_truncated ... ok
+test repl_opt_out_applies_to_every_snippet ... ok
+test passing_asserts_release_retained_operands ... ok
+test comparison_type_errors_still_raise ... ok
+test operand_reprs_truncated ... ok
+test truncation_cuts_on_char_boundaries ... ok
+test traceback_shape_unchanged ... ok
+test custom_truncation_limit ... ok
+test zero_limit_means_off_not_a_zero_length_repr ... ok
+test falsy_value_fallback ... ok
+test computed_operands_show_their_values ... ok
+test operand_reprs ... ok
+test explicit_message_appends_detail ... ok
+test comparison_operators ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/asyncio.rs (/Users/jaheba/p/monty/target/debug/deps/asyncio-f3b66b676af964e7)
+
+running 40 tests
+test detached_sibling_still_receives_its_external_result ... ok
+test allow_eager_await_keeps_existing_resume_semantics ... ok
+test allow_eager_await_sequential_results_and_errors ... ok
+test detached_sibling_failure_does_not_surface ... ok
+test allow_eager_await_excludes_competing_work ... ok
+test discarded_task_exception_is_silent ... ok
+test gather_child_finally_suspends_before_propagating ... ok
+test gather_both_fail ... ok
+test gather_coroutine_child_dropped_when_its_external_fails ... ok
+test gather_first_external_fails_immediately ... ok
+test gather_error_propagated_as_exception ... ok
+test gather_mixed_coroutine_and_direct_external_partial_resolve ... ok
+test gather_second_external_fails ... ok
+test gather_batched_failures_are_caught_by_waiter_and_sibling ... ok
+test gather_children_catch_batched_rejections ... ok
+test gather_three_all_at_once_mixed ... ok
+test gather_three_tasks_with_direct_external ... ok
+test incremental_resolution_error_on_second_round ... ok
+test gather_child_failure_survives_batch ... ok
+test orphaned_external_resolved_alongside_live_one ... ok
+test orphaned_external_failed_alongside_live_one ... ok
+test resume_with_all_call_ids ... ok
+test nested_gather_with_spawned_tasks_and_external_futures ... ok
+test resume_with_duplicate_call_id ... ok
+test resume_with_empty_results ... ok
+test resume_with_partial_results ... ok
+test resume_with_reversed_order ... ok
+test nested_gather_incremental_resolution ... ok
+test resume_with_error_result ... ok
+test sequential_awaits_first_fails ... ok
+test resume_with_unknown_call_id ... ok
+test sequential_awaits_second_fails ... ok
+test suspended_task_stack_survives_forced_gc ... ok
+test three_way_gather_partial_error ... ok
+test three_way_gather_incremental ... ok
+test deeply_nested_gather_failure_does_not_overflow_stack ... ok
+test deeply_nested_gather_commit_failure_does_not_overflow_the_stack ... ok
+test deeply_nested_gather_settling_synchronously_does_not_overflow_the_stack ... ok
+test deeply_nested_gather_commit_does_not_overflow_the_stack ... ok
+test deep_blocked_task_chain_teardown_does_not_overflow_the_stack ... ok
+
+test result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.17s
+
+     Running tests/binary_serde.rs (/Users/jaheba/p/monty/target/debug/deps/binary_serde-5b1da73544286cb1)
+
+running 22 tests
+test monty_run_round_trip_with_inputs ... ok
+test monty_run_round_trip_preserves_code ... ok
+test monty_run_round_trip_multiple_runs ... ok
+test monty_run_round_trip_simple ... ok
+test execution_interns_module_static_strings ... ok
+test run_progress_complete_round_trip ... ok
+test monty_run_round_trip_comprehension_closure ... ok
+test monty_run_round_trip_complex_code ... ok
+test run_progress_round_trip_at_external_call ... ok
+test monty_run_round_trip_with_runtime_interns ... ok
+test empty_string_allocation_after_snapshot ... ok
+test run_progress_round_trip_multiple_calls ... ok
+test run_progress_round_trip_preserves_generic_alias ... ok
+test run_progress_round_trip_inside_exec ... ok
+test run_progress_round_trip_preserves_partial ... ok
+test run_progress_round_trip_preserves_itertools_iterators ... ok
+test static_strings_round_trip_without_local_entries ... ok
+test reserved_strings_round_trip_without_local_entries ... ok
+test run_progress_round_trip_preserves_union ... ok
+test module_imports_after_snapshot ... ok
+test run_progress_round_trip_with_rejected_snippet ... ok
+test run_progress_round_trip_with_runtime_compilation ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/bytecode_limits.rs (/Users/jaheba/p/monty/target/debug/deps/bytecode_limits-b1bb768d3f729b54)
+
+running 22 tests
+test comprehension_generator_limits::small_comprehension_succeeds ... ok
+test function_argument_limits::positional_args_exceeding_u8_limit_returns_syntax_error ... ok
+test function_argument_limits::positional_args_at_u8_boundary_returns_syntax_error ... ok
+test comprehension_generator_limits::generators_exceeding_max_returns_syntax_error ... ok
+test finally_copy_limits::nested_finally_amplification_returns_syntax_error ... ok
+test function_argument_limits::positional_args_under_u8_limit_succeeds ... ok
+test finally_copy_limits::nested_finally_amplification_below_limit_runs ... ok
+test function_parameter_limits::parameters_at_u8_boundary_returns_syntax_error_for_call ... ok
+test keyword_argument_limits::keyword_args_exceeding_u8_limit_returns_syntax_error ... ok
+test keyword_argument_limits::keyword_args_at_u8_boundary_returns_syntax_error ... ok
+test function_parameter_limits::parameters_exceeding_u8_limit_returns_syntax_error_for_call ... ok
+test local_variable_limits::locals_under_u8_limit_succeeds ... ok
+test local_variable_limits::locals_at_u8_boundary_succeeds ... ok
+test local_variable_limits::locals_exceeding_u8_uses_wide_instructions ... ok
+test function_parameter_limits::parameters_under_u8_limit_succeeds ... ok
+test keyword_argument_limits::keyword_args_under_u8_limit_succeeds ... ok
+test local_variable_limits::locals_well_over_u8_limit ... ok
+test finally_copy_limits::excessive_inline_finally_copies_return_syntax_error ... ok
+test finally_copy_limits::max_inline_finally_copies_compile_and_run ... ok
+test comprehension_generator_limits::many_generators_returns_syntax_error_not_stack_overflow ... ok
+test stack_effect_limits::dict_literal_above_i16_stack_effect ... ok
+test stack_effect_limits::class_members_above_i16_stack_effect ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+     Running tests/collections.rs (/Users/jaheba/p/monty/target/debug/deps/collections-8f91ff2ef9fc6acb)
+
+running 7 tests
+test implemented_names_import ... ok
+test user_wrappers_import_raises ... ok
+test namedtuple_module_cycle_is_collected ... ok
+test namedtuple_class_cycle_is_collected ... ok
+test deque_crosses_host_boundary_as_a_list ... ok
+test ordereddict_import_raises ... ok
+test chainmap_import_raises ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/container_mutation.rs (/Users/jaheba/p/monty/target/debug/deps/container_mutation-13f820c2a37dbd53)
+
+running 5 tests
+test set_isdisjoint_answers_before_an_eq_that_clears_the_probed_set ... ok
+test dict_keys_intersection_completes_where_cpython_raises ... ok
+test set_algebra_rejects_an_eq_that_clears_the_walked_set ... ok
+test set_union_does_not_observe_an_eq_that_clears_the_source_operand ... ok
+test dict_keys_operators_reject_a_hash_that_clears_the_dict ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/copy_module.rs (/Users/jaheba/p/monty/target/debug/deps/copy_module-51bd4542e026dc7d)
+
+running 4 tests
+test deep_copy_of_nested_dicts_stays_within_a_worker_stack ... ok
+test deep_copy_of_nested_instances_stays_within_a_worker_stack ... ok
+test deep_copy_of_nested_lists_just_under_the_limit_succeeds ... ok
+test deep_copy_past_the_recursion_limit_raises ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/dataclass_fields.rs (/Users/jaheba/p/monty/target/debug/deps/dataclass_fields-dbea72002dc17907)
+
+running 4 tests
+test unmodelled_field_attributes_are_not_implemented ... ok
+test missing_default_is_not_implemented ... ok
+test classvars_are_absent_from_the_mapping ... ok
+test field_repr_renders_missing_as_a_bare_name ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/dataclass_rejections.rs (/Users/jaheba/p/monty/target/debug/deps/dataclass_rejections-ae0660a992850d67)
+
+running 8 tests
+test quoted_classvar_is_excluded ... ok
+test unimplemented_option_names_itself ... ok
+test unhashable_instance_default_is_rejected ... ok
+test eq_defining_instance_default_is_rejected ... ok
+test initvar_is_rejected ... ok
+test post_init_is_rejected ... ok
+test user_repr_in_a_dataclass_body_is_allowed ... ok
+test non_class_is_reported_directly ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/datetime_format.rs (/Users/jaheba/p/monty/target/debug/deps/datetime_format-087223b94a5cc86b)
+
+running 9 tests
+test fstring_unknown_directive_passes_through_verbatim ... ok
+test unrenderable_directive_raises_not_panics ... ok
+test gmtime_zone_is_named_utc ... ok
+test unknown_directive_passes_through_verbatim ... ok
+test time_strftime_shares_the_lenient_formatter ... ok
+test hostile_time_tuple_fields_raise_instead_of_panicking ... ok
+test strptime_rejects_a_colon_before_the_seconds_only ... ok
+test time_strptime_is_not_implemented ... ok
+test strptime_gaps_on_date_and_datetime ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/dispatch_loop.rs (/Users/jaheba/p/monty/target/debug/deps/dispatch_loop-9265ecba97b6744f)
+
+running 9 tests
+test native_runs_keep_deadline_checkpoints ... ok
+test callback_reentry_with_long_dispatch_batches_fits_small_stack ... ok
+test threaded_subscription_preserves_traceback_and_task_errors ... ok
+test native_batches_end_with_the_same_stack_and_counter_state ... ok
+test wide_locals_and_checkpoint_long_runs_preserve_values ... ok
+test threaded_subscription_observes_deadlines_and_recovers ... ok
+test local_runs_preserve_frame_changes_errors_and_reference_ownership ... ok
+test threaded_subscription_keeps_callbacks_mutations_and_caught_errors ... ok
+test direct_branches_preserve_short_circuit_values_and_heap_truth ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/dump_compat.rs (/Users/jaheba/p/monty/target/debug/deps/dump_compat-a678c95f6986c8cf)
+
+running 3 tests
+test layout_edits_load_older_encodings ... ok
+test fixture_dump_loads_and_resumes ... ok
+test persisted_key_hashes_are_stable ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/encoding.rs (/Users/jaheba/p/monty/target/debug/deps/encoding-fe5f0f2cfb7a97e6)
+
+running 10 tests
+test bomless_bare_utf16_utf32_decode_defaults_to_little_endian ... ok
+test unicode_error_data_survives_reraise ... ok
+test unicode_error_data_omitted_for_huge_objects ... ok
+test unicode_encode_error_carries_structured_data ... ok
+test unicode_decode_error_carries_structured_data ... ok
+test decode_surrogateescape_reports_not_implemented ... ok
+test latin1_reports_unknown_encoding ... ok
+test utf8_surrogatepass_cesu8_reports_not_implemented ... ok
+test utf32_surrogatepass_reports_not_implemented ... ok
+test utf16_surrogate_handlers_report_not_implemented ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/error_locations.rs (/Users/jaheba/p/monty/target/debug/deps/error_locations-c4fa5518ce1d3809)
+
+running 3 tests
+test non_ascii_char_column_location ... ok
+test recursive_frames_share_preview_line_allocation ... ok
+test non_ascii_earlier_line_does_not_shift_column ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/external_function_identity.rs (/Users/jaheba/p/monty/target/debug/deps/external_function_identity-6f49b993d7ff3d56)
+
+running 10 tests
+test same_named_callables_share_identity_when_name_is_interned ... ok
+test callable_exports_as_function_object ... ok
+test same_named_callables_share_identity ... ok
+test different_named_callables_remain_distinct ... ok
+test callable_export_stable_across_source_mention ... ok
+test same_named_callables_share_dict_key ... ok
+test repl_extfunction_identity_across_feeds ... ok
+test repl_extfunction_cache_does_not_retain_freed_id ... ok
+test gc_freed_ext_function_does_not_retain_freed_id ... ok
+test extfunction_cache_is_rebuilt_after_snapshot_load ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/file_error_paths.rs (/Users/jaheba/p/monty/target/debug/deps/file_error_paths-26f072b715642266)
+
+running 8 tests
+test read_host_error_clears_pending_read_and_propagates ... ok
+test readline_host_error_then_retry ... ok
+test write_host_error_rolls_back_position ... ok
+test write_position_non_int_result_raises_type_error ... ok
+test write_host_error_binary_rolls_back_position ... ok
+test buffer_store_handles_empty_bytes_via_intern ... ok
+test buffer_store_handles_empty_text_via_intern ... ok
+test rejected_read_suspension_catchable_inside_key_fn ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/fused_ops.rs (/Users/jaheba/p/monty/target/debug/deps/fused_ops-f266a78e012230ed)
+
+running 6 tests
+test local_add_reports_unbound_operands_before_arithmetic ... ok
+test errors_stop_a_fused_sequence_after_handler_transfer ... ok
+test fused_operations_keep_generic_operand_behavior ... ok
+test branches_and_local_moves_preserve_values ... ok
+test small_integer_modulo_keeps_python_signs_and_zero_errors ... ok
+test integer_fast_paths_fall_back_on_overflow_and_other_types ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/generators.rs (/Users/jaheba/p/monty/target/debug/deps/generators-96a5e7aa7f4922fb)
+
+running 37 tests
+test gc_collects_created_and_suspended_generator_cycles ... ok
+test exceptions_and_reentrant_execution ... ok
+test argument_errors_are_raised_before_generator_execution ... ok
+test gc_preserves_reachable_suspended_and_running_generators ... ok
+test arguments_closures_lambdas_and_breaks ... ok
+test explicit_stop_iteration_becomes_runtime_error ... ok
+test generator_methods_bind_instances ... ok
+test abandoning_running_generators_releases_frames_and_completes_them ... ok
+test invalid_yield_scopes_and_async_generators_are_rejected ... ok
+test lazy_creation_and_independent_locals ... ok
+test loops_nested_generators_and_normal_calls ... ok
+test generator_resumption_enforces_recursion_limits ... ok
+test interleaved_generators_preserve_operand_stacks_and_loop_state ... ok
+test gc_collects_yield_from_cycles ... ok
+test return_value_preserves_identity_and_only_first_exhaustion ... ok
+test return_none_has_empty_exception_arguments ... ok
+test stop_iteration_string_message_is_preserved_at_host_boundary ... ok
+test resumption_cache_does_not_retain_next_defaults ... ok
+test send_none_uses_the_same_resumption_boundary ... ok
+test suspended_exception_context_is_private_and_retained ... ok
+test unreachable_yield_still_creates_generator ... ok
+test synchronous_callbacks_can_call_next ... ok
+test repeated_resumption_releases_recursion_levels ... ok
+test saved_namespace_and_exception_context_survive_snapshot ... ok
+test suspended_generators_round_trip_with_shared_objects ... ok
+test yield_from_custom_iterator_consumes_host_stop_iteration ... ok
+test running_nested_generators_round_trip_during_external_call ... ok
+test yield_from_custom_iterator_preserves_stop_iteration_value ... ok
+test yield_from_exceptions_and_reentrancy ... ok
+test yield_from_nested_return_values_and_partial_consumption ... ok
+test yield_from_builtin_iterators_and_lazy_creation ... ok
+test yield_from_suspended_snapshot_preserves_delegate_identity ... ok
+test yield_in_finally_preserves_pending_return ... ok
+test yield_from_active_snapshot_during_external_call ... ok
+test repeated_yields_preserve_varying_operand_and_exception_stacks ... ok
+test instruction_time_checks_run_inside_generator_frames ... ok
+test yield_from_empty_delegation_enforces_time_limit ... ok
+
+test result: ok. 37 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/heap_reader_compile_fail.rs (/Users/jaheba/p/monty/target/debug/deps/heap_reader_compile_fail-cce6283d0f0f07c0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/inputs.rs (/Users/jaheba/p/monty/target/debug/deps/inputs-e2aeaff5f481c488)
+
+running 48 tests
+test function_param_shadows_input_but_global_accessible ... ok
+test function_param_shadows_input_multiple_params ... ok
+test empty_string_input ... ok
+test function_param_shadows_input ... ok
+test function_uses_input_as_argument ... ok
+test function_param_shadows_input_accessible_outside ... ok
+test function_doesnt_uses_input_as_argument ... ok
+test function_param_with_default_shadows_input ... ok
+test empty_list_input ... ok
+test host_class_instance_type_cycle_is_collected ... ok
+test input_bool_false ... ok
+test input_bool_true ... ok
+test host_class_type_attr_cycle_is_collected ... ok
+test input_bytes ... ok
+test input_ellipsis ... ok
+test input_dict ... ok
+test input_exception ... ok
+test input_exception_no_arg ... ok
+test input_dict_get ... ok
+test input_exception_in_list ... ok
+test input_float ... ok
+test input_int ... ok
+test input_list ... ok
+test input_exception_raise ... ok
+test input_list_append ... ok
+test input_int_arithmetic ... ok
+test input_none ... ok
+test input_string ... ok
+test input_tuple ... ok
+test input_string_concat ... ok
+test invalid_identifier ... ok
+test invalid_input_namedtuple_length_mismatch ... ok
+test invalid_input_repr ... ok
+test invalid_input_repr_in_class_instance_attrs ... ok
+test invalid_input_repr_in_dict_value_after_pairs ... ok
+test invalid_input_repr_in_frozenset_after_heap_values ... ok
+test invalid_input_repr_in_list_after_heap_values ... ok
+test invalid_input_repr_in_namedtuple_after_heap_values ... ok
+test invalid_input_repr_in_set_after_heap_values ... ok
+test invalid_input_repr_in_tuple_after_heap_values ... ok
+test invalid_input_repr_nested_in_list ... ok
+test invalid_is_keyword ... ok
+test multiple_inputs_mixed_types ... ok
+test multiple_inputs_three ... ok
+test multiple_inputs_two ... ok
+test no_inputs ... ok
+test nested_list ... ok
+test type_object_missing_attr_uses_type_object_wording ... ok
+
+test result: ok. 48 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/json_error_data.rs (/Users/jaheba/p/monty/target/debug/deps/json_error_data-82c30214c797eff7)
+
+running 6 tests
+test manually_raised_json_decode_error_has_no_data ... ok
+test json_error_data_survives_reraise ... ok
+test json_decode_error_carries_structured_data ... ok
+test json_error_doc_omitted_for_invalid_utf8 ... ok
+test json_error_positions_count_characters_not_bytes ... ok
+test json_error_doc_omitted_for_huge_documents ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/json_serde.rs (/Users/jaheba/p/monty/target/debug/deps/json_serde-73955ee5c02e7ee5)
+
+running 11 tests
+test json_deserialize_primitives ... ok
+test json_deserialize_builtin_function ... ok
+test cycle_placeholders_follow_the_container ... ok
+test json_roundtrip ... ok
+test json_output_cycle_list ... ok
+test json_output_builtin_function ... ok
+test json_output_shared_child ... ok
+test json_output_exception ... ok
+test json_output_dict ... ok
+test json_output_list ... ok
+test json_output_primitives ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/main.rs (/Users/jaheba/p/monty/target/debug/deps/main-8f9034d15f5da198)
+
+running 22 tests
+test class_instance_method_call_in_standard_mode_errors ... ok
+test external_function_in_reduce_raises_not_implemented ... ok
+test external_function_in_next_raises_not_implemented ... ok
+test dynamic_type_with_non_string_key_raises_type_error ... ok
+test dynamic_type_with_bases_raises_type_error ... ok
+test external_function_in_deepcopy_raises_not_implemented ... ok
+test external_function_as_init_raises_not_implemented ... ok
+test export_pins_memoized_objects_across_a_user_repr ... ok
+test not_implemented_in_list_sort_key_names_sort ... ok
+test multiline_preview_mixed_indentation_not_dedented ... ok
+test not_implemented_in_sort_key_catchable_inside_key_fn ... ok
+test output_dict_with_nested_instance ... ok
+test cloned_runners_compile_independently ... ok
+test output_list_with_nested_instance ... ok
+test output_deque_with_nested_instance ... ok
+test external_function_as_itertools_callable_raises_not_implemented ... ok
+test repeat_exec ... ok
+test subscript_augassign_matmul_reports_not_supported ... ok
+test test_get_interned_string ... ok
+test not_implemented_in_sort_key_catchable_outside_key_fn ... ok
+test str_format_os_attribute_reports_suspension_limit ... ok
+test reentrant_groupby_key_comparison_does_not_panic ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/math_module.rs (/Users/jaheba/p/monty/target/debug/deps/math_module-e46887ef4277664b)
+
+running 4 tests
+test ldexp_minimum_subnormal ... ok
+test ldexp_large_negative_exponent_loop ... ok
+test comb_large_but_fits_i64 ... ok
+test isqrt_large_values_newton_refinement ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/module_dunders.rs (/Users/jaheba/p/monty/target/debug/deps/module_dunders-adcb894903df91bc)
+
+running 13 tests
+test reassign_doc_at_module_scope_rejected ... ok
+test augmented_assign_to_dunder_rejected ... ok
+test reassign_file_rejected ... ok
+test reassign_name_at_module_scope_rejected ... ok
+test reassign_via_global_in_function_rejected ... ok
+test name_resolves_inside_function ... ok
+test debug_is_true ... ok
+test name_is_main ... ok
+test function_local_shadowing_allowed ... ok
+test loader_raises_name_error ... ok
+test annotations_is_empty_dict ... ok
+test doc_spec_package_are_none ... ok
+test file_is_script_name_under_cwd ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/name_lookup.rs (/Users/jaheba/p/monty/target/debug/deps/name_lookup-e0b8e00d42cdd37d)
+
+running 23 tests
+test name_lookup_caches_across_calls ... ok
+test input_function_no_lookup ... ok
+test input_function_reassigned_then_called ... ok
+test mixed_function_and_constant_lookups ... ok
+test input_function_with_looked_up_arg ... ok
+test multiple_names_each_looked_up ... ok
+test builtins_do_not_trigger_lookup ... ok
+test error_raises_host_exception ... ok
+test range_builtin_no_lookup ... ok
+test resolve_as_bool ... ok
+test resolve_as_float ... ok
+test resolve_as_function_and_call ... ok
+test resolve_as_list ... ok
+test resolve_as_int ... ok
+test resolve_as_string ... ok
+test resolve_function_with_non_interned_name ... ok
+test resolved_constant_is_cached ... ok
+test name_lookup_inside_sort_callback_raises_name_error ... ok
+test resolved_name_is_cached ... ok
+test resolve_inside_eval_in_function ... ok
+test standard_mode_raises_name_error ... ok
+test undefined_raises_name_error ... ok
+test undefined_in_function_raises_name_error ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/native_regions.rs (/Users/jaheba/p/monty/target/debug/deps/native_regions-aae7048d8db2ecdd)
+
+running 9 tests
+test configured_memory_limits_use_the_interpreter ... ok
+test native_loops_keep_deadline_checkpoints ... ok
+test varied_control_flow_and_arithmetic ... ok
+
+thread 'suspension_dump_and_resume_rebuild_native_artifacts' (71434763) panicked at crates/monty/tests/native_regions.rs:100:5:
+assertion failed: experimental_native::stats().instructions > 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'suspension_dump_and_resume_rebuild_native_artifacts' (71434763) panicked at crates/monty/src/value.rs:249:13:
+Value::Ref(HeapId(1)) dropped without calling drop_with() - this is a reference counting bug
+stack backtrace:
+   0:        0x102d70118 - std[15f51b41b433de00]::backtrace_rs::backtrace::libunwind::trace
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/../../backtrace/src/backtrace/libunwind.rs:117:9
+   1:        0x102d70118 - std[15f51b41b433de00]::backtrace_rs::backtrace::trace_unsynchronized::<std[15f51b41b433de00]::sys::backtrace::_print_fmt::{closure#1}>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/../../backtrace/src/backtrace/mod.rs:66:14
+   2:        0x102d70118 - std[15f51b41b433de00]::sys::backtrace::_print_fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/backtrace.rs:74:9
+   3:        0x102d70118 - <<std[15f51b41b433de00]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[e5a5d44af443baf0]::fmt::Display>::fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/backtrace.rs:44:26
+   4:        0x102d84b08 - <core[e5a5d44af443baf0]::fmt::rt::Argument>::fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/fmt/rt.rs:152:76
+   5:        0x102d84b08 - core[e5a5d44af443baf0]::fmt::write
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/fmt/mod.rs:1687:22
+   6:        0x102d74020 - core[e5a5d44af443baf0]::io::write::default_write_fmt::<alloc[4ca4a55bf09a7fe7]::vec::Vec<u8>>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/io/write.rs:402:11
+   7:        0x102d74020 - <alloc[4ca4a55bf09a7fe7]::vec::Vec<u8> as core[e5a5d44af443baf0]::io::write::Write>::write_fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/io/write.rs:335:13
+   8:        0x102d54a80 - <std[15f51b41b433de00]::sys::backtrace::BacktraceLock>::print
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/backtrace.rs:47:25
+   9:        0x102d54a80 - std[15f51b41b433de00]::panicking::default_hook::{closure#0}
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panicking.rs:292:27
+  10:        0x102d69968 - std[15f51b41b433de00]::panicking::default_hook
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panicking.rs:316:9
+  11:        0x102291068 - <alloc[4ca4a55bf09a7fe7]::boxed::Box<dyn for<'a, 'b> core[e5a5d44af443baf0]::ops::function::Fn<(&'a std[15f51b41b433de00]::panic::PanicHookInfo<'b>,), Output = ()> + core[e5a5d44af443baf0]::marker::Send + core[e5a5d44af443baf0]::marker::Sync> as core[e5a5d44af443baf0]::ops::function::Fn<(&std[15f51b41b433de00]::panic::PanicHookInfo,)>>::call
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/alloc/src/boxed.rs:2334:9
+  12:        0x102291068 - test[fe40804de6659d7f]::test_main_inner::<test[fe40804de6659d7f]::test_main_static::{closure#0}>::{closure#0}
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/test/src/lib.rs:155:21
+  13:        0x102d69eb0 - <alloc[4ca4a55bf09a7fe7]::boxed::Box<dyn for<'a, 'b> core[e5a5d44af443baf0]::ops::function::Fn<(&'a std[15f51b41b433de00]::panic::PanicHookInfo<'b>,), Output = ()> + core[e5a5d44af443baf0]::marker::Send + core[e5a5d44af443baf0]::marker::Sync> as core[e5a5d44af443baf0]::ops::function::Fn<(&std[15f51b41b433de00]::panic::PanicHookInfo,)>>::call
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/alloc/src/boxed.rs:2334:9
+  14:        0x102d69eb0 - std[15f51b41b433de00]::panicking::panic_with_hook
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panicking.rs:823:13
+  15:        0x102d54b04 - std[15f51b41b433de00]::panicking::panic_handler::{closure#0}
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panicking.rs:688:13
+  16:        0x102d4cdcc - std[15f51b41b433de00]::sys::backtrace::__rust_end_short_backtrace::<std[15f51b41b433de00]::panicking::panic_handler::{closure#0}, !>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/backtrace.rs:182:18
+  17:        0x102d551d0 - __rustc[9d087a5ab36ea756]::rust_begin_unwind
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panicking.rs:679:5
+  18:        0x102db50f8 - core[e5a5d44af443baf0]::panicking::panic_fmt
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/panicking.rs:80:14
+  19:        0x10250d2ac - <monty[6d03d78b47dc03ef]::value::Value as core[e5a5d44af443baf0]::ops::drop::Drop>::drop
+                               at /private/tmp/monty-native-study/threaded-aot/crates/monty/src/value.rs:249:13
+  20:        0x1024fdf90 - core[e5a5d44af443baf0]::ptr::drop_glue::<monty[6d03d78b47dc03ef]::value::Value>
+                               at /Users/jaheba/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:847:1
+  21:        0x10250460c - core[e5a5d44af443baf0]::ptr::drop_glue::<[monty[6d03d78b47dc03ef]::value::Value]>
+                               at /Users/jaheba/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:847:1
+  22:        0x10251d570 - core[e5a5d44af443baf0]::ptr::drop_in_place::<[monty[6d03d78b47dc03ef]::value::Value]>
+                               at /Users/jaheba/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:842:14
+  23:        0x10251d570 - <*mut [monty[6d03d78b47dc03ef]::value::Value]>::drop_in_place
+                               at /Users/jaheba/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ptr/mut_ptr.rs:1384:18
+  24:        0x10251d570 - <alloc[4ca4a55bf09a7fe7]::vec::Vec<monty[6d03d78b47dc03ef]::value::Value> as core[e5a5d44af443baf0]::ops::drop::Drop>::drop
+                               at /Users/jaheba/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/alloc/src/vec/mod.rs:4358:52
+  25:        0x1024eb7a0 - core[e5a5d44af443baf0]::ptr::drop_glue::<alloc[4ca4a55bf09a7fe7]::vec::Vec<monty[6d03d78b47dc03ef]::value::Value>>
+                               at /Users/jaheba/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:847:1
+  26:        0x102500804 - core[e5a5d44af443baf0]::ptr::drop_glue::<monty[6d03d78b47dc03ef]::bytecode::vm::VMSnapshot>
+                               at /Users/jaheba/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:847:1
+  27:        0x1024fcc40 - core[e5a5d44af443baf0]::ptr::drop_glue::<monty[6d03d78b47dc03ef]::run_progress::Snapshot>
+                               at /Users/jaheba/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:847:1
+  28:        0x1024fc7ec - core[e5a5d44af443baf0]::ptr::drop_glue::<monty[6d03d78b47dc03ef]::run_progress::FunctionCall>
+                               at /Users/jaheba/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:847:1
+  29:        0x102274fa8 - native_regions[6dd80722ea0cd5ad]::suspension_dump_and_resume_rebuild_native_artifacts
+                               at /private/tmp/monty-native-study/threaded-aot/crates/monty/tests/native_regions.rs:114:1
+  30:        0x102144ac8 - native_regions[6dd80722ea0cd5ad]::suspension_dump_and_resume_rebuild_native_artifacts::{closure#0}
+                               at /private/tmp/monty-native-study/threaded-aot/crates/monty/tests/native_regions.rs:79:57
+  31:        0x1020dfe4c - <native_regions[6dd80722ea0cd5ad]::suspension_dump_and_resume_rebuild_native_artifacts::{closure#0} as core[e5a5d44af443baf0]::ops::function::FnOnce<()>>::call_once
+                               at /Users/jaheba/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/ops/function.rs:250:5
+  32:        0x102286118 - <fn() -> core[e5a5d44af443baf0]::result::Result<(), alloc[4ca4a55bf09a7fe7]::string::String> as core[e5a5d44af443baf0]::ops::function::FnOnce<()>>::call_once
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/ops/function.rs:250:5
+  33:        0x102286118 - test[fe40804de6659d7f]::__rust_begin_short_backtrace::<core[e5a5d44af443baf0]::result::Result<(), alloc[4ca4a55bf09a7fe7]::string::String>, fn() -> core[e5a5d44af443baf0]::result::Result<(), alloc[4ca4a55bf09a7fe7]::string::String>>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/test/src/lib.rs:733:18
+  34:        0x10229168c - test[fe40804de6659d7f]::run_test_in_process::{closure#0}
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/test/src/lib.rs:756:74
+  35:        0x10229168c - <core[e5a5d44af443baf0]::panic::unwind_safe::AssertUnwindSafe<test[fe40804de6659d7f]::run_test_in_process::{closure#0}> as core[e5a5d44af443baf0]::ops::function::FnOnce<()>>::call_once
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/panic/unwind_safe.rs:275:9
+  36:        0x10229168c - std[15f51b41b433de00]::panicking::catch_unwind::do_call::<core[e5a5d44af443baf0]::panic::unwind_safe::AssertUnwindSafe<test[fe40804de6659d7f]::run_test_in_process::{closure#0}>, core[e5a5d44af443baf0]::result::Result<(), alloc[4ca4a55bf09a7fe7]::string::String>>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panicking.rs:576:43
+  37:        0x10229168c - std[15f51b41b433de00]::panicking::catch_unwind::<core[e5a5d44af443baf0]::result::Result<(), alloc[4ca4a55bf09a7fe7]::string::String>, core[e5a5d44af443baf0]::panic::unwind_safe::AssertUnwindSafe<test[fe40804de6659d7f]::run_test_in_process::{closure#0}>>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panicking.rs:544:19
+  38:        0x10229168c - std[15f51b41b433de00]::panic::catch_unwind::<core[e5a5d44af443baf0]::panic::unwind_safe::AssertUnwindSafe<test[fe40804de6659d7f]::run_test_in_process::{closure#0}>, core[e5a5d44af443baf0]::result::Result<(), alloc[4ca4a55bf09a7fe7]::string::String>>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panic.rs:359:14
+  39:        0x10229168c - test[fe40804de6659d7f]::run_test_in_process
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/test/src/lib.rs:756:27
+  40:        0x10229168c - test[fe40804de6659d7f]::run_test::{closure#0}
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/test/src/lib.rs:677:43
+  41:        0x10228c02c - test[fe40804de6659d7f]::run_test::{closure#1}
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/test/src/lib.rs:707:41
+  42:        0x10228c02c - std[15f51b41b433de00]::sys::backtrace::__rust_begin_short_backtrace::<test[fe40804de6659d7f]::run_test::{closure#1}, ()>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/backtrace.rs:166:18
+  43:        0x102293b50 - std[15f51b41b433de00]::thread::lifecycle::spawn_unchecked::<test[fe40804de6659d7f]::run_test::{closure#1}, ()>::{closure#1}::{closure#0}
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/thread/lifecycle.rs:70:13
+  44:        0x102293b50 - <core[e5a5d44af443baf0]::panic::unwind_safe::AssertUnwindSafe<std[15f51b41b433de00]::thread::lifecycle::spawn_unchecked<test[fe40804de6659d7f]::run_test::{closure#1}, ()>::{closure#1}::{closure#0}> as core[e5a5d44af443baf0]::ops::function::FnOnce<()>>::call_once
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/panic/unwind_safe.rs:275:9
+  45:        0x102293b50 - std[15f51b41b433de00]::panicking::catch_unwind::do_call::<core[e5a5d44af443baf0]::panic::unwind_safe::AssertUnwindSafe<std[15f51b41b433de00]::thread::lifecycle::spawn_unchecked<test[fe40804de6659d7f]::run_test::{closure#1}, ()>::{closure#1}::{closure#0}>, ()>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panicking.rs:576:43
+  46:        0x102293b50 - std[15f51b41b433de00]::panicking::catch_unwind::<(), core[e5a5d44af443baf0]::panic::unwind_safe::AssertUnwindSafe<std[15f51b41b433de00]::thread::lifecycle::spawn_unchecked<test[fe40804de6659d7f]::run_test::{closure#1}, ()>::{closure#1}::{closure#0}>>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panicking.rs:544:19
+  47:        0x102293b50 - std[15f51b41b433de00]::panic::catch_unwind::<core[e5a5d44af443baf0]::panic::unwind_safe::AssertUnwindSafe<std[15f51b41b433de00]::thread::lifecycle::spawn_unchecked<test[fe40804de6659d7f]::run_test::{closure#1}, ()>::{closure#1}::{closure#0}>, ()>
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/panic.rs:359:14
+  48:        0x102293b50 - std[15f51b41b433de00]::thread::lifecycle::spawn_unchecked::<test[fe40804de6659d7f]::run_test::{closure#1}, ()>::{closure#1}
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/thread/lifecycle.rs:68:26
+  49:        0x102293b50 - <std[15f51b41b433de00]::thread::lifecycle::spawn_unchecked<test[fe40804de6659d7f]::run_test::{closure#1}, ()>::{closure#1} as core[e5a5d44af443baf0]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/ops/function.rs:250:5
+  50:        0x102d6f908 - <alloc[4ca4a55bf09a7fe7]::boxed::Box<dyn core[e5a5d44af443baf0]::ops::function::FnOnce<(), Output = ()> + core[e5a5d44af443baf0]::marker::Send> as core[e5a5d44af443baf0]::ops::function::FnOnce<()>>::call_once
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/alloc/src/boxed.rs:2320:9
+  51:        0x102d6f908 - <std[15f51b41b433de00]::sys::thread::unix::Thread>::new::thread_start
+                               at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/thread/unix.rs:123:17
+  52:        0x19bb59d00 - __pthread_exit
+
+thread 'suspension_dump_and_resume_rebuild_native_artifacts' (71434763) panicked at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/panicking.rs:233:5:
+panic in a destructor during cleanup
+thread caused non-unwinding panic. aborting.
+error: test failed, to rerun pass `-p monty --test native_regions`
+
+Caused by:
+  process didn't exit successfully: `/Users/jaheba/p/monty/target/debug/deps/native_regions-aae7048d8db2ecdd` (signal: 6, SIGABRT: process abort signal)
