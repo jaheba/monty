@@ -43,6 +43,31 @@ pub fn set_hard_limit(memory_budget: Option<usize>) -> Result<(), &'static str> 
 /// limit and a null check that ends the process deliberately.
 pub struct LimitedAllocator;
 
+/// Charges an executable mapping to the same budget as allocator-backed memory.
+///
+/// Keep this guard alive until the mapping has been released. Direct interpreter
+/// users without `LimitedAllocator` retain their existing unmetered behavior.
+#[derive(Debug)]
+pub struct ExternalMemory(usize);
+
+impl ExternalMemory {
+    /// Reserves `bytes` before asking the operating system for a mapping.
+    #[must_use]
+    pub fn new(bytes: usize) -> Self {
+        if LIVE_MEMORY.load(Ordering::Relaxed) == 0 {
+            return Self(0);
+        }
+        charge(bytes);
+        Self(bytes)
+    }
+}
+
+impl Drop for ExternalMemory {
+    fn drop(&mut self) {
+        refund(self.0);
+    }
+}
+
 // SAFETY: every method forwards its arguments unchanged to `System` and returns
 // what `System` returned (or diverges). No pointer is fabricated, aliased or
 // freed here, so this upholds exactly the invariants `System` upholds.

@@ -12,6 +12,8 @@ use serde::ser::SerializeStruct;
 use smallvec::{SmallVec, smallvec};
 
 use super::{DictItemsView, DictKeysView, DictValuesView, LazyHeapSet, PyTrait, allocate_tuple, list::repr_check_time};
+#[cfg(monty_native)]
+use crate::hash::HashValue;
 use crate::{
     args::{ArgValues, FromArgs, KwargsValues},
     bytecode::{CallResult, ContainsVM, RecursionToken, VM},
@@ -185,6 +187,51 @@ fn check_dict_growth(dict: &Dict, tracker: &ResourceTracker) -> Result<(), Resou
 }
 
 impl Dict {
+    /// A native read must stop before a colliding key whose comparison could execute Python.
+    #[cfg(monty_native)]
+    pub(crate) fn native_string_get(
+        &self,
+        key: &Value,
+        hash: HashValue,
+        heap: &Heap,
+        interns: &Interns,
+    ) -> Option<&Value> {
+        let key_string = json_key_string_slice(key, heap, interns)?;
+        let hash = hash.raw();
+        let mut needs_python = false;
+        let index = self.indices.find(hash, |&index| {
+            let entry = &self.entries[index];
+            if entry.hash != hash {
+                return false;
+            }
+            if matches!((&entry.key, key), (Value::Ref(a), Value::Ref(b)) if a == b)
+                || matches!((&entry.key, key), (Value::InternString(a), Value::InternString(b)) if a == b)
+            {
+                return true;
+            }
+            match &entry.key {
+                Value::InternString(id) => interns.get_str(*id) == key_string,
+                Value::Ref(id) => {
+                    if let HeapData::Str(value) = heap.get(*id) {
+                        value.as_str() == key_string
+                    } else {
+                        needs_python = true;
+                        true
+                    }
+                }
+                _ => {
+                    needs_python = true;
+                    true
+                }
+            }
+        });
+        if needs_python {
+            None
+        } else {
+            index.map(|&index| &self.entries[index].value)
+        }
+    }
+
     /// Creates a new empty dict.
     #[must_use]
     pub fn new() -> Self {

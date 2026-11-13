@@ -14,6 +14,8 @@ use ruff_python_ast::{
 use ruff_python_parser::{Mode, parse_expression, parse_module};
 use ruff_text_size::{Ranged, TextRange, TextSize};
 
+#[cfg(feature = "experimental-aot")]
+use crate::bytecode::aot::TypeHint;
 use crate::{
     args::{ArgExprs, CallArg, CallKwarg, Kwarg},
     exception_private::{ExcType, ExcTypeExt, RunError, SimpleException},
@@ -73,6 +75,9 @@ const UNSUPPORTED_FUTURES: [&str; 1] = ["barry_as_FLUFL"];
 /// A parameter in a function signature with optional default value.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ParsedParam {
+    #[cfg(feature = "experimental-aot")]
+    #[serde(default)]
+    pub type_hint: TypeHint,
     /// The parameter name.
     pub name: StringId,
     /// The default value expression (evaluated at definition time).
@@ -86,6 +91,9 @@ pub struct ParsedParam {
 /// as unevaluated AST and will be evaluated during the prepare phase.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct ParsedSignature {
+    #[cfg(feature = "experimental-aot")]
+    #[serde(default)]
+    pub return_hint: TypeHint,
     /// Positional-only parameters (before `/`).
     pub pos_args: Vec<ParsedParam>,
     /// Positional-or-keyword parameters.
@@ -99,6 +107,18 @@ pub struct ParsedSignature {
 }
 
 impl ParsedSignature {
+    #[cfg(feature = "experimental-aot")]
+    pub(crate) fn parameter_hints(&self) -> Vec<TypeHint> {
+        self.pos_args
+            .iter()
+            .chain(&self.args)
+            .map(|param| param.type_hint.clone())
+            .chain(self.var_args.iter().map(|_| TypeHint::Unknown))
+            .chain(self.kwargs.iter().map(|param| param.type_hint.clone()))
+            .chain(self.var_kwargs.iter().map(|_| TypeHint::Unknown))
+            .collect()
+    }
+
     /// Returns an iterator over all parameter names in the signature.
     ///
     /// Order: pos_args, args, var_args, kwargs, var_kwargs
@@ -809,6 +829,8 @@ impl<'a, 'i> Parser<'a, 'i> {
         let var_kwargs = params.kwarg.as_ref().map(|p| self.interner.intern(&p.name.id));
 
         let signature = ParsedSignature {
+            #[cfg(feature = "experimental-aot")]
+            return_hint: TypeHint::from_annotation(function.returns.as_deref()),
             pos_args,
             args,
             var_args,
@@ -1380,6 +1402,8 @@ impl<'a, 'i> Parser<'a, 'i> {
                     let var_kwargs = params.kwarg.as_ref().map(|p| self.interner.intern(&p.name.id));
 
                     ParsedSignature {
+                        #[cfg(feature = "experimental-aot")]
+                        return_hint: TypeHint::Unknown,
                         pos_args,
                         args,
                         var_args,
@@ -2042,7 +2066,12 @@ impl<'a, 'i> Parser<'a, 'i> {
                     Some(expr) => Some(self.parse_expression((**expr).clone())?),
                     None => None,
                 };
-                Ok(ParsedParam { name, default })
+                Ok(ParsedParam {
+                    name,
+                    default,
+                    #[cfg(feature = "experimental-aot")]
+                    type_hint: TypeHint::from_annotation(p.parameter.annotation.as_deref()),
+                })
             })
             .collect()
     }

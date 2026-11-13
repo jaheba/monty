@@ -345,3 +345,8 @@ assert_eq!(result, MontyObject::int(42));
 - [`FunctionCall::object_id`](../api/rust/monty.md#functioncall) and [`NameLookup::object_id`](../api/rust/monty.md#namelookup)
     identify the host receiver for routed calls and lookups, including class construction via `__call__`.
     Plain calls and lookups carry `None`.
+
+## Experimental typed compilation
+
+The optional `experimental-aot` feature exposes `monty::experimental_aot` controls on the execution thread.
+Embedders arrange validation separately; see [experimental typed compilation](../experimental-aot.md) for eligibility and fallback.

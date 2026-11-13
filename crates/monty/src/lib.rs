@@ -41,6 +41,11 @@ mod types;
 mod value;
 mod virtual_path;
 
+#[cfg(feature = "experimental-aot")]
+pub use bytecode::aot as experimental_aot;
+#[cfg(feature = "experimental-native")]
+pub use bytecode::native as experimental_native;
+
 #[cfg(feature = "ref-count-return")]
 pub use crate::run::RefCountOutput;
 pub use crate::{

@@ -75,6 +75,10 @@ fn default_test_limits() -> ResourceLimits {
 /// assert whose message diverges from CPython can't live in `test_cases/` —
 /// they belong in `crates/monty/tests/assert_messages.rs`.
 fn new_monty_run(code: &str, test_name: &str, config: &TestConfig) -> Result<MontyRun, MontyException> {
+    #[cfg(feature = "experimental-aot")]
+    {
+        monty::experimental_aot::set_enabled(true);
+    }
     MontyRun::new(code.to_owned(), test_name, vec![], CompileOptions::default())
         .map(|run| run.with_os_policy(config.os_policy.clone()))
 }

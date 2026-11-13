@@ -19,6 +19,9 @@ name = "monty"
 path = "src/main.rs"
 
 [features]
+experimental-aot = ["monty/experimental-aot"]
+experimental-threaded = ["monty/experimental-threaded"]
+experimental-native = ["monty/experimental-native"]
 default = ["standalone"]
 # The standalone CLI (`run.rs`) and its terminal stack. Drop it to build the
 # worker `monty subprocess` alone, which is all a pool ever spawns.

@@ -4,6 +4,11 @@
 //! bytecode instructions, a constant pool, source location information for tracebacks,
 //! and an exception handler table.
 
+#[cfg(all(monty_native, feature = "experimental-native"))]
+use std::sync::OnceLock;
+
+#[cfg(all(monty_native, feature = "experimental-native"))]
+use super::native::NativeCode;
 use crate::{intern::StringId, parse::CodeRange, value::Value};
 
 /// Compiled bytecode for a function or module.
@@ -12,6 +17,13 @@ use crate::{intern::StringId, parse::CodeRange, value::Value};
 /// Each function has its own Code object; module-level code also gets one.
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Code {
+    #[cfg(feature = "experimental-aot")]
+    #[serde(rename = "H", default)]
+    typed: Option<Box<super::aot::TypedCode>>,
+    /// Native addresses are process-local and rebuilt after loading a dump.
+    #[cfg(all(monty_native, feature = "experimental-native"))]
+    #[serde(skip)]
+    pub(crate) native: OnceLock<Option<NativeCode>>,
     /// Variable-width instructions, addressed by body-relative offsets.
     #[serde(with = "serde_bytes")]
     #[serde(rename = "B")]
@@ -45,6 +57,46 @@ pub struct Code {
 }
 
 impl Code {
+    #[cfg(feature = "experimental-aot")]
+    pub(crate) fn set_aot_hints(&mut self, hints: super::aot::FunctionHints) {
+        if hints.is_useful() {
+            self.typed = Some(Box::new(super::aot::TypedCode::new(hints)));
+            #[cfg(monty_native)]
+            if super::aot::enabled() {
+                let typed = self.aot().unwrap();
+                let _ = typed
+                    .plan
+                    .set(super::aot::ir::Plan::compile(self, &typed.hints).map(Box::new));
+            }
+        }
+    }
+
+    #[cfg(all(monty_native, feature = "experimental-aot"))]
+    pub(crate) fn aot(&self) -> Option<&super::aot::TypedCode> {
+        self.typed.as_deref()
+    }
+
+    #[cfg(all(monty_native, feature = "experimental-aot"))]
+    pub(crate) fn aot_hints(&self) -> Option<&super::aot::FunctionHints> {
+        self.aot().map(|typed| &typed.hints)
+    }
+
+    #[cfg(all(monty_native, feature = "experimental-aot"))]
+    pub(crate) fn aot_unavailable(&self) -> bool {
+        self.aot()
+            .is_none_or(|typed| typed.plan.get().is_some_and(Option::is_none))
+    }
+
+    #[cfg(monty_native)]
+    pub(crate) fn constants(&self) -> &[Value] {
+        &self.constants
+    }
+
+    #[cfg(all(monty_native, feature = "experimental-aot"))]
+    pub(crate) fn has_exception_handlers(&self) -> bool {
+        !self.exception_table.is_empty()
+    }
+
     /// Creates an empty code object for tests that only need VM context.
     #[cfg(test)]
     pub(crate) fn empty() -> Self {
@@ -63,6 +115,10 @@ impl Code {
         local_names: Vec<StringId>,
     ) -> Self {
         Self {
+            #[cfg(feature = "experimental-aot")]
+            typed: None,
+            #[cfg(all(monty_native, feature = "experimental-native"))]
+            native: OnceLock::new(),
             bytecode,
             constants,
             location_table,
@@ -128,6 +184,10 @@ impl Clone for Code {
     /// Constants are immediates, so copying compiled code needs no heap references.
     fn clone(&self) -> Self {
         Self {
+            #[cfg(feature = "experimental-aot")]
+            typed: self.typed.clone(),
+            #[cfg(all(monty_native, feature = "experimental-native"))]
+            native: OnceLock::new(),
             bytecode: self.bytecode.clone(),
             constants: self.constants.iter().map(Value::copy_immediate).collect(),
             location_table: self.location_table.clone(),

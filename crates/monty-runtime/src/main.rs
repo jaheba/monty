@@ -5,6 +5,10 @@ use std::process::ExitCode;
 use std::time::Duration;
 
 use clap::{Parser, Subcommand};
+#[cfg(feature = "experimental-aot")]
+use monty::experimental_aot;
+#[cfg(feature = "experimental-native")]
+use monty::experimental_native;
 use monty_types::TypeCheckingFormat;
 
 #[cfg(feature = "standalone")]
@@ -22,9 +26,38 @@ static ALLOC: monty_alloc::LimitedAllocator = monty_alloc::LimitedAllocator;
 ///
 /// Run `monty` to start an empty interactive REPL. Run a python file with `monty <file>`.
 /// Execute a command with `monty -c <cmd>`.
+#[cfg_attr(
+    any(feature = "experimental-native", feature = "experimental-aot"),
+    expect(clippy::struct_excessive_bools, reason = "independent command-line switches")
+)]
 #[derive(Parser)]
 #[command(version)]
 pub(crate) struct Cli {
+    /// Validate standalone submissions and enable guarded typed compilation.
+    #[cfg(feature = "experimental-aot")]
+    #[arg(long, global = true)]
+    aot: bool,
+
+    /// Reuse trusted templates without per-program executable mappings.
+    #[cfg(feature = "experimental-aot")]
+    #[arg(long, global = true, requires = "aot", conflicts_with = "aot_copied")]
+    aot_shared: bool,
+
+    /// Copy templates into per-program executable mappings for comparison.
+    #[cfg(feature = "experimental-aot")]
+    #[arg(long, global = true, requires = "aot")]
+    aot_copied: bool,
+
+    /// Disable execution tiers while retaining requested type validation.
+    #[cfg(any(feature = "experimental-native", feature = "experimental-aot"))]
+    #[arg(long, global = true)]
+    no_native: bool,
+
+    /// Print execution-tier coverage counters to stderr after execution.
+    #[cfg(any(feature = "experimental-native", feature = "experimental-aot"))]
+    #[arg(long, global = true)]
+    native_stats: bool,
+
     /// Start interactive REPL mode, this is the default if no file or command is provided.
     #[arg(short = 'i', long = "interactive")]
     interactive: bool,
@@ -219,22 +252,71 @@ impl Cli {
 
 fn main() -> ExitCode {
     let cli = Cli::parse();
+    #[cfg(feature = "experimental-aot")]
+    let cli = {
+        let mut cli = cli;
+        if cli.aot && !matches!(cli.subcommand, Some(Command::Subprocess)) {
+            cli.type_check = true;
+        }
+        experimental_aot::set_enabled(cli.aot && !cli.no_native);
+        experimental_aot::set_backend(match (cli.aot_copied, cli.aot_shared) {
+            (true, false) => experimental_aot::Backend::Copied,
+            _ => experimental_aot::Backend::Shared,
+        });
+        cli
+    };
 
-    if let Some(Command::Subprocess) = cli.subcommand {
+    #[cfg(any(feature = "experimental-native", feature = "experimental-aot"))]
+    let print_native_stats = cli.native_stats && !matches!(cli.subcommand, Some(Command::Subprocess));
+    #[cfg(feature = "experimental-native")]
+    let native_enabled = !cli.no_native;
+    #[cfg(all(feature = "experimental-aot", feature = "experimental-native"))]
+    let native_enabled = native_enabled && !cli.aot;
+    #[cfg(feature = "experimental-native")]
+    experimental_native::set_enabled(native_enabled);
+
+    let result = if let Some(Command::Subprocess) = cli.subcommand {
         if let Some(flag) = cli.subprocess_conflict() {
             eprintln!("error: `subprocess` cannot be combined with {flag}");
             ExitCode::FAILURE
         } else {
-            subprocess::run()
+            subprocess::run(
+                #[cfg(feature = "experimental-native")]
+                native_enabled,
+                #[cfg(any(feature = "experimental-native", feature = "experimental-aot"))]
+                cli.native_stats,
+                #[cfg(feature = "experimental-aot")]
+                {
+                    cli.aot && !cli.no_native
+                },
+                #[cfg(feature = "experimental-aot")]
+                match (cli.aot_copied, cli.aot_shared) {
+                    (true, false) => experimental_aot::Backend::Copied,
+                    _ => experimental_aot::Backend::Shared,
+                },
+            )
         }
     } else {
         run_standalone(cli)
+    };
+    #[cfg(any(feature = "experimental-native", feature = "experimental-aot"))]
+    if print_native_stats {
+        #[cfg(feature = "experimental-native")]
+        eprintln!("native_stats {:?}", experimental_native::stats());
+        #[cfg(feature = "experimental-aot")]
+        eprintln!("aot_stats {:?}", experimental_aot::stats());
     }
+    result
 }
 
 /// Hands a non-`subprocess` invocation to the standalone CLI.
 #[cfg(feature = "standalone")]
 fn run_standalone(cli: Cli) -> ExitCode {
+    #[cfg(feature = "experimental-aot")]
+    if cli.aot && (cli.interactive || (cli.command.is_none() && cli.file.is_none())) {
+        eprintln!("error: --aot currently requires a file or -c; protocol clients configure validation themselves");
+        return ExitCode::FAILURE;
+    }
     run::run(cli)
 }
 

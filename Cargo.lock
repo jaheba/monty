@@ -2399,9 +2399,9 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 
 [[package]]
 name = "memmap2"
-version = "0.9.11"
+version = "0.9.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d1219ed1b7f229ee7104d281dd01d6802fe28bb6e95d292942c4daacdeb798c0"
+checksum = "6b0ca1155a9ecc25aa12e8313a119f32edf0255fea2f44839c4ac0a12b2ac157"
 dependencies = [
  "libc",
 ]
@@ -2479,6 +2479,7 @@ name = "monty"
 version = "1.0.1"
 dependencies = [
  "ahash",
+ "ar_archive_writer",
  "chrono",
  "fancy-regex 0.17.0",
  "getrandom 0.3.4",
@@ -2490,12 +2491,15 @@ dependencies = [
  "jiter",
  "libm",
  "memchr",
+ "memmap2",
  "minicbor-serde",
+ "monty-alloc",
  "monty-macros",
  "monty-types",
  "num-bigint",
  "num-integer",
  "num-traits",
+ "object 0.39.1",
  "postcard",
  "python-spam",
  "ruff_python_ast",
@@ -2515,6 +2519,7 @@ dependencies = [
  "unicode-general-category",
  "unicode-normalization",
  "unicode_names2",
+ "wasmtime-internal-jit-icache-coherence",
 ]
 
 [[package]]
@@ -3505,6 +3510,9 @@ dependencies = [
 [[package]]
 name = "python-spam"
 version = "0.1.0"
+dependencies = [
+ "memchr",
+]
 
 [[package]]
 name = "quick-xml"
@@ -5520,6 +5528,27 @@ dependencies = [
  "hashbrown 0.15.5",
  "indexmap",
  "semver",
+]
+
+[[package]]
+name = "wasmtime-internal-core"
+version = "49.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7ad86a65d12c6a9202584ceb658c9a20cf5b25c32eed61c9be5e5f863f88f0d9"
+dependencies = [
+ "hashbrown 0.17.1",
+ "libm",
+]
+
+[[package]]
+name = "wasmtime-internal-jit-icache-coherence"
+version = "49.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "852cae234735d79db6c58fe0d04b32f4078ad01fdb3fd6d488ac366132ba9785"
+dependencies = [
+ "libc",
+ "wasmtime-internal-core",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

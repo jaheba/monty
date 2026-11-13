@@ -15,6 +15,10 @@
 
 use std::{io, panic, process::ExitCode, thread};
 
+#[cfg(feature = "experimental-aot")]
+use monty::experimental_aot;
+#[cfg(feature = "experimental-native")]
+use monty::experimental_native;
 use monty_proto::{
     FrameError, FrameReader, pb,
     worker::{Child, EventSink, HandleOutcome, fatal_error_event, protocol_violation},
@@ -36,11 +40,33 @@ const WORKER_STACK_SIZE: usize = 16 * 1024 * 1024;
 /// Runs [`serve`] on a thread with [`WORKER_STACK_SIZE`] of stack and returns
 /// its exit code. A panic there has already written its `FatalError` frame in
 /// the panic hook, so it exits with 101 like an unwound main thread.
-pub(crate) fn run() -> ExitCode {
+pub(crate) fn run(
+    #[cfg(feature = "experimental-native")] native_enabled: bool,
+    #[cfg(any(feature = "experimental-native", feature = "experimental-aot"))] native_stats: bool,
+    #[cfg(feature = "experimental-aot")] aot_enabled: bool,
+    #[cfg(feature = "experimental-aot")] aot_backend: experimental_aot::Backend,
+) -> ExitCode {
     thread::Builder::new()
         .name("monty-worker".to_owned())
         .stack_size(WORKER_STACK_SIZE)
-        .spawn(serve)
+        .spawn(move || {
+            // The interpreter's mode switch is thread-local, so set it again in the worker.
+            #[cfg(feature = "experimental-native")]
+            experimental_native::set_enabled(native_enabled);
+            #[cfg(feature = "experimental-aot")]
+            experimental_aot::set_enabled(aot_enabled);
+            #[cfg(feature = "experimental-aot")]
+            experimental_aot::set_backend(aot_backend);
+            let result = serve();
+            #[cfg(any(feature = "experimental-native", feature = "experimental-aot"))]
+            if native_stats {
+                #[cfg(feature = "experimental-native")]
+                eprintln!("native_stats {:?}", experimental_native::stats());
+                #[cfg(feature = "experimental-aot")]
+                eprintln!("aot_stats {:?}", experimental_aot::stats());
+            }
+            result
+        })
         .expect("failed to spawn the worker thread")
         .join()
         .unwrap_or(ExitCode::from(101))

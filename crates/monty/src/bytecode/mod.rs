@@ -12,11 +12,15 @@
 //! - `compiler` - AST to bytecode compiler
 //! - `vm` - Virtual machine for bytecode execution
 
+#[cfg(feature = "experimental-aot")]
+pub mod aot;
 mod builder;
 mod code;
 mod compiler;
 #[cfg(feature = "experimental-fusion")]
 mod fused;
+#[cfg(feature = "experimental-native")]
+pub mod native;
 mod op;
 mod vm;
 

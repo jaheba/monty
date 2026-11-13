@@ -200,3 +200,9 @@ the flag is `--type-check-format`.
     Five stub-only modules (`abc`, `types`, `typing_extensions`, `_collections_abc`, `_typeshed`) resolve during checking
     because the stubs need them, then raise `ModuleNotFoundError` at runtime.
     See [`limitations/modules.md`](limitations/modules.md).
+
+## Experimental typed compilation
+
+The optional Rust/CLI [typed compilation prototype](experimental-aot.md) uses hints to select guarded implementations.
+Validation and runtime guards serve different purposes: validation rejects inconsistent programs, while guards preserve dynamic behavior when actual values disagree with hints.
+Published bindings currently expose validation only.

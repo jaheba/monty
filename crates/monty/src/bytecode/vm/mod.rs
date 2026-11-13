@@ -3,6 +3,8 @@
 //! The VM uses a stack-based execution model with an operand stack for computation
 //! and a call stack for function frames. Each frame owns its instruction pointer (IP).
 
+#[cfg(all(monty_native, feature = "experimental-aot"))]
+mod aot;
 mod async_exec;
 mod attr;
 mod binary;
@@ -10,12 +12,16 @@ mod call;
 mod collections;
 mod compare;
 mod context_manager;
+#[cfg(feature = "experimental-threaded")]
+mod dispatch_threaded;
 mod exceptions;
 mod format;
 mod generator;
 pub(crate) use generator::{Generator, GeneratorConsumer};
 use generator::{GeneratorBoundary, GeneratorReturn};
 mod namespace;
+#[cfg(all(monty_native, feature = "experimental-native"))]
+mod native;
 mod recursion;
 mod scheduler;
 
@@ -29,6 +35,8 @@ pub(crate) use namespace::{FrameNamespace, function_namespace};
 pub(crate) use recursion::{ContainsVM, RecursionToken, RunReentryGuard};
 use scheduler::Scheduler;
 
+#[cfg(all(monty_native, feature = "experimental-aot"))]
+use crate::bytecode::aot as typed_aot;
 use crate::{
     args::ArgValues,
     asyncio::{CallId, TaskId},
@@ -88,6 +96,7 @@ macro_rules! yield_if_parked {
 }
 
 /// Tries an operation and routes a Python exception through the active frames.
+#[cfg(not(feature = "experimental-threaded"))]
 macro_rules! try_catch {
     ($self:expr, $expr:expr) => {
         if let Err(e) = $expr {
@@ -102,6 +111,7 @@ macro_rules! try_catch {
 /// Routes a Python exception through the active frames.
 ///
 /// Wrapped in a block to allow use in match arm expressions.
+#[cfg(not(feature = "experimental-threaded"))]
 macro_rules! catch {
     ($self:expr, $err:expr) => {{
         if let Some(result) = $self.handle_exception($err) {
@@ -115,6 +125,7 @@ macro_rules! catch {
 ///
 /// Uses checked arithmetic to safely compute the new IP, panicking if the
 /// jump would result in a negative or overflowing instruction pointer.
+#[cfg(any(not(feature = "experimental-threaded"), feature = "experimental-fusion"))]
 macro_rules! jump_relative {
     ($ip:expr, $offset:expr) => {{
         $ip = $ip
@@ -129,6 +140,7 @@ macro_rules! jump_relative {
 /// - `Ok(None)`: load succeeded, value is on the stack
 /// - `Ok(Some(FrameExit::NameLookup { .. }))`: unresolved name, yield to host
 /// - `Err(e)`: exception (e.g., UnboundLocalError)
+#[cfg(not(feature = "experimental-threaded"))]
 macro_rules! handle_load_result {
     ($self:expr, $result:expr) => {
         match $result {
@@ -154,6 +166,7 @@ macro_rules! handle_load_result {
 /// - `AttrLookup { .. }`: Return `FrameExit::AttrLookup` to yield to host
 /// - `AwaitValue(value)`: Push value, then implicitly await it via `exec_get_awaitable`
 /// - `Err(err)`: Handle the exception via `catch!`
+#[cfg(not(feature = "experimental-threaded"))]
 macro_rules! handle_call_result {
     ($self:expr, $result:expr) => {
         match $result {
@@ -360,6 +373,8 @@ impl<C: ContainsHeap> DropWithContext<C> for FrameExit {
     reason = "independent frame lifecycle and return flags"
 )]
 pub struct CallFrame<'code> {
+    #[cfg(all(monty_native, feature = "experimental-aot"))]
+    aot_attempted: bool,
     /// Compiled body, stable even when runtime compilation publishes more functions.
     code: &'code Code,
 
@@ -461,6 +476,8 @@ impl<'code> CallFrame<'code> {
             is_initializer: false,
             is_yield_from: false,
             generator: None,
+            #[cfg(all(monty_native, feature = "experimental-aot"))]
+            aot_attempted: true,
         }
     }
 
@@ -521,6 +538,8 @@ impl<'code> CallFrame<'code> {
             is_initializer: false,
             is_yield_from: false,
             generator: None,
+            #[cfg(all(monty_native, feature = "experimental-aot"))]
+            aot_attempted: code.aot_unavailable(),
         }
     }
 }
@@ -1015,6 +1034,8 @@ impl<'h> VM<'h> {
                     is_initializer: sf.is_initializer,
                     is_yield_from: sf.is_yield_from,
                     generator: sf.generator,
+                    #[cfg(all(monty_native, feature = "experimental-aot"))]
+                    aot_attempted: true,
                 }
             })
             .collect();
@@ -1264,7 +1285,7 @@ impl<'h> VM<'h> {
     /// only VM-internal re-entry calls this raw loop.
     ///
     /// The current frame is stored separately from its suspended callers, so
-    /// dispatch updates its authoritative instruction pointer directly.
+    /// each dispatcher publishes instruction positions before checkpoints or Python-visible work.
     fn run(&mut self) -> Result<FrameExit, RunError> {
         /// How often (in instructions) the dispatch loop runs its periodic
         /// work: the full `check_memory_time` and the GC-scheduling probe.
@@ -1288,7 +1309,41 @@ impl<'h> VM<'h> {
 
         let mut countdown = CHECK_INTERVAL;
 
+        #[cfg(all(monty_native, feature = "experimental-native"))]
+        let native_enabled = native::enabled();
+        #[cfg(all(monty_native, feature = "experimental-aot"))]
+        let aot_enabled = typed_aot::enabled();
+        #[cfg(all(monty_native, feature = "experimental-native", feature = "experimental-aot"))]
+        let native_enabled = native_enabled && !aot_enabled;
+
+        #[cfg(feature = "experimental-threaded")]
         loop {
+            #[cfg(all(monty_native, feature = "experimental-aot"))]
+            if aot_enabled && self.current_frame.ip == 0 && !self.current_frame.aot_attempted {
+                self.try_aot(&mut countdown, check_limits, poll_print)?;
+            }
+            #[cfg(all(monty_native, feature = "experimental-native"))]
+            if native_enabled {
+                self.try_native(&mut countdown);
+            }
+            let outcome = self.dispatch_threaded(&mut countdown, check_limits, poll_print)?;
+
+            if let Some(exit) = outcome {
+                return Ok(exit);
+            }
+        }
+
+        #[cfg(not(feature = "experimental-threaded"))]
+        loop {
+            #[cfg(all(monty_native, feature = "experimental-aot"))]
+            if aot_enabled && self.current_frame.ip == 0 && !self.current_frame.aot_attempted {
+                self.try_aot(&mut countdown, check_limits, poll_print)?;
+            }
+            #[cfg(all(monty_native, feature = "experimental-native"))]
+            if native_enabled {
+                self.try_native(&mut countdown);
+            }
+
             // One decrement-and-branch per instruction; the periodic work
             // runs every `CHECK_INTERVAL`-th, outlined to keep the hot loop
             // small. GC triggering is allocation-count-based (intervals in
@@ -1783,7 +1838,29 @@ impl<'h> VM<'h> {
                 // Function Calls
                 Opcode::CallFunction => {
                     let arg_count = self.current_frame.fetch_u8() as usize;
-                    handle_call_result!(self, self.exec_call_function(arg_count));
+                    #[cfg(all(monty_native, feature = "experimental-aot"))]
+                    let mut skip_aot_entry = false;
+                    #[cfg(all(monty_native, feature = "experimental-aot"))]
+                    if aot_enabled {
+                        match self.try_scalar_aot_call(arg_count, &mut countdown, check_limits, poll_print) {
+                            Ok(aot::ScalarCall::Value(value)) => {
+                                self.push(value);
+                                continue;
+                            }
+                            Ok(aot::ScalarCall::Miss) => skip_aot_entry = true,
+                            Ok(aot::ScalarCall::Unsupported) => {}
+                            Err(error) => {
+                                catch!(self, error);
+                                continue;
+                            }
+                        }
+                    }
+                    let result = self.exec_call_function(arg_count);
+                    #[cfg(all(monty_native, feature = "experimental-aot"))]
+                    if skip_aot_entry && matches!(&result, Ok(CallResult::FramePushed)) {
+                        self.current_frame.aot_attempted = true;
+                    }
+                    handle_call_result!(self, result);
                 }
                 Opcode::CallBuiltinFunction => {
                     let (builtin_id, arg_count) = self.current_frame.fetch_u8_u8();

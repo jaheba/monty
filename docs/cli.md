@@ -41,6 +41,16 @@ hello world
 
 See [resource limits](resource-limits.md) for what the limits actually bound.
 
+## Experimental typed compilation
+
+A build with the Rust feature `experimental-aot` accepts `--aot` for a file or `-c` program.
+It rejects type-checking diagnostics before execution and uses guarded native implementations where eligible.
+The default backend shares precompiled Rust templates; `--aot-copied` selects the copied-code comparison backend.
+`--aot --no-native` retains validation with ordinary execution.
+`--native-stats` prints diagnostic counters on stderr.
+Protocol workers retain the parent's type-checking configuration.
+See [experimental typed compilation](experimental-aot.md) for scope, fallback and compilation costs.
+
 ## Mounts
 
 ```text

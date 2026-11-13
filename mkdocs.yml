@@ -36,6 +36,7 @@ nav:
       - Filesystem Access: 'filesystem.md'
       - Snapshots: 'snapshots.md'
       - Type Checking: 'type-checking.md'
+      - Experimental Typed Compilation: 'experimental-aot.md'
   - Reference:
       - Comparison to Alternatives: 'alternatives.md'
       - Examples: 'examples.md'

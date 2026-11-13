@@ -66,3 +66,16 @@ process, not by hand.
 The wheels are built from the
 [`monty-runtime`](https://crates.io/crates/monty-runtime) crate; see its
 readme for cargo features, telemetry, and the rest of the Rust-side detail.
+
+## Experimental typed compilation
+
+Build with `cargo build --release -p monty-runtime --features experimental-aot` to enable `--aot`.
+For a file or `-c` program, it rejects type-checking diagnostics before executing and selects guarded native implementations for eligible typed functions.
+The prototype rejects interactive CLI use with `--aot`.
+In protocol mode, the parent still controls `Configure.type_check`.
+`--native-stats` prints separate native and typed compilation counters on stderr.
+Shared precompiled templates are the default; `--aot-copied` selects the copied-code comparison backend.
+`--aot --no-native` retains strict validation while disabling optimized execution.
+Compilation is cached per code object and can outweigh execution savings for short programs.
+Add the independent `experimental-threaded` feature to compare threaded dispatch with the existing match dispatcher.
+See `docs/experimental-aot.md` in the repository for eligibility, fallback and suspension behavior.

@@ -216,6 +216,8 @@ impl VM<'_> {
         let sf = saved.frame;
         let code = frame_code(self.interns, self.module_code, sf.function_id);
         let frame = CallFrame {
+            #[cfg(all(monty_native, feature = "experimental-aot"))]
+            aot_attempted: true,
             code,
             bytecode: code.bytecode(),
             ip: sf.ip,

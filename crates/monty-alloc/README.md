@@ -11,7 +11,7 @@ kernel for `RLIMIT_AS` is what makes the limit portable and its units
 meaningful: it bounds bytes the process requested, not virtual address space, so
 mapped text, thread stacks and file mappings do not consume the budget. The
 tradeoff is that it binds only what reaches this allocator — everything
-sandboxed code can allocate, but not a direct `mmap`.
+sandboxed code can allocate, but not a direct `mmap` without an explicit accounting lease.
 
 ```rust
 #[global_allocator]
@@ -54,3 +54,10 @@ cdylib it would hijack the allocator of the embedding host process.
 Published so the `monty` binary can be, not for direct use. On a 32-bit target
 a limit near 4 GiB saturates the arithmetic and leaves the worker
 uncapped.
+
+## Explicit mapping accounting
+
+`ExternalMemory::new(bytes)` charges a retained allocation outside `LimitedAllocator` against the same live-byte counter and hard ceiling.
+Dropping the lease refunds it; keep the lease until the mapping has been released.
+The experimental native compiler uses this for executable mappings.
+Without `LimitedAllocator` installed, the lease is unmetered, matching ordinary allocations in that embedding.

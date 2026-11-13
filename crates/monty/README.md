@@ -168,3 +168,17 @@ Generator-held references participate in reference counting and cycle collection
 ## License
 
 MIT
+
+## Experimental typed compilation
+
+The optional `experimental-aot` feature exposes `monty::experimental_aot::{set_enabled, set_backend, stats, reset_stats}`.
+Enable it on the execution thread; embedders arrange type validation separately.
+Hints select guarded scalar and read-only container implementations, with ordinary execution after a failed guard.
+Effectful or suspending function bodies remain interpreted, while their eligible pure callees can use native execution.
+The default `Backend::Shared` links operation records to trusted Rust templates compiled during the build.
+`Backend::Copied` retains a machine-code-copying variant for comparison.
+Process-local caches are omitted from snapshots, and untyped code retains only one optional metadata pointer.
+The native backend supports aarch64 and x86_64; other architectures keep interpreter execution.
+The separate `experimental-threaded` feature selects threaded dispatch and can be combined with `experimental-aot`.
+Without it, typed compilation uses the existing match dispatcher.
+See the repository's `docs/experimental-aot.md` and `crates/monty-bench/experiments/typed-aot/` for scope and measurements.

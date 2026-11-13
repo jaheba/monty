@@ -3,6 +3,8 @@ use std::mem;
 use ahash::{AHashMap, AHashSet, RandomState};
 use indexmap::IndexMap;
 
+#[cfg(feature = "experimental-aot")]
+use crate::bytecode::aot::TypeHint;
 use crate::{
     args::{ArgExprs, CallArg, CallKwarg, Signature},
     builtins::Builtins,
@@ -1740,6 +1742,10 @@ impl<'i, 'g> Prepare<'i, 'g> {
         // Return the prepared function definition; the caller wraps it in a
         // `Node::FunctionDef` or uses it as a `Node::ClassDef`'s body.
         Ok(PreparedFunctionDef {
+            #[cfg(feature = "experimental-aot")]
+            parameter_hints: parsed_sig.parameter_hints(),
+            #[cfg(feature = "experimental-aot")]
+            return_hint: parsed_sig.return_hint.clone(),
             name,
             signature,
             body: prepared_body,
@@ -1895,6 +1901,10 @@ impl<'i, 'g> Prepare<'i, 'g> {
             NameScope::Local,
         );
         let body_def = PreparedFunctionDef {
+            #[cfg(feature = "experimental-aot")]
+            parameter_hints: Vec::new(),
+            #[cfg(feature = "experimental-aot")]
+            return_hint: TypeHint::Unknown,
             name: body_name,
             signature: Signature::default(),
             body: prepared_body,
@@ -2060,6 +2070,10 @@ impl<'i, 'g> Prepare<'i, 'g> {
 
         // Create the prepared function definition (lambdas are never async)
         let func_def = PreparedFunctionDef {
+            #[cfg(feature = "experimental-aot")]
+            parameter_hints: parsed_sig.parameter_hints(),
+            #[cfg(feature = "experimental-aot")]
+            return_hint: parsed_sig.return_hint.clone(),
             name: lambda_name,
             signature,
             body: prepared_body,

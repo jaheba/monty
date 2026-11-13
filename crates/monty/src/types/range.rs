@@ -350,6 +350,19 @@ impl RangeIterator {
     pub(crate) fn size_hint(&self) -> usize {
         self.remaining
     }
+
+    /// Advances exact range state without allocating or invoking Python protocols.
+    pub(crate) fn next_integer(&mut self) -> Option<i64> {
+        if self.remaining == 0 {
+            return None;
+        }
+        let value = self.next;
+        self.remaining -= 1;
+        if self.remaining > 0 {
+            self.next += self.step;
+        }
+        Some(value)
+    }
 }
 
 impl HeapItem for RangeIterator {
@@ -378,16 +391,6 @@ impl<'h> PyTrait<'h> for HeapObjectRead<'h, RangeIterator> {
     }
 
     fn py_next(&mut self, vm: &mut VM<'h>) -> RunResult<Option<Value>> {
-        let iter = self.get_mut(vm.heap);
-        if iter.remaining == 0 {
-            Ok(None)
-        } else {
-            let value = iter.next;
-            iter.remaining -= 1;
-            if iter.remaining > 0 {
-                iter.next += iter.step;
-            }
-            Ok(Some(Value::Int(value)))
-        }
+        Ok(self.get_mut(vm.heap).next_integer().map(Value::Int))
     }
 }

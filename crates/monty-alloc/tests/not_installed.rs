@@ -3,6 +3,7 @@
 /// Limits require `LimitedAllocator` to be selected by the final executable.
 #[test]
 fn set_hard_limit_rejects_the_default_allocator() {
+    let _unmetered_mapping = monty_alloc::ExternalMemory::new(4096);
     let error = monty_alloc::set_hard_limit(Some(1024)).unwrap_err();
     assert_eq!(
         error.to_string(),

@@ -1,6 +1,8 @@
 #[cfg(test)]
 use strum::IntoEnumIterator;
 
+#[cfg(feature = "experimental-aot")]
+use crate::bytecode::aot::TypeHint;
 use crate::{
     args::{ArgExprs, Signature},
     builtins::Builtins,
@@ -800,6 +802,12 @@ pub enum Node<F> {
 /// to namespace indices with proper scoping.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct PreparedFunctionDef {
+    #[cfg(feature = "experimental-aot")]
+    #[serde(default)]
+    pub parameter_hints: Vec<TypeHint>,
+    #[cfg(feature = "experimental-aot")]
+    #[serde(default)]
+    pub return_hint: TypeHint,
     /// The function name identifier with resolved namespace index.
     pub name: Identifier,
     /// The function signature with parameter names and default counts.
