@@ -19,6 +19,7 @@ name = "monty"
 path = "src/main.rs"
 
 [features]
+typed-ir = ["monty/typed-ir"]
 default = ["standalone"]
 # The standalone CLI (`run.rs`) and its terminal stack. Drop it to build the
 # worker `monty subprocess` alone, which is all a pool ever spawns.

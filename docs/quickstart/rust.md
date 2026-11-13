@@ -437,3 +437,8 @@ The display text includes that reason.
 Its details provide `retryable()` and `retry_after` (a `Duration` from `Retry-After`, capped at one hour), with no automatic retry.
 `PoolError::Connect` retains the status or transport error for other connection failures.
 `PoolError::Configuration` identifies invalid or incompatible settings, such as no finite `request_timeout` for a CPU-mode pool or server.
+
+## Typed execution
+
+The optional `typed-ir` feature exposes `monty::typed_ir` controls on the execution thread.
+Embedders arrange validation separately; see [typed execution](../typed-ir.md) for eligibility and fallback.

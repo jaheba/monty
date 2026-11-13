@@ -15,6 +15,8 @@ use ruff_python_ast::{
 use ruff_python_parser::{Mode, parse_expression_range, parse_module};
 use ruff_text_size::{Ranged, TextRange, TextSize};
 
+#[cfg(feature = "typed-ir")]
+use crate::bytecode::typed_ir::TypeHint;
 use crate::{
     args::{ArgExprs, CallArg, CallKwarg, Kwarg},
     exception_private::{ExcType, ExcTypeExt, ExceptionRaise, RunError, SimpleException},
@@ -76,6 +78,9 @@ const UNSUPPORTED_FUTURES: [&str; 1] = ["barry_as_FLUFL"];
 /// A parameter in a function signature with optional default value.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ParsedParam {
+    #[cfg(feature = "typed-ir")]
+    #[serde(default)]
+    pub type_hint: TypeHint,
     /// The parameter name.
     pub name: StringId,
     /// The default value expression (evaluated at definition time).
@@ -89,6 +94,9 @@ pub struct ParsedParam {
 /// as unevaluated AST and will be evaluated during the prepare phase.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct ParsedSignature {
+    #[cfg(feature = "typed-ir")]
+    #[serde(default)]
+    pub return_hint: TypeHint,
     /// Positional-only parameters (before `/`).
     pub pos_args: Vec<ParsedParam>,
     /// Positional-or-keyword parameters.
@@ -102,6 +110,18 @@ pub struct ParsedSignature {
 }
 
 impl ParsedSignature {
+    #[cfg(feature = "typed-ir")]
+    pub(crate) fn parameter_hints(&self) -> Vec<TypeHint> {
+        self.pos_args
+            .iter()
+            .chain(&self.args)
+            .map(|param| param.type_hint.clone())
+            .chain(self.var_args.iter().map(|_| TypeHint::Unknown))
+            .chain(self.kwargs.iter().map(|param| param.type_hint.clone()))
+            .chain(self.var_kwargs.iter().map(|_| TypeHint::Unknown))
+            .collect()
+    }
+
     /// Returns an iterator over all parameter names in the signature.
     ///
     /// Order: pos_args, args, var_args, kwargs, var_kwargs
@@ -1113,6 +1133,17 @@ impl<'a, 'i> Parser<'a, 'i> {
         mut function: ast::StmtFunctionDef,
     ) -> Result<(RawFunctionDef, Vec<ExprLoc>), ParseError> {
         let decorators = self.parse_decorators(function.decorator_list)?;
+        #[cfg(feature = "typed-ir")]
+        let parameter_hints = function
+            .parameters
+            .posonlyargs
+            .iter()
+            .chain(&function.parameters.args)
+            .chain(&function.parameters.kwonlyargs)
+            .map(|param| TypeHint::from_annotation(param.parameter.annotation.as_deref()))
+            .collect::<Vec<_>>();
+        #[cfg(feature = "typed-ir")]
+        let return_hint = TypeHint::from_annotation(function.returns.as_deref());
         let annotations = self.take_function_annotations(&mut function.parameters, function.returns.take());
 
         let params = &function.parameters;
@@ -1133,11 +1164,29 @@ impl<'a, 'i> Parser<'a, 'i> {
         let var_kwargs = params.kwarg.as_ref().map(|p| self.interner.intern(&p.name.id));
 
         let signature = ParsedSignature {
+            #[cfg(feature = "typed-ir")]
+            return_hint,
             pos_args,
             args,
             var_args,
             kwargs,
             var_kwargs,
+        };
+
+        #[cfg(feature = "typed-ir")]
+        let signature = {
+            let mut signature = signature;
+            // PEP 649 takes the annotation ASTs before defaults are parsed.
+            for (param, hint) in signature
+                .pos_args
+                .iter_mut()
+                .chain(&mut signature.args)
+                .chain(&mut signature.kwargs)
+                .zip(parameter_hints)
+            {
+                param.type_hint = hint;
+            }
+            signature
         };
 
         let name = self.identifier(&function.name.id, function.name.range);
@@ -1249,6 +1298,8 @@ impl<'a, 'i> Parser<'a, 'i> {
                 args: vec![ParsedParam {
                     name: format_id,
                     default: None,
+                    #[cfg(feature = "typed-ir")]
+                    type_hint: TypeHint::Unknown,
                 }],
                 ..ParsedSignature::default()
             },
@@ -1830,6 +1881,8 @@ impl<'a, 'i> Parser<'a, 'i> {
                     let var_kwargs = params.kwarg.as_ref().map(|p| self.interner.intern(&p.name.id));
 
                     ParsedSignature {
+                        #[cfg(feature = "typed-ir")]
+                        return_hint: TypeHint::Unknown,
                         pos_args,
                         args,
                         var_args,
@@ -2474,7 +2527,12 @@ impl<'a, 'i> Parser<'a, 'i> {
                     Some(expr) => Some(self.parse_expression((**expr).clone())?),
                     None => None,
                 };
-                Ok(ParsedParam { name, default })
+                Ok(ParsedParam {
+                    name,
+                    default,
+                    #[cfg(feature = "typed-ir")]
+                    type_hint: TypeHint::from_annotation(p.parameter.annotation.as_deref()),
+                })
             })
             .collect()
     }

@@ -17,6 +17,8 @@ mod code;
 mod compiler;
 mod op;
 mod pattern;
+#[cfg(feature = "typed-ir")]
+pub mod typed_ir;
 mod vm;
 
 pub(crate) use builder::CodeBuilder;

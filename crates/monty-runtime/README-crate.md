@@ -21,6 +21,8 @@ hello world
   (like `python -i`)
 - `-t` / `--type-check` — type check (powered by [ty](https://docs.astral.sh/ty/))
   before executing
+- `--typed-ir` — validate a standalone file or `-c` program and use guarded typed execution
+  (requires the `typed-ir` feature; incompatible with interactive mode)
 - `-m` / `--mount /host/path::/virtual/path[::mode[::write_limit_bytes]]` —
   mount a host directory into the sandbox (`ro`, `rw`, or `overlay`)
 - `--max-memory 10MB`, `--max-feed-duration 0.5`, `--max-turn-duration`,
@@ -33,6 +35,8 @@ hello world
   terminal stack (`rustyline`, `anstream`, `anstyle`). Without it the binary
   serves `monty subprocess` alone, which is all a pool ever spawns; the flags
   still parse, but anything other than `subprocess` is refused.
+- `typed-ir` — enables `--typed-ir` and the portable typed-register executor.
+  Protocol workers retain the parent's type-checking configuration.
 - `telemetry` — see below. Implies `standalone`, since it only instruments that
   path.
 

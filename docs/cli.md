@@ -41,6 +41,15 @@ hello world
 
 See [resource limits](resource-limits.md) for what the limits actually bound.
 
+## Typed execution
+
+A build with the Rust feature `typed-ir` accepts `--typed-ir` for a file or `-c` program.
+It rejects type-checking diagnostics before execution and uses guarded typed instructions where eligible.
+It is incompatible with interactive mode.
+Failed runtime guards resume ordinary execution.
+Protocol workers retain the parent's type-checking configuration.
+See [typed execution](typed-ir.md) for supported operations, suspension and setup costs.
+
 ## Mounts
 
 ```text

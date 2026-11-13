@@ -77,6 +77,7 @@ with Monty() as pool:
     limits](https://pydantic.dev/docs/monty/concepts/resource-limits/),
     [snapshots](https://pydantic.dev/docs/monty/concepts/snapshots/), [the Python
     subset](https://pydantic.dev/docs/monty/limitations/)
+- [Typed execution](./docs/typed-ir.md): guarded execution using type hints
 - [`docs/`](./docs): the source of the documentation site
 
 Monty runs [Code Mode](https://pydantic.dev/docs/ai/harness/code-mode/) in [Pydantic

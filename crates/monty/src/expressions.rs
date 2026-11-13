@@ -1,6 +1,8 @@
 #[cfg(test)]
 use strum::IntoEnumIterator;
 
+#[cfg(feature = "typed-ir")]
+use crate::bytecode::typed_ir::TypeHint;
 use crate::{
     args::{ArgExprs, Signature},
     builtins::Builtins,
@@ -931,6 +933,12 @@ pub enum Node<F> {
 /// to namespace indices with proper scoping.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct PreparedFunctionDef {
+    #[cfg(feature = "typed-ir")]
+    #[serde(default)]
+    pub parameter_hints: Vec<TypeHint>,
+    #[cfg(feature = "typed-ir")]
+    #[serde(default)]
+    pub return_hint: TypeHint,
     /// The function name identifier with resolved namespace index.
     pub name: Identifier,
     /// The function signature with parameter names and default counts.

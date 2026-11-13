@@ -68,3 +68,13 @@ not by hand.
 The wheels are built from the
 [`monty-runtime`](https://crates.io/crates/monty-runtime) crate; see its
 readme for cargo features, telemetry, and the rest of the Rust-side detail.
+
+## Typed execution
+
+Build with `cargo build --release -p monty-runtime --features typed-ir` to enable `--typed-ir`.
+For a file or `-c` program, it rejects type-checking diagnostics before executing eligible typed functions.
+Runtime guards fall back to ordinary execution when actual values disagree with type hints.
+The flag requires a file or `-c` in standalone mode and rejects interactive mode.
+Protocol workers retain the parent's `Configure.type_check` setting.
+Compiled instructions are cached per code object; setup can outweigh savings for short functions.
+See `docs/typed-ir.md` in the repository for supported operations and suspension behavior.

@@ -18,6 +18,8 @@ mod namespace;
 mod pattern;
 mod recursion;
 mod scheduler;
+#[cfg(feature = "typed-ir")]
+mod typed_ir;
 
 use std::{borrow::Cow, mem};
 
@@ -33,6 +35,8 @@ use recursion::frame_recursion_depth;
 pub(crate) use recursion::{ContainsVM, RecursionToken, RunReentryGuard};
 use scheduler::Scheduler;
 
+#[cfg(feature = "typed-ir")]
+use crate::bytecode::typed_ir as typed_compiler;
 use crate::{
     args::ArgValues,
     asyncio::{CallId, TaskId},
@@ -308,7 +312,16 @@ impl<C: ContainsHeap> DropWithContext<C> for FrameExit {
 /// Each frame represents one level in the call stack and owns its own
 /// instruction pointer. This design avoids sync bugs on call/return.
 #[derive(Debug)]
+#[cfg_attr(
+    feature = "typed-ir",
+    expect(
+        clippy::struct_excessive_bools,
+        reason = "independent frame lifecycle and compilation flags"
+    )
+)]
 pub struct CallFrame<'code> {
+    #[cfg(feature = "typed-ir")]
+    typed_ir_attempted: bool,
     /// Compiled body, stable even when runtime compilation publishes more functions.
     code: &'code Code,
 
@@ -409,6 +422,8 @@ impl<'code> CallFrame<'code> {
             namespace: None,
             is_initializer: false,
             import_from_module: None,
+            #[cfg(feature = "typed-ir")]
+            typed_ir_attempted: true,
         }
     }
 
@@ -466,6 +481,8 @@ impl<'code> CallFrame<'code> {
             namespace,
             is_initializer: false,
             import_from_module: None,
+            #[cfg(feature = "typed-ir")]
+            typed_ir_attempted: code.typed_ir_unavailable(),
         }
     }
 }
@@ -970,6 +987,8 @@ impl<'h> VM<'h> {
                     namespace: sf.namespace,
                     is_initializer: sf.is_initializer,
                     import_from_module: sf.import_from_module,
+                    #[cfg(feature = "typed-ir")]
+                    typed_ir_attempted: true,
                 }
             })
             .collect();
@@ -1315,7 +1334,15 @@ impl<'h> VM<'h> {
 
         let mut countdown = CHECK_INTERVAL;
 
+        #[cfg(feature = "typed-ir")]
+        let typed_ir_enabled = typed_compiler::enabled();
+
         loop {
+            #[cfg(feature = "typed-ir")]
+            if typed_ir_enabled && self.current_frame.ip == 0 && !self.current_frame.typed_ir_attempted {
+                self.try_typed_ir(&mut countdown, check_limits, poll_print)?;
+            }
+
             // One decrement-and-branch per instruction; the periodic work
             // runs every `CHECK_INTERVAL`-th, outlined to keep the hot loop
             // small. GC triggering is allocation-count-based (intervals in

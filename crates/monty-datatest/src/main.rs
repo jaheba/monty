@@ -28,6 +28,8 @@ use std::{
 };
 
 use ahash::AHashMap;
+#[cfg(feature = "typed-ir")]
+use monty::typed_ir;
 // only the dump round-trip needs these, and it is skipped under memory-model-checks
 #[cfg(not(feature = "memory-model-checks"))]
 use monty::{Dump, MontyRepl, Session, SessionRef, dump};
@@ -82,6 +84,10 @@ fn default_test_limits() -> ResourceLimits {
 /// assert whose message diverges from CPython can't live in `test_cases/` —
 /// they belong in `crates/monty/tests/assert_messages.rs`.
 fn new_monty_run(code: &str, test_name: &str, config: &TestConfig) -> Result<MontyRun, MontyException> {
+    #[cfg(feature = "typed-ir")]
+    {
+        typed_ir::set_enabled(true);
+    }
     MontyRun::new(code.to_owned(), test_name, vec![], CompileOptions::default())
         .map(|run| run.with_os_policy(config.os_policy.clone()))
 }

@@ -95,6 +95,10 @@ fn configure_logfire() -> Result<Option<logfire::ShutdownGuard>, logfire::Config
 
 /// Dispatches a parsed standalone CLI invocation.
 fn run_cli(cli: Cli) -> ExitCode {
+    #[cfg(feature = "typed-ir")]
+    let strict_types = cli.typed_ir;
+    #[cfg(not(feature = "typed-ir"))]
+    let strict_types = false;
     // `Some` enables the check and carries how its diagnostics are rendered.
     let type_check = cli.type_check.then(|| TypeCheckingConfig {
         format: cli.type_check_format.unwrap_or_default(),
@@ -148,7 +152,7 @@ fn run_cli(cli: Cli) -> ExitCode {
         return if cli.interactive {
             dispatch_repl("<string>", &cmd, limits, host, &cwd)
         } else {
-            dispatch_script("<string>", cmd, type_check, limits, host, &cwd)
+            dispatch_script("<string>", cmd, type_check, limits, host, &cwd, strict_types)
         };
     }
 
@@ -163,7 +167,7 @@ fn run_cli(cli: Cli) -> ExitCode {
         return if cli.interactive {
             dispatch_repl(file_path, &code, limits, host, &cwd)
         } else {
-            dispatch_script(file_path, code, type_check, limits, host, &cwd)
+            dispatch_script(file_path, code, type_check, limits, host, &cwd, strict_types)
         };
     }
 
@@ -187,8 +191,17 @@ fn dispatch_script(
     limits: ResourceLimits,
     host: HostOs,
     cwd: &str,
+    strict_types: bool,
 ) -> ExitCode {
-    run_script(file_path, code, type_check, ResourceTracker::new(limits), host, cwd)
+    run_script(
+        file_path,
+        code,
+        type_check,
+        ResourceTracker::new(limits),
+        host,
+        cwd,
+        strict_types,
+    )
 }
 
 /// REPL analog of [`dispatch_script`].
@@ -212,6 +225,7 @@ fn run_script(
     tracker: ResourceTracker,
     mut host: HostOs,
     cwd: &str,
+    strict_types: bool,
 ) -> ExitCode {
     // ty recurses through the AST unguarded, so a source nested too deeply is rejected before it.
     if let Some(config) = type_check {
@@ -227,6 +241,9 @@ fn run_script(
                 "{DIM}{}{DIM:#} {BOLD_CYAN}{ARROW}{BOLD_CYAN:#} {BOLD_RED}type check failed{BOLD_RED:#}:\n{failure}",
                 FormattedDuration(elapsed)
             );
+            if strict_types {
+                return ExitCode::FAILURE;
+            }
         } else {
             let elapsed = start.elapsed();
             eprintln!(

@@ -587,6 +587,8 @@ impl<'h> VM<'h> {
                 .map(|sf| {
                     let code = frame_code(self.interns, self.module_code, sf.function_id);
                     CallFrame {
+                        #[cfg(feature = "typed-ir")]
+                        typed_ir_attempted: true,
                         code,
                         bytecode: code.bytecode(),
                         ip: sf.ip,

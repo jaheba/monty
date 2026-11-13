@@ -11,6 +11,8 @@ use smallvec::smallvec;
 use super::{
     DictItemsView, DictKeysView, DictValuesView, LazyHeapSet, PyTrait, allocate_tuple, list::repr_should_truncate,
 };
+#[cfg(feature = "typed-ir")]
+use crate::hash::HashValue;
 use crate::{
     args::{ArgValues, FromArgs, KwargsValues},
     bytecode::{CallResult, ContainsVM, RecursionToken, VM},
@@ -202,6 +204,51 @@ impl TableEntry for DictEntry {
 }
 
 impl Dict {
+    /// A guarded read must stop before a colliding key whose comparison could execute Python.
+    #[cfg(feature = "typed-ir")]
+    pub(crate) fn guarded_string_get(
+        &self,
+        key: &Value,
+        hash: HashValue,
+        heap: &Heap,
+        interns: &Interns,
+    ) -> Option<&Value> {
+        let key_string = json_key_string_slice(key, heap, interns)?;
+        let hash = hash.raw();
+        let mut needs_python = false;
+        let slot = self.table.find(hash, |entry| {
+            if entry.hash != hash {
+                return false;
+            }
+            if matches!((&entry.key, key), (Value::Ref(a), Value::Ref(b)) if a == b)
+                || matches!((&entry.key, key), (Value::InternString(a), Value::InternString(b)) if a == b)
+            {
+                return true;
+            }
+            match &entry.key {
+                Value::InternString(id) => interns.get_str(*id) == key_string,
+                Value::InlineString(value) => value.as_str() == key_string,
+                Value::Ref(id) => {
+                    if let HeapData::Str(value) = heap.get(*id) {
+                        value.as_str() == key_string
+                    } else {
+                        needs_python = true;
+                        true
+                    }
+                }
+                _ => {
+                    needs_python = true;
+                    true
+                }
+            }
+        });
+        if needs_python {
+            None
+        } else {
+            slot.map(|slot| &self.table.entry(&slot).value)
+        }
+    }
+
     /// Creates a new empty dict.
     #[must_use]
     pub fn new() -> Self {

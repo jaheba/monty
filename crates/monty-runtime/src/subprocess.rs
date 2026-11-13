@@ -15,6 +15,8 @@
 
 use std::{io, panic, process::ExitCode, thread};
 
+#[cfg(feature = "typed-ir")]
+use monty::typed_ir;
 use monty_proto::{
     FrameError, FrameReader, pb,
     worker::{EventSink, HandleOutcome, SessionBudget, Worker, fatal_error_event, protocol_violation},
@@ -36,11 +38,16 @@ const WORKER_STACK_SIZE: usize = 16 * 1024 * 1024;
 /// Runs [`serve`] on a thread with [`WORKER_STACK_SIZE`] of stack and returns
 /// its exit code. A panic there has already written its `FatalError` frame in
 /// the panic hook, so it exits with 101 like an unwound main thread.
-pub(crate) fn run() -> ExitCode {
+pub(crate) fn run(#[cfg(feature = "typed-ir")] typed_ir_enabled: bool) -> ExitCode {
     thread::Builder::new()
         .name("monty-worker".to_owned())
         .stack_size(WORKER_STACK_SIZE)
-        .spawn(serve)
+        .spawn(move || {
+            // The interpreter's mode switch is thread-local, so set it again in the worker.
+            #[cfg(feature = "typed-ir")]
+            typed_ir::set_enabled(typed_ir_enabled);
+            serve()
+        })
         .expect("failed to spawn the worker thread")
         .join()
         .unwrap_or(ExitCode::from(101))

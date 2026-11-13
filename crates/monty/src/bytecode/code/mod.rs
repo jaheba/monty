@@ -16,6 +16,9 @@ use crate::{intern::StringId, parse::CodeRange, value::Value};
 /// Each function has its own Code object; module-level code also gets one.
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Code {
+    #[cfg(feature = "typed-ir")]
+    #[serde(rename = "H", default)]
+    typed: Option<Box<super::typed_ir::TypedCode>>,
     /// Variable-width instructions, addressed by body-relative offsets.
     #[serde(with = "serde_bytes")]
     #[serde(rename = "B")]
@@ -55,6 +58,45 @@ pub struct Code {
 }
 
 impl Code {
+    #[cfg(feature = "typed-ir")]
+    pub(crate) fn set_typed_ir_hints(&mut self, hints: super::typed_ir::FunctionHints) {
+        if hints.is_useful() {
+            self.typed = Some(Box::new(super::typed_ir::TypedCode::new(hints)));
+            if super::typed_ir::enabled() {
+                let typed = self.typed_ir().unwrap();
+                let _ = typed
+                    .plan
+                    .set(super::typed_ir::ir::Plan::compile(self, &typed.hints).map(Box::new));
+            }
+        }
+    }
+
+    #[cfg(feature = "typed-ir")]
+    pub(crate) fn typed_ir(&self) -> Option<&super::typed_ir::TypedCode> {
+        self.typed.as_deref()
+    }
+
+    #[cfg(feature = "typed-ir")]
+    pub(crate) fn typed_ir_hints(&self) -> Option<&super::typed_ir::FunctionHints> {
+        self.typed_ir().map(|typed| &typed.hints)
+    }
+
+    #[cfg(feature = "typed-ir")]
+    pub(crate) fn typed_ir_unavailable(&self) -> bool {
+        self.typed_ir()
+            .is_none_or(|typed| typed.plan.get().is_some_and(Option::is_none))
+    }
+
+    #[cfg(feature = "typed-ir")]
+    pub(crate) fn constants(&self) -> &[Value] {
+        &self.constants
+    }
+
+    #[cfg(feature = "typed-ir")]
+    pub(crate) fn has_exception_handlers(&self) -> bool {
+        !self.exception_table.is_empty()
+    }
+
     /// Creates an empty code object for tests that only need VM context.
     #[cfg(test)]
     pub(crate) fn empty() -> Self {
@@ -73,6 +115,8 @@ impl Code {
         local_names: Vec<StringId>,
     ) -> Self {
         Self {
+            #[cfg(feature = "typed-ir")]
+            typed: None,
             bytecode,
             constants,
             location_table,
@@ -162,6 +206,8 @@ impl Clone for Code {
     /// Constants are immediates, so copying compiled code needs no heap references.
     fn clone(&self) -> Self {
         Self {
+            #[cfg(feature = "typed-ir")]
+            typed: self.typed.clone(),
             bytecode: self.bytecode.clone(),
             constants: self.constants.iter().map(Value::copy_immediate).collect(),
             location_table: self.location_table.clone(),

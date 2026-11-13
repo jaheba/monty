@@ -636,6 +636,24 @@ enum OperandShape {
 }
 
 impl Opcode {
+    /// Encoded size used to build the typed compiler's instruction map.
+    #[cfg(feature = "typed-ir")]
+    pub(crate) fn encoded_len(self, body: &[u8], offset: usize) -> Option<usize> {
+        let operands = match self.operand_shape() {
+            OperandShape::None => 0,
+            OperandShape::U8 | OperandShape::I8 => 1,
+            OperandShape::U16 | OperandShape::Offset | OperandShape::U8U8 => 2,
+            OperandShape::U16U8 => 3,
+            OperandShape::U16U16 | OperandShape::U16U8U8 => 4,
+            OperandShape::U16U16U8 => 5,
+            OperandShape::CallKw => 2 + 2 * usize::from(*body.get(offset + 2)?),
+            OperandShape::CallAttrKw => 4 + 2 * usize::from(*body.get(offset + 4)?),
+        };
+        let len = 1 + operands;
+        body.get(offset..offset.checked_add(len)?)?;
+        Some(len)
+    }
+
     /// Returns this opcode's serialized operand shape.
     fn operand_shape(self) -> OperandShape {
         match self {

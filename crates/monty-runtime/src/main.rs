@@ -5,6 +5,8 @@ use std::process::ExitCode;
 use std::time::Duration;
 
 use clap::{Parser, Subcommand};
+#[cfg(feature = "typed-ir")]
+use monty::typed_ir;
 use monty_types::TypeCheckingFormat;
 
 #[cfg(feature = "standalone")]
@@ -25,6 +27,11 @@ static ALLOC: monty_alloc::LimitedAllocator = monty_alloc::LimitedAllocator;
 #[derive(Parser)]
 #[command(version)]
 pub(crate) struct Cli {
+    /// Validate standalone submissions and enable guarded typed compilation.
+    #[cfg(feature = "typed-ir")]
+    #[arg(long, global = true)]
+    typed_ir: bool,
+
     /// Start interactive REPL mode, this is the default if no file or command is provided.
     #[arg(short = 'i', long = "interactive")]
     interactive: bool,
@@ -219,13 +226,25 @@ impl Cli {
 
 fn main() -> ExitCode {
     let cli = Cli::parse();
+    #[cfg(feature = "typed-ir")]
+    let cli = {
+        let mut cli = cli;
+        if cli.typed_ir && !matches!(cli.subcommand, Some(Command::Subprocess)) {
+            cli.type_check = true;
+        }
+        typed_ir::set_enabled(cli.typed_ir);
+        cli
+    };
 
     if let Some(Command::Subprocess) = cli.subcommand {
         if let Some(flag) = cli.subprocess_conflict() {
             eprintln!("error: `subprocess` cannot be combined with {flag}");
             ExitCode::FAILURE
         } else {
-            subprocess::run()
+            subprocess::run(
+                #[cfg(feature = "typed-ir")]
+                cli.typed_ir,
+            )
         }
     } else {
         run_standalone(cli)
@@ -235,6 +254,13 @@ fn main() -> ExitCode {
 /// Hands a non-`subprocess` invocation to the standalone CLI.
 #[cfg(feature = "standalone")]
 fn run_standalone(cli: Cli) -> ExitCode {
+    #[cfg(feature = "typed-ir")]
+    if cli.typed_ir && (cli.interactive || (cli.command.is_none() && cli.file.is_none())) {
+        eprintln!(
+            "error: --typed-ir currently requires a file or -c; protocol clients configure validation themselves"
+        );
+        return ExitCode::FAILURE;
+    }
     run::run(cli)
 }
 

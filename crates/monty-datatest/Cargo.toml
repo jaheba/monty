@@ -28,6 +28,7 @@ tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
 pyo3-build-config = { workspace = true }
 
 [features]
+typed-ir = ["monty/typed-ir"]
 ref-count-return = ["monty/ref-count-return"]
 memory-model-checks = ["monty/memory-model-checks"]
 

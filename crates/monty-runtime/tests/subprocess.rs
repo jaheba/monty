@@ -71,7 +71,12 @@ impl ChildProc {
     }
 
     fn spawn_with(stderr: Stdio) -> Self {
+        Self::spawn_with_arguments(stderr, &[])
+    }
+
+    fn spawn_with_arguments(stderr: Stdio, arguments: &[&str]) -> Self {
         let mut child = Command::new(env!("CARGO_BIN_EXE_monty"))
+            .args(arguments)
             .arg("subprocess")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
@@ -3368,5 +3373,144 @@ fn slice_assignment_rejects_large_replacement_without_killing_worker() {
         assert_eq!(expect_error(event).exc_type, "MemoryError", "{code}");
         assert_eq!(child.feed_complete("1 + 1"), MontyObject::int(2));
         child.shutdown();
+    }
+}
+
+#[cfg(feature = "typed-ir")]
+mod typed_ir {
+    use super::*;
+
+    fn child() -> ChildProc {
+        ChildProc::spawn_with_arguments(Stdio::piped(), &["--typed-ir"])
+    }
+
+    fn finish(mut child: ChildProc) {
+        child.send(pb::client_request::Kind::Shutdown(pb::Shutdown {}));
+        assert!(matches!(child.recv(), pb::worker_event::Kind::Ok(_)));
+        let (status, stderr) = child.reap_with_stderr();
+        assert!(status.success(), "{stderr}");
+    }
+
+    #[cfg(feature = "standalone")]
+    #[test]
+    fn cli_rejects_invalid_types_before_running_the_program() {
+        let output = Command::new(env!("CARGO_BIN_EXE_monty"))
+            .args(["--typed-ir", "-c", "value: int = 'wrong'\nprint('executed')"])
+            .output()
+            .unwrap();
+        assert!(!output.status.success());
+        assert_eq!(output.stdout, [] as [u8; 0]);
+        assert!(String::from_utf8_lossy(&output.stderr).contains("invalid-assignment"));
+    }
+
+    #[test]
+    fn validation_and_dynamic_fallback_are_independent() {
+        let mut child = child();
+        child.create_repl_with(pb::Configure {
+            type_check: true,
+            ..configure()
+        });
+        let (_, event) = child.feed("def f(x: int) -> int:\n    return x + 1\nf('wrong')");
+        assert!(matches!(event, pb::worker_event::Kind::TypingError(_)), "{event:?}");
+        assert_eq!(
+            child.feed_complete(
+                "from typing import Any\ndef f(x: int) -> int:\n    return x + 1\nvalue: Any = 0.5\nf(value)"
+            ),
+            MontyObject::float(1.5)
+        );
+        assert_eq!(
+            child.feed_complete("str(f(9223372036854775807))"),
+            MontyObject::string("9223372036854775808".to_owned())
+        );
+        assert_eq!(child.feed_complete("f(7)"), MontyObject::int(8));
+        finish(child);
+    }
+
+    #[test]
+    fn typed_execution_respects_limits_and_the_worker_recovers() {
+        let mut child = child();
+        child.create_repl_with(pb::Configure {
+            limits: Some(pb::ResourceLimits {
+                max_memory_bytes: Some(4 * 1024 * 1024),
+                max_feed_duration_micros: Some(100_000),
+                ..Default::default()
+            }),
+            ..configure()
+        });
+        assert_eq!(child.feed_complete("def total(data: list[int],n: int) -> int:\n    result = 0\n    for i in range(n):\n        result += data[i]\n    return result\ntotal(list(range(100_000)),10_000)"),MontyObject::int(49_995_000));
+        let (_, event) = child.feed("def forever(n: int):\n    while True:\n        n = n ^ 1\nforever(0)");
+        assert_eq!(expect_error(event).exc_type, "TimeoutError");
+        assert_eq!(child.feed_complete("1 + 1"), MontyObject::int(2));
+        finish(child);
+    }
+
+    #[test]
+    fn typed_compilations_are_released_on_reset() {
+        let mut child = child();
+        for _ in 0..160 {
+            child.create_repl_with(configure_with_max_memory(512 * 1024));
+            assert_eq!(child.feed_complete("def f(n: int) -> int:\n    total = 0\n    for i in range(n):\n        total += i\n    return total\nf(100)"),MontyObject::int(4950));
+            child.send(pb::client_request::Kind::Reset(pb::Reset {}));
+            assert!(matches!(child.recv(), pb::worker_event::Kind::Ok(_)));
+        }
+        finish(child);
+    }
+    #[test]
+    fn suspended_dump_rebuilds_typed_helpers() {
+        let mut source = child();
+        source.create_repl_with(pb::Configure {
+            type_check: true,
+            type_check_stubs: Some("def ext(value: float) -> float: ...".to_owned()),
+            ..configure_with_max_memory(16 * 1024 * 1024)
+        });
+        let (_,event)=source.feed("def total(data: list[float]) -> float:\n    result = 0.0\n    for value in data:\n        result += value\n    return result\nbefore = total([1.0,2.0])\nvalue = ext(before)\ntotal([value,3.0])");
+        let pb::worker_event::Kind::FunctionCall(call) = event else {
+            panic!("expected host call: {event:?}");
+        };
+        assert_eq!(call_args(&call), vec![MontyObject::float(3.0)]);
+        source.send(pb::client_request::Kind::Dump(pb::Dump {}));
+        let pb::worker_event::Kind::DumpResult(dump) = source.recv() else {
+            panic!("expected dump");
+        };
+        finish(source);
+
+        let mut restored = child();
+        restored.send(pb::client_request::Kind::Load(pb::Load { state: dump.state }));
+        let (_, event) = restored.recv_turn();
+        let pb::worker_event::Kind::FunctionCall(call) = event else {
+            panic!("expected restored host call: {event:?}");
+        };
+        let (_, event) = restored.resume_return(call.call_id, MontyObject::float(10.0));
+        assert_eq!(expect_complete(event), MontyObject::float(13.0));
+        finish(restored);
+    }
+
+    #[test]
+    fn repeated_host_replies_keep_container_roots_and_fallback() {
+        let mut child = child();
+        child.create_repl_with(pb::Configure {
+            type_check: true,
+            type_check_stubs: Some("def ext(round: int) -> list[float]: ...".to_owned()),
+            ..configure_with_max_memory(32 * 1024 * 1024)
+        });
+        let (_,mut event)=child.feed("def total(data: list[float]) -> float:\n    result = 0.0\n    for value in data:\n        result += value * 0.5\n    return result\nanswer = 0.0\nfor round in range(50):\n    answer += total(ext(round))\nanswer");
+        for round in 0..50 {
+            let pb::worker_event::Kind::FunctionCall(call) = event else {
+                panic!("expected host reply {round}: {event:?}");
+            };
+            assert_eq!(call_args(&call), vec![MontyObject::int(round)]);
+            let items = (0_i32..100)
+                .map(|value| {
+                    if round % 5 == 0 {
+                        MontyObject::int(i64::from(value))
+                    } else {
+                        MontyObject::float(f64::from(value))
+                    }
+                })
+                .collect::<Vec<_>>();
+            (_, event) = child.resume_return(call.call_id, MontyObject::list(items));
+        }
+        assert_eq!(expect_complete(event), MontyObject::float(123_750.0));
+        finish(child);
     }
 }

@@ -934,6 +934,40 @@ impl<'a, 'i> Compiler<'a, 'i> {
         let namespace_size = check_namespace_size_u16(func_def.namespace_size, what)?;
         let body_code = compile_body(self.interns, namespace_size)?;
 
+        #[cfg(feature = "typed-ir")]
+        let body_code = {
+            let mut code = body_code;
+            if func_def
+                .parameter_hints
+                .iter()
+                .any(|hint| !matches!(hint, super::typed_ir::TypeHint::Unknown))
+                || !matches!(func_def.return_hint, super::typed_ir::TypeHint::Unknown)
+            {
+                let mut builtin_names = Vec::new();
+                let mut ip = 0;
+                while ip < code.bytecode().len() {
+                    let bytes = code.bytecode();
+                    let op = Opcode::from_repr(bytes[ip]).expect("compiled opcode");
+                    if op == Opcode::LoadGlobalCallable {
+                        let id = StringId::from_index(u16::from_le_bytes([bytes[ip + 3], bytes[ip + 4]]));
+                        if let Some(builtin) = super::typed_ir::BuiltinHint::from_name(self.interns.get_str(id))
+                            && !builtin_names.contains(&(id, builtin))
+                        {
+                            builtin_names.push((id, builtin));
+                        }
+                    }
+                    ip += op.encoded_len(bytes, ip).expect("compiled operands");
+                }
+                code.set_typed_ir_hints(super::typed_ir::FunctionHints {
+                    parameters: func_def.parameter_hints.clone(),
+                    returns: func_def.return_hint.clone(),
+                    locals: namespace_size,
+                    builtin_names,
+                });
+            }
+            code
+        };
+
         // 2. Create the compiled Function and add it to the table
         // `Function` retains the legacy numeric source metadata for serialized-code
         // compatibility, although closure construction is fully emitted here.

@@ -267,7 +267,7 @@ the flag is `--type-check-format`.
 ## Caveats
 
 - **Type checking is static only.** The `typing` module inside the sandbox provides markers, not runtime enforcement —
-    no annotation is ever checked at runtime; annotations evaluate lazily, as in CPython 3.14.
+    annotations do not impose runtime type errors; annotations evaluate lazily, as in CPython 3.14.
     See [`limitations/typing.md`](limitations/typing.md).
 - **Code compiled at runtime is not checked.** `eval()` and `exec()` compile their source strings inside the sandbox,
     where no checker runs.
@@ -277,3 +277,9 @@ the flag is `--type-check-format`.
     Modules the stubs need, such as `abc`, `io` and `collections.abc`, resolve during checking, then raise
     `ModuleNotFoundError` at runtime.
     See [`limitations/modules.md`](limitations/modules.md).
+
+## Typed execution
+
+The optional Rust/CLI [typed execution](typed-ir.md) uses hints to select guarded implementations.
+Validation and runtime guards serve different purposes: validation rejects inconsistent programs, while guards preserve dynamic behavior when actual values disagree with hints.
+Published bindings currently expose validation only.

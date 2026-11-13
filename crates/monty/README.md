@@ -176,3 +176,13 @@ answer is the call's result, and running without a host gives `{}`.
 ## License
 
 MIT
+
+## Typed execution
+
+The optional `typed-ir` feature exposes `monty::typed_ir::set_enabled` for the execution thread.
+Embedders arrange type validation separately.
+Type hints select guarded scalar and read-only container operations in a register interpreter.
+Failed guards resume ordinary execution with the original arguments.
+Suspending functions use ordinary execution; their eligible pure helpers can use typed instructions.
+Snapshots retain bytecode and hints and rebuild the compiled instruction cache after loading.
+See `docs/typed-ir.md` in the repository for supported operations and setup costs.

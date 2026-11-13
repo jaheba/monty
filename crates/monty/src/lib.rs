@@ -45,6 +45,9 @@ mod types;
 mod value;
 mod virtual_path;
 
+#[cfg(feature = "typed-ir")]
+pub use bytecode::typed_ir;
+
 #[cfg(feature = "ref-count-return")]
 pub use crate::run::RefCountOutput;
 /// The import names of every module the sandbox provides itself; see `SANDBOX_MODULE_NAMES` in `monty_types`.

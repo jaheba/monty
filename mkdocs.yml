@@ -36,6 +36,7 @@ nav:
       - Filesystem Access: 'filesystem.md'
       - Snapshots: 'snapshots.md'
       - Type Checking: 'type-checking.md'
+      - Typed Execution: 'typed-ir.md'
   - Reference:
       - Comparison to Alternatives: 'alternatives.md'
       - Python Operators: 'operators.md'
