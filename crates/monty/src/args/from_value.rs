@@ -112,7 +112,9 @@ pub(crate) trait FromValue: Sized {
         ExcType::type_error(format!("expected {expected}, not {got}"))
     }
 
-    /// Release a converted field after a binding error or when the bound struct is dropped with its heap.
+    /// Drop the *extracted* value (i.e. `Self`) so refcounts stay balanced
+    /// when generated `from_args` code aborts after extracting one field but
+    /// before completing the struct.
     ///
     /// For primitives this is a no-op; for `Value` / [`StrArg`] it decrements
     /// the held reference.
@@ -220,6 +222,30 @@ impl FromValue for i32 {
     fn type_error(got: &str) -> RunError {
         ExcType::type_error_not_integer(got)
     }
+}
+
+/// Preserves whether the caller supplied a value when binding a string default.
+pub(crate) enum DefaultedStringArg {
+    Omitted(&'static str),
+    Supplied(Value),
+}
+
+impl FromValue for DefaultedStringArg {
+    fn from_value(value: Value, _vm: &mut VM<'_>) -> Result<Self, FromValueFail> {
+        Ok(Self::Supplied(value))
+    }
+
+    fn drop_extracted(self, heap: &mut impl ContainsHeap) {
+        if let Self::Supplied(value) = self {
+            value.drop_with(heap);
+        }
+    }
+}
+
+pub(crate) fn extract_index(value: Value, vm: &mut VM<'_>) -> RunResult<i64> {
+    let result = value.as_int(vm);
+    value.drop_with(vm);
+    result
 }
 
 impl FromValue for i64 {
@@ -349,6 +375,35 @@ impl FromValue for u64 {
     }
 }
 
+impl FromValue for f64 {
+    const EXPECTED_TYPE_NAME: Option<&'static str> = Some("real number");
+
+    fn from_value(value: Value, vm: &mut VM<'_>) -> Result<Self, FromValueFail> {
+        #[expect(
+            clippy::cast_precision_loss,
+            reason = "Python converts integers to the nearest representable float"
+        )]
+        match value {
+            Value::Float(f) => Ok(f),
+            Value::Int(n) => Ok(n as Self),
+            Value::Bool(b) => Ok(Self::from(b)),
+            _ => {
+                let result = match value.py_float(vm) {
+                    Ok(Some(f)) => Ok(f),
+                    Ok(None) => return Err(FromValueFail::WrongType(value)),
+                    Err(err) => Err(FromValueFail::Raise(err)),
+                };
+                value.drop_with(vm);
+                result
+            }
+        }
+    }
+
+    fn type_error(got: &str) -> RunError {
+        ExcType::type_error_not_real_number(got)
+    }
+}
+
 impl FromValue for bool {
     const EXPECTED_TYPE_NAME: Option<&'static str> = Some("bool");
 
@@ -379,6 +434,18 @@ impl FromValue for bool {
 /// (the macro's error paths use [`FromValue::drop_extracted`]).
 #[derive(Debug)]
 pub(crate) struct StrArg(Value);
+
+pub(crate) fn extract_nullable_str(value: Value, vm: &mut VM<'_>) -> RunResult<Option<StrArg>> {
+    if matches!(value, Value::None) {
+        Ok(None)
+    } else if value.is_str(vm.heap) {
+        Ok(Some(StrArg(value)))
+    } else {
+        let err = ExcType::type_error(format!("must be str or None, not {}", value.py_type_name(vm)));
+        value.drop_with(vm);
+        Err(err)
+    }
+}
 
 impl FromValue for StrArg {
     const EXPECTED_TYPE_NAME: Option<&'static str> = Some("str");

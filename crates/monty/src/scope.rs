@@ -11,7 +11,7 @@ use smallvec::SmallVec;
 use crate::{
     args::{ArgValues, FromArgs},
     bytecode::VM,
-    defer_drop, defer_drop_mut,
+    defer_drop_mut,
     exception_private::RunResult,
     value::Value,
 };
@@ -54,10 +54,18 @@ impl<'h> VM<'h> {
         args: ArgValues,
         run: impl FnOnce(&A, &mut Self) -> RunResult<R>,
     ) -> RunResult<R> {
+        self.with_args_mut(args, |bound, vm| run(bound, vm))
+    }
+
+    pub(crate) fn with_args_mut<A: FromArgs, R>(
+        &mut self,
+        args: ArgValues,
+        run: impl FnOnce(&mut A, &mut Self) -> RunResult<R>,
+    ) -> RunResult<R> {
         let vm = self;
-        let args = A::from_args(args, vm)?;
-        defer_drop!(args, vm);
-        run(args, vm)
+        let bound = A::from_args(args, vm)?;
+        defer_drop_mut!(bound, vm);
+        run(bound, vm)
     }
 
     /// Releases the retained values when the callback exits.
@@ -111,6 +119,7 @@ mod tests {
     use super::*;
     use crate::{
         args::{KwargsValues, StrArg},
+        defer_drop,
         exception_private::{ExcType, ExcTypeExt},
         heap::{Heap, HeapReader},
         run::{Program, SessionTables},
@@ -135,6 +144,43 @@ mod tests {
         rest: Vec<Value>,
         #[from_args(varkwargs)]
         keywords: KwargsValues,
+    }
+
+    #[test]
+    fn single_positional_conversion_releases_rejected_value() {
+        #[derive(FromArgs)]
+        #[from_args(name = "count")]
+        struct CountArgs {
+            #[from_args(pos_only)]
+            count: i64,
+            #[from_args(varkwargs)]
+            keywords: KwargsValues,
+        }
+
+        with_vm(|vm| {
+            let value = allocate_string_on_heap("not an integer", vm.heap);
+            defer_drop!(value, vm);
+            let Value::Ref(id) = *value else { unreachable!() };
+            let args = ArgValues::One(value.clone_with_heap(vm));
+            assert!(CountArgs::from_args(args, vm).is_err());
+            assert_eq!(vm.heap.get_refcount(id), 1);
+        });
+    }
+
+    #[test]
+    fn conversion_error_releases_forwarded_keywords() {
+        with_vm(|vm| {
+            let value = allocate_string_on_heap("keyword value", vm.heap);
+            defer_drop!(value, vm);
+            let Value::Ref(id) = *value else { unreachable!() };
+            let key = vm.interns.intern_runtime("text");
+            let args = ArgValues::ArgsKargs {
+                args: vec![Value::None],
+                kwargs: KwargsValues::Inline(vec![(key, value.clone_with_heap(vm))]),
+            };
+            assert!(CollectArgs::from_args(args, vm).is_err());
+            assert_eq!(vm.heap.get_refcount(id), 1);
+        });
     }
 
     #[test]

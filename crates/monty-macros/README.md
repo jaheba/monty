@@ -5,6 +5,24 @@ Not a public crate — consumers get the macros re-exported
 (`monty::args::FromArgs` / `monty::args::ToArgs`) and should not depend on
 `monty-macros` directly.
 
+## `#[py_signature]`
+
+A Python signature on a native function generates the Rust argument struct and its `FromArgs` implementation.
+
+```rust
+#[py_signature("split(self, /, sep: str | None = None, maxsplit: SupportsIndex = -1) -> list", check_last = sep)]
+fn str_split<'h>(s: &PyStr<'h>, args: &SplitArgs, vm: &mut VM<'h>) -> RunResult<Value> {
+    // ...
+}
+```
+
+The adapter guards the bound struct for the duration of the call.
+Use `&mut` when the implementation needs to move a field out.
+`check_last = sep` lets both split methods convert `maxsplit` before checking the separator, as CPython does.
+For a Python method, `style = def, owner = "Counter"` includes the receiver in positional arity errors and qualifies the
+method name.
+`kwarg_error_name` names a downstream callable that receives unexpected keywords, as in `json.dump`.
+
 ## `#[derive(FromArgs)]`
 
 Generates the `from_args` body for a Rust-implemented Python function. The
@@ -129,6 +147,10 @@ variant used for kwarg matching; neither applies to `varargs`/`varkwargs`
 fields). All are documented inline in
 [`src/from_args.rs`](src/from_args.rs), which also carries `#[cfg(test)]`
 unit tests for every attribute-validation error.
+
+A named field can use `extract_with = path` to select its Python conversion independently of its Rust
+type. The function takes an owned `Value` and `&mut VM`, returns `RunResult<T>` for the field type
+`T`, and consumes the input on success and error. An omitted argument uses the field default.
 
 ## `#[derive(ToArgs)]`
 
