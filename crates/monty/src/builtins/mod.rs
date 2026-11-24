@@ -1,7 +1,4 @@
 //! Python builtin functions, types, and exception constructors.
-//!
-//! This module provides the interpreter-native implementation of Python builtins.
-//! Each builtin function has its own submodule for organization.
 
 mod abs;
 mod all;
@@ -48,6 +45,7 @@ use crate::{
     args::ArgValues,
     bytecode::{CallResult, VM},
     exception_private::{ExcType, RunResult},
+    shards,
     types::Type,
     value::Value,
 };
@@ -223,7 +221,7 @@ static BUILTINS: BuiltinRegistry = {
     registry.builtin(B::Zip, value!(zip::builtin_zip));
     registry.builtin(B::Locals, value!(locals::builtin_locals));
 
-    crate::shards::register(&mut registry);
+    shards::register(&mut registry);
 
     // Host values and restored bytecode can refer to a builtin directly by ID.
     let mut next_id = Some(0u8);
