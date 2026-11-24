@@ -54,6 +54,9 @@ await session.feedRun('x = 21')
 console.log(await session.feedRun('x * 2')) // 42
 ```
 
+Use `pool.checkout({ shards: [] })` to omit the dynamic evaluation shard for a session.
+See [interpreter shards](../security.md#interpreter-shards) for the effect on builtins and annotations.
+
 ## Getting values in
 
 `inputs` binds values as globals eagerly.

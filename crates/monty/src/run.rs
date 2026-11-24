@@ -892,7 +892,7 @@ fn compile_module_source(
     }
     let parsed = parse_with_interner(code, script_name, &mut interns, future_annotations)
         .map_err(|e| e.into_python_exc(script_name, code))?;
-    let nodes = prepare_with_existing_names(parsed.nodes, &interns, globals)
+    let nodes = prepare_with_existing_names(parsed.nodes, &interns, globals, options.shards)
         .map_err(|e| e.into_python_exc(script_name, code))?;
     let module_code = Compiler::compile_module(&nodes, &mut interns, globals, options, parsed.future_annotations)
         .map_err(|e| e.into_python_exc(script_name, code))?;

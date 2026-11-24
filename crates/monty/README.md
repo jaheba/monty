@@ -155,6 +155,8 @@ answer is the call's result, and running without a host gives `{}`.
 - Every suspension carries a `SourceRange` (`FunctionCall::position`, `OsCall::position`, `NameLookup::position`,
   `ResolveFutures::position()`) locating the suspending expression: the call, the name, or the `await` the main task is
   blocked on.
+- `CompileOptions::shards` selects optional interpreter operations for both `MontyRun` and `MontyRepl`.
+  Pass `Shards::core()` to omit dynamic evaluation, or add it with `.with(Shard::DynamicEvaluation)`.
 - `MontyRun::with_os_policy` / `MontyRepl::with_os_policy` configure clocks, sleeps and initial random state on every
   execution path.
   `DateTimeSource` selects the system clock, a fixed instant or the host; `SandboxTimeZone` independently selects UTC, a

@@ -21,7 +21,6 @@ use super::{
     namespace::{FrameGlobals, MissingNames},
 };
 use crate::{
-    builtins::eval_exec::{SnippetSource, compile_and_push},
     bytecode::CallResult,
     exception_private::{ExcTypeExt, ExceptionRaise, RunError, RunResult, SimpleException},
     heap::{DropWithContext, HeapData, HeapId, HeapReadOutput},
@@ -29,6 +28,7 @@ use crate::{
     modules::vendored::{VENDORED_PREFIX, VendoredSource},
     os_dispatch::PendingEffect,
     prepare::SnippetNames,
+    snippet::{SnippetSource, compile_and_push},
     types::{Dict, List, Module, sequence::SequenceItems, str::allocate_string},
     value::Value,
     virtual_path::posix_join,

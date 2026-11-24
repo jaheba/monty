@@ -22,8 +22,8 @@ use monty_proto::{
 use monty_types::{
     AssertMessageAnnotations, CallArgs, DEFAULT_MAX_SUSPENSIONS, ExcType, ExecutionClock, ExtFunctionResult,
     IMPORT_STUBS_CALL_ID, MONTY_VERSION, ModuleFile, ModuleRead, MontyException, MontyObject, MontyUuid,
-    NameLookupResult, NamedValues, OsFunctionCall, OsPolicy, PrintStream, ResourceLimits, SleepMode, SourceRange,
-    TypeCheckingConfig, validate_cwd,
+    NameLookupResult, NamedValues, OsFunctionCall, OsPolicy, PrintStream, ResourceLimits, Shards, SleepMode,
+    SourceRange, TypeCheckingConfig, validate_cwd,
 };
 #[cfg(feature = "telemetry")]
 use opentelemetry::trace::{FutureExt, TraceContextExt};
@@ -47,6 +47,8 @@ use crate::{
 /// `MontyRepl`'s constructor surface.
 #[derive(Debug, Clone)]
 pub struct ReplConfig {
+    /// Explicitly enabled interpreter shards. `None` accepts the worker's defaults.
+    pub shards: Option<Shards>,
     /// Script name used in tracebacks and type-check diagnostics, and the
     /// basis of the sandbox's `__file__`: its final path component placed
     /// under the working directory a feed starts in (`/main.py` at the root).
@@ -123,6 +125,7 @@ impl From<Persistence> for pb::Persistence {
 impl Default for ReplConfig {
     fn default() -> Self {
         Self {
+            shards: None,
             script_name: "main.py".to_owned(),
             limits: None,
             type_check: false,
@@ -1901,6 +1904,14 @@ impl Checkout {
         on_print: OnPrint<'_>,
     ) -> Result<ControlEvent, PoolError> {
         self.ensure_ready()?;
+        // An older worker ignores enabled_shards. Verify its reply before giving it any code or dump.
+        if self
+            .pending_configure
+            .as_ref()
+            .is_some_and(|config| config.enabled_shards.is_some())
+        {
+            Box::pin(self.open()).await?;
+        }
         let opening = self.pending_configure.take_if(|_| opens_session(request.message));
         let wall_deadline = deadline.and_then(|limit| DeadlineInstant::now().checked_add(limit));
         let monitor = self.cpu_monitor(request.message).await?;
@@ -2133,7 +2144,9 @@ impl Checkout {
         }
         // the first raw request opens the session like a typed one: the
         // `Configure` carries a `Feed` / `Load`, or goes alone before anything else
-        let opening = self.pending_configure.take_if(|_| opens_session(request));
+        let opening = self
+            .pending_configure
+            .take_if(|config| config.enabled_shards.is_none() && opens_session(request));
         self.open().await?;
         // As `restore`: forget the Configure-time budget and re-adopt the
         // dump's from the reply's budget fields (see `pending_load_budget`).
@@ -2341,6 +2354,13 @@ impl Checkout {
             let opened = ends_turn(&event) && opening.take().is_some();
             let lone_configure = matches!(request.message.kind, Some(pb::client_request::Kind::Configure(_)));
             let configuring = opened || lone_configure;
+            if let Some(pb::client_request::Kind::Configure(config)) = &request.message.kind
+                && matches!(event.kind, Some(pb::worker_event::Kind::Ok(_)))
+                && config.enabled_shards.is_some()
+                && event.enabled_shards != config.enabled_shards
+            {
+                return Err(self.protocol_violation("worker did not acknowledge the requested shards"));
+            }
             if (opened && acknowledges_configure(&event))
                 || (lone_configure && matches!(event.kind, Some(pb::worker_event::Kind::Ok(_))))
             {
@@ -3011,6 +3031,7 @@ fn configure_request(repl: &ReplConfig, pool: &PoolConfig) -> pb::Configure {
         // is not the binary this crate ships — a system-packaged `monty`,
         // or a remote worker reached over a socket.
         protocol_version: PROTOCOL_VERSION,
+        enabled_shards: repl.shards.map(Shards::bits),
         // Diagnostic only, so a rejection can report both builds.
         monty_version: MONTY_VERSION.to_owned(),
         print_flush_interval_ms: repl.print_flush_interval.map(flush_interval_ms),

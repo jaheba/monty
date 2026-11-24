@@ -820,6 +820,7 @@ class Monty:
         type_check_stubs: str | None = None,
         type_check_format: TypeCheckFormat | None = None,
         type_check_color: bool = False,
+        shards: list[Literal['dynamic_evaluation']] | None = None,
         assert_message_annotations: bool | int = ...,
         print_flush_interval: float | None = None,
         os_policy: OSPolicy | None = None,
@@ -850,6 +851,8 @@ class Monty:
                 leave the worker.
             type_check_color: Render diagnostics with ANSI colour escapes; only
                 `'full'` and `'concise'` carry colour.
+            shards: Enabled interpreter shards. Omit for the worker's defaults or pass an empty list
+                to disable dynamic evaluation, including `eval`, `exec` and string annotation evaluation.
             assert_message_annotations: Give failed `assert` statements
                 pytest-style introspected messages, e.g.
                 `AssertionError: assert 2 == 5` — a deliberate divergence from
@@ -1169,6 +1172,7 @@ class AsyncMonty:
         type_check_stubs: str | None = None,
         type_check_format: TypeCheckFormat | None = None,
         type_check_color: bool = False,
+        shards: list[Literal['dynamic_evaluation']] | None = None,
         assert_message_annotations: bool | int = ...,
         print_flush_interval: float | None = None,
         os_policy: OSPolicy | None = None,
@@ -1339,6 +1343,7 @@ class AsyncMontyRemote:
         type_check_stubs: str | None = None,
         type_check_format: TypeCheckFormat | None = None,
         type_check_color: bool = False,
+        shards: list[Literal['dynamic_evaluation']] | None = None,
         assert_message_annotations: bool | int = ...,
         print_flush_interval: float | None = None,
         os_policy: OSPolicy | None = None,

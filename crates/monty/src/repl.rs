@@ -14,7 +14,7 @@ use std::{mem, sync::Arc};
 use ahash::AHashMap;
 use monty_types::{
     CallArgs, ExcType, MontyException, MontyObject, MontyUuid, NamedValues, OsFunctionCall, OsPolicy, PrintWriter,
-    ResourceTracker, SOURCE_SCAN_THRESHOLD, SourceRange,
+    ResourceTracker, SOURCE_SCAN_THRESHOLD, Shards, SourceRange,
     unstable::{self, MontyGraph, NodeId},
 };
 use ruff_python_ast::token::TokenKind;
@@ -814,12 +814,22 @@ impl ReplProgress {
     /// to report as telemetry — at any suspension point without consuming the
     /// progress.
     pub fn tracker(&self) -> &ResourceTracker {
+        self.repl().tracker()
+    }
+
+    /// Shards that a restoring checkout must support for this suspension.
+    #[must_use]
+    pub fn shards(&self) -> Shards {
+        self.repl().options.shards
+    }
+
+    fn repl(&self) -> &MontyRepl {
         match self {
-            Self::FunctionCall(call) => call.snapshot.repl.tracker(),
-            Self::OsCall(call) => call.snapshot.repl.tracker(),
-            Self::ResolveFutures(state) => state.repl.tracker(),
-            Self::NameLookup(lookup) => lookup.snapshot.repl.tracker(),
-            Self::Complete { repl, .. } => repl.tracker(),
+            Self::FunctionCall(call) => &call.snapshot.repl,
+            Self::OsCall(call) => &call.snapshot.repl,
+            Self::ResolveFutures(state) => &state.repl,
+            Self::NameLookup(lookup) => &lookup.snapshot.repl,
+            Self::Complete { repl, .. } => repl,
         }
     }
 

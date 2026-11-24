@@ -101,9 +101,10 @@ impl FrozenFunction {
         let mut globals = NameMap::new();
         let parsed =
             parse_with_interner(source, "<monty-frozen>", &mut overlay, false).map_err(|e| e.into_run_error(source))?;
-        let nodes =
-            prepare_with_existing_names(parsed.nodes, &overlay, &mut globals).map_err(|e| e.into_run_error(source))?;
-        Compiler::compile_module(&nodes, &mut overlay, &globals, CompileOptions::default(), false)
+        let options = CompileOptions::default();
+        let nodes = prepare_with_existing_names(parsed.nodes, &overlay, &mut globals, options.shards)
+            .map_err(|e| e.into_run_error(source))?;
+        Compiler::compile_module(&nodes, &mut overlay, &globals, options, false)
             .map_err(|e| e.into_run_error(source))?;
         assert_eq!(
             overlay.functions_len(),

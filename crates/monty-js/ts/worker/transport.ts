@@ -12,6 +12,7 @@ import {
   type EncodedRandomSeed,
   type TypeCheckFormat,
   encodeAssertMessageAnnotations,
+  encodeShards,
   encodeOsPolicy,
   encodeTypeCheckFormat,
   systemSleepCapOf,
@@ -141,7 +142,11 @@ export class WorkerTransport {
           ? Infinity
           : Number(sleep.val) / 1_000_000
         : systemSleepCapOf({})
-    await transport.control({ tag: 'configure', val: config }, 'ok', 'Configure')
+    const expected = config.enabledShards === undefined ? 'ok' : 'shards-configured'
+    const reply = await transport.control({ tag: 'configure', val: config }, expected, 'Configure')
+    if (reply.tag === 'shards-configured' && reply.val !== config.enabledShards) {
+      throw new MontyConfigurationError('worker did not acknowledge the requested shards')
+    }
     return transport
   }
 
@@ -562,6 +567,7 @@ export function prepareSession(config: WorkerSessionConfig): ConfigureRequest {
     ...(config.limits === undefined ? {} : { limits: encodeLimits(config.limits) }),
     typeCheck: config.typeCheck ?? false,
     typeCheckStubs: config.typeCheckStubs,
+    enabledShards: encodeShards(config.shards),
     assertMessageAnnotations: encodeAssertMessageAnnotations(config.assertMessageAnnotations),
     typeCheckFormat: componentTypeCheckFormat(config.typeCheckFormat ?? 'full'),
     typeCheckColor: config.typeCheckColor ?? false,

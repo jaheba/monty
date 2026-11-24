@@ -51,7 +51,8 @@ use monty_proto::{
 };
 use monty_types::{
     AssertMessageAnnotations, CallArgs, ExcType, ExtFunctionResult, MontyException, MontyObject, MontyUuid,
-    NameLookupResult, NamedValues, OsPolicy, PrintStream, SourceRange, TypeCheckingConfig, TypeCheckingFormat,
+    NameLookupResult, NamedValues, OsPolicy, PrintStream, Shard, Shards, SourceRange, TypeCheckingConfig,
+    TypeCheckingFormat,
 };
 use pyo3::{
     Borrowed,
@@ -206,6 +207,7 @@ impl PyMonty {
         type_check_stubs = None,
         type_check_format = None,
         type_check_color = false,
+        shards = None,
         assert_message_annotations = AssertAnnotationsArg::default(),
         print_flush_interval = None,
         os_policy = None,
@@ -221,6 +223,7 @@ impl PyMonty {
         type_check_stubs: Option<&Bound<'_, PyString>>,
         type_check_format: Option<TypeCheckFormatArg>,
         type_check_color: bool,
+        shards: Option<Vec<String>>,
         assert_message_annotations: AssertAnnotationsArg,
         print_flush_interval: Option<f64>,
         os_policy: Option<OsPolicyArg>,
@@ -238,6 +241,7 @@ impl PyMonty {
                     format: type_check_format.unwrap_or_default().0,
                     color: type_check_color,
                 },
+                shards,
                 assert_message_annotations,
                 print_flush_interval,
                 os_policy.unwrap_or_default().0,
@@ -620,6 +624,7 @@ impl PyAsyncMonty {
         type_check_stubs = None,
         type_check_format = None,
         type_check_color = false,
+        shards = None,
         assert_message_annotations = AssertAnnotationsArg::default(),
         print_flush_interval = None,
         os_policy = None,
@@ -635,6 +640,7 @@ impl PyAsyncMonty {
         type_check_stubs: Option<&Bound<'_, PyString>>,
         type_check_format: Option<TypeCheckFormatArg>,
         type_check_color: bool,
+        shards: Option<Vec<String>>,
         assert_message_annotations: AssertAnnotationsArg,
         print_flush_interval: Option<f64>,
         os_policy: Option<OsPolicyArg>,
@@ -652,6 +658,7 @@ impl PyAsyncMonty {
                     format: type_check_format.unwrap_or_default().0,
                     color: type_check_color,
                 },
+                shards,
                 assert_message_annotations,
                 print_flush_interval,
                 os_policy.unwrap_or_default().0,
@@ -829,6 +836,7 @@ impl PyAsyncMontyRemote {
         type_check_stubs = None,
         type_check_format = None,
         type_check_color = false,
+        shards = None,
         assert_message_annotations = AssertAnnotationsArg::default(),
         print_flush_interval = None,
         os_policy = None,
@@ -846,6 +854,7 @@ impl PyAsyncMontyRemote {
         type_check_stubs: Option<&Bound<'_, PyString>>,
         type_check_format: Option<TypeCheckFormatArg>,
         type_check_color: bool,
+        shards: Option<Vec<String>>,
         assert_message_annotations: AssertAnnotationsArg,
         print_flush_interval: Option<f64>,
         os_policy: Option<OsPolicyArg>,
@@ -865,6 +874,7 @@ impl PyAsyncMontyRemote {
                     format: type_check_format.unwrap_or_default().0,
                     color: type_check_color,
                 },
+                shards,
                 assert_message_annotations,
                 print_flush_interval,
                 os_policy.unwrap_or_default().0,
@@ -1459,13 +1469,28 @@ pub(crate) fn parse_repl_config(
     type_check: bool,
     type_check_stubs: Option<&Bound<'_, PyString>>,
     type_check_config: TypeCheckingConfig,
+    shards: Option<Vec<String>>,
     assert_message_annotations: AssertAnnotationsArg,
     print_flush_interval: Option<f64>,
     os_policy: OsPolicy,
     persistence: Persistence,
     profile: Option<String>,
 ) -> PyResult<ReplConfig> {
+    let shards = shards
+        .map(|names| {
+            let mut shards = Shards::core();
+            for name in names {
+                match name.as_str() {
+                    "dynamic_evaluation" => shards = shards.with(Shard::DynamicEvaluation),
+                    _ => return Err(PyValueError::new_err(format!("unknown Monty shard: {name}"))),
+                }
+            }
+            Ok(shards)
+        })
+        .transpose()?;
+
     Ok(ReplConfig {
+        shards,
         script_name: script_name.to_owned(),
         limits: limits.map(extract_limits).transpose()?,
         type_check,

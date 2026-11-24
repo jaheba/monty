@@ -43,7 +43,7 @@ use monty_pool::{
 use monty_types::{
     unstable::{self, NodeId},
     AssertMessageAnnotations, ExcType, ModuleFile, ModuleRead, MontyException, MontyObject, NameLookupResult,
-    NamedValues, PrintStream, SourceRange, StackFrame, TypeCheckingConfig, TypeCheckingFormat,
+    NamedValues, PrintStream, Shards, SourceRange, StackFrame, TypeCheckingConfig, TypeCheckingFormat,
 };
 use napi::{
     bindgen_prelude::{
@@ -210,6 +210,8 @@ pub struct NativeCheckoutOptions {
     /// operand reprs to `n` bytes. The TypeScript wrapper normalizes the
     /// public `boolean | number` option into this encoding.
     pub assert_message_annotations: Option<u32>,
+    /// Explicit selection from the checkout options.
+    pub enabled_shards: Option<u32>,
 
     /// How long the worker may hold buffered `print()` output before sending
     /// it (ms). Absent: the worker's default. `0` restores line buffering,
@@ -454,6 +456,12 @@ impl NativePool {
                     },
                     color: options.type_check_color.unwrap_or(false),
                 },
+                shards: options
+                    .enabled_shards
+                    .map(|bits| {
+                        Shards::from_bits(bits).ok_or_else(|| Error::from_reason("unknown shard in enabledShards"))
+                    })
+                    .transpose()?,
                 assert_message_annotations: options.assert_message_annotations.map_or_else(
                     AssertMessageAnnotations::default,
                     AssertMessageAnnotations::from_max_bytes,

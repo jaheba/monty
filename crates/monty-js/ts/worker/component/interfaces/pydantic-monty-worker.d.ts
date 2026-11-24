@@ -379,6 +379,7 @@ export interface ConfigureRequest {
   typeCheck: boolean
   typeCheckStubs?: string
   assertMessageAnnotations?: number
+  enabledShards?: number
   typeCheckFormat: TypeCheckFormat
   typeCheckColor: boolean
   printFlushIntervalMs?: number
@@ -575,6 +576,7 @@ export type Event =
   | EventFatalError
   | EventShutdown
   | EventSessionRefused
+  | EventShardsConfigured
 export interface EventPrint {
   tag: 'print'
   val: PrintEvent
@@ -625,6 +627,10 @@ export interface EventShutdown {
 export interface EventSessionRefused {
   tag: 'session-refused'
   val: string
+}
+export interface EventShardsConfigured {
+  tag: 'shards-configured'
+  val: number
 }
 export interface DispatchResult {
   status: Status

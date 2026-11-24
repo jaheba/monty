@@ -1552,6 +1552,7 @@ mod tests {
 
     fn event(kind: pb::worker_event::Kind) -> pb::WorkerEvent {
         pb::WorkerEvent {
+            enabled_shards: None,
             traceparent: None,
             kind: Some(kind),
             total_execution_micros: 42,
@@ -1958,6 +1959,7 @@ mod tests {
             state: vec![0; 8].into(),
         })));
         recorder.event(&pb::WorkerEvent {
+            enabled_shards: None,
             traceparent: None,
             kind: Some(pb::worker_event::Kind::Ok(pb::Ok {})),
             total_execution_micros: 42,
@@ -2014,6 +2016,7 @@ mod tests {
             state: vec![].into(),
         })));
         recorder.event(&pb::WorkerEvent {
+            enabled_shards: None,
             traceparent: None,
             kind: Some(pb::worker_event::Kind::Ok(pb::Ok {})),
             total_execution_micros: 42,

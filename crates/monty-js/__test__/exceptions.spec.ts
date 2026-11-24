@@ -522,3 +522,8 @@ test('display() works polymorphically on MontyTypingError', async () => {
     'TypeError: error[invalid-assignment]: Object of type `Literal["str"]` is not assignable to `int`',
   )
 })
+
+test('checkout selects the dynamic evaluation shard', async () => {
+  await t.throwsAsync(run('eval("42")', { shards: [] }), { message: /NameError/ })
+  t.is(await run('exec("x = 40")\neval("x + 2")', { shards: ['dynamic_evaluation'] }), 42)
+})

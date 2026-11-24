@@ -85,6 +85,9 @@ async fn main() -> Result<(), PoolError> {
 
 `ReplConfig` sets per-session `ResourceLimits`, type checking of every snippet, and `print_flush_interval`.
 The flush interval batches `print()` output; `Duration::ZERO` sends one event per completed line.
+Set `ReplConfig::shards` to `Some(Shards::core())` to omit dynamic evaluation.
+For explicit shard sets the pool sends `Configure` alone and checks the acknowledgement before sending code.
+A restored snapshot must have the same enabled shards as the checkout.
 Its `os_policy` sets the clock, timezone, initial random state and sleep policy for the session.
 `CallHost` delegates calls to the caller's OS handler through `TurnEvent::OsCall`.
 Every suspension variant of `TurnEvent` carries `position`, a `SourceRange` locating the suspending expression.

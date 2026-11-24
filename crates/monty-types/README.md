@@ -30,6 +30,8 @@ implementation**.
   provides the lexical POSIX normalization shared by the interpreter, mounts, and `OsFunctionCall::to_args()` callbacks.
   It borrows canonical paths and resolves relative inputs from `/`.
   Validate NUL bytes and path limits before calling it; it does not confine filesystem access.
+- `Shard` and `Shards` select the optional interpreter operations available in a session.
+  `CompileOptions::shards` defaults to a set containing `Shard::DynamicEvaluation`.
 - `OsPolicy` — session clocks, timezone, sleeps and initial random state.
   `DateTimeSource::read`, `SandboxTimeZone`'s conversions and `local_wall_clock` use `jiff::civil::DateTime`.
   `unix_seconds` converts those UTC civil components to epoch seconds without a timezone lookup.

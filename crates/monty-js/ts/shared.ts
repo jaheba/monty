@@ -12,6 +12,7 @@ export {
 } from './classInstance.js'
 export type {
   AssertMessageAnnotations,
+  Shard,
   OsPolicy,
   DateTimeSource,
   RandomStart,

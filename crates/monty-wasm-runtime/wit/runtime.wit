@@ -300,6 +300,7 @@ interface worker {
         type-check: bool,
         type-check-stubs: option<string>,
         assert-message-annotations: option<u32>,
+        enabled-shards: option<u32>,
         type-check-format: type-check-format,
         type-check-color: bool,
         /// How long the worker may hold buffered print output. Absent takes its
@@ -512,6 +513,8 @@ interface worker {
         shutdown(option<list<u8>>),
         /// The `configure` was refused: no session exists. Carries the reason.
         session-refused(string),
+        /// Configure accepted this explicit set of shards.
+        shards-configured(u32),
     }
 
 

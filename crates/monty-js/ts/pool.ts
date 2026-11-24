@@ -12,10 +12,12 @@ import type { StartTurn } from './native.js'
 import {
   type AssertMessageAnnotations,
   type OsPolicy,
+  type Shard,
   type EncodedOsPolicy,
   type TypeCheckFormat,
   encodeAssertMessageAnnotations,
   encodeOsPolicy,
+  encodeShards,
   resolveMaxCheckouts,
 } from './options.js'
 import { enterSession, type ExternalModules, HostModules, MontySession } from './session.js'
@@ -119,6 +121,8 @@ export interface CheckoutOptions {
    * per-operand repr truncation length (default 120 bytes).
    */
   assertMessageAnnotations?: AssertMessageAnnotations
+  /** Enabled interpreter shards. Omit for the worker defaults, or pass [] for core operations. */
+  shards?: readonly Shard[]
   /**
    * How long, in seconds, the worker may hold buffered `print()` output before
    * sending it, so a burst of prints costs one `printCallback` call rather
@@ -276,6 +280,7 @@ export async function startPool(
 export function nativeCheckoutOptions(options: CheckoutOptions): Record<string, unknown> {
   const assertAnnotations = encodeAssertMessageAnnotations(options.assertMessageAnnotations)
   return {
+    enabledShards: encodeShards(options.shards),
     scriptName: options.scriptName ?? 'main.py',
     ...(options.limits !== undefined ? { limits: options.limits } : {}),
     typeCheck: options.typeCheck ?? false,

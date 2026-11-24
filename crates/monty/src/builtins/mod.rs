@@ -10,7 +10,6 @@ mod bin;
 mod chr;
 mod divmod;
 mod enumerate;
-pub(crate) mod eval_exec;
 pub(crate) mod filter;
 mod format;
 mod getattr;
@@ -45,10 +44,13 @@ mod zip;
 
 use std::{fmt, fmt::Write, str::FromStr};
 
+use monty_types::Shards;
+
 use crate::{
     args::ArgValues,
     bytecode::{CallResult, VM},
     exception_private::{ExcType, RunResult},
+    shards::dynamic_evaluation,
     types::Type,
     value::Value,
 };
@@ -88,13 +90,26 @@ impl From<DumpedBuiltins> for Builtins {
 }
 
 impl Builtins {
+    /// Shared by runtime lookup and the compiler's direct builtin calls.
+    pub fn from_name(name: &str, shards: Shards) -> Option<Self> {
+        // `type` names the type object. Its builtin function ID is used by class-body bytecode.
+        if let Some(ty) = Type::from_builtin_name(name) {
+            return Some(Self::Type(ty));
+        }
+        let function = BuiltinsFunctions::from_str(name).ok()?;
+        if dynamic_evaluation::BUILTINS.contains(&function) && !shards.contains(dynamic_evaluation::SHARD) {
+            return None;
+        }
+        Some(Self::Function(function))
+    }
+
     /// Resolves builtin names that evaluate directly to singleton values.
     #[must_use]
-    pub fn value_from_name(name: &str) -> Option<Value> {
+    pub fn value_from_name(name: &str, shards: Shards) -> Option<Value> {
         match name {
             "Ellipsis" => Some(Value::Ellipsis),
             "NotImplemented" => Some(Value::NotImplemented),
-            _ => name.parse::<Self>().ok().map(Value::Builtin),
+            _ => Self::from_name(name, shards).map(Value::Builtin),
         }
     }
 
@@ -123,23 +138,6 @@ impl Builtins {
         match self {
             Self::Function(_) => Type::BuiltinFunction,
             Self::Type(_) => Type::Type,
-        }
-    }
-}
-
-impl FromStr for Builtins {
-    type Err = ();
-
-    /// Resolves a name in the builtins namespace. Types win over functions so
-    /// `type` is the type object; `BuiltinsFunctions::Type` survives only as the
-    /// bytecode operand class bodies call.
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if let Some(t) = Type::from_builtin_name(s) {
-            Ok(Self::Type(t))
-        } else if let Ok(b) = BuiltinsFunctions::from_str(s) {
-            Ok(Self::Function(b))
-        } else {
-            Err(())
         }
     }
 }
@@ -197,8 +195,8 @@ impl BuiltinsFunctionsExt for BuiltinsFunctions {
             Self::Type => type_::builtin_type(vm, args),
             Self::Zip => zip::builtin_zip(vm, args),
             // `eval()` / `exec()` push the compiled snippet's frame.
-            Self::Eval => return eval_exec::builtin_eval(vm, args),
-            Self::Exec => return eval_exec::builtin_exec(vm, args),
+            Self::Eval => return dynamic_evaluation::builtin_eval(vm, args),
+            Self::Exec => return dynamic_evaluation::builtin_exec(vm, args),
             Self::Locals => locals::builtin_locals(vm, args),
         };
         r.map(CallResult::Value)

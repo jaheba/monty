@@ -872,6 +872,10 @@ pub struct Configure {
     /// `StreamedCalls` on must clear it before forwarding.
     #[prost(bool, tag = "17")]
     pub accepts_streamed_calls: bool,
+    /// Explicit shard set (bit 0: dynamic evaluation). Absent selects worker defaults.
+    /// Clients requesting a set send Configure alone and verify the acknowledgement before Feed or Load.
+    #[prost(uint32, optional, tag = "18")]
+    pub enabled_shards: ::core::option::Option<u32>,
     /// The session's first request, so that one round trip opens the session and
     /// runs it. If the `Configure` is refused, the request does not run and the
     /// reply is `SessionRefused`; otherwise the reply is the request's own,
@@ -1098,6 +1102,9 @@ pub struct WorkerEvent {
     /// on it, a malformed value is ignored, and a worker never sets it.
     #[prost(string, optional, tag = "31")]
     pub traceparent: ::core::option::Option<::prost::alloc::string::String>,
+    /// The explicit shard set accepted by Configure. Absent on workers without shard support.
+    #[prost(uint32, optional, tag = "32")]
+    pub enabled_shards: ::core::option::Option<u32>,
     #[prost(
         oneof = "worker_event::Kind",
         tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15"

@@ -2,6 +2,7 @@ use std::mem;
 
 use ahash::{AHashMap, AHashSet, RandomState};
 use indexmap::IndexMap;
+use monty_types::Shards;
 
 use crate::{
     args::{ArgExprs, CallArg, CallKwarg, Kwarg, Signature},
@@ -29,6 +30,7 @@ use crate::{
 /// via this handle, and `prepare_function_def` has nothing to bubble up.
 struct GlobalsRef<'g> {
     globals: &'g mut NameMap,
+    shards: Shards,
 }
 
 impl GlobalsRef<'_> {
@@ -39,7 +41,10 @@ impl GlobalsRef<'_> {
 
     /// Re-borrows for shorter-lived use (e.g. passing to a nested inner preparer).
     fn reborrow(&mut self) -> GlobalsRef<'_> {
-        GlobalsRef { globals: self.globals }
+        GlobalsRef {
+            globals: self.globals,
+            shards: self.shards,
+        }
     }
 }
 
@@ -53,8 +58,9 @@ pub(crate) fn prepare_with_existing_names(
     nodes: Vec<ParseNode>,
     interner: &CompileInterns<'_>,
     globals: &mut NameMap,
+    shards: Shards,
 ) -> Result<Vec<PreparedNode>, ParseError> {
-    let mut prepare = Prepare::new_module(globals, interner);
+    let mut prepare = Prepare::new_module(globals, interner, shards);
     prepare.has_star_import = has_star_import(&nodes);
     let mut prepared_nodes = prepare.prepare_nodes(nodes)?;
 
@@ -98,8 +104,9 @@ pub(crate) fn prepare_snippet(
     interner: &CompileInterns<'_>,
     globals: &mut NameMap,
     names: SnippetNames,
+    shards: Shards,
 ) -> Result<Vec<PreparedNode>, ParseError> {
-    let mut prepare = Prepare::new_module(globals, interner);
+    let mut prepare = Prepare::new_module(globals, interner, shards);
     prepare.has_star_import = has_star_import(&nodes);
     if names != SnippetNames::Slots {
         prepare.top_level_by_name = true;
@@ -573,10 +580,10 @@ impl<'i, 'g> Prepare<'i, 'g> {
 
     /// Borrows the caller's global slots so nested functions can assign new ones.
     /// The caller restores those provisional slots if compilation fails.
-    fn new_module(globals: &'g mut NameMap, interner: &'i CompileInterns<'i>) -> Self {
+    fn new_module(globals: &'g mut NameMap, interner: &'i CompileInterns<'i>, shards: Shards) -> Self {
         Self {
             interner,
-            globals: GlobalsRef { globals },
+            globals: GlobalsRef { globals, shards },
             state: PrepareState::Module,
             names_assigned_in_order: AHashSet::new(),
             names_used: AHashSet::new(),
@@ -1391,7 +1398,7 @@ impl<'i, 'g> Prepare<'i, 'g> {
             let name_str = self.interner.get_str(name.name_id);
             let already_bound =
                 self.names_assigned_in_order.contains(&name.name_id) || self.globals.globals.contains(name.name_id);
-            if !already_bound && let Ok(builtin) = name_str.parse::<Builtins>() {
+            if !already_bound && let Some(builtin) = Builtins::from_name(name_str, self.globals.shards) {
                 return Ok(Expr::Builtin(builtin));
             }
         }

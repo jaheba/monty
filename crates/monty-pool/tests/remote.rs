@@ -40,7 +40,7 @@ use monty_proto::{
 // only the Linux CPU-server test names the clock
 #[cfg(target_os = "linux")]
 use monty_types::ExecutionClock;
-use monty_types::{CallArgs, ExtFunctionResult, MontyObject, PrintStream, ResourceLimits, SourceRange};
+use monty_types::{CallArgs, ExtFunctionResult, MontyObject, PrintStream, ResourceLimits, Shards, SourceRange};
 #[cfg(feature = "telemetry")]
 use opentelemetry::trace::{SpanId, TraceId};
 #[cfg(feature = "telemetry")]
@@ -1092,6 +1092,7 @@ async fn a_raw_load_adopts_the_dumps_duration_budget() {
         send_event(
             &mut socket,
             &pb::WorkerEvent {
+                enabled_shards: None,
                 traceparent: None,
                 total_execution_micros: 0,
                 max_suspensions: None,
@@ -1386,6 +1387,7 @@ async fn restored_session_rearms_the_duration_backstop() {
         send_event(
             &mut socket,
             &pb::WorkerEvent {
+                enabled_shards: None,
                 traceparent: None,
                 kind: Some(pb::worker_event::Kind::Ok(pb::Ok {})),
                 restored_script_name: Some("restored.py".to_owned()),
@@ -2368,6 +2370,40 @@ async fn the_configure_carries_the_first_request() {
         .expect("feed");
     assert!(matches!(event, TurnEvent::Complete(ref value) if *value == MontyObject::int(42)));
     checkout.finish().await.expect("finish");
+    join_server(server).await;
+}
+
+#[tokio::test]
+async fn explicit_shards_require_acknowledgement_before_the_first_feed() {
+    let mock = MockServer::start().await;
+    let url = mock.url();
+    let server = thread::spawn(move || {
+        let mut socket = mock.accept();
+        socket.set_read_timeout(Duration::from_secs(5));
+        let Some(pb::client_request::Kind::Configure(config)) = try_read_request(&mut socket).unwrap().kind else {
+            panic!("expected Configure");
+        };
+        assert_eq!(config.enabled_shards, Some(0));
+        assert!(config.first.is_none());
+
+        // A worker predating shards ignores the field and sends its ordinary acknowledgement.
+        send_kind(&mut socket, ok_event());
+        assert!(socket.read().is_none(), "no feed may reach this worker");
+    });
+
+    let pool = remote_pool(&url).await;
+    let mut checkout = pool
+        .checkout(&ReplConfig {
+            shards: Some(Shards::core()),
+            ..ReplConfig::default()
+        })
+        .await
+        .unwrap();
+    let err = checkout
+        .feed("1 + 1", vec![], vec![], false, &mut no_print)
+        .await
+        .unwrap_err();
+    assert!(matches!(err, PoolError::Protocol(message) if message.contains("requested shards")));
     join_server(server).await;
 }
 

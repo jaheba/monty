@@ -450,6 +450,25 @@ assert_eq!(result, MontyObject::int(42));
     identify the host receiver for routed calls and lookups, including class construction via `__call__`.
     Plain calls and lookups carry `None`.
 
+## Choosing interpreter shards
+
+A shard groups optional interpreter operations.
+Dynamic evaluation supplies the `eval` and `exec` builtins and evaluates strings for annotation introspection.
+Monty enables it by default.
+
+```rust
+use monty::MontyRun;
+use monty_types::{CompileOptions, ExcType, Shards};
+
+let options = CompileOptions { shards: Shards::core(), ..Default::default() };
+let mut run = MontyRun::new("eval('6 * 7')".to_owned(), "example.py", vec![], options).unwrap();
+assert_eq!(run.run_no_limits(vec![]).unwrap_err().exc_type(), ExcType::NameError);
+```
+
+Use `Shards::core().with(Shard::DynamicEvaluation)` to select this shard explicitly.
+For pooled workers, pass the set in `ReplConfig::shards` as `Some(shards)`.
+The worker must acknowledge an explicit selection before the pool sends a feed or snapshot.
+
 ## Remote disconnects
 
 `PoolError::Disconnected` retains optional `remote` details with the gRPC status that ended the stream (code and message, plus the server's `RemoteCause` when it sent one), or the transport error.

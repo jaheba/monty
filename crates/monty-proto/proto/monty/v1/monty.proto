@@ -720,6 +720,10 @@ message Configure {
   // protocol version change is needed. A forwarder that cannot pass
   // `StreamedCalls` on must clear it before forwarding.
   bool accepts_streamed_calls = 17;
+
+  // Explicit shard set (bit 0: dynamic evaluation). Absent selects worker defaults.
+  // Clients requesting a set send Configure alone and verify the acknowledgement before Feed or Load.
+  optional uint32 enabled_shards = 18;
 }
 
 // How a serving relay treats the session's state; workers ignore it.
@@ -947,6 +951,9 @@ message WorkerEvent {
   // that span. Purely additive context: handling of the event must not depend
   // on it, a malformed value is ignored, and a worker never sets it.
   optional string traceparent = 31;
+
+  // The explicit shard set accepted by Configure. Absent on workers without shard support.
+  optional uint32 enabled_shards = 32;
 }
 
 enum PrintStream {

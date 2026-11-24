@@ -32,7 +32,7 @@ use monty_types::{
     AssertMessageAnnotations, CHECKER_MODULE_NAMES, CompileOptions, ExcType, ExecutionClock, ExtFunctionResult,
     IMPORT_STUBS_CALL_ID, ModuleStub, MontyException, MontyObject, NamedValues, OsFunctionCall, OsPolicy, PrintStream,
     PrintWriter, PrintWriterCallback, ResourceLimits, ResourceTracker, SANDBOX_MODULE_NAMES, SOURCE_SCAN_THRESHOLD,
-    SourceRange, TypeCheckState, TypeCheckingConfig, measure_into_baseline, release_from_baseline,
+    Shards, SourceRange, TypeCheckState, TypeCheckingConfig, measure_into_baseline, release_from_baseline,
 };
 
 use super::{
@@ -251,6 +251,8 @@ pub struct Worker {
     print_flush_interval: Duration,
     /// The session's `OsPolicy` from `Configure`, applied when creating the REPL or restoring one by `Load`.
     os_policy: OsPolicy,
+    /// Enabled shards, also checked against idle and suspended dumps.
+    shards: Shards,
     /// Set for clients below [`POSITIONAL_WRITES_PROTOCOL_VERSION`], which cannot handle positional binary writes.
     legacy_binary_writes: bool,
     /// Host module stubs received through `import_stubs` or restored by `Load`.
@@ -280,6 +282,7 @@ impl Default for Worker {
             type_check: None,
             print_flush_interval: DEFAULT_PRINT_FLUSH_INTERVAL,
             os_policy: OsPolicy::default(),
+            shards: Shards::default(),
             legacy_binary_writes: false,
             module_stubs: Vec::new(),
             accepts_streamed_calls: false,
@@ -583,11 +586,22 @@ impl Worker {
             {
                 return session_refused("invalid type_check_stubs: Source is too deeply nested");
             }
+            let enabled_shards = configure.enabled_shards;
+            self.shards = match enabled_shards {
+                Some(bits) => {
+                    let Some(shards) = Shards::from_bits(bits) else {
+                        return session_refused("unknown shard in enabled_shards");
+                    };
+                    shards
+                }
+                None => Shards::default(),
+            };
             let clock = configure.execution_clock.unwrap_or(pb::ExecutionClock::Wall as i32);
             self.legacy_binary_writes = configure.protocol_version < POSITIONAL_WRITES_PROTOCOL_VERSION;
             self.state = SessionState::Configured(Some(Box::new(configure)));
             let mut event = ok_event();
             event.execution_clock = Some(clock);
+            event.enabled_shards = enabled_shards;
             event
         } else {
             // the worker still holds a session, so this is the client's bug, not a refusal
@@ -614,6 +628,7 @@ impl Worker {
             pb::configure::First::Load(load) => self.handle_load(&load),
         };
         event.execution_clock = configured.execution_clock;
+        event.enabled_shards = configured.enabled_shards;
         event
     }
 
@@ -658,6 +673,7 @@ impl Worker {
             profile: _,
             // applied when the `Configure` arrived, so a `Load` honors it too
             accepts_streamed_calls: _,
+            enabled_shards: _,
             // taken and run when the `Configure` arrived
             first: _,
         } = *config;
@@ -679,6 +695,7 @@ impl Worker {
             ),
             // Not on the wire: every host gets the default.
             source_scan_threshold: SOURCE_SCAN_THRESHOLD,
+            shards: self.shards,
         };
         let mut repl = MontyRepl::new(
             &self.script_name,
@@ -1109,6 +1126,14 @@ impl Worker {
             module_stubs,
             mut state,
         } = restored;
+        let shards = match &state {
+            Session::Idle(repl) => Some(repl.options().shards),
+            Session::Suspended(progress) => Some(progress.shards()),
+            Session::Running(_) => None,
+        };
+        if shards.is_some_and(|shards| shards != self.shards) {
+            return protocol_violation("snapshot shards differ from Configure");
+        }
         let tracker = match &state {
             Session::Idle(repl) => Some(repl.tracker()),
             Session::Suspended(progress) => Some(progress.tracker()),
@@ -1330,6 +1355,7 @@ impl Worker {
         self.type_check = None;
         self.script_name = String::new();
         self.print_flush_interval = DEFAULT_PRINT_FLUSH_INTERVAL;
+        self.shards = Shards::default();
         self.os_policy = OsPolicy::default();
         self.module_stubs = Vec::new();
         self.accepts_streamed_calls = false;

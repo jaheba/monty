@@ -3,6 +3,21 @@
 // wire protocol but through different layers. Must stay napi-free so the
 // wasm bundle can import it.
 
+/** Optional operations selected for a session. */
+export type Shard = 'dynamic_evaluation'
+
+/** Encode an explicit selection for Configure. An omitted selection takes the worker defaults. */
+export function encodeShards(shards: readonly Shard[] | undefined): number | undefined {
+  if (shards === undefined) return undefined
+  if (!Array.isArray(shards)) throw new TypeError('shards must be an array')
+  let bits = 0
+  for (const shard of shards) {
+    if (shard !== 'dynamic_evaluation') throw new RangeError(`unknown Monty shard: ${shard}`)
+    bits |= 1
+  }
+  return bits
+}
+
 /** ty's diagnostic renderings, as accepted by the `typeCheckFormat` option. */
 export type TypeCheckFormat =
   'full' | 'concise' | 'azure' | 'json' | 'jsonlines' | 'rdjson' | 'pylint' | 'gitlab' | 'github'

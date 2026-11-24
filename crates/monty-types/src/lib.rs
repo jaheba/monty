@@ -18,6 +18,7 @@ mod resource;
 mod results;
 mod run_options;
 pub mod scan;
+mod shards;
 mod type_checking;
 mod uuid;
 mod virtual_path;
@@ -59,6 +60,7 @@ pub use crate::{
     results::{ExtFunctionResult, NameLookupResult},
     run_options::{AssertMessageAnnotations, CompileOptions, SOURCE_SCAN_THRESHOLD},
     scan::ScanArgs,
+    shards::{Shard, Shards},
     type_checking::{
         CHECKER_MODULE_NAMES, ModuleStub, ModuleStubError, SANDBOX_MODULE_NAMES, TypeCheckState, TypeCheckingConfig,
         TypeCheckingFormat, is_identifier, validate_module_name,

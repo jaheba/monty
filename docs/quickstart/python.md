@@ -74,6 +74,9 @@ with Monty() as pool:
 
 When the `with` block on the session exits, the worker goes back to the pool and the session state is gone.
 
+Use `pool.checkout(shards=[])` to omit the dynamic evaluation shard for a session.
+See [interpreter shards](../security.md#interpreter-shards) for the effect on builtins and annotations.
+
 ## Getting values in
 
 There are two ways to give the sandbox values from the host.

@@ -19,6 +19,9 @@ pub const SOURCE_SCAN_THRESHOLD: usize = 4 * 1024;
 /// fed to the session compiles the same way.
 #[derive(Debug, Clone, Copy, serde::Serialize, serde::Deserialize)]
 pub struct CompileOptions {
+    /// Shards available to this program and subsequent REPL feeds.
+    #[serde(default)]
+    pub shards: crate::Shards,
     /// Give failed `assert` statements pytest-style introspected messages,
     /// deliberately diverging from CPython; see `limitations/assert.md`.
     /// On by default with a 120-byte operand-repr truncation.
@@ -32,6 +35,7 @@ pub struct CompileOptions {
 impl Default for CompileOptions {
     fn default() -> Self {
         Self {
+            shards: crate::Shards::default(),
             assert_message_annotations: AssertMessageAnnotations::default(),
             source_scan_threshold: SOURCE_SCAN_THRESHOLD,
         }

@@ -1125,6 +1125,7 @@ mod tests {
 
     fn event(kind: pb::worker_event::Kind) -> pb::WorkerEvent {
         pb::WorkerEvent {
+            enabled_shards: None,
             traceparent: None,
             kind: Some(kind),
             total_execution_micros: 0,
@@ -1359,6 +1360,7 @@ mod tests {
         for total in [100, 250] {
             metrics.begin_turn(&feed());
             metrics.event(&pb::WorkerEvent {
+                enabled_shards: None,
                 traceparent: None,
                 kind: Some(pb::worker_event::Kind::Complete(pb::Complete {
                     value: 0,
@@ -1464,6 +1466,7 @@ mod tests {
             state: vec![].into(),
         })));
         metrics.event(&pb::WorkerEvent {
+            enabled_shards: None,
             traceparent: None,
             kind: Some(pb::worker_event::Kind::Ok(pb::Ok {})),
             total_execution_micros: 10_000_000,
@@ -1479,6 +1482,7 @@ mod tests {
         });
         metrics.begin_turn(&feed());
         metrics.event(&pb::WorkerEvent {
+            enabled_shards: None,
             traceparent: None,
             kind: Some(pb::worker_event::Kind::Complete(pb::Complete {
                 value: 0,
@@ -1513,6 +1517,7 @@ mod tests {
             state: vec![].into(),
         })));
         metrics.event(&pb::WorkerEvent {
+            enabled_shards: None,
             traceparent: None,
             kind: Some(pb::worker_event::Kind::NameLookup(pb::NameLookup {
                 name: "value".to_owned(),
@@ -1543,6 +1548,7 @@ mod tests {
             NameLookupResult::from(MontyObject::int(1)).into(),
         )));
         metrics.event(&pb::WorkerEvent {
+            enabled_shards: None,
             traceparent: None,
             kind: Some(pb::worker_event::Kind::Complete(pb::Complete {
                 value: 0,

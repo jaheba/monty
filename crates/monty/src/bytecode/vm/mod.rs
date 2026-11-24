@@ -2735,7 +2735,7 @@ impl<'h> VM<'h> {
     /// the builtin; once `def sum` runs, the slot holds the user function and the
     /// fallback isn't taken anymore.
     fn builtin_for_name(&self, name_id: StringId) -> Option<Value> {
-        Builtins::value_from_name(self.interns.get_str(name_id))
+        Builtins::value_from_name(self.interns.get_str(name_id), self.env.options.shards)
     }
 
     /// Returns the fixed value for a module-level dunder, or `None` if `name_id`

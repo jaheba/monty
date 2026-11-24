@@ -8,6 +8,15 @@ Functions defined by a snippet under a `globals` dict resolve their globals thro
 `ns = {'x': 1}; exec('def f(): return x', ns); ns['x'] = 2; ns['f']()` returns `2`.
 The snippet can call host functions and raise into the caller; top-level `await`, including in class bodies, is rejected.
 
+## Disabled dynamic evaluation shard
+
+With the `dynamic_evaluation` shard disabled, Monty omits both builtin names.
+An unbound `eval` or `exec` follows ordinary name lookup, including any binding supplied by the host.
+Evaluating a sandbox annotation string raises `PermissionError` with the message
+`dynamic evaluation shard is disabled`.
+Annotation formats that retain unresolved forward references can return the reference when evaluation fails.
+Annotations that already hold values remain available.
+
 ## Arguments
 
 - `source` must be a `str` or UTF-8 `bytes`.

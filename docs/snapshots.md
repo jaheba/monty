@@ -345,6 +345,9 @@ Calling a loader after a feed or a previous load is rejected before restoration,
 
 ## What restoring does and does not carry
 
+- **Interpreter shards must match.** Select the same shards on the restoring checkout as on the session that wrote the
+    dump, including when restoring a suspended feed.
+    Dumps from before shard selection use the original set, which includes dynamic evaluation.
 - **The dump carries its own configuration.** `script_name` and type-check state come from the dump, not from the
     `checkout()` that restored it.
     The worker caps each restored resource limit at the restoring `checkout()` limit; stricter dump limits remain in

@@ -30,6 +30,19 @@ In practice that means:
     All filesystem code lives in a separate crate (`monty-fs`).
 - **No FFI, no C dependencies.** Nothing in the sandbox can call into native code.
 
+## Interpreter shards
+
+The host selects shards when it creates a session.
+The `dynamic_evaluation` shard lets sandbox code run Python source passed to `eval` or `exec`.
+It also evaluates strings for sandbox annotation introspection.
+Monty enables it by default.
+
+Pass `shards=[]` to Python's [`Monty.checkout()`][pydantic_monty.Monty.checkout] or
+`{ shards: [] }` to JavaScript's `checkout()` for a session without dynamic evaluation.
+The host can still feed Python source and provide importable modules.
+A snapshot can resume only in a session with the same enabled shards.
+See [eval and exec](limitations/eval_exec.md) for the effects on name lookup and annotations.
+
 ## The three host-access mechanisms
 
 Everything the sandbox can reach outside itself goes through one of three mechanisms, and all are opt-in: host

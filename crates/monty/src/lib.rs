@@ -35,6 +35,8 @@ mod repl;
 mod resource_checks;
 mod run;
 mod run_progress;
+mod shards;
+mod snippet;
 mod sorting;
 mod source_map;
 mod source_nesting;

@@ -244,6 +244,10 @@ Setting `cwd` does not grant filesystem access; provide `mount=` or `os=` to han
 `OSAccess(max_urandom_bytes=...)` sets the largest `os.urandom()` request the default handler serves, 1 MiB by default.
 Larger requests raise `MemoryError` before allocating.
 `max_total_file_bytes` (50 MB) caps the `MemoryFile` content all files may grow to; a larger write raises `OSError`.
+Pass `shards=[]` to `checkout()` to disable `eval`, `exec` and evaluation of sandbox annotation strings.
+Omitting `shards` selects the worker defaults.
+An explicit list such as `['dynamic_evaluation']` selects only its named shards.
+
 Unseeded `random` generators request host entropy only under `os_policy={'random_start': 'call_host'}`.
 Otherwise they use worker OS entropy or the configured seed.
 
