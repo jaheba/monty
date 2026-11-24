@@ -21,7 +21,7 @@ use smallvec::SmallVec;
 use crate::{
     annotations::{self, empty_dict},
     args::{ArgValues, FromArgs},
-    builtins::{Builtins, BuiltinsFunctions, eval_exec},
+    builtins::{Builtins, BuiltinsFunctions},
     bytecode::{CallResult, MissingNames, VM},
     defer_drop,
     exception_private::{ExcType, ExcTypeExt, RunError, RunResult, SimpleException},
@@ -29,6 +29,7 @@ use crate::{
     heap::{HeapData, HeapId},
     intern::{FunctionId, StaticStrings},
     modules::ModuleFunctions,
+    shards::dynamic_eval,
     types::{
         LazyHeapSet, Module, PyTrait, Type, allocate_string, allocate_tuple, forward_ref::format_code,
         generic_alias::repr_type_arg,
@@ -892,7 +893,7 @@ pub(crate) fn call_eval_hint(args: ArgValues, vm: &mut VM<'_>) -> RunResult<Call
         },
         _ => unreachable!("frozen code passes the name mode as an int"),
     };
-    eval_exec::eval_hint(
+    dynamic_eval::eval_hint(
         source,
         globals.ref_id(),
         locals.ref_id(),

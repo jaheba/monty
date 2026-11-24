@@ -10,7 +10,6 @@ mod bin;
 mod chr;
 mod divmod;
 mod enumerate;
-pub(crate) mod eval_exec;
 pub(crate) mod filter;
 mod format;
 mod getattr;
@@ -136,7 +135,7 @@ impl FromStr for Builtins {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if let Some(t) = Type::from_builtin_name(s) {
             Ok(Self::Type(t))
-        } else if let Ok(b) = BuiltinsFunctions::from_str(s) {
+        } else if let Some(b) = BUILTINS.resolve(s) {
             Ok(Self::Function(b))
         } else {
             Err(())
@@ -151,56 +150,95 @@ pub(crate) trait BuiltinsFunctionsExt: Sized {
     fn call(self, vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult>;
 }
 
+type BuiltinHandler = fn(&mut VM<'_>, ArgValues) -> RunResult<CallResult>;
+
+/// Indexed by the u8 builtin operand stored in bytecode.
+pub(crate) struct BuiltinRegistry {
+    handlers: [Option<BuiltinHandler>; u8::MAX as usize + 1],
+}
+
+impl BuiltinRegistry {
+    pub(crate) const fn builtin(&mut self, id: BuiltinsFunctions, handler: BuiltinHandler) {
+        let slot = &mut self.handlers[id as usize];
+        assert!(slot.is_none(), "duplicate builtin registration");
+        *slot = Some(handler);
+    }
+
+    fn resolve(&self, name: &str) -> Option<BuiltinsFunctions> {
+        let id = BuiltinsFunctions::from_str(name).ok()?;
+        self.handlers[id as usize].map(|_| id)
+    }
+}
+
+static BUILTINS: BuiltinRegistry = {
+    use BuiltinsFunctions as B;
+
+    macro_rules! value {
+        ($handler:path) => {
+            |vm, args| $handler(vm, args).map(CallResult::Value)
+        };
+    }
+
+    let mut registry = BuiltinRegistry {
+        handlers: [None; u8::MAX as usize + 1],
+    };
+    registry.builtin(B::Abs, value!(abs::builtin_abs));
+    registry.builtin(B::All, value!(all::builtin_all));
+    registry.builtin(B::Any, value!(any::builtin_any));
+    registry.builtin(B::Bin, value!(bin::builtin_bin));
+    registry.builtin(B::Chr, value!(chr::builtin_chr));
+    registry.builtin(B::Divmod, value!(divmod::builtin_divmod));
+    registry.builtin(B::Enumerate, value!(enumerate::builtin_enumerate));
+    registry.builtin(B::Filter, filter::builtin_filter);
+    registry.builtin(B::Map, map::builtin_map);
+    registry.builtin(B::Format, value!(format::builtin_format));
+    registry.builtin(B::Getattr, getattr::builtin_getattr);
+    registry.builtin(B::Hasattr, hasattr::builtin_hasattr);
+    registry.builtin(B::Hash, value!(hash::builtin_hash));
+    registry.builtin(B::Hex, value!(hex::builtin_hex));
+    registry.builtin(B::Id, value!(id::builtin_id));
+    registry.builtin(B::Isinstance, value!(isinstance::builtin_isinstance));
+    registry.builtin(B::Issubclass, value!(issubclass::builtin_issubclass));
+    registry.builtin(B::Len, value!(len::builtin_len));
+    registry.builtin(B::Max, value!(min_max::builtin_max));
+    registry.builtin(B::Min, value!(min_max::builtin_min));
+    registry.builtin(B::Next, next::builtin_next);
+    registry.builtin(B::Oct, value!(oct::builtin_oct));
+    registry.builtin(B::Open, open::builtin_open);
+    registry.builtin(B::Ord, value!(ord::builtin_ord));
+    registry.builtin(B::Pow, value!(pow::builtin_pow));
+    registry.builtin(B::Print, value!(print::builtin_print));
+    registry.builtin(B::Repr, value!(repr::builtin_repr));
+    registry.builtin(B::Reversed, value!(reversed::builtin_reversed));
+    registry.builtin(B::Round, value!(round::builtin_round));
+    registry.builtin(B::Setattr, value!(setattr::builtin_setattr));
+    registry.builtin(B::ObjectSetattr, value!(object_setattr::builtin_object_setattr));
+    registry.builtin(B::ObjectNew, value!(object::builtin_object_new));
+    registry.builtin(B::ObjectInit, value!(object::builtin_object_init));
+    registry.builtin(B::ObjectInitSubclass, value!(object::builtin_object_init_subclass));
+    registry.builtin(B::TypeMro, value!(type_::builtin_type_mro));
+    registry.builtin(B::Sorted, value!(sorted::builtin_sorted));
+    registry.builtin(B::Sum, value!(sum::builtin_sum));
+    registry.builtin(B::Type, value!(type_::builtin_type));
+    registry.builtin(B::Zip, value!(zip::builtin_zip));
+    registry.builtin(B::Locals, value!(locals::builtin_locals));
+
+    crate::shards::register(&mut registry);
+
+    // Host values and restored bytecode can refer to a builtin directly by ID.
+    let mut next_id = Some(0u8);
+    while let Some(id) = next_id {
+        if B::from_repr(id).is_some() {
+            assert!(registry.handlers[id as usize].is_some(), "missing builtin registration");
+        }
+        next_id = id.checked_add(1);
+    }
+    registry
+};
+
 impl BuiltinsFunctionsExt for BuiltinsFunctions {
     fn call(self, vm: &mut VM<'_>, args: ArgValues) -> RunResult<CallResult> {
-        let r = match self {
-            Self::Abs => abs::builtin_abs(vm, args),
-            Self::All => all::builtin_all(vm, args),
-            Self::Any => any::builtin_any(vm, args),
-            Self::Bin => bin::builtin_bin(vm, args),
-            Self::Chr => chr::builtin_chr(vm, args),
-            Self::Divmod => divmod::builtin_divmod(vm, args),
-            Self::Enumerate => enumerate::builtin_enumerate(vm, args),
-            Self::Filter => return filter::builtin_filter(vm, args),
-            Self::Map => return map::builtin_map(vm, args),
-            Self::Format => format::builtin_format(vm, args),
-            // `getattr()` / `hasattr()` may suspend a lazy host attribute lookup.
-            Self::Getattr => return getattr::builtin_getattr(vm, args),
-            Self::Hasattr => return hasattr::builtin_hasattr(vm, args),
-            Self::Hash => hash::builtin_hash(vm, args),
-            Self::Hex => hex::builtin_hex(vm, args),
-            Self::Id => id::builtin_id(vm, args),
-            Self::Isinstance => isinstance::builtin_isinstance(vm, args),
-            Self::Issubclass => issubclass::builtin_issubclass(vm, args),
-            Self::Len => len::builtin_len(vm, args),
-            Self::Max => min_max::builtin_max(vm, args),
-            Self::Min => min_max::builtin_min(vm, args),
-            // `next()` on an unread file yields the read that loads it.
-            Self::Next => return next::builtin_next(vm, args),
-            Self::Oct => oct::builtin_oct(vm, args),
-            // `open()` yields an OS call rather than a plain value.
-            Self::Open => return open::builtin_open(vm, args),
-            Self::Ord => ord::builtin_ord(vm, args),
-            Self::Pow => pow::builtin_pow(vm, args),
-            Self::Print => print::builtin_print(vm, args),
-            Self::Repr => repr::builtin_repr(vm, args),
-            Self::Reversed => reversed::builtin_reversed(vm, args),
-            Self::Round => round::builtin_round(vm, args),
-            Self::Setattr => setattr::builtin_setattr(vm, args),
-            Self::ObjectSetattr => object_setattr::builtin_object_setattr(vm, args),
-            Self::ObjectNew => object::builtin_object_new(vm, args),
-            Self::ObjectInit => object::builtin_object_init(vm, args),
-            Self::ObjectInitSubclass => object::builtin_object_init_subclass(vm, args),
-            Self::TypeMro => type_::builtin_type_mro(vm, args),
-            Self::Sorted => sorted::builtin_sorted(vm, args),
-            Self::Sum => sum::builtin_sum(vm, args),
-            Self::Type => type_::builtin_type(vm, args),
-            Self::Zip => zip::builtin_zip(vm, args),
-            // `eval()` / `exec()` push the compiled snippet's frame.
-            Self::Eval => return eval_exec::builtin_eval(vm, args),
-            Self::Exec => return eval_exec::builtin_exec(vm, args),
-            Self::Locals => locals::builtin_locals(vm, args),
-        };
-        r.map(CallResult::Value)
+        let handler = BUILTINS.handlers[self as usize].expect("builtin has a registered handler");
+        handler(vm, args)
     }
 }

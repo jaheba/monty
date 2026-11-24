@@ -8,6 +8,12 @@ assert eval('[i * 2 for i in range(3)]') == [0, 2, 4]
 assert eval('eval("x")') == 10
 assert eval('x + 1', None, None) == 11
 
+# === registered builtins as values ===
+evaluate, execute = eval, exec
+namespace = {}
+execute('answer = 40', namespace)
+assert evaluate('answer + 2', namespace) == 42
+
 # === exec binds module globals ===
 exec('y = x * 2')
 assert y == 20
